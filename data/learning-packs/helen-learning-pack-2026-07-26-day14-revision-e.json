@@ -1007,17 +1007,86 @@
   },
   "art": {
     "courseId": "marker-drawing-foundations",
-    "lessonId": "art-01-color-planet-v2",
-    "titleZh": "我的颜色星球｜从铅笔草稿到丙烯马克笔成品",
-    "plannedMinutes": 45,
-    "difficulty": "初级·第一次完整创作",
+    "lessonId": "art-01-color-planet-professional-v3",
+    "titleZh": "我的颜色星球｜从构图草稿到丙烯马克笔成品",
+    "plannedMinutes": 52,
+    "difficulty": "基础完整创作",
+    "studentIdentityZh": "插画学习者与作品创作者",
+    "toolProfileRef": "toolProfile",
+    "paletteRef": "palette",
+    "toolProfile": {
+      "brandZh": "掌握",
+      "seriesZh": "120色直液式丙烯马克笔",
+      "colorCount": 120,
+      "inkDeliveryZh": "直液式",
+      "tipZh": "软头",
+      "fullDisplayNameZh": "掌握 120 色直液式软头丙烯马克笔",
+      "colorAuthorityZh": "用户实体笔身色号与实笔手涂色卡"
+    },
+    "palette": {
+      "lessonPaletteId": "art01-color-planet-six-role-palette",
+      "verificationRequired": false,
+      "verificationNoteZh": "六个色号与色名均已从用户实笔手涂色卡核验。",
+      "roles": [
+        {
+          "roleZh": "主色",
+          "targetColorNameZh": "湖绿",
+          "markerCode": "B815",
+          "markerNameZh": "湖绿",
+          "verificationRequired": false,
+          "usageZh": "星球主体"
+        },
+        {
+          "roleZh": "暗部与纹理色",
+          "targetColorNameZh": "墨绿",
+          "markerCode": "G695",
+          "markerNameZh": "墨绿",
+          "verificationRequired": false,
+          "usageZh": "局部暗部和纹理"
+        },
+        {
+          "roleZh": "环带色",
+          "targetColorNameZh": "薄红",
+          "markerCode": "R787",
+          "markerNameZh": "薄红",
+          "verificationRequired": false,
+          "usageZh": "星球环"
+        },
+        {
+          "roleZh": "轮廓色",
+          "targetColorNameZh": "藏青色",
+          "markerCode": "B688",
+          "markerNameZh": "藏青色",
+          "verificationRequired": false,
+          "usageZh": "轮廓和结构线"
+        },
+        {
+          "roleZh": "强调色",
+          "targetColorNameZh": "亮黄",
+          "markerCode": "Y128",
+          "markerNameZh": "亮黄",
+          "verificationRequired": false,
+          "usageZh": "小面积焦点"
+        },
+        {
+          "roleZh": "高光色",
+          "targetColorNameZh": "白色",
+          "markerCode": "W01",
+          "markerNameZh": "白色",
+          "verificationRequired": false,
+          "usageZh": "三处以内高光"
+        }
+      ]
+    },
     "techniqueFocus": [
-      "轻铅笔构图",
-      "草稿修改",
+      "观察与构图",
+      "轻线草稿",
+      "遮挡关系",
       "干净勾线",
-      "试色",
-      "平涂",
-      "干后补色"
+      "软头控笔",
+      "边缘控制",
+      "干后叠色",
+      "作品讲评"
     ],
     "skillFocus": [
       "观察",
@@ -1027,545 +1096,1374 @@
       "配色",
       "表达"
     ],
-    "creativeChoice": "Helen 自己选择星球的形状、三种主色、装饰纹理和作品名字。",
+    "creativeChoice": "Helen 自主决定星球的轮廓变化、重复纹理和作品名称；配色在本课六角色色组内完成。",
     "materials": [
       {
-        "nameZh": "HB或2B铅笔",
+        "id": "pencil",
+        "nameZh": "HB 或 2B 铅笔",
         "required": true
       },
       {
-        "nameZh": "柔软橡皮",
+        "id": "eraser",
+        "nameZh": "软橡皮",
         "required": true
       },
       {
-        "nameZh": "儿童勾线笔或深色细头马克笔",
+        "id": "liner",
+        "nameZh": "适合本课线条粗细、与纸张相容的深色勾线笔",
         "required": true
       },
       {
-        "nameZh": "无毒儿童水性丙烯马克笔",
+        "id": "markers",
+        "nameZh": "掌握 120 色直液式软头丙烯马克笔",
         "required": true
       },
       {
-        "nameZh": "160—250克绘画纸或马克笔纸",
+        "id": "art_paper",
+        "nameZh": "160—250 克绘画纸或适合丙烯马克笔的纸",
         "required": true
       },
       {
-        "nameZh": "试色纸",
+        "id": "swatch_paper",
+        "nameZh": "与作品用纸材质接近的试色纸",
         "required": true
       },
       {
-        "nameZh": "桌面垫板和纸巾",
+        "id": "desk_protection",
+        "nameZh": "桌面垫板",
         "required": true
       },
       {
-        "nameZh": "白色马克笔",
-        "required": false
+        "id": "tissue",
+        "nameZh": "纸巾",
+        "required": true
+      },
+      {
+        "id": "reference_image",
+        "nameZh": "课程完成图与步骤图",
+        "required": true
       }
     ],
     "safetyNotesZh": [
-      "只使用标有儿童可用、无毒、水性的丙烯马克笔。",
-      "先铺垫板，笔只画在绘画纸和试色纸上。",
-      "笔帽太紧时请成人帮助，不用牙齿咬。",
-      "每用完一支笔立刻盖好笔帽。",
-      "颜色未干时不反复摩擦纸面。"
+      "只在绘画纸和试色纸上使用马克笔，绘画纸下始终铺好垫板。",
+      "笔帽过紧时请成人协助，不用牙齿开启。",
+      "每用完一支笔立即盖紧笔帽，并按产品说明收纳。",
+      "不直接触摸未干燥的颜料层，不在湿色上反复摩擦。",
+      "若材料气味、皮肤接触或使用方式与产品说明不一致，立即停止并由成人检查。"
     ],
     "steps": [
       {
         "id": "observe_finished_reference",
         "order": 1,
-        "titleZh": "先看完成图",
-        "instructionZh": "先不动笔。找一找最大的星球、星球环、三种主要颜色和最亮的三个小点，再说出你觉得应该先画什么。",
-        "childActionZh": "用手指在图上依次指出大形、星球环、主色和高光。",
-        "parentPromptZh": "只提问，不要求孩子复制颜色或装饰。",
+        "titleZh": "观察完成图",
         "plannedMinutes": 2,
         "imageAssetId": "art01_step01_finished_reference",
+        "instructionZh": "观察完成图，先找主体，再找星球环、色彩层级和重复纹理，并判断大形、结构线、颜色、细节的先后顺序。",
+        "childActionZh": "指出主体、星球环、主色区域和高光位置，再说出至少三层绘画顺序。",
+        "successCriteriaZh": "能从整体到细节说出“先构图和大形，再勾线和上色，最后加纹理与高光”。",
+        "completionCheckZh": "合上提示后，仍能指出主体、星球环和视觉焦点。",
+        "commonMistakeZh": "问题：只观察小星星和圆点。修正：眯眼退后看，先确认画面中面积最大的形状。",
+        "parentPromptZh": "只在设备或材料安全需要时协助，不引导学生复制范画的每个装饰。",
+        "studentVisible": {
+          "taskZh": "观察完成图，先找主体，再找结构线、色彩层级和重复纹理。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "课程完成图"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步只观察，不使用马克笔。"
+          },
+          "operationStepsZh": [
+            "眯眼看两秒，找出画面中最大的形状。",
+            "沿着星球环观察它在主体前后形成的遮挡关系。",
+            "找出使用面积最大的颜色和面积最小的强调色。",
+            "按“大形—结构线—颜色—细节”说出绘画顺序。"
+          ],
+          "completionStandardZh": [
+            "能指出主体和星球环。",
+            "能指出主色区域与高光位置。",
+            "能说出至少三层绘画顺序。"
+          ],
+          "selfCheckZh": [
+            "我先看到的是主体，而不是零散装饰吗？",
+            "我能说明星球环哪里在前、哪里被主体挡住吗？",
+            "我知道细节为什么要最后画吗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "只注意小星星、圆点或表情。",
+              "correctionZh": "把图拿远或眯眼观察，先找面积最大的形状。"
+            },
+            {
+              "problemZh": "直接说先上色。",
+              "correctionZh": "先检查有没有可以确定位置和比例的轻铅笔草稿。"
+            }
+          ],
+          "teacherAudioZh": "先观察，不动笔。找出最大的主体、星球环和最小的强调色，再按大形、结构线、颜色、细节说出今天的绘画顺序。"
+        },
         "narration": {
-          "textZh": "先不动笔。找一找最大的形状、星球环、三种主要颜色和最亮的小点。你觉得我们应该先画什么？",
+          "textZh": "先观察，不动笔。找出最大的主体、星球环和最小的强调色，再按大形、结构线、颜色、细节说出今天的绘画顺序。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "先不动笔。找一找最大的形状、星球环、三种主要颜色和最亮的小点。你觉得我们应该先画什么？"
+          "spokenTextZh": "先观察，不动笔。找出最大的主体、星球环和最小的强调色，再按大形、结构线、颜色、细节说出今天的绘画顺序。"
         },
-        "successCriteriaZh": "能指出最大的形状，并说出先画大形、后画细节。",
-        "completionCheckZh": "孩子能用自己的话说出至少两层绘画顺序。",
-        "commonMistakeZh": "只盯着星星和圆点，不看整体位置。",
-        "hintLevels": [
-          {
-            "textZh": "先把眼睛眯起来看，哪一块最大？"
-          },
-          {
-            "textZh": "用手在空中描一遍最大的外轮廓。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "只在设备或材料安全需要时协助。",
+            "不要求复制范画的具体颜色和每一个装饰。"
+          ]
+        }
       },
       {
         "id": "prepare_materials",
         "order": 2,
-        "titleZh": "检查材料和桌面",
-        "instructionZh": "把铅笔、橡皮、勾线笔、马克笔、绘画纸、试色纸和纸巾放到顺手的位置，再把垫板铺好。",
-        "childActionZh": "按图逐件核对并摆好材料。",
-        "parentPromptZh": "成人只帮助处理过紧的笔帽和桌面保护。",
-        "plannedMinutes": 2,
+        "titleZh": "准备工具与配色",
+        "plannedMinutes": 4,
         "imageAssetId": "art01_step02_materials",
+        "instructionZh": "按清单准备工具，把六个画面角色的候选笔依次摆好；核对笔身色号，在试色纸上写下色号并等待干色确认。",
+        "childActionZh": "完成工具布置、候选笔排序和干后试色核对。",
+        "successCriteriaZh": "材料齐全，六个颜色角色位置清楚，每支候选笔都有笔身色号记录和干后试色块。",
+        "completionCheckZh": "能按 B815、G695、R787、B688、Y128、W01 的顺序说出六支笔的画面职责。",
+        "commonMistakeZh": "问题：只看笔帽或直接在作品上试笔。修正：在同类试色纸上写色号、试色并观察干色。",
+        "parentPromptZh": "仅协助过紧笔帽、桌面防护或材料安全；不替学生改变课程已核验的六色组。",
+        "studentVisible": {
+          "taskZh": "按清单准备工具，并把本课候选笔按主色、暗部与纹理色、环带色、轮廓色、强调色、高光色排好。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "HB 或 2B 铅笔",
+              "软橡皮",
+              "深色勾线笔",
+              "掌握 120 色直液式软头丙烯马克笔",
+              "160—250 克绘画纸",
+              "同类试色纸",
+              "垫板和纸巾"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "主色",
+                "targetColorNameZh": "湖绿",
+                "markerCode": "B815",
+                "markerNameZh": "湖绿",
+                "verificationRequired": false,
+                "usageZh": "星球主体"
+              },
+              {
+                "roleZh": "暗部与纹理色",
+                "targetColorNameZh": "墨绿",
+                "markerCode": "G695",
+                "markerNameZh": "墨绿",
+                "verificationRequired": false,
+                "usageZh": "局部暗部和纹理"
+              },
+              {
+                "roleZh": "环带色",
+                "targetColorNameZh": "薄红",
+                "markerCode": "R787",
+                "markerNameZh": "薄红",
+                "verificationRequired": false,
+                "usageZh": "星球环"
+              },
+              {
+                "roleZh": "轮廓色",
+                "targetColorNameZh": "藏青色",
+                "markerCode": "B688",
+                "markerNameZh": "藏青色",
+                "verificationRequired": false,
+                "usageZh": "外轮廓和结构线"
+              },
+              {
+                "roleZh": "强调色",
+                "targetColorNameZh": "亮黄",
+                "markerCode": "Y128",
+                "markerNameZh": "亮黄",
+                "verificationRequired": false,
+                "usageZh": "星星或小圆点"
+              },
+              {
+                "roleZh": "高光色",
+                "targetColorNameZh": "白色",
+                "markerCode": "W01",
+                "markerNameZh": "白色",
+                "verificationRequired": false,
+                "usageZh": "三处以内高光"
+              }
+            ],
+            "noteZh": "六支笔均已从 Helen 的掌握 120 色实笔手涂色卡核验。"
+          },
+          "operationStepsZh": [
+            "在绘画纸下铺好垫板，把试色纸放在惯用手一侧。",
+            "按六个画面角色摆出候选笔，暂时收起没有明确职责的颜色。",
+            "核对笔身色号，在试色纸上写下色号后试色。",
+            "等待色块干燥，再确认颜色之间的深浅和冷暖差。",
+            "检查每支软头笔的出墨是否稳定、笔尖是否干净。"
+          ],
+          "completionStandardZh": [
+            "全部必备材料到位。",
+            "候选笔按画面职责排好。",
+            "试色纸上有色号记录和干后色块。",
+            "能说明每种颜色准备使用的位置。"
+          ],
+          "selfCheckZh": [
+            "我核对的是笔身色号，而不是只看笔帽吗？",
+            "主色和暗部色干后有清楚的深浅差吗？",
+            "环带色和主体主色能明显区分吗？",
+            "每支笔的出墨都稳定吗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "只按笔帽颜色选笔。",
+              "correctionZh": "写下笔身色号并试色，以干后色块为准。"
+            },
+            {
+              "problemZh": "主色和暗部色太接近。",
+              "correctionZh": "从实体色卡中换一支深 1—2 个明度级的同色系颜色。"
+            },
+            {
+              "problemZh": "拿出太多颜色。",
+              "correctionZh": "只保留有明确画面职责的候选笔。"
+            },
+            {
+              "problemZh": "软头出墨过多、过少或笔尖有残色。",
+              "correctionZh": "先在试色纸上轻画数笔，出墨稳定、笔尖干净后再使用。"
+            }
+          ],
+          "teacherAudioZh": "先按清单准备工具。把候选笔按六个画面角色排好，核对笔身色号，再在试色纸上试色。等色块干燥并确认出墨稳定后，再进入控笔练习。"
+        },
         "narration": {
-          "textZh": "先把材料摆好。特别检查铅笔、橡皮和试色纸。今天不能跳过铅笔草稿，也不要直接在作品上试颜色。",
+          "textZh": "把候选笔按六个画面角色排好，核对笔身色号，再在试色纸上试色。等色块干燥并确认出墨稳定后，再进入控笔练习。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "先把材料摆好。特别检查铅笔、橡皮和试色纸。今天不能跳过铅笔草稿，也不要直接在作品上试颜色。"
+          "spokenTextZh": "把候选笔按六个画面角色排好，核对笔身色号，再在试色纸上试色。等色块干燥并确认出墨稳定后，再进入控笔练习。"
         },
-        "successCriteriaZh": "全部必备材料到位，绘画纸下面有垫板。",
-        "completionCheckZh": "孩子能指出铅笔、橡皮和试色纸的位置。",
-        "commonMistakeZh": "没有准备试色纸，后来直接在作品上试笔。",
-        "hintLevels": [
-          {
-            "textZh": "按顺序找：铅笔、橡皮、勾线笔、马克笔、两张纸、纸巾。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "仅协助过紧笔帽、桌面防护或材料安全。",
+            "不替学生更换课程已核验的六色组。"
+          ]
+        }
       },
       {
         "id": "line_and_shape_warmup",
         "order": 3,
-        "titleZh": "线条和形状热身",
-        "instructionZh": "在练习区慢慢画三条直线、三条弧线、两个大椭圆和六个小圆点。先画轻线，再画一组稳定的深线。",
-        "childActionZh": "完成轻线和深线两组热身。",
-        "parentPromptZh": "提醒放慢速度，不评价圆是否标准。",
-        "plannedMinutes": 3,
+        "titleZh": "线条与软头控笔",
+        "plannedMinutes": 4,
         "imageAssetId": "art01_step03_warmup",
+        "instructionZh": "在练习纸完成铅笔轻线、勾线和软头马克笔控笔：笔尖画边缘与小形，笔腹画宽线；保持笔杆和运笔方向稳定。",
+        "childActionZh": "完成轻线、轮廓线、笔尖线和笔腹宽线四组练习。",
+        "successCriteriaZh": "能区分铅笔轻线与勾线，并用软头笔尖和笔腹画出明显不同的线宽。",
+        "completionCheckZh": "线宽变化来自用笔部位和角度变化，不是反复摩擦同一条线。",
+        "commonMistakeZh": "问题：用力压软头或来回描线。修正：减轻压力，固定笔杆方向，转纸后分段完成弧线。",
+        "parentPromptZh": "保持练习纸稳定即可，不评价形状是否像范画。",
+        "studentVisible": {
+          "taskZh": "在练习纸上完成四组控笔：铅笔轻线、勾线、软头笔尖细线、软头笔腹宽线。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "铅笔",
+              "深色勾线笔",
+              "试色纸",
+              "掌握直液式软头丙烯马克笔候选主色"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "热身用色",
+                "targetColorNameZh": "湖绿",
+                "markerCode": "B815",
+                "markerNameZh": "湖绿",
+                "verificationRequired": false,
+                "usageZh": "只在试色纸进行软头控笔"
+              }
+            ],
+            "noteZh": "本步不在作品纸上使用马克笔。"
+          },
+          "operationStepsZh": [
+            "用铅笔画三条几乎不压纸的轻弧线，确认可以干净擦除。",
+            "用勾线笔分段画三条稳定弧线，转弯时转动练习纸。",
+            "先在试色纸检查出墨，再用软头笔尖画三条细线和六个小圆点。",
+            "让笔身倾斜，用软头侧面或笔腹画三条同向宽线。",
+            "比较笔尖线和笔腹线的宽度、边缘与出墨。"
+          ],
+          "completionStandardZh": [
+            "铅笔轻线可以轻松擦掉。",
+            "勾线没有反复描出的毛边。",
+            "笔尖线与笔腹宽线区别清楚。",
+            "软头没有因过度按压而明显变形。"
+          ],
+          "selfCheckZh": [
+            "我的手腕和肩膀保持放松吗？",
+            "笔杆方向与线条前进方向稳定吗？",
+            "需要转弯时，我转纸了吗？",
+            "出墨不足或过多时，我先回到试色纸调整了吗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "软头被压得很弯，线条边缘失控。",
+              "correctionZh": "减轻压力，先用笔尖定位，再以较小角度使用笔腹。"
+            },
+            {
+              "problemZh": "弧线来回描成粗毛边。",
+              "correctionZh": "每次只走一小段，停笔、转纸，再接下一段。"
+            },
+            {
+              "problemZh": "出墨不稳定。",
+              "correctionZh": "在试色纸轻画数笔恢复稳定，不在正式作品上测试。"
+            }
+          ],
+          "teacherAudioZh": "先用铅笔和勾线笔练习轻线与稳定线，再认识软头的两个工作部位：笔尖控制边缘和小形，笔腹铺宽线。减轻压力，保持方向，转弯时转纸。"
+        },
         "narration": {
-          "textZh": "先让手认识今天的线条。画直线、弧线、两个大椭圆和六个小圆点。第一组轻轻画，第二组再稳定一点。",
+          "textZh": "笔尖控制边缘和小形，笔腹铺宽线。减轻压力，保持方向，转弯时转纸。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "先让手认识今天的线条。画直线、弧线、两个大椭圆和六个小圆点。第一组轻轻画，第二组再稳定一点。"
+          "spokenTextZh": "笔尖控制边缘和小形，笔腹铺宽线。减轻压力，保持方向，转弯时转纸。"
         },
-        "successCriteriaZh": "完成两组热身，能够明显区分轻线和深线。",
-        "completionCheckZh": "铅笔轻线能被橡皮轻松擦掉。",
-        "commonMistakeZh": "为了画得像而反复描同一条热身线。",
-        "hintLevels": [
-          {
-            "textZh": "手腕放松，让线条慢慢走。"
-          },
-          {
-            "textZh": "椭圆不需要一次闭合，可以分两段相遇。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "保持练习纸和垫板稳定即可。",
+            "不要求圆和弧线与范图完全一致。"
+          ]
+        }
       },
       {
         "id": "pencil_place_subject",
         "order": 4,
-        "titleZh": "用铅笔给星球找位置",
-        "instructionZh": "把纸横放，用非常轻的铅笔线标出星球的上、下、左、右边界和中心点，只画位置记号，不画细节。",
-        "childActionZh": "在纸上画四个轻边界记号和一个中心点。",
-        "parentPromptZh": "问星球是否太靠边，不替孩子移动记号。",
+        "titleZh": "确定主体位置",
         "plannedMinutes": 3,
         "imageAssetId": "art01_step04_pencil_position",
+        "instructionZh": "把纸横放，用轻铅笔线标出主体的上、下、左、右边界和中心，比较四周留白后再决定位置。",
+        "childActionZh": "完成四个边界记号、一个中心记号和一次留白比较。",
+        "successCriteriaZh": "主体不顶纸边，四周留白有意图，全部位置线都能轻松擦除。",
+        "completionCheckZh": "用手指沿纸边走一圈，确认主体与四条纸边都有呼吸空间。",
+        "commonMistakeZh": "问题：第一笔就画重而完整的圆。修正：退回边界记号，只用短、轻、可擦除的线定位。",
+        "parentPromptZh": "不替学生移动位置，只在纸张容易滑动时固定垫板。",
+        "studentVisible": {
+          "taskZh": "用轻铅笔线确定主体的位置、大小和四周留白。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "HB 或 2B 铅笔",
+              "软橡皮",
+              "作品纸和垫板"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步不使用马克笔。"
+          },
+          "operationStepsZh": [
+            "把纸横放，先用手比出主体的大致范围。",
+            "轻轻标出上、下、左、右四个边界。",
+            "补一个中心记号，比较主体到四条纸边的距离。",
+            "如果一侧太挤，擦掉对应记号后重新定位。"
+          ],
+          "completionStandardZh": [
+            "主体范围与纸张比例协调。",
+            "四周都有留白。",
+            "边界记号短、轻、可擦除。"
+          ],
+          "selfCheckZh": [
+            "主体是否太大、太小或太靠边？",
+            "四周留白是否让画面保持稳定？",
+            "轻擦一个记号时能否干净擦掉？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "一开始就画出重线完整轮廓。",
+              "correctionZh": "擦淡重线，重新使用四个短边界记号定位。"
+            },
+            {
+              "problemZh": "只看中心，不看纸边。",
+              "correctionZh": "沿四条纸边依次比较留白宽度。"
+            }
+          ],
+          "teacherAudioZh": "把纸横放，用轻铅笔线标出主体的四个边界和中心。先比较四周留白，再决定位置；现在只定位，不画细节。"
+        },
         "narration": {
-          "textZh": "现在用轻轻的铅笔线给星球找房间。先标上、下、左、右和中心，不画装饰，也不画重线。",
+          "textZh": "用轻铅笔线标出主体的四个边界和中心。先比较四周留白，再决定位置；现在只定位，不画细节。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "现在用轻轻的铅笔线给星球找房间。先标上、下、左、右和中心，不画装饰，也不画重线。"
+          "spokenTextZh": "用轻铅笔线标出主体的四个边界和中心。先比较四周留白，再决定位置；现在只定位，不画细节。"
         },
-        "successCriteriaZh": "主体不顶纸边，四周留有空间，位置线足够轻。",
-        "completionCheckZh": "用橡皮轻擦一个记号，能够干净擦掉。",
-        "commonMistakeZh": "第一笔就画出很重的完整圆形。",
-        "hintLevels": [
-          {
-            "textZh": "先用手在纸上比一个大圆，再落下五个轻记号。"
-          },
-          {
-            "textZh": "如果铅笔线发黑，就把手放轻一点。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不替学生移动构图记号。",
+            "纸张滑动时可以协助固定垫板。"
+          ]
+        }
       },
       {
         "id": "pencil_draw_big_shapes",
         "order": 5,
-        "titleZh": "铅笔画大形",
-        "instructionZh": "连接位置记号，画出星球的大椭圆；再用两条弧线画星球环。先只画大形，眼睛、纹理和小星星暂时都不画。",
-        "childActionZh": "完成星球主体和星球环的轻铅笔草稿。",
-        "parentPromptZh": "用“先搭房子，再装窗户”提醒孩子暂缓细节。",
-        "plannedMinutes": 4,
+        "titleZh": "铅笔完成大形",
+        "plannedMinutes": 5,
         "imageAssetId": "art01_step05_pencil_big_shapes",
+        "instructionZh": "连接边界记号画出主体大椭圆，再用两条弧线建立星球环，明确前后遮挡关系；本步不画纹理和高光。",
+        "childActionZh": "完成主体、星球环和前后遮挡关系的轻线草稿。",
+        "successCriteriaZh": "只看大形就能辨认带环星球，星球环前后关系清楚，草稿线保持轻。",
+        "completionCheckZh": "用手指沿可见环带走一圈，确认被主体遮挡的部分没有错误穿透。",
+        "commonMistakeZh": "问题：从小装饰开始，或把星球环整条穿过主体。修正：先保留大形，擦除应被遮挡的后侧线。",
+        "parentPromptZh": "不评价作品像不像范画；只在学生主动请求时重读“先大形、后细节”。",
+        "studentVisible": {
+          "taskZh": "用轻铅笔完成主体、星球环和前后遮挡关系。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "铅笔",
+              "软橡皮",
+              "已完成定位的作品纸"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步不使用马克笔。"
+          },
+          "operationStepsZh": [
+            "分段连接四个边界记号，画出主体大椭圆。",
+            "转动纸张，让弧线方向更顺手。",
+            "画星球环靠前的一段，再画两侧可见部分。",
+            "擦除被主体挡住的后侧辅助线。",
+            "停在大形，不添加纹理、高光或零散装饰。"
+          ],
+          "completionStandardZh": [
+            "主体轮廓完整。",
+            "星球环的前后遮挡关系清楚。",
+            "草稿保持轻线。",
+            "画面暂时没有细节堆积。"
+          ],
+          "selfCheckZh": [
+            "遮住装饰区域后，还能看出带环星球吗？",
+            "星球环是否有前段、侧段和被遮挡部分？",
+            "弧线不顺时，我是否转动了纸张？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "先画小星星、圆点或表情。",
+              "correctionZh": "暂停细节，只保留主体和星球环。"
+            },
+            {
+              "problemZh": "星球环整条穿过主体。",
+              "correctionZh": "确认前后关系，擦除应被主体遮挡的线段。"
+            }
+          ],
+          "teacherAudioZh": "连接边界记号，分段画出主体大椭圆，再建立星球环的前后关系。转弯时转纸；今天先把大形画准，纹理和高光留到后面。"
+        },
         "narration": {
-          "textZh": "把轻记号连起来，画出星球的大椭圆，再加两条弧线做星球环。现在只搭大形，不画小装饰。",
+          "textZh": "分段画出主体大椭圆，再建立星球环的前后关系。转弯时转纸，细节留到后面。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "把轻记号连起来，画出星球的大椭圆，再加两条弧线做星球环。现在只搭大形，不画小装饰。"
+          "spokenTextZh": "分段画出主体大椭圆，再建立星球环的前后关系。转弯时转纸，细节留到后面。"
         },
-        "successCriteriaZh": "草稿包含一个清楚的大主体和完整星球环，线条保持轻。",
-        "completionCheckZh": "遮住细节区域时仍能看出是一颗带环星球。",
-        "commonMistakeZh": "从小星星、圆点或表情开始画。",
-        "hintLevels": [
-          {
-            "textZh": "大椭圆可以边转纸边画，不需要手腕一次绕完。"
-          },
-          {
-            "textZh": "星球环先画前面一条，再补后面被挡住的部分。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不评价作品像不像范画。",
+            "需要时只重读任务，不示范或代画。"
+          ]
+        }
       },
       {
         "id": "check_and_erase_draft",
         "order": 6,
-        "titleZh": "检查草稿并修改",
-        "instructionZh": "把画拿远一点，检查星球是否太大、太小、太靠边，星球环是否穿过正确位置。选择至少一处保留或修改，再用橡皮轻擦重画。",
-        "childActionZh": "说出一个检查决定，并完成需要的擦改。",
-        "parentPromptZh": "只问位置和比例，不用“像不像”评价。",
+        "titleZh": "检查并修正草稿",
         "plannedMinutes": 4,
         "imageAssetId": "art01_step06_check_erase",
+        "instructionZh": "把作品立起或拿远，按边距、比例、遮挡的顺序检查；明确说出一处保留和一处需要调整的位置，再完成擦改。",
+        "childActionZh": "完成边距、比例和遮挡检查，并作出具体保留或修改决定。",
+        "successCriteriaZh": "能用位置和结构语言说明决定，修改后大形更清楚，纸面没有大面积擦脏。",
+        "completionCheckZh": "能说出“这里保留”以及“这里改大、改小、改高、改低或改弧度”中的至少一种具体判断。",
+        "commonMistakeZh": "问题：因为已经画过就不愿修改。修正：只擦需要调整的局部，保留结构正确的线。",
+        "parentPromptZh": "只听学生说明判断，不用“像不像、好不好看”替代构图检查。",
+        "hardGate": {
+          "id": "pencil_draft_approved",
+          "requiredBeforeNext": true,
+          "messageZh": "完成边距、比例和遮挡检查后，才能进入勾线。"
+        },
+        "studentVisible": {
+          "taskZh": "按边距、比例、遮挡的顺序检查草稿，并完成必要的局部修改。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "铅笔",
+              "软橡皮",
+              "草稿作品"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步不使用马克笔。"
+          },
+          "operationStepsZh": [
+            "把作品立起或拿远，先看主体与四条纸边的距离。",
+            "比较主体和星球环的大小比例。",
+            "检查星球环的前后遮挡是否清楚。",
+            "说出一处保留和一处需要调整的位置。",
+            "只擦需要修改的局部，再用轻线重画。"
+          ],
+          "completionStandardZh": [
+            "完成边距、比例和遮挡三项检查。",
+            "至少作出一个具体判断。",
+            "需要修改的位置已经完成擦改。",
+            "草稿纸面保持整洁。"
+          ],
+          "selfCheckZh": [
+            "主体是否仍然是画面的视觉中心？",
+            "星球环与主体的比例是否协调？",
+            "遮挡关系是否清楚？",
+            "我能准确说出为什么保留或修改吗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "明知位置不合适也直接进入勾线。",
+              "correctionZh": "先指出最影响画面的一个位置，只修改这一处。"
+            },
+            {
+              "problemZh": "把整张草稿全部擦掉。",
+              "correctionZh": "保留结构正确的线，只擦需要调整的局部。"
+            }
+          ],
+          "teacherAudioZh": "先停笔，把作品拿远。按边距、比例、遮挡检查，说出一处保留和一处调整，再完成局部擦改。草稿通过后才进入勾线。"
+        },
         "narration": {
-          "textZh": "先停笔，把画拿远一点看。它太靠边吗？星球环的位置舒服吗？选一处保留或修改。轻线就是为了现在可以安全擦改。",
+          "textZh": "把作品拿远，按边距、比例、遮挡检查。说出一处保留和一处调整，再完成局部擦改。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "先停笔，把画拿远一点看。它太靠边吗？星球环的位置舒服吗？选一处保留或修改。轻线就是为了现在可以安全擦改。"
+          "spokenTextZh": "把作品拿远，按边距、比例、遮挡检查。说出一处保留和一处调整，再完成局部擦改。"
         },
-        "successCriteriaZh": "完成位置、大小和星球环检查，并作出至少一个具体决定。",
-        "completionCheckZh": "孩子能说“这里保留”或“这里改小、改高、改圆”等具体判断。",
-        "commonMistakeZh": "因为怕擦坏，明知位置不合适也直接进入勾线。",
-        "hardGate": {
-          "id": "pencil_draft_approved",
-          "requiredBeforeNext": true,
-          "messageZh": "草稿检查完成后，才能打开下一步勾线。"
-        },
-        "hintLevels": [
-          {
-            "textZh": "先只看星球和纸边之间的四块空白，哪边太挤？"
-          },
-          {
-            "textZh": "橡皮只擦要改的局部，不用把全部草稿擦掉。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "只听学生说明判断。",
+            "不用“像不像、好不好看”替代构图检查。"
+          ]
+        }
       },
       {
         "id": "trace_clean_outline",
         "order": 7,
-        "titleZh": "沿草稿慢慢勾线",
-        "instructionZh": "确认草稿通过后，从不容易被手蹭到的一侧开始，一小段一小段描清主体和星球环。主要区域要闭合，小装饰先不勾。",
-        "childActionZh": "完成主体和星球环的干净勾线。",
-        "parentPromptZh": "提醒分段走线，不催孩子一次画完。",
+        "titleZh": "沿草稿完成勾线",
         "plannedMinutes": 4,
         "imageAssetId": "art01_step07_outline",
+        "instructionZh": "从不易被手蹭到的一侧开始，按固定方向分段勾线；弧线转弯时转纸，保持主要上色区域闭合。",
+        "childActionZh": "完成主体和星球环的干净勾线，并检查区域闭合。",
+        "successCriteriaZh": "轮廓清楚、接线自然、主要上色区域闭合，没有反复描出的粗毛边。",
+        "completionCheckZh": "用手指沿主体和星球环走一圈，找不到明显断口或错误穿线。",
+        "commonMistakeZh": "问题：手腕固定、笔杆不断扭转，导致弧线抖动。修正：分段走线并转纸，让手保持顺手方向。",
+        "parentPromptZh": "不催促一次画完；只在勾线笔不适合纸张或发生漏墨时协助更换材料。",
+        "studentVisible": {
+          "taskZh": "沿轻铅笔草稿完成清楚、闭合、方向稳定的勾线。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "与纸张相容的深色勾线笔",
+              "已通过检查的铅笔草稿"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "轮廓色",
+                "targetColorNameZh": "藏青色",
+                "markerCode": "B688",
+                "markerNameZh": "藏青色",
+                "verificationRequired": false,
+                "usageZh": "主体和星球环轮廓"
+              }
+            ],
+            "noteZh": "若轮廓由独立勾线笔完成，仍需先在试色纸检查与马克笔层是否相容。"
+          },
+          "operationStepsZh": [
+            "先在试色纸检查勾线笔出墨。",
+            "从不容易被惯用手蹭到的一侧开始。",
+            "每次勾两三厘米，停笔后再接下一段。",
+            "遇到弧线转弯时转动纸张，保持笔杆和运笔方向稳定。",
+            "最后检查主体与星球环的上色区域是否闭合。"
+          ],
+          "completionStandardZh": [
+            "主要轮廓清楚。",
+            "接线位置自然。",
+            "上色区域基本闭合。",
+            "没有反复描出的粗毛边。"
+          ],
+          "selfCheckZh": [
+            "我的手是否会蹭到刚画的线？",
+            "转弯时是否转了纸？",
+            "主要上色区域有没有断口？",
+            "有没有一条线被反复描得过粗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "弧线抖动或笔杆不断扭转。",
+              "correctionZh": "缩短每段线，停笔、转纸，再沿顺手方向继续。"
+            },
+            {
+              "problemZh": "接线处堆出黑点。",
+              "correctionZh": "下一段从前一段末端轻轻接入，不在接点停留。"
+            },
+            {
+              "problemZh": "轮廓出现断口。",
+              "correctionZh": "等线稳定后，只补断口，不重描整条轮廓。"
+            }
+          ],
+          "teacherAudioZh": "从不容易被手蹭到的一侧开始，每次只勾一小段。转弯时转纸，不来回磨线；完成后沿轮廓检查一圈，确认主要上色区域闭合。"
+        },
         "narration": {
-          "textZh": "草稿检查通过了，现在才能勾线。从不容易被手蹭到的一边开始，一小段一小段描清，不要来回磨成粗毛边。",
+          "textZh": "每次只勾一小段，转弯时转纸，不来回磨线；最后确认主要上色区域闭合。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "草稿检查通过了，现在才能勾线。从不容易被手蹭到的一边开始，一小段一小段描清，不要来回磨成粗毛边。"
+          "spokenTextZh": "每次只勾一小段，转弯时转纸，不来回磨线；最后确认主要上色区域闭合。"
         },
-        "successCriteriaZh": "主要轮廓清楚，准备上色的区域基本闭合。",
-        "completionCheckZh": "用手指沿轮廓走一圈，找不到明显断口。",
-        "commonMistakeZh": "在同一条线来回描很多次，形成粗糙毛边。",
-        "hintLevels": [
-          {
-            "textZh": "每次只描两三厘米，停一下再接下一段。"
-          },
-          {
-            "textZh": "转弯时可以轻轻转动纸张。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不催促学生一次画完。",
+            "勾线工具漏墨或与纸张不相容时协助更换材料。"
+          ]
+        }
       },
       {
         "id": "dry_outline_and_erase_pencil",
         "order": 8,
-        "titleZh": "等线干，再擦草稿",
-        "instructionZh": "先等待勾线不再发亮，用手背靠近检查，不直接摸线。确认干燥后，用橡皮轻轻擦掉多余铅笔线和位置记号。",
-        "childActionZh": "等待并清理多余铅笔线。",
-        "parentPromptZh": "成人只提醒等待，不替孩子大力擦。",
+        "titleZh": "确认干燥并清稿",
         "plannedMinutes": 3,
         "imageAssetId": "art01_step08_erase_pencil",
+        "instructionZh": "让勾线自然干燥，观察表面反光是否消失；先在不重要位置试擦，再轻轻清除多余铅笔线。",
+        "childActionZh": "完成干燥判断、局部试擦和铅笔辅助线清理。",
+        "successCriteriaZh": "纸面整洁，勾线没有被擦花，主要轮廓仍然完整。",
+        "completionCheckZh": "多余铅笔线明显减少，擦过的位置没有灰黑污迹。",
+        "commonMistakeZh": "问题：勾线未干就大面积擦除。修正：停止擦拭，继续等待，先用边角位置做小范围测试。",
+        "parentPromptZh": "不替学生大力擦除；需要时协助确认材料说明中的建议干燥时间。",
+        "studentVisible": {
+          "taskZh": "确认勾线干燥，再用软橡皮清除多余铅笔线。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "已完成勾线的作品",
+              "软橡皮"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步不使用马克笔。"
+          },
+          "operationStepsZh": [
+            "把作品平放，观察勾线表面的反光是否消失。",
+            "不直接用手触摸新画线。",
+            "在不重要的一小段旁边轻擦，确认勾线不会花。",
+            "用轻压力分区擦除多余铅笔线和定位记号。",
+            "用纸巾或手势轻扫橡皮屑，不在纸面来回摩擦。"
+          ],
+          "completionStandardZh": [
+            "完成干燥判断和小范围试擦。",
+            "多余铅笔线明显减少。",
+            "勾线保持完整。",
+            "纸面没有大片污迹。"
+          ],
+          "selfCheckZh": [
+            "勾线表面还明显反光吗？",
+            "试擦位置有没有出现灰黑污迹？",
+            "橡皮压力是否足够轻？",
+            "清稿后轮廓是否仍然完整？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "勾线未干就开始擦。",
+              "correctionZh": "立即停止，继续等待，之后先做局部试擦。"
+            },
+            {
+              "problemZh": "橡皮来回用力摩擦。",
+              "correctionZh": "减轻压力，分小区域单向清理。"
+            }
+          ],
+          "teacherAudioZh": "先判断勾线是否干燥。反光消失后，在不重要的位置轻轻试擦；确认不会花，再分区清除铅笔线。"
+        },
         "narration": {
-          "textZh": "先等勾线变干，再轻轻擦掉多余铅笔线。没有干的时候不要擦，擦的时候也不要用力来回搓。",
+          "textZh": "反光消失后先轻轻试擦；确认勾线不会花，再分区清除铅笔线。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "先等勾线变干，再轻轻擦掉多余铅笔线。没有干的时候不要擦，擦的时候也不要用力来回搓。"
+          "spokenTextZh": "反光消失后先轻轻试擦；确认勾线不会花，再分区清除铅笔线。"
         },
-        "successCriteriaZh": "纸面基本干净，勾线没有被擦花。",
-        "completionCheckZh": "多余铅笔记号明显减少，勾线仍完整。",
-        "commonMistakeZh": "勾线未干就擦，造成灰黑色污迹。",
-        "hintLevels": [
-          {
-            "textZh": "先在最不重要的一小段旁边轻擦一下，确认不会花。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不替学生大力擦除。",
+            "需要时协助查阅勾线工具的建议干燥时间。"
+          ]
+        }
       },
       {
         "id": "test_colors_and_plan",
         "order": 9,
-        "titleZh": "试色并做好配色计划",
-        "instructionZh": "在试色纸上试每一支候选笔，选一个主色、一个辅助色和一个少量强调色，再用手指出每种颜色准备放在哪里。",
-        "childActionZh": "完成至少三块试色并说出配色位置。",
-        "parentPromptZh": "不替孩子选颜色，只提醒颜色数量不要过多。",
-        "plannedMinutes": 3,
+        "titleZh": "试色并确定配色",
+        "plannedMinutes": 4,
         "imageAssetId": "art01_step09_color_plan",
+        "instructionZh": "重新检查六个候选色的出墨和干后效果，确认主色、暗部、环带、轮廓、强调和高光的使用位置，并记录任何替代色。",
+        "childActionZh": "完成六个色彩角色的干后试色、位置确认和替代色记录。",
+        "successCriteriaZh": "每个使用中的颜色都有明确画面职责，相邻大色块有足够区分，候选笔数量受到控制。",
+        "completionCheckZh": "能按角色逐一指出使用位置，并说明主色与暗部色的明度关系。",
+        "commonMistakeZh": "问题：看到喜欢的颜色就继续加笔。修正：只保留能说出画面职责的颜色，其余收回笔盒。",
+        "parentPromptZh": "不替学生改变已核验色组；如某支笔出墨异常，只协助从同一实体色卡中记录替代色。",
+        "studentVisible": {
+          "taskZh": "用干后试色确认六个颜色角色，并确定它们在画面中的使用位置。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "掌握 120 色直液式软头丙烯马克笔候选色组",
+              "同类试色纸",
+              "铅笔或记录笔"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "主色",
+                "targetColorNameZh": "湖绿",
+                "markerCode": "B815",
+                "markerNameZh": "湖绿",
+                "verificationRequired": false,
+                "usageZh": "主体大面积"
+              },
+              {
+                "roleZh": "暗部与纹理色",
+                "targetColorNameZh": "墨绿",
+                "markerCode": "G695",
+                "markerNameZh": "墨绿",
+                "verificationRequired": false,
+                "usageZh": "局部暗部和纹理"
+              },
+              {
+                "roleZh": "环带色",
+                "targetColorNameZh": "薄红",
+                "markerCode": "R787",
+                "markerNameZh": "薄红",
+                "verificationRequired": false,
+                "usageZh": "星球环"
+              },
+              {
+                "roleZh": "轮廓色",
+                "targetColorNameZh": "藏青色",
+                "markerCode": "B688",
+                "markerNameZh": "藏青色",
+                "verificationRequired": false,
+                "usageZh": "轮廓和结构线"
+              },
+              {
+                "roleZh": "强调色",
+                "targetColorNameZh": "亮黄",
+                "markerCode": "Y128",
+                "markerNameZh": "亮黄",
+                "verificationRequired": false,
+                "usageZh": "小面积焦点"
+              },
+              {
+                "roleZh": "高光色",
+                "targetColorNameZh": "白色",
+                "markerCode": "W01",
+                "markerNameZh": "白色",
+                "verificationRequired": false,
+                "usageZh": "三处以内高光"
+              }
+            ],
+            "noteZh": "B815、G695、R787、B688、Y128、W01 均已由用户实笔手涂色卡核验；正式落笔仍以本次干后试色为准。"
+          },
+          "operationStepsZh": [
+            "逐支核对笔身色号，在试色纸对应记录旁再次试笔。",
+            "等待色块干燥，比较湿色与干色变化。",
+            "确认主色与暗部色相近但明度有清楚差别。",
+            "确认环带色与主色在冷暖或明度上能够区分。",
+            "逐一指出每个颜色角色的使用位置。",
+            "如果更换候选笔，记录原色、替代色和替代理由。"
+          ],
+          "completionStandardZh": [
+            "每支笔出墨稳定。",
+            "每个颜色都有明确职责。",
+            "相邻大色块干后能够区分。",
+            "没有无目的增加颜色。",
+            "替代色已记录。"
+          ],
+          "selfCheckZh": [
+            "我依据的是干后试色，不是笔帽颜色吗？",
+            "主色是否仍然承担最大面积？",
+            "强调色是否面积最小但对比清楚？",
+            "每拿一支笔，我都能说出它用在哪里吗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "颜色越拿越多。",
+              "correctionZh": "只保留能明确说明画面职责的颜色。"
+            },
+            {
+              "problemZh": "主色与暗部色干后几乎一样。",
+              "correctionZh": "回到实体色卡，换一支深 1—2 个明度级的同色系候选色。"
+            },
+            {
+              "problemZh": "只看湿色就做决定。",
+              "correctionZh": "等待试色色块干燥后再确认。"
+            }
+          ],
+          "teacherAudioZh": "重新核对六个色彩角色，以干后试色为准。主色面积最大，暗部色要深一到两个明度级，强调色面积最小。每支笔都要有明确的使用位置。"
+        },
         "narration": {
-          "textZh": "先在试色纸上试笔。选一个主色、一个陪伴它的辅助色，再选一个只亮一下的强调色。先说好它们各自住在哪里。",
+          "textZh": "以干后试色为准，确认六个色彩角色。每支笔都要有明确的使用位置。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "先在试色纸上试笔。选一个主色、一个陪伴它的辅助色，再选一个只亮一下的强调色。先说好它们各自住在哪里。"
+          "spokenTextZh": "以干后试色为准，确认六个色彩角色。每支笔都要有明确的使用位置。"
         },
-        "successCriteriaZh": "至少完成三块试色，并确定主色、辅助色和强调色。",
-        "completionCheckZh": "孩子能指着作品说出三种颜色的大致位置。",
-        "commonMistakeZh": "颜色越拿越多，或没试色就直接下笔。",
-        "hintLevels": [
-          {
-            "textZh": "主色用得最多，辅助色少一点，强调色只用几处。"
-          },
-          {
-            "textZh": "如果两种颜色太像，可以换一支深浅差别更大的。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不替学生选色。",
+            "如某支笔出墨异常，只协助从同一实体色卡中记录替代色。"
+          ]
+        }
       },
       {
         "id": "fill_first_color_layer",
         "order": 10,
-        "titleZh": "涂第一层大色块",
-        "instructionZh": "先沿大区域边缘慢慢围一圈，再用同一个方向铺中间。一次只涂一个区域，看到小白缝先留下，不在湿颜色上反复摩擦。",
-        "childActionZh": "完成主体和星球环的第一层大色块。",
-        "parentPromptZh": "提醒边缘优先、同向铺色，不追求第一层完全无缝。",
+        "titleZh": "铺第一层色块",
         "plannedMinutes": 6,
         "imageAssetId": "art01_step10_first_color",
+        "instructionZh": "先在试色纸确认出墨，再用笔尖控制边缘、笔腹同向铺中间；一次完成一个区域，避开湿色，不反复摩擦。",
+        "childActionZh": "完成主体和星球环的第一层色块，并展示笔尖围边、笔腹平涂和同向运笔。",
+        "successCriteriaZh": "主要区域获得第一层颜色，边缘受控，运笔方向基本一致，纸面没有被湿笔反复磨损。",
+        "completionCheckZh": "近看边缘没有大面积越线，远看色块方向统一；允许保留少量待干后修补的白缝。",
+        "commonMistakeZh": "问题：用笔腹直接冲到边缘或在湿色上来回补。修正：先用笔尖建立边缘，再以笔腹同向铺色，白缝留到干后处理。",
+        "parentPromptZh": "不追求第一层完全无缝；出现大量出墨时只协助递纸巾和保护桌面，不代替上色。",
+        "studentVisible": {
+          "taskZh": "用软头笔尖控制边缘，用笔腹同向铺色，完成主体和星球环的第一层。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "已确认的主色候选笔",
+              "已确认的环带色候选笔",
+              "试色纸",
+              "纸巾",
+              "已完成清稿的作品"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "主色",
+                "targetColorNameZh": "湖绿",
+                "markerCode": "B815",
+                "markerNameZh": "湖绿",
+                "verificationRequired": false,
+                "usageZh": "星球主体第一层"
+              },
+              {
+                "roleZh": "环带色",
+                "targetColorNameZh": "薄红",
+                "markerCode": "R787",
+                "markerNameZh": "薄红",
+                "verificationRequired": false,
+                "usageZh": "星球环第一层"
+              }
+            ],
+            "noteZh": "B815 湖绿用于主体第一层，R787 薄红用于星球环第一层；正式落笔仍先检查出墨和干后试色。"
+          },
+          "operationStepsZh": [
+            "每换一支笔，先在试色纸检查出墨稳定。",
+            "从不容易被惯用手蹭到的一侧开始。",
+            "用软头笔尖沿区域内侧建立一圈清楚边缘。",
+            "让笔身保持稳定角度，用软头侧面或笔腹从同一方向铺中间。",
+            "手快接近湿色时，转动纸张再继续。",
+            "完成一个区域后盖好笔帽，再开始下一个区域。"
+          ],
+          "completionStandardZh": [
+            "主体和星球环完成第一层。",
+            "边缘没有大面积越线。",
+            "中间笔触方向基本一致。",
+            "纸面没有因湿色反复覆盖而起毛。",
+            "允许保留少量白缝等待干后修正。"
+          ],
+          "selfCheckZh": [
+            "我先用笔尖控制边缘了吗？",
+            "笔腹铺色时方向是否稳定？",
+            "出墨变化时是否先回到试色纸？",
+            "手快碰到湿色时是否转了纸？",
+            "我有没有在湿面上反复来回涂？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "笔腹直接越过轮廓。",
+              "correctionZh": "先停笔，转纸后用笔尖从区域内部重新控制边缘。"
+            },
+            {
+              "problemZh": "湿色上出现来回摩擦痕迹。",
+              "correctionZh": "停止覆盖，留下当前区域，完全干燥后再修。"
+            },
+            {
+              "problemZh": "出墨突然过多。",
+              "correctionZh": "立即离开作品，在试色纸和纸巾上恢复稳定后再继续。"
+            },
+            {
+              "problemZh": "铺色方向杂乱。",
+              "correctionZh": "确定一个方向，从未完成区域继续同向铺色，不在湿区重做。"
+            }
+          ],
+          "teacherAudioZh": "每支笔先在试色纸检查出墨。边缘用笔尖，中间用笔腹，沿同一个方向铺色；手快碰到湿色时转纸。白缝留到完全干燥后再修。"
+        },
         "narration": {
-          "textZh": "开始第一层上色。先围边，再用同一个方向铺中间。看到小白缝先别着急，湿颜色不要反复摩擦。",
+          "textZh": "边缘用笔尖，中间用笔腹，沿同一个方向铺色。白缝留到完全干燥后再修。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "开始第一层上色。先围边，再用同一个方向铺中间。看到小白缝先别着急，湿颜色不要反复摩擦。"
+          "spokenTextZh": "边缘用笔尖，中间用笔腹，沿同一个方向铺色。白缝留到完全干燥后再修。"
         },
-        "successCriteriaZh": "大区域基本有颜色，边缘得到控制，纸面没有被反复磨破。",
-        "completionCheckZh": "第一层覆盖主要区域，允许保留少量待补白缝。",
-        "commonMistakeZh": "没有方向地乱涂，或不断摩擦湿纸面。",
-        "hintLevels": [
-          {
-            "textZh": "边缘用短笔画，中间用稍长的同向笔画。"
-          },
-          {
-            "textZh": "手快要碰到湿色时，转一下纸再继续。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不追求第一层完全无缝。",
+            "大量出墨时只协助保护桌面和递纸巾，不代替上色。"
+          ]
+        }
       },
       {
         "id": "let_color_dry",
         "order": 11,
-        "titleZh": "让颜色休息变干",
-        "instructionZh": "把笔帽盖好，让作品平放。观察颜色从亮亮的湿润状态变成不再反光，同时活动手指和肩膀，不继续覆盖。",
-        "childActionZh": "等待干燥并完成短暂手部放松。",
-        "parentPromptZh": "不要用手直接摸颜色，也不需要吹或擦。",
+        "titleZh": "等待第一层干燥",
         "plannedMinutes": 3,
         "imageAssetId": "art01_step11_drying",
+        "instructionZh": "盖好笔帽，让作品平放并观察湿色反光；第一层不再明显反光、试色纸对照区也已干燥后，再进入叠色与修边。",
+        "childActionZh": "完成工具整理、干燥观察和进入第二层前的判断。",
+        "successCriteriaZh": "使用过的笔全部盖好，作品保持平放，主要色块不再明显反光或粘笔。",
+        "completionCheckZh": "从侧面观察主要色块，不再看到明显湿润反光；不直接用手触摸测试。",
+        "commonMistakeZh": "问题：未干就加第二层或用手触摸测试。修正：作品平放继续等待，用同步试色块判断干燥状态。",
+        "parentPromptZh": "不吹、不擦、不直接触摸湿色；如需确认材料干燥时间，可查产品说明。",
+        "studentVisible": {
+          "taskZh": "整理工具，观察第一层的反光变化，确认完全干燥后再进入第二层。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "完成第一层的作品",
+              "同步试色纸"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步不继续使用马克笔；先把使用过的笔全部盖紧。"
+          },
+          "operationStepsZh": [
+            "把使用过的笔逐支盖紧并放回固定位置。",
+            "让作品平放，不叠放其他纸张。",
+            "从侧面观察湿色反光是否逐渐消失。",
+            "对照同时完成的试色色块判断干燥状态。",
+            "利用等待时间放松手指和肩膀，不触摸作品表面。"
+          ],
+          "completionStandardZh": [
+            "全部笔帽已经盖紧。",
+            "作品平放。",
+            "主要色块不再明显反光。",
+            "同步试色块已经干燥。",
+            "没有用手触摸湿色。"
+          ],
+          "selfCheckZh": [
+            "使用过的笔都盖紧了吗？",
+            "作品表面还明显反光吗？",
+            "我是否用试色纸而不是手指判断干燥？",
+            "干燥前有没有继续覆盖？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "急着在湿色上加第二层。",
+              "correctionZh": "停止上色，让作品继续平放，等待反光消失。"
+            },
+            {
+              "problemZh": "用手摸作品测试。",
+              "correctionZh": "改为观察同步试色块和表面反光。"
+            }
+          ],
+          "teacherAudioZh": "把使用过的笔全部盖好，作品保持平放。观察表面反光，并用同步试色块判断干燥；第一层完全干燥后，才进入修边和叠色。"
+        },
         "narration": {
-          "textZh": "现在让颜色休息。盖好笔帽，作品平放。等亮亮的湿色不再反光，我们再回来补第二层。",
+          "textZh": "作品保持平放，用表面反光和同步试色块判断干燥；第一层完全干燥后再叠色。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "现在让颜色休息。盖好笔帽，作品平放。等亮亮的湿色不再反光，我们再回来补第二层。"
+          "spokenTextZh": "作品保持平放，用表面反光和同步试色块判断干燥；第一层完全干燥后再叠色。"
         },
-        "successCriteriaZh": "主要色块表面不再明显反光或粘笔。",
-        "completionCheckZh": "孩子能指出至少一块已经干燥的区域。",
-        "commonMistakeZh": "为了赶快完成，在湿色上连续覆盖第二层。",
-        "hintLevels": [
-          {
-            "textZh": "趁等待做三次张手、握拳，再转一转肩膀。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不吹、不擦、不直接触摸湿色。",
+            "需要时查阅产品说明中的建议干燥时间。"
+          ]
+        }
       },
       {
         "id": "repair_second_layer_and_edges",
         "order": 12,
-        "titleZh": "补第二层和小白缝",
-        "instructionZh": "只找还能看见白纸、颜色太薄或边缘不齐的小地方，逐块补好。不要把整张作品无差别重新涂一遍。",
-        "childActionZh": "完成局部补色和边缘整理。",
-        "parentPromptZh": "提醒像医生补小伤口，只补需要的位置。",
+        "titleZh": "局部叠色与修边",
         "plannedMinutes": 4,
         "imageAssetId": "art01_step12_second_layer",
+        "instructionZh": "在第一层完全干燥后，只修补露白、薄色和边缘不齐的位置；叠色方向与第一层一致，不整幅重复覆盖。",
+        "childActionZh": "完成必要的局部补色、同向叠色和边缘修整。",
+        "successCriteriaZh": "明显露白和薄色得到修正，轮廓仍清楚，色层没有因全幅重涂而过厚。",
+        "completionCheckZh": "先近看边缘，再退后看整体；只剩不影响画面的细小笔触差异。",
+        "commonMistakeZh": "问题：把第二层理解为整张再涂一遍。修正：先标出三处以内最需要修的位置，逐处完成后立即停笔观察。",
+        "parentPromptZh": "不主动指出每一个小白点；由学生先完成整体观察并决定是否修正。",
+        "studentVisible": {
+          "taskZh": "只处理露白、薄色和边缘不齐的位置，完成局部叠色与修边。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "第一层已完全干燥的作品",
+              "实际使用过的主色与环带色候选笔",
+              "试色纸"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "主色",
+                "targetColorNameZh": "湖绿",
+                "markerCode": "B815",
+                "markerNameZh": "湖绿",
+                "verificationRequired": false,
+                "usageZh": "主体局部补色"
+              },
+              {
+                "roleZh": "环带色",
+                "targetColorNameZh": "薄红",
+                "markerCode": "R787",
+                "markerNameZh": "薄红",
+                "verificationRequired": false,
+                "usageZh": "星球环局部补色"
+              }
+            ],
+            "noteZh": "必须使用第一层实际用笔；若已替换颜色，以试色纸上的真实记录为准。"
+          },
+          "operationStepsZh": [
+            "退后观察整幅作品，找出最影响整体的露白、薄色或边缘问题。",
+            "一次只确定一处，先在试色纸检查对应笔的出墨。",
+            "小白缝和窄边缘使用笔尖修正。",
+            "薄色区域沿第一层相同方向局部叠色。",
+            "每修一处就退后观察，最多先处理三处明显问题。"
+          ],
+          "completionStandardZh": [
+            "明显露白和薄色得到修正。",
+            "边缘更整齐但没有越线扩大。",
+            "第二层方向与第一层一致。",
+            "轮廓保持清楚。",
+            "没有整幅无差别重涂。"
+          ],
+          "selfCheckZh": [
+            "第一层是否已经完全干燥？",
+            "这一处问题从正常观看距离仍然明显吗？",
+            "我使用的是第一层实际对应的颜色吗？",
+            "修完一处后是否退后观察？",
+            "现在是否已经可以停止？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "整幅重新涂第二层。",
+              "correctionZh": "停笔，退后标出三处以内最需要修的位置，只做局部处理。"
+            },
+            {
+              "problemZh": "叠色方向与第一层相反。",
+              "correctionZh": "顺着第一层可见笔触方向完成局部叠色。"
+            },
+            {
+              "problemZh": "修边时继续越线。",
+              "correctionZh": "转纸后用笔尖从区域内部接近边缘，不从轮廓外侧推入。"
+            }
+          ],
+          "teacherAudioZh": "第二层只做局部修正。先退后找出最明显的一处，用笔尖修边或沿第一层方向补薄色；每完成一处就停下来重新观察。"
+        },
         "narration": {
-          "textZh": "第二层不是全部重涂。只找小白缝、太薄和边缘不齐的地方，一小块一小块补好。",
+          "textZh": "第二层只做局部修正。用笔尖修边，沿第一层方向补薄色；每完成一处就重新观察。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "第二层不是全部重涂。只找小白缝、太薄和边缘不齐的地方，一小块一小块补好。"
+          "spokenTextZh": "第二层只做局部修正。用笔尖修边，沿第一层方向补薄色；每完成一处就重新观察。"
         },
-        "successCriteriaZh": "主要白缝和薄色得到修补，同时保留清楚勾线。",
-        "completionCheckZh": "退远看时，大色块整体均匀，线条没有被厚色完全盖住。",
-        "commonMistakeZh": "整张再涂一遍，导致颜色太厚和轮廓被盖住。",
-        "hintLevels": [
-          {
-            "textZh": "先退远找最明显的一处，只补这一处，再重新看。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不主动指出每一个小白点。",
+            "由学生先从正常观看距离决定是否需要修正。"
+          ]
+        }
       },
       {
         "id": "add_texture_and_highlights",
         "order": 13,
-        "titleZh": "加纹理和高光",
-        "instructionZh": "选择一种重复纹理，例如圆点、短弧线或小星星，重复三到五次；最后用白色或浅色笔加不超过三个高光点。",
-        "childActionZh": "添加一种纹理和少量高光。",
-        "parentPromptZh": "提醒每加一处就退远看，不把所有空白塞满。",
+        "titleZh": "添加纹理与高光",
         "plannedMinutes": 3,
         "imageAssetId": "art01_step13_details",
+        "instructionZh": "使用暗部与纹理色重复一种纹理三至五次，再用强调色建立小面积焦点；全部干燥后，高光控制在三处以内。",
+        "childActionZh": "完成一种重复纹理、一个小面积强调区和三处以内高光。",
+        "successCriteriaZh": "纹理具有重复规律，强调色面积受控，高光位置服务于体积，主体仍是最清楚的视觉重点。",
+        "completionCheckZh": "把作品拿远，若细节先于主体被看到，就减少或停止添加。",
+        "commonMistakeZh": "问题：不断填满空白或在湿色上叠高光。修正：每加一组细节就退后观察，底层未干时停止。",
+        "parentPromptZh": "不建议继续添加装饰；只在学生主动讲评后帮助确认是否达到停止条件。",
+        "studentVisible": {
+          "taskZh": "添加一种重复纹理、小面积强调色和三处以内高光，保持视觉重点清楚。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "暗部与纹理色候选笔",
+              "强调色候选笔",
+              "高光色候选笔",
+              "试色纸"
+            ],
+            "colorRoles": [
+              {
+                "roleZh": "暗部与纹理色",
+                "targetColorNameZh": "墨绿",
+                "markerCode": "G695",
+                "markerNameZh": "墨绿",
+                "verificationRequired": false,
+                "usageZh": "三至五个重复纹理或局部暗部"
+              },
+              {
+                "roleZh": "强调色",
+                "targetColorNameZh": "亮黄",
+                "markerCode": "Y128",
+                "markerNameZh": "亮黄",
+                "verificationRequired": false,
+                "usageZh": "小星星、圆点或单一视觉焦点"
+              },
+              {
+                "roleZh": "高光色",
+                "targetColorNameZh": "白色",
+                "markerCode": "W01",
+                "markerNameZh": "白色",
+                "verificationRequired": false,
+                "usageZh": "三处以内高光"
+              }
+            ],
+            "noteZh": "G695 墨绿用于纹理和局部暗部，Y128 亮黄用于星星或强调点，W01 白色用于三处以内高光；本课不使用金属色。"
+          },
+          "operationStepsZh": [
+            "先在试色纸确认暗部、强调和高光笔出墨稳定。",
+            "用暗部与纹理色选择一种形状，按相近间距重复三至五次。",
+            "用强调色完成一个小面积焦点，不平均分散到整幅画。",
+            "确认底层完全干燥后，用笔尖添加不超过三个高光。",
+            "把作品拿远，检查主体是否仍然最醒目。"
+          ],
+          "completionStandardZh": [
+            "只使用一种主要重复纹理。",
+            "纹理重复三至五次并具有规律。",
+            "强调色面积明显小于主色。",
+            "高光不超过三处。",
+            "主体仍然是视觉重点。"
+          ],
+          "selfCheckZh": [
+            "底层是否完全干燥？",
+            "纹理有没有重复规律？",
+            "强调色是否只出现在少量关键位置？",
+            "高光方向是否基本一致？",
+            "退后看时，我先看到主体还是零散装饰？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "看到空白就继续加装饰。",
+              "correctionZh": "停笔并退后观察；主体清楚时不再填满空白。"
+            },
+            {
+              "problemZh": "高光数量太多或方向不一致。",
+              "correctionZh": "只保留最能说明体积的三处以内高光。"
+            },
+            {
+              "problemZh": "湿底层上叠高光导致混色。",
+              "correctionZh": "停止叠加，等待底层完全干燥后再试。"
+            }
+          ],
+          "teacherAudioZh": "先用一种纹理重复三到五次，再用强调色建立小面积焦点。底层完全干燥后，高光不超过三处；每完成一组细节都要退后观察。"
+        },
         "narration": {
-          "textZh": "最后加少量细节。选一种纹理重复三到五次，再加不超过三个小高光。每加一处就退远看一次。",
+          "textZh": "纹理重复三到五次，强调色保持小面积。底层完全干燥后，高光不超过三处。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "最后加少量细节。选一种纹理重复三到五次，再加不超过三个小高光。每加一处就退远看一次。"
+          "spokenTextZh": "纹理重复三到五次，强调色保持小面积。底层完全干燥后，高光不超过三处。"
         },
-        "successCriteriaZh": "细节能够增强主体，远看时星球仍是最清楚的重点。",
-        "completionCheckZh": "纹理有重复规律，高光数量不超过三个。",
-        "commonMistakeZh": "看到空白就继续加装饰，最后失去视觉重点。",
-        "hintLevels": [
-          {
-            "textZh": "先加三个相同的小图案，停下来退远看。"
-          },
-          {
-            "textZh": "如果已经很丰富，可以不再加新的图案。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "不建议继续添加装饰。",
+            "学生完成自查后，再共同确认是否达到停止条件。"
+          ]
+        }
       },
       {
         "id": "sign_name_and_reflect",
         "order": 14,
-        "titleZh": "签名、取名和回看",
-        "instructionZh": "在角落签名，给星球取一个名字，再说出最满意的一处、今天学会的一种方法，以及下次想调整的一处。",
-        "childActionZh": "完成签名和三句作品回看。",
-        "parentPromptZh": "只听孩子说，不替她判断像不像范画。",
+        "titleZh": "签名与作品讲评",
         "plannedMinutes": 3,
         "imageAssetId": "art01_step14_reflection",
+        "instructionZh": "在不抢画面的角落签名，为作品命名，并从构图、线条、边缘、配色和叠色中选择一项说明本次方法与下次调整。",
+        "childActionZh": "完成签名、作品命名和包含专业观察的简短讲评。",
+        "successCriteriaZh": "讲评包含一个具体位置、一种具体方法和一项可执行的下次调整，不只说“好看”或“像不像”。",
+        "completionCheckZh": "能用“我在……使用了……；下次我会……”完整表达一次作品判断。",
+        "commonMistakeZh": "问题：只与范画比较像不像。修正：回到自己的构图、线条、边缘、配色或叠色，说明一个具体决定。",
+        "parentPromptZh": "认真听完讲评，不替学生下结论；可以追问“你在哪个位置使用了这个方法”。",
+        "studentVisible": {
+          "taskZh": "完成签名、作品命名和一次简短的作品讲评。",
+          "materialsAndColorCodes": {
+            "materialsZh": [
+              "已完成并干燥的作品",
+              "签名工具",
+              "作品记录或录音功能"
+            ],
+            "colorRoles": [],
+            "noteZh": "本步不新增颜色。"
+          },
+          "operationStepsZh": [
+            "确认作品完全干燥，在不抢主体的角落签名。",
+            "为作品取一个能体现画面特点的名字。",
+            "指出最满意的一个具体位置。",
+            "从构图、线条、边缘、配色或叠色中说出一种今天使用的方法。",
+            "说出下次准备调整的一项具体动作。"
+          ],
+          "completionStandardZh": [
+            "签名位置不抢主体。",
+            "作品有名称。",
+            "讲评包含一个具体位置。",
+            "讲评包含一种具体方法。",
+            "下次调整可以直接执行。"
+          ],
+          "selfCheckZh": [
+            "我说的是具体位置和方法吗？",
+            "我有没有只说“好看”或“像不像”？",
+            "下次调整是否是一项明确动作？",
+            "我能完整说出“我在……使用了……；下次我会……”吗？"
+          ],
+          "commonProblemsAndCorrectionsZh": [
+            {
+              "problemZh": "只说作品好看或不像范画。",
+              "correctionZh": "从构图、线条、边缘、配色或叠色中选择一项具体说明。"
+            },
+            {
+              "problemZh": "下次调整说得太宽泛。",
+              "correctionZh": "把它改成一个动作，例如“先转纸再勾弧线”或“等第一层干后再补色”。"
+            }
+          ],
+          "teacherAudioZh": "请在角落签名并为作品命名。指出最满意的具体位置，说出今天使用的一种方法，再说明下次准备调整的一项动作。"
+        },
         "narration": {
-          "textZh": "作品完成了。请签上名字，给星球取名，再说说最满意哪里、今天学会了什么、下次想调整哪里。",
+          "textZh": "请签名并为作品命名。指出一个具体位置、一种今天使用的方法和一项下次调整。",
           "replayLabel": "再听一遍"
         },
         "readAloud": {
           "policy": "full",
-          "spokenTextZh": "作品完成了。请签上名字，给星球取名，再说说最满意哪里、今天学会了什么、下次想调整哪里。"
+          "spokenTextZh": "请签名并为作品命名。指出一个具体位置、一种今天使用的方法和一项下次调整。"
         },
         "recording": {
           "mode": "optional_response",
           "maxSeconds": 90,
-          "promptZh": "请介绍你的颜色星球和今天学到的方法。",
+          "promptZh": "请介绍作品名称、最满意的具体位置、今天使用的方法和下次准备调整的一项动作。",
           "startCueZh": "准备好后点麦克风。",
           "stopAction": "done_button",
           "allowMultipleTakes": true,
           "includeInFeedback": true,
           "category": "art_reflection"
         },
-        "successCriteriaZh": "完成签名、作品名字，并说出至少一个具体方法。",
-        "completionCheckZh": "表达包含一个具体位置或具体方法，不只说“好看”。",
-        "commonMistakeZh": "只和范画比较，说自己画得像或不像。",
-        "hintLevels": [
-          {
-            "textZh": "可以从草稿修改、勾线、试色、平涂或补色里选一个今天学会的方法。"
-          },
-          {
-            "textZh": "最满意的一处可以说具体颜色、星球环或某个小纹理。"
-          }
-        ]
+        "parentOnly": {
+          "collapsedByDefault": true,
+          "textZh": [
+            "完整听完学生的讲评，不替她下结论。",
+            "需要时只追问“你在哪个位置使用了这个方法”。"
+          ]
+        }
       }
     ],
     "reflection": {
       "nameArtwork": true,
       "promptsZh": [
-        "我的星球叫什么名字？",
-        "我最满意作品的哪一处？",
-        "我今天学会了哪个具体方法？",
-        "我下次想调整哪里？"
+        "我的作品叫什么名字？",
+        "我最满意哪个具体位置？",
+        "我今天使用了哪一种具体方法？",
+        "我下次准备调整哪一个动作？"
       ]
     },
-    "completionCriteriaZh": "完成轻铅笔草稿、至少一次主动检查修改、干净勾线、三色试色、第一层平涂、干后补色、少量纹理和作品回看。",
+    "completionCriteriaZh": "完成观察、工具与配色准备、控笔热身、轻线构图、大形与遮挡、草稿修正、干净勾线、干燥清稿、干后试色、软头第一层、干燥判断、局部叠色与修边、纹理与高光、签名和作品讲评。",
     "assetManifest": {
       "packId": "art-01-color-planet-v2-assets",
       "assets": [
         {
           "id": "art01_step01_finished_reference",
           "fileName": "art01-step01-finished-reference.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "颜色星球完成图，展示主体、星球环、配色和高光"
         },
         {
           "id": "art01_step02_materials",
           "fileName": "art01-step02-materials.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "课程材料与六角色配色准备"
         },
         {
           "id": "art01_step03_warmup",
           "fileName": "art01-step03-warmup.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "铅笔轻线、勾线、软头笔尖和笔腹控笔练习"
         },
         {
           "id": "art01_step04_pencil_position",
           "fileName": "art01-step04-pencil-position.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "主体边界、中心和留白定位"
         },
         {
           "id": "art01_step05_pencil_big_shapes",
           "fileName": "art01-step05-pencil-big-shapes.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "星球主体、星球环和遮挡关系的轻铅笔草稿"
         },
         {
           "id": "art01_step06_check_erase",
           "fileName": "art01-step06-check-erase.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "按边距、比例和遮挡检查并修改草稿"
         },
         {
           "id": "art01_step07_outline",
           "fileName": "art01-step07-outline.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "分段勾线、转纸和闭合区域示意"
         },
         {
           "id": "art01_step08_erase_pencil",
           "fileName": "art01-step08-erase-pencil.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "确认勾线干燥后清除铅笔辅助线"
         },
         {
           "id": "art01_step09_color_plan",
           "fileName": "art01-step09-color-plan.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "六角色配色、色号记录和干后试色"
         },
         {
           "id": "art01_step10_first_color",
           "fileName": "art01-step10-first-color.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "软头笔尖控边与笔腹同向铺色"
         },
         {
           "id": "art01_step11_drying",
           "fileName": "art01-step11-drying.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "用表面反光和同步试色块判断第一层干燥"
         },
         {
           "id": "art01_step12_second_layer",
           "fileName": "art01-step12-second-layer.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "局部叠色、补白和边缘修整"
         },
         {
           "id": "art01_step13_details",
           "fileName": "art01-step13-details.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "重复纹理、强调色和三处以内高光"
         },
         {
           "id": "art01_step14_reflection",
           "fileName": "art01-step14-reflection.webp",
-          "mime": "image/webp"
+          "mime": "image/webp",
+          "altZh": "作品签名、命名和专业讲评"
         }
       ]
-    },
-    "title": "我的颜色星球｜从铅笔草稿到丙烯马克笔成品",
-    "assetBasePath": "assets/art/color-planet-lesson-01"
+    }
   }
 }

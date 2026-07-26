@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">学习星球星页标志</title>
+  <desc id="desc">绿色与蓝色书页共同展开，中央负空间形成星光。</desc>
+  <defs>
+    <mask id="starPageCut" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path d="M32 16.5C33.2 22.1 36.2 25 41.5 26.5C36.2 27.9 33.2 30.9 32 36.5C30.8 30.9 27.8 27.9 22.5 26.5C27.8 25 30.8 22.1 32 16.5Z" fill="#000"/>
+      <path d="M32 38V53" stroke="#000" stroke-width="3.2" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <g mask="url(#starPageCut)">
+    <path d="M6 15C15 11.8 23 13.1 32 19V56C24.5 49.2 16.6 46.3 6 48.5Z" fill="#3C806F"/>
+    <path d="M32 19C41 13.1 49 11.8 58 15V48.5C47.4 46.3 39.5 49.2 32 56Z" fill="#5A9ED0"/>
+  </g>
+</svg>

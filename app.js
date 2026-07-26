@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.5.1",
-  buildId: "2026-07-26T19:05:00+08:00",
+  version: "v3.5.5",
+  buildId: "2026-07-27T10:20:00+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -75,7 +75,7 @@ const ENGLISH_BLOCK_EXERCISE_PROMPT_VERSION = 6;
 const LEARNING_PACK_SCHEMA_VERSION = "helen-learning-pack/1";
 const SUPPORTED_LEARNING_PACK_SCHEMAS = ["helen-learning-pack/1", "helen-learning-pack/2"];
 const LEARNING_PACK_STORAGE_KEY = "helen-learning-packs-v1";
-const LEARNING_PACK_MAX_BYTES = 100 * 1024;
+const LEARNING_PACK_MAX_BYTES = 160 * 1024;
 const BUILTIN_LEARNING_PACK_MANIFEST = "./data/learning-packs/manifest.json";
 const ENGLISH_LESSON_LIBRARY_URL = "./data/english-libraries/hello-school-32-lesson-library.json";
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
@@ -6017,7 +6017,7 @@ function importBuiltinLearningPackSet(manifest, packSources, options = {}) {
     initializeCourseProgress(selectedPack);
     state.lastLearningPackRaw = JSON.stringify(selectedPack, null, 2);
     state.latestLearning = focusFromLearningPack(selectedPack);
-    state.focusTitleOverride = selectedPack.title || "今日学习包";
+    state.focusTitleOverride = familyFacingPackTitle(selectedPack.title) || "今日学习包";
   }
   state.builtinLearningPackLoad = {
     ok: true,
@@ -6036,7 +6036,7 @@ function importBuiltinLearningPackSet(manifest, packSources, options = {}) {
   renderEnglishLesson();
   renderArtLesson();
   renderCoursePackLoadStatus();
-  if ($("#packStatus")) $("#packStatus").textContent = `今日课程已准备好：${getSelectedLearningPack()?.date || ""} · ${state.selectedLearningPackId || ""}`;
+  if ($("#packStatus")) $("#packStatus").textContent = `今日课程已准备好：${getSelectedLearningPack()?.date || ""}`;
   if ($("#todayDashboardPanel")) $("#todayDashboardPanel").hidden = false;
 }
 
@@ -6070,6 +6070,14 @@ function withBuiltinCacheBust(url) {
   parsed.searchParams.set("v", APP_METADATA.version);
   parsed.searchParams.set("build", APP_METADATA.buildId);
   return parsed.toString();
+}
+
+function familyFacingPackTitle(title) {
+  return String(title || "")
+    .replace(/\s+Revision\s+[A-Z0-9._-]+(?=\s*(?:[｜|·:：]|$))/gi, "")
+    .replace(/\s*([｜|])\s*/g, "｜")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function normalizeBuiltinManifestEntries(manifest) {
@@ -6127,7 +6135,7 @@ function recordBuiltinLearningPackLoadFailure(stage, message) {
     selectedDate: pack?.date || "",
     failedAt: new Date().toISOString()
   };
-  if ($("#packStatus")) $("#packStatus").textContent = `课程更新失败：${state.builtinLearningPackLoad.message}`;
+  if ($("#packStatus")) $("#packStatus").textContent = "课程更新失败，请刷新页面重试；学习记录没有丢失。";
   saveState();
 }
 
@@ -6142,13 +6150,13 @@ function renderBuiltinPackLoadNotice(pack = getSelectedLearningPack()) {
   const load = state.builtinLearningPackLoad;
   if (!load || load.ok) {
     if (!pack) return "";
-    return `<div class="pack-load-notice ok">当前课程：${escapeHtml(pack.date || "")} · ${escapeHtml(pack.packId || "")}</div>`;
+    return `<div class="pack-load-notice ok">当前课程：${escapeHtml(pack.date || "")} · 已更新</div>`;
   }
   return `
     <div class="pack-load-notice error" role="alert">
       <strong>课程更新失败</strong>
-      <span>${escapeHtml(load.message || "无法读取内置课包。")}</span>
-      <small>当前显示：${escapeHtml(load.selectedDate || pack?.date || "未知日期")} · ${escapeHtml(load.selectedPackId || pack?.packId || "未知课包")} · 阶段 ${escapeHtml(load.stage || "load")}</small>
+      <span>暂时无法获取最新课程，请刷新页面重试。当前课程和学习记录没有丢失。</span>
+      <small>当前显示：${escapeHtml(load.selectedDate || pack?.date || "未知日期")}</small>
     </div>
   `;
 }
@@ -6392,7 +6400,7 @@ async function loadLearningPackFile(event) {
     return;
   }
   if (file.size > LEARNING_PACK_MAX_BYTES) {
-    $("#packStatus").textContent = "学习包超过100KB，请检查内容 / Pack too large";
+    $("#packStatus").textContent = "学习包超过160KB，请检查内容 / Pack too large";
     return;
   }
   const text = await file.text();
@@ -6462,7 +6470,7 @@ function parseLearningPackInput(raw) {
   const text = String(raw || "");
   const bytes = new TextEncoder().encode(text).length;
   if (!text.trim()) throw new Error("请先粘贴学习包。");
-  if (bytes > LEARNING_PACK_MAX_BYTES) throw new Error("学习包超过100KB。");
+  if (bytes > LEARNING_PACK_MAX_BYTES) throw new Error("学习包超过160KB。");
   if (/<\s*(script|iframe|object|embed|style|link|meta)\b/i.test(text) || /javascript\s*:/i.test(text)) {
     throw new Error("学习包不能包含网页脚本或HTML。");
   }
@@ -6807,6 +6815,8 @@ function validateArtLesson(art, errors, warnings) {
     finalExampleAssetId: safeOptionalId(source.finalExampleAssetId || ""),
     assetBasePath: sanitizeAssetBasePath(source.assetBasePath || art.assetBasePath || "assets/art/color-planet-lesson-01"),
     skillFocus: Array.isArray(source.skillFocus) ? source.skillFocus.map((item) => safePlainText(item, 30)).filter(Boolean).slice(0, 8) : [],
+    toolProfile: sanitizeArtToolProfile(source.toolProfile || art.toolProfile),
+    palette: sanitizeArtPalette(source.palette || art.palette),
     materials: Array.isArray(source.materials) ? source.materials.map((item) => ({
       name: safePlainText(item?.nameZh || item?.name || item, 80),
       nameZh: safePlainText(item?.nameZh || item?.name || item, 80),
@@ -6840,9 +6850,167 @@ function validateArtLesson(art, errors, warnings) {
   };
 }
 
+function sanitizeArtToolProfile(profile) {
+  if (!profile) return null;
+  if (typeof profile === "string") {
+    const displayNameZh = safePlainText(profile, 100).replace(/(\d+)\s*色/g, "$1色");
+    return displayNameZh ? { displayNameZh, brandZh: "", colorCount: null, inkSystemZh: "", tipTypeZh: "", mediumZh: "" } : null;
+  }
+  if (typeof profile !== "object") return null;
+  const colorCountValue = Number(profile.colorCount ?? profile.colourCount ?? profile.setSize);
+  const colorCount = Number.isFinite(colorCountValue) ? clampNumber(colorCountValue, 1, 500, 120) : null;
+  const normalized = {
+    displayNameZh: safePlainText(profile.fullDisplayNameZh || profile.displayNameZh || profile.nameZh || "", 100).replace(/(\d+)\s*色/g, "$1色"),
+    brandZh: safePlainText(profile.brandZh || profile.brand || "", 30),
+    colorCount,
+    seriesZh: safePlainText(profile.seriesZh || "", 60),
+    inkSystemZh: safePlainText(profile.inkSystemZh || profile.inkDeliveryZh || profile.inkTypeZh || "", 30),
+    tipTypeZh: safePlainText(profile.tipTypeZh || profile.tipZh || "", 30),
+    mediumZh: safePlainText(profile.mediumZh || profile.markerTypeZh || profile.toolTypeZh || "", 40),
+    colorAuthorityZh: safePlainText(profile.colorAuthorityZh || "", 100)
+  };
+  return Object.values(normalized).some((value) => value !== "" && value !== null) ? normalized : null;
+}
+
+function sanitizeArtPalette(palette) {
+  const source = Array.isArray(palette)
+    ? palette
+    : Array.isArray(palette?.roles)
+      ? palette.roles
+      : Array.isArray(palette?.colors)
+        ? palette.colors
+        : [];
+  return source.map((item, index) => sanitizeArtPaletteItem(item, index)).filter(Boolean).slice(0, 40);
+}
+
+function sanitizeArtPaletteItem(item, index) {
+  if (!item || typeof item !== "object") return null;
+  const normalized = {
+    id: safeId(item.id || item.paletteId || `color_${index + 1}`),
+    colorCode: safePlainText(item.colorCode || item.code || item.markerCode || item.colorNumber || "", 24),
+    colorNameZh: safePlainText(item.colorNameZh || item.markerNameZh || item.nameZh || item.name || "", 40),
+    targetHueZh: safePlainText(item.targetHueZh || item.targetColorNameZh || item.hueZh || "", 60),
+    roleZh: safePlainText(item.roleZh || item.responsibilityZh || item.functionZh || "", 80),
+    locationZh: safePlainText(item.locationZh || item.usageZh || item.positionZh || "", 100),
+    finishZh: safePlainText(item.finishZh || item.finish || "", 30),
+    verified: item.verified === true || item.colorCodeVerified === true || item.verificationRequired === false
+  };
+  return Object.values(normalized).some((value) => value !== "" && value !== false) ? normalized : null;
+}
+
+function sanitizeStudentFacingArtText(value, maxLength) {
+  return safePlainText(value, maxLength)
+    .replace(/孩子现在/g, "现在")
+    .replace(/让孩子/g, "请")
+    .replace(/请孩子/g, "请")
+    .replace(/孩子能/g, "你能")
+    .replace(/孩子可以/g, "你可以")
+    .replace(/孩子/g, "你");
+}
+
+function sanitizeArtTextList(value, maxItems = 8, maxLength = 100) {
+  const source = Array.isArray(value) ? value : value ? [value] : [];
+  return source.map((item) => sanitizeStudentFacingArtText(item, maxLength)).filter(Boolean).slice(0, maxItems);
+}
+
+function sanitizeArtMaterialsAndColorCodes(value, fallbackMaterials = []) {
+  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  const directMaterials = Object.keys(source).length ? source.materialsZh : value;
+  return {
+    materialsZh: sanitizeArtTextList(directMaterials || fallbackMaterials, 12, 100),
+    colorRoles: sanitizeArtPalette(source.colorRoles || []),
+    noteZh: sanitizeStudentFacingArtText(source.noteZh || "", 220)
+  };
+}
+
+function sanitizeArtProblemCorrections(value, fallback = "") {
+  const source = Array.isArray(value) ? value : value ? [value] : fallback ? [fallback] : [];
+  return source.map((item) => {
+    if (typeof item === "string") {
+      return { textZh: sanitizeStudentFacingArtText(item, 220), problemZh: "", correctionZh: "" };
+    }
+    if (!item || typeof item !== "object") return null;
+    return {
+      textZh: sanitizeStudentFacingArtText(item.textZh || "", 220),
+      problemZh: sanitizeStudentFacingArtText(item.problemZh || item.problem || "", 140),
+      correctionZh: sanitizeStudentFacingArtText(item.correctionZh || item.correction || "", 180)
+    };
+  }).filter((item) => item && (item.textZh || item.problemZh || item.correctionZh)).slice(0, 6);
+}
+
+function sanitizeArtStudentVisible(studentVisible, step) {
+  const source = studentVisible && typeof studentVisible === "object" ? studentVisible : {};
+  const taskZh = sanitizeStudentFacingArtText(source.taskZh || step.childActionZh || step.instructionZh || "", 360);
+  const materialsAndColorCodes = sanitizeArtMaterialsAndColorCodes(source.materialsAndColorCodes, source.materialsZh);
+  const teacherAudioZh = sanitizeStudentFacingArtText(
+    source.teacherAudioZh || step.readAloud?.spokenTextZh || step.narration?.textZh || step.instructionZh || taskZh,
+    500
+  );
+  return {
+    taskZh,
+    materialsZh: materialsAndColorCodes.materialsZh,
+    materialsAndColorCodes,
+    operationStepsZh: sanitizeArtTextList(source.operationStepsZh || step.instructionZh || taskZh, 10, 180),
+    completionStandardZh: sanitizeArtTextList(source.completionStandardZh || step.successCriteriaZh || "", 8, 180),
+    selfCheckZh: sanitizeArtTextList(source.selfCheckZh || step.completionCheckZh || "", 8, 180),
+    commonProblemsAndCorrectionsZh: sanitizeArtProblemCorrections(source.commonProblemsAndCorrectionsZh, step.commonMistakeZh || ""),
+    teacherAudioZh
+  };
+}
+
+function sanitizeArtPaletteRoles(paletteRoles) {
+  if (!Array.isArray(paletteRoles)) return [];
+  return paletteRoles.map((item, index) => {
+    if (typeof item === "string") {
+      const text = safePlainText(item, 80);
+      return text ? { paletteId: /^[a-z0-9_-]+$/i.test(text) ? safeOptionalId(text) : "", colorCode: "", colorNameZh: "", targetHueZh: "", roleZh: text, locationZh: "", order: index + 1 } : null;
+    }
+    if (!item || typeof item !== "object") return null;
+    return {
+      paletteId: safeOptionalId(item.paletteId || item.colorId || item.id || ""),
+      colorCode: safePlainText(item.colorCode || item.code || item.markerCode || "", 24),
+      colorNameZh: safePlainText(item.colorNameZh || item.markerNameZh || item.nameZh || "", 40),
+      targetHueZh: safePlainText(item.targetHueZh || item.targetColorNameZh || item.hueZh || "", 60),
+      roleZh: safePlainText(item.roleZh || item.responsibilityZh || item.functionZh || "", 80),
+      locationZh: safePlainText(item.locationZh || item.usageZh || item.positionZh || "", 100),
+      finishZh: safePlainText(item.finishZh || "", 30),
+      verified: item.verified === true || item.colorCodeVerified === true || item.verificationRequired === false,
+      order: Number.isFinite(Number(item.order)) ? clampNumber(item.order, 1, 40, index + 1) : index + 1
+    };
+  }).filter(Boolean).slice(0, 20);
+}
+
+function sanitizeArtParentOnly(parentOnly, legacyPrompt = "") {
+  if (!parentOnly) {
+    const note = safePlainText(legacyPrompt, 220);
+    return note ? { titleZh: "家长提示", notesZh: [note] } : null;
+  }
+  if (typeof parentOnly === "string") {
+    const note = safePlainText(parentOnly, 220);
+    return note ? { titleZh: "家长提示", notesZh: [note] } : null;
+  }
+  if (typeof parentOnly !== "object") return null;
+  const notes = [
+    parentOnly.promptZh,
+    parentOnly.instructionZh,
+    parentOnly.noteZh,
+    parentOnly.supportZh,
+    parentOnly.safetyZh,
+    ...(Array.isArray(parentOnly.textZh) ? parentOnly.textZh : []),
+    ...(Array.isArray(parentOnly.notesZh) ? parentOnly.notesZh : []),
+    ...(Array.isArray(parentOnly.tipsZh) ? parentOnly.tipsZh : []),
+    ...(Array.isArray(parentOnly.actionsZh) ? parentOnly.actionsZh : [])
+  ].map((item) => safePlainText(item, 220)).filter(Boolean).slice(0, 8);
+  return notes.length ? {
+    titleZh: safePlainText(parentOnly.titleZh || "家长提示", 40),
+    notesZh: notes
+  } : null;
+}
+
 function validateArtStep(step, index, errors) {
   if (!step || typeof step !== "object") return null;
   const id = safeId(step.id || `step_${index + 1}`);
+  const studentVisible = sanitizeArtStudentVisible(step.studentVisible, step);
   const hardGate = step.hardGate && typeof step.hardGate === "object" ? {
     id: safeId(step.hardGate.id || ""),
     requiredBeforeNext: step.hardGate.requiredBeforeNext === true,
@@ -6853,9 +7021,12 @@ function validateArtStep(step, index, errors) {
     order: Number.isFinite(Number(step.order)) ? Number(step.order) : index + 1,
     title: safePlainText(step.titleZh || step.title || `第 ${index + 1} 步`, 80),
     titleZh: safePlainText(step.titleZh || step.title || `第 ${index + 1} 步`, 80),
-    instructionZh: safePlainText(step.instructionZh || "", 300),
-    childActionZh: safePlainText(step.childActionZh || step.instructionZh || "", 300),
+    instructionZh: sanitizeStudentFacingArtText(step.instructionZh || studentVisible.taskZh || "", 360),
+    childActionZh: sanitizeStudentFacingArtText(step.childActionZh || studentVisible.taskZh || step.instructionZh || "", 360),
     parentPromptZh: safePlainText(step.parentPromptZh || "", 220),
+    studentVisible,
+    paletteRoles: sanitizeArtPaletteRoles(step.paletteRoles),
+    parentOnly: sanitizeArtParentOnly(step.parentOnly, step.parentPromptZh || ""),
     plannedMinutes: clampNumber(step.plannedMinutes, 0, 30, 3),
     referenceAssetId: safeOptionalId(step.referenceAssetId || ""),
     imageAssetId: safeOptionalId(step.imageAssetId || step.referenceAssetId || ""),
@@ -6868,9 +7039,15 @@ function validateArtStep(step, index, errors) {
     },
     readAloud: validateReadAloudConfig(step.readAloud),
     recording: validateRecordingConfig(step.recording),
-    successCriteriaZh: safePlainText(step.successCriteriaZh || "", 200),
-    completionCheckZh: safePlainText(step.completionCheckZh || "", 220),
-    commonMistakeZh: safePlainText(step.commonMistakeZh || "", 220),
+    successCriteriaZh: sanitizeStudentFacingArtText(step.successCriteriaZh || studentVisible.completionStandardZh.join("；") || "", 260),
+    completionCheckZh: sanitizeStudentFacingArtText(step.completionCheckZh || studentVisible.selfCheckZh.join("；") || "", 260),
+    commonMistakeZh: sanitizeStudentFacingArtText(
+      step.commonMistakeZh ||
+      studentVisible.commonProblemsAndCorrectionsZh[0]?.textZh ||
+      studentVisible.commonProblemsAndCorrectionsZh[0]?.problemZh ||
+      "",
+      220
+    ),
     hardGate,
     hintLevels: Array.isArray(step.hintLevels) ? step.hintLevels.map((item) => typeof item === "string" ? { textZh: safePlainText(item, 180) } : {
       textZh: safePlainText(item?.textZh || "", 180),
@@ -6878,7 +7055,7 @@ function validateArtStep(step, index, errors) {
       audioAssetId: safeOptionalId(item?.audioAssetId || "")
     }).filter((item) => item.textZh).slice(0, 3) : []
   };
-  if (!normalized.instructionZh) errors.push(`art.steps.${id}.instructionZh`);
+  if (!normalized.studentVisible.taskZh && !normalized.instructionZh) errors.push(`art.steps.${id}.studentVisible.taskZh`);
   return normalized;
 }
 
@@ -7122,7 +7299,7 @@ function importLearningPack(pack, preview, options = {}) {
   if (shouldSelect || !state.selectedLearningPackId) state.selectedLearningPackId = pack.packId;
   state.lastLearningPackRaw = JSON.stringify(pack, null, 2);
   state.latestLearning = focusFromLearningPack(pack);
-  state.focusTitleOverride = pack.title || "今日学习包";
+  state.focusTitleOverride = familyFacingPackTitle(pack.title) || "今日学习包";
   return { ...stats, repeat, packId: pack.packId };
 }
 
@@ -7523,11 +7700,12 @@ function renderTodayDashboard() {
   const englishTotal = getEnglishLessonSteps(englishPack).length;
   const selectedMode = getSelectedEnglishMode(englishPack);
   const readiness = getFullCourseReadiness(pack);
-  $("#todayDashboardTitle").textContent = `${pack.date} · ${pack.title || "Helen 每日学习"}`;
+  const familyTitle = familyFacingPackTitle(pack.title) || "Helen 每日学习";
+  $("#todayDashboardTitle").textContent = `${pack.date} · ${familyTitle}`;
   $("#todayDashboardSummary").innerHTML = `
     <div class="today-metrics">
       <div><strong>日期</strong><span>${escapeHtml(pack.date)}</span></div>
-      <div><strong>课程标题</strong><span>${escapeHtml(pack.title || pack.chinese?.lesson?.title || "今日学习")}</span></div>
+      <div><strong>课程标题</strong><span>${escapeHtml(familyTitle || pack.chinese?.lesson?.title || "今日学习")}</span></div>
       <div><strong>中文预计</strong><span>${getPlannedChineseMinutes(pack)} 分钟</span></div>
       <div><strong>英语模式</strong><span>${escapeHtml(englishModeLabel(selectedMode))} · ${getPlannedEnglishMinutes(englishPack, selectedMode)} 分钟</span></div>
       <div><strong>共同负荷</strong><span>${escapeHtml(loadModeLabel(pack.loadMode))}</span></div>
@@ -7686,7 +7864,7 @@ function renderChineseLesson() {
     <div class="course-topline">
       <div>
         <p class="eyebrow">每日中文 / Daily Chinese</p>
-        <h2>${escapeHtml(pack.chinese?.lesson?.title || pack.title || "今日中文课")}</h2>
+        <h2>${escapeHtml(pack.chinese?.lesson?.title || familyFacingPackTitle(pack.title) || "今日中文课")}</h2>
         <p class="pack-muted">预计 ${getPlannedChineseMinutes(pack)} 分钟 · 按顺序完成，口头回答只需点选结果</p>
       </div>
     </div>
@@ -7797,6 +7975,85 @@ function englishSeedStatusLabel(status = "") {
   }[status] || status || "未标记";
 }
 
+function formatArtToolProfile(profile) {
+  if (!profile) return "";
+  if (profile.displayNameZh) return safePlainText(profile.displayNameZh, 100).replace(/(\d+)\s*色/g, "$1色");
+  const setLabel = profile.colorCount ? `${profile.colorCount}色` : "";
+  const specification = [setLabel, profile.inkSystemZh, profile.tipTypeZh, profile.mediumZh].filter(Boolean).join("");
+  return [profile.brandZh, specification].filter(Boolean).join(" ");
+}
+
+function getArtPaletteRows(pack, step = null) {
+  const palette = Array.isArray(pack?.art?.palette) ? pack.art.palette : [];
+  if (!step) return palette;
+  const roles = Array.isArray(step.paletteRoles) ? step.paletteRoles : [];
+  if (!roles.length) return [];
+  return roles.map((role) => {
+    const base = palette.find((item) =>
+      (role.paletteId && item.id === role.paletteId) ||
+      (role.colorCode && item.colorCode === role.colorCode)
+    ) || {};
+    return {
+      ...base,
+      ...role,
+      colorCode: role.colorCode || base.colorCode || "",
+      colorNameZh: role.colorNameZh || base.colorNameZh || "",
+      targetHueZh: role.targetHueZh || base.targetHueZh || "",
+      roleZh: role.roleZh || base.roleZh || "",
+      locationZh: role.locationZh || base.locationZh || "",
+      finishZh: role.finishZh || base.finishZh || "",
+      verified: Boolean(role.verified || base.verified)
+    };
+  }).sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+}
+
+function renderArtPaletteRows(rows, label = "本课色板") {
+  if (!rows?.length) return "";
+  return `
+    <div class="art-palette" aria-label="${escapeHtml(label)}">
+      ${rows.map((item) => {
+        const colorName = [item.colorNameZh, item.targetHueZh].filter(Boolean).join(" / ") || "按课程目标选择";
+        const code = item.colorCode || "按实体色卡确认";
+        return `
+          <div class="art-palette-row">
+            <span><small>色号</small><strong>${escapeHtml(code)}</strong>${item.verified ? "<em>已核验</em>" : ""}</span>
+            <span><small>色名 / 目标色相</small><strong>${escapeHtml(colorName)}</strong>${item.finishZh ? `<em>${escapeHtml(item.finishZh)}</em>` : ""}</span>
+            <span><small>职责</small><strong>${escapeHtml(item.roleZh || "按步骤使用")}</strong></span>
+            <span><small>位置</small><strong>${escapeHtml(item.locationZh || "对照步骤图")}</strong></span>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderArtProblemCorrections(items) {
+  if (!items?.length) return "<p>对照步骤图，发现问题后先停笔再修正。</p>";
+  return `<ul class="art-correction-list">${items.map((item) => {
+    if (item.textZh) return `<li>${escapeHtml(item.textZh)}</li>`;
+    const problem = item.problemZh ? `<b>${escapeHtml(item.problemZh)}</b>` : "";
+    const correction = item.correctionZh ? `<span>${escapeHtml(item.correctionZh)}</span>` : "";
+    return `<li>${problem}${problem && correction ? "：" : ""}${correction}</li>`;
+  }).join("")}</ul>`;
+}
+
+function renderArtTextList(items, fallback = "") {
+  const values = Array.isArray(items) ? items.filter(Boolean) : items ? [items] : fallback ? [fallback] : [];
+  if (!values.length) return "";
+  if (values.length === 1) return `<p>${escapeHtml(values[0])}</p>`;
+  return `<ul class="art-instruction-list">${values.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function renderArtParentOnly(parentOnly) {
+  if (!parentOnly?.notesZh?.length) return "";
+  return `
+    <details class="parent-prompt-detail">
+      <summary>${escapeHtml(parentOnly.titleZh || "家长提示")}</summary>
+      ${parentOnly.notesZh.map((note) => `<p>${escapeHtml(note)}</p>`).join("")}
+    </details>
+  `;
+}
+
 function renderArtLesson() {
   const pack = getLatestLearningPack();
   if (!$("#artLessonHeader")) return;
@@ -7813,6 +8070,8 @@ function renderArtLesson() {
   }
   const progress = getCourseProgress(pack.packId);
   const steps = getArtLessonSteps(pack);
+  const toolProfile = formatArtToolProfile(pack.art.toolProfile);
+  const paletteRows = getArtPaletteRows(pack);
   $("#artLessonHeader").innerHTML = `
     <div class="course-pack-load-status">${renderBuiltinPackLoadNotice(pack)}</div>
     ${renderDateSwitcher()}
@@ -7825,7 +8084,12 @@ function renderArtLesson() {
     </div>
     ${renderCourseStartSettings("art", progress.art, steps)}
     <div class="art-prep-grid">
-      <section><h3>材料准备</h3><div class="course-chip-list">${(pack.art.materials || []).map((item) => `<span>${escapeHtml(item.required ? "必备 " : "可选 ")}${escapeHtml(item.nameZh || item.name)}</span>`).join("") || "<span>按学习包准备</span>"}</div></section>
+      <section class="art-materials-panel">
+        <h3>${toolProfile ? "专业工具与材料" : "材料准备"}</h3>
+        ${toolProfile ? `<p class="art-tool-profile">${escapeHtml(toolProfile)}</p>` : ""}
+        <div class="course-chip-list">${(pack.art.materials || []).map((item) => `<span>${escapeHtml(item.required ? "必备 " : "可选 ")}${escapeHtml(item.nameZh || item.name)}</span>`).join("") || "<span>按学习包准备</span>"}</div>
+        ${renderArtPaletteRows(paletteRows)}
+      </section>
       <section><h3>安全提示</h3><ul>${getArtSafetyNotes(pack).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
     </div>
     <div class="actions compact">
@@ -7986,39 +8250,66 @@ function renderArtStep(pack, step, index, progress) {
   const key = `art:${step.id}`;
   const itemProgress = progress.art.steps[key] || {};
   if (step.type === "break" || step.id === "break") return renderBreakCard(key, step.titleZh || step.title || "休息一下", step.plannedMinutes || 5, itemProgress, step.instructionZh || step.parentPromptZh || "");
-  const readAloud = normalizeReadAloudConfig(step.readAloud || step.narration, step.narration?.textZh || step.instructionZh || "", "full");
+  const student = step.studentVisible || {};
+  const taskZh = student.taskZh || step.childActionZh || step.instructionZh || "按图完成这一小步";
+  const teacherAudioZh = student.teacherAudioZh || step.readAloud?.spokenTextZh || step.narration?.textZh || taskZh;
+  const readAloudSource = step.readAloud || step.narration || {};
+  const readAloud = normalizeReadAloudConfig({ ...readAloudSource, spokenTextZh: teacherAudioZh }, teacherAudioZh, "full");
   const lock = getArtStepLock(pack, step, progress);
   const asset = resolveArtImageAsset(pack, step.imageAssetId || step.referenceAssetId || "");
+  const materialsAndColorCodes = student.materialsAndColorCodes || {};
+  const stepPaletteRows = materialsAndColorCodes.colorRoles?.length ? materialsAndColorCodes.colorRoles : getArtPaletteRows(pack, step);
+  const materialsZh = Array.isArray(materialsAndColorCodes.materialsZh)
+    ? materialsAndColorCodes.materialsZh
+    : Array.isArray(student.materialsZh)
+      ? student.materialsZh
+      : [];
+  const operationStepsZh = Array.isArray(student.operationStepsZh) ? student.operationStepsZh : [step.instructionZh || taskZh].filter(Boolean);
   return `
     <article class="course-card art-step-card ${lock.locked ? "is-locked" : ""}" data-course-card="${escapeHtml(key)}" ${lock.locked ? `data-art-locked="${escapeHtml(lock.gateId)}"` : ""}>
       <div class="course-card-head">
-        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(step.title)}</h3>`, "")}<p>${escapeHtml(step.parentPromptZh || "看一小步，动手完成")}</p></div>
+        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(step.title)}</h3>`, "")}</div>
         <strong>${step.plannedMinutes || 0} 分钟</strong>
       </div>
       ${lock.locked ? `<div class="pack-warning art-lock-message">先完成第 ${lock.requiredOrder} 步：${escapeHtml(lock.messageZh || "草稿检查完成后，才能打开下一步。")}</div>` : ""}
       <div class="art-step-layout">
         ${renderArtImageFrame(asset, step)}
         <div class="art-action-panel">
-          ${renderPromptRow(`<p class="art-action-line">${escapeHtml(step.instructionZh || "按图完成这一小步")}</p>`, renderReadAloudButton(key, readAloud))}
           <div class="art-step-facts">
+            <section class="art-task-section">
+              <strong>任务</strong>
+              <p class="art-action-line">${escapeHtml(taskZh)}</p>
+            </section>
+            ${(materialsZh.length || stepPaletteRows.length) ? `
+              <section class="art-step-materials">
+                <strong>材料与色号</strong>
+                ${renderArtTextList(materialsZh)}
+                ${renderArtPaletteRows(stepPaletteRows, `第 ${index + 1} 步色板`)}
+                ${materialsAndColorCodes.noteZh ? `<p class="art-material-note">${escapeHtml(materialsAndColorCodes.noteZh)}</p>` : ""}
+              </section>
+            ` : ""}
             <section>
-              <strong>孩子现在做什么</strong>
-              <p>${escapeHtml(step.childActionZh || step.instructionZh || "按图完成这一小步")}</p>
+              <strong>操作步骤</strong>
+              ${renderArtTextList(operationStepsZh, taskZh)}
             </section>
             <section>
-              <strong>做到什么算完成</strong>
-              <p>${escapeHtml(step.successCriteriaZh || "完成当前步骤")}</p>
+              <strong>完成标准</strong>
+              ${renderArtTextList(student.completionStandardZh, step.successCriteriaZh || "完成当前步骤")}
             </section>
             <section>
-              <strong>怎么检查</strong>
-              <p>${escapeHtml(step.completionCheckZh || "对照步骤图检查")}</p>
+              <strong>自查</strong>
+              ${renderArtTextList(student.selfCheckZh, step.completionCheckZh || "对照步骤图检查")}
             </section>
             <section>
-              <strong>最常见错误</strong>
-              <p>${escapeHtml(step.commonMistakeZh || "不要急着进入下一步")}</p>
+              <strong>常见问题与修正</strong>
+              ${renderArtProblemCorrections(student.commonProblemsAndCorrectionsZh)}
+            </section>
+            <section class="art-teacher-audio">
+              <strong>教师朗读</strong>
+              ${renderPromptRow(`<p>${escapeHtml(teacherAudioZh)}</p>`, renderReadAloudButton(key, readAloud))}
             </section>
           </div>
-          ${step.parentPromptZh ? `<details class="parent-prompt-detail"><summary>家长提示</summary><p>${escapeHtml(step.parentPromptZh)}</p></details>` : ""}
+          ${renderArtParentOnly(step.parentOnly)}
           <div class="actions compact">
             ${step.hintLevels?.length ? `<button class="button ghost compact-button" data-art-hint="${escapeHtml(key)}" data-hint-level="1" ${lock.locked ? "disabled" : ""} type="button">看小提示<br /><span>Hint</span></button>` : ""}
           </div>
@@ -12950,7 +13241,7 @@ function renderParentProgressPanel() {
     return `<div class="parent-progress-line"><strong>${escapeHtml(courseLabel(course))}</strong><span>${escapeHtml(status.hasCourse ? `${pending.completed}/${pending.total}` : "这一天未安排")}</span><em>${escapeHtml(status.progress)}</em></div>`;
   }).join("");
   panel.innerHTML = `
-    <div class="parent-progress-date">${escapeHtml(pack.date)} · ${escapeHtml(pack.title || "")}</div>
+    <div class="parent-progress-date">${escapeHtml(pack.date)} · ${escapeHtml(familyFacingPackTitle(pack.title))}</div>
     ${lines}
     ${renderDateSwitcher()}
   `;
@@ -13000,7 +13291,7 @@ function showLastPractice() {
     return;
   }
   state.latestLearning = focusFromLearningPack(pack);
-  state.focusTitleOverride = pack.title || "";
+  state.focusTitleOverride = familyFacingPackTitle(pack.title);
   saveState();
   const questions = questionsFromLearningPack(pack);
   generatedQuestions = questions;
