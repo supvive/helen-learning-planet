@@ -1,0 +1,2048 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "packId": "2026-07-27-helen-day15-revision-b-water-table-art01",
+  "date": "2026-07-27",
+  "revision": "day15-chinese-revision-b-hello-school-art01",
+  "sourceSpec": "day15-chinese-spec.md",
+  "supersedesPackId": "2026-07-26-helen-day14-revision-e-open-books-art01",
+  "loadMode": "light",
+  "title": "Helen Day 15 Revision B｜桌边的一小片水、Hello School与颜色星球续课",
+  "sharedPlan": {
+    "plannedChineseMinutes": 23,
+    "plannedBreakMinutes": 5,
+    "defaultEnglishMode": "light",
+    "plannedEnglishMinutes": 15,
+    "sequenceNoteZh": "中文有效活动23分钟，固定休息5分钟；英语课程库定位与颜色星球保持原计划。",
+    "fallbackRules": {
+      "chineseOverMinutes": 40,
+      "easeBelow": 7,
+      "recoveryEaseBelow": 6
+    }
+  },
+  "chinese": {
+    "characters": [
+      {
+        "text": "标",
+        "pinyin": "biāo",
+        "meaning": "表示名称、位置或标准的记号。",
+        "words": [
+          "标签",
+          "标记",
+          "标准"
+        ],
+        "example": "请在水杯上贴好姓名标签。",
+        "status": "unstable",
+        "priority": 5,
+        "source": "Day14网站标记不熟；Day15词语复习与后测"
+      },
+      {
+        "text": "配",
+        "pinyin": "pèi",
+        "meaning": "把两样东西合在一起或正确对应起来。",
+        "words": [
+          "相配",
+          "配对",
+          "配合"
+        ],
+        "example": "这张图片和下面的文字相配。",
+        "status": "unstable",
+        "priority": 5,
+        "source": "Day14正文标记不认识；后测录音需要报音；Day15复习与后测"
+      },
+      {
+        "text": "签",
+        "pinyin": "qiān",
+        "meaning": "写上名字，也指写着信息的小纸片。",
+        "words": [
+          "标签",
+          "签名",
+          "书签"
+        ],
+        "example": "每张作品下面都有姓名标签。",
+        "status": "unstable",
+        "priority": 5,
+        "source": "Day14网站标记不熟；后测为试探性读出；Day15复习与后测"
+      },
+      {
+        "text": "杯",
+        "pinyin": "bēi",
+        "meaning": "装水、牛奶等饮料的用具。",
+        "words": [
+          "水杯",
+          "杯子",
+          "杯盖"
+        ],
+        "example": "我的水杯放在桌边。",
+        "status": "new",
+        "priority": 4,
+        "source": "Day15正文高频具体名词与后测"
+      },
+      {
+        "text": "推",
+        "pinyin": "tuī",
+        "meaning": "用手向外用力，让东西移动。",
+        "words": [
+          "推开",
+          "推动",
+          "推车"
+        ],
+        "example": "安安轻轻推了一下水杯。",
+        "status": "new",
+        "priority": 3,
+        "source": "Day15正文动作词与后测"
+      },
+      {
+        "text": "流",
+        "pinyin": "liú",
+        "meaning": "水等液体从一个地方移动到另一个地方。",
+        "words": [
+          "流水",
+          "流出",
+          "水流"
+        ],
+        "example": "一点水从杯口流了出来。",
+        "status": "new",
+        "priority": 3,
+        "source": "Day15正文因果动作词与后测"
+      },
+      {
+        "text": "盖",
+        "pinyin": "gài",
+        "meaning": "遮在物体上面，或把开口封住。",
+        "words": [
+          "杯盖",
+          "盖子",
+          "盖好"
+        ],
+        "example": "小禾盖好杯盖。",
+        "status": "new",
+        "priority": 3,
+        "source": "Day15正文和词语“杯盖”；不作脱离语境单字后测"
+      },
+      {
+        "text": "擦",
+        "pinyin": "cā",
+        "meaning": "用布或纸来回移动，把东西弄干净或弄干。",
+        "words": [
+          "擦干",
+          "擦桌子",
+          "擦掉"
+        ],
+        "example": "小禾拿纸把地面擦干。",
+        "status": "new",
+        "priority": 2,
+        "source": "Day15正文；只在语境中学习"
+      }
+    ],
+    "words": [
+      {
+        "text": "标签",
+        "meaning": "写着姓名、名称等信息的小卡片或小纸条。",
+        "status": "unstable",
+        "source": "Day14反复卡顿；Day15词语复习"
+      },
+      {
+        "text": "核对",
+        "meaning": "把两边的信息仔细比较，看看是否一样。",
+        "status": "review",
+        "source": "Day14能理解但核字不认识；Day15词语复习和后测"
+      },
+      {
+        "text": "相配",
+        "meaning": "两样东西能够正确对应或合在一起。",
+        "status": "unstable",
+        "source": "Day14能选对但配字后测需报音；Day15词语复习"
+      },
+      {
+        "text": "杯盖",
+        "meaning": "盖在杯口上面的盖子。",
+        "status": "new",
+        "source": "Day15正文和后测"
+      },
+      {
+        "text": "擦干",
+        "meaning": "用纸或布把水擦掉，使表面变干。",
+        "status": "new",
+        "source": "Day15正文"
+      },
+      {
+        "text": "轻轻",
+        "meaning": "动作很轻，用力不大。",
+        "status": "new",
+        "source": "Day15正文和词语积累"
+      }
+    ],
+    "deferredReviewPool": {
+      "day14UnknownNotRetestedDay15": [
+        "约",
+        "近",
+        "硬",
+        "框",
+        "摆",
+        "沿",
+        "仍",
+        "枚",
+        "漏",
+        "揭",
+        "互",
+        "换",
+        "各",
+        "翘",
+        "牢",
+        "共"
+      ],
+      "day14UnsureNotRetestedDay15": [
+        "移",
+        "准",
+        "或",
+        "另",
+        "齐"
+      ],
+      "day13Deferred": [
+        "测",
+        "影",
+        "顶",
+        "束",
+        "奋",
+        "科",
+        "记",
+        "显"
+      ],
+      "reasonZh": "Day15只抽取最有证据价值的少数字形，避免把Day14高负荷清单整批塞入新课；延期不代表掌握。"
+    },
+    "lesson": {
+      "lessonId": "day15-chinese-revision-b",
+      "title": "Day 15｜桌边的一小片水",
+      "sections": [
+        {
+          "id": "review_words",
+          "type": "word_review",
+          "title": "词语复习",
+          "plannedMinutes": 3,
+          "plannedMinutesByMode": {
+            "light": 3,
+            "standard": 3.5
+          },
+          "childInstructionZh": "读一读下面的词语。每个词语任选一种方式回答：说说它的意思，或者用它说一句完整的话。",
+          "items": [
+            {
+              "id": "r1",
+              "number": 1,
+              "text": "标签"
+            },
+            {
+              "id": "r2",
+              "number": 2,
+              "text": "核对"
+            },
+            {
+              "id": "r3",
+              "number": 3,
+              "text": "相配"
+            }
+          ],
+          "answerMode": "spoken",
+          "childVisible": {
+            "title": "词语复习",
+            "instructionZh": "读一读下面的词语。每个词语任选一种方式回答：说说它的意思，或者用它说一句完整的话。",
+            "items": [
+              "1. 标签",
+              "2. 核对",
+              "3. 相配"
+            ]
+          },
+          "parentInstructionZh": "每个词先等约3秒。孩子正确读出后，可分别选择说意思或说完整句子，不要求三个词采用同一种方式。",
+          "parentOnly": {
+            "goalZh": "间隔复现Day14真实不稳定词；把读音自动化与词义理解分开记录。",
+            "pronunciations": {
+              "标签": "biāo qiān",
+              "核对": "hé duì",
+              "相配": "xiāng pèi"
+            },
+            "acceptableMeanings": {
+              "标签": "写着名字或名称的小卡片、小纸条",
+              "核对": "把两边的信息看一看是不是一样",
+              "相配": "两项能正确对应，没有配错"
+            },
+            "acceptableExamples": {
+              "标签": "我的水杯上贴着姓名标签。",
+              "核对": "我核对了书包里的物品。",
+              "相配": "这张图片和下面的文字相配。"
+            },
+            "scoringZh": "每词先正确读出，再任选解释或完整造句之一证明理解；只报读音不算理解答案。",
+            "supportLadderZh": [
+              "等约3秒。",
+              "不会读时只报这个词的读音，并记录pronunciationSupport=sound_only。",
+              "读出后仍不知道怎么答，只重读“说意思或者说一句完整的话”。",
+              "最多给一个情境词，如“水杯上的名字”；随后结束该词。"
+            ],
+            "stopRuleZh": "三词都尝试，或轻量3分钟/标准3.5分钟到时即停。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "perItem": "r1/r2/r3分别记录readingResult、responseType、meaningEvidence"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only_without_items",
+            "spokenTextZh": "读一读下面的词语。每个词语任选一种方式回答：说说它的意思，或者用它说一句完整的话。"
+          }
+        },
+        {
+          "id": "fill_blanks",
+          "type": "comprehension_choice",
+          "title": "选词填空",
+          "plannedMinutes": 2,
+          "plannedMinutesByMode": {
+            "light": 2,
+            "standard": 2.5
+          },
+          "childInstructionZh": "选择合适的词语填空。每个词语只用一次。备选词：先、然后、最后。",
+          "wordBank": [
+            "先",
+            "然后",
+            "最后"
+          ],
+          "questions": [
+            {
+              "id": "f1",
+              "prompt": "小禾准备画画。她______拿出纸和笔。",
+              "options": [
+                "然后",
+                "先",
+                "最后"
+              ],
+              "answer": "先",
+              "answerPosition": "B",
+              "referenceAnswer": "小禾准备画画。她先拿出纸和笔。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "小禾准备画画。她______拿出纸和笔。A，然后。B，先。C，最后。",
+                "optionSpokenTexts": [
+                  "A，然后",
+                  "B，先",
+                  "C，最后"
+                ]
+              },
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "selectable": true
+            },
+            {
+              "id": "f2",
+              "prompt": "她画好小猫，______把笔放好。",
+              "options": [
+                "然后",
+                "最后",
+                "先"
+              ],
+              "answer": "然后",
+              "answerPosition": "A",
+              "referenceAnswer": "她画好小猫，然后把笔放好。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "她画好小猫，______把笔放好。A，然后。B，最后。C，先。",
+                "optionSpokenTexts": [
+                  "A，然后",
+                  "B，最后",
+                  "C，先"
+                ]
+              },
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "selectable": true
+            },
+            {
+              "id": "f3",
+              "prompt": "东西都收好，______离开座位。",
+              "options": [
+                "先",
+                "然后",
+                "最后"
+              ],
+              "answer": "最后",
+              "answerPosition": "C",
+              "referenceAnswer": "东西都收好，最后离开座位。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "东西都收好，______离开座位。A，先。B，然后。C，最后。",
+                "optionSpokenTexts": [
+                  "A，先",
+                  "B，然后",
+                  "C，最后"
+                ]
+              },
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "selectable": true
+            }
+          ],
+          "answerMode": "choice",
+          "childVisible": {
+            "title": "选词填空",
+            "instructionZh": "选择合适的词语填空。每个词语只用一次。备选词：先、然后、最后。",
+            "wordBank": [
+              "先",
+              "然后",
+              "最后"
+            ],
+            "questions": [
+              {
+                "number": 1,
+                "prompt": "小禾准备画画。她______拿出纸和笔。",
+                "options": [
+                  "然后",
+                  "先",
+                  "最后"
+                ]
+              },
+              {
+                "number": 2,
+                "prompt": "她画好小猫，______把笔放好。",
+                "options": [
+                  "然后",
+                  "最后",
+                  "先"
+                ]
+              },
+              {
+                "number": 3,
+                "prompt": "东西都收好，______离开座位。",
+                "options": [
+                  "先",
+                  "然后",
+                  "最后"
+                ]
+              }
+            ]
+          },
+          "parentInstructionZh": "先让孩子读题。若不理解“选词填空”，只解释一次题型；读音支持与选词答案支持分开记录。三题全部选择后统一确认。",
+          "parentOnly": {
+            "goalZh": "用短句巩固真实小学选词填空题型，并理解先后顺序。",
+            "instructionExplanationZh": "从三个词里选一个放进横线，再把整句读一遍。每个词只用一次。",
+            "answers": {
+              "f1": "B｜先",
+              "f2": "A｜然后",
+              "f3": "C｜最后"
+            },
+            "distractorRationaleZh": {
+              "f1": "三个选项都是顺序词，都能放进句子；准备画画时先拿纸笔。",
+              "f2": "三个选项都是顺序词；画好以后接着收笔，符合事情顺序。",
+              "f3": "三个选项都是顺序词；东西收好后最后离开座位。"
+            },
+            "scoringZh": "选择与整句语义均正确才算正确；成人只报字音不降低内容判断等级，但题型解释记为context_explained。",
+            "supportLadderZh": [
+              "等5秒。",
+              "不会读时只报当前字词读音。",
+              "第一次不懂题型时，只解释一次“选一个放进横线”。",
+              "答错时只让孩子把填好的整句读一遍，不给第二道同类加练。"
+            ],
+            "stopRuleZh": "完成三题，或轻量2分钟/标准2.5分钟到时即停。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "perQuestion": "f1/f2/f3分别记录selectedLetter、correct、instructionSupport"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "选择合适的词语填空。每个词语只用一次。备选词：先，然后，最后。"
+          }
+        },
+        {
+          "id": "reading",
+          "type": "reading_text",
+          "title": "今日阅读",
+          "plannedMinutes": 5,
+          "plannedMinutesByMode": {
+            "light": 5,
+            "standard": 6
+          },
+          "childInstructionZh": "认真读短文，读准字音，读通句子。",
+          "textTitle": "桌边的一小片水",
+          "paragraphs": [
+            "画画结束后，安安看见桌边有一小片水。刚才地面还是干的，水是从哪里来的呢？",
+            "她先看桌上。小禾的水杯放在桌边，杯盖没有盖好。安安把水杯轻轻往旁边一推，一点水从杯口流了出来。",
+            "小禾马上盖好杯盖，又拿纸把地面擦干。安安在水杯下面放一张干纸，想看看还会不会有水。",
+            "过了一会儿，纸还是干的，地上也没有新水。她们知道办法有用了。安安说：“找到水从哪里来，再把杯盖好，问题才算真的解决。”"
+          ],
+          "answerMode": "spoken_reading",
+          "childVisible": {
+            "title": "今日阅读",
+            "instructionZh": "认真读短文，读准字音，读通句子。",
+            "textTitle": "桌边的一小片水",
+            "paragraphs": [
+              "画画结束后，安安看见桌边有一小片水。刚才地面还是干的，水是从哪里来的呢？",
+              "她先看桌上。小禾的水杯放在桌边，杯盖没有盖好。安安把水杯轻轻往旁边一推，一点水从杯口流了出来。",
+              "小禾马上盖好杯盖，又拿纸把地面擦干。安安在水杯下面放一张干纸，想看看还会不会有水。",
+              "过了一会儿，纸还是干的，地上也没有新水。她们知道办法有用了。安安说：“找到水从哪里来，再把杯盖好，问题才算真的解决。”"
+            ]
+          },
+          "parentInstructionZh": "只读一遍。卡顿约3秒时只报当前字音，不解释、不代读整句；题目语言生字和正文生字分开记录。",
+          "parentOnly": {
+            "goalZh": "降低解码负荷，观察一次首读中的自动认读、读音支架量和句意保持。",
+            "plannedSupportCharacters": {
+              "杯": "bēi｜盛水的杯子",
+              "盖": "gài｜杯盖；在词语中读",
+              "推": "tuī｜向前或向旁边用力",
+              "流": "liú｜水流出来",
+              "擦": "cā｜用纸或布把水擦掉"
+            },
+            "contextOnlyCharacters": {
+              "干": "在“地面擦干、干纸”中读gān；不作为脱离语境单字唯一读音后测。"
+            },
+            "scoringZh": "完成一次真实首读即可；读音支架不等于理解错误。分别记录首读卡顿字、是否能保持句意和是否到时停止。",
+            "supportLadderZh": [
+              "每个卡顿字先等约3秒。",
+              "只报当前字音，让孩子接着读。",
+              "一句中连续三处需要报音时，读完当前句后暂停10秒再继续。",
+              "不做同日全文第二遍，不用解释正文替代孩子阅读。"
+            ],
+            "stopRuleZh": "轻量5分钟/标准6分钟到时，读完当前句即停；同日不全文重读。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]，与正文分开",
+              "notes": "string",
+              "unknownBodyCharacters": "string[]",
+              "unsureBodyCharacters": "string[]",
+              "completedParagraphIndexes": "number[]",
+              "meaningRetained": "yes | partial | no"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "认真读短文，读准字音，读通句子。桌边的一小片水。"
+          }
+        },
+        {
+          "id": "word_accumulation",
+          "type": "comprehension_choice",
+          "title": "词语积累",
+          "plannedMinutes": 2,
+          "plannedMinutesByMode": {
+            "light": 2,
+            "standard": 2.5
+          },
+          "childInstructionZh": "读句子，选择短文中的词语填空。",
+          "questions": [
+            {
+              "id": "w1",
+              "prompt": "安安______推了一下水杯。",
+              "options": [
+                "用力",
+                "慢慢",
+                "轻轻"
+              ],
+              "answer": "轻轻",
+              "answerPosition": "C",
+              "referenceAnswer": "安安轻轻推了一下水杯。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "安安______推了一下水杯。A，用力。B，慢慢。C，轻轻。",
+                "optionSpokenTexts": [
+                  "A，用力",
+                  "B，慢慢",
+                  "C，轻轻"
+                ]
+              },
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "selectable": true
+            },
+            {
+              "id": "w2",
+              "prompt": "______，纸还是干的。",
+              "options": [
+                "过了一会儿",
+                "刚放下纸时",
+                "擦地以前"
+              ],
+              "answer": "过了一会儿",
+              "answerPosition": "A",
+              "referenceAnswer": "过了一会儿，纸还是干的。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "______，纸还是干的。A，过了一会儿。B，刚放下纸时。C，擦地以前。",
+                "optionSpokenTexts": [
+                  "A，过了一会儿",
+                  "B，刚放下纸时",
+                  "C，擦地以前"
+                ]
+              },
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "selectable": true
+            }
+          ],
+          "answerMode": "choice",
+          "childVisible": {
+            "title": "词语积累",
+            "instructionZh": "读句子，选择短文中的词语填空。",
+            "questions": [
+              {
+                "number": 1,
+                "prompt": "安安______推了一下水杯。",
+                "options": [
+                  "用力",
+                  "慢慢",
+                  "轻轻"
+                ]
+              },
+              {
+                "number": 2,
+                "prompt": "______，纸还是干的。",
+                "options": [
+                  "过了一会儿",
+                  "刚放下纸时",
+                  "擦地以前"
+                ]
+              }
+            ]
+          },
+          "parentInstructionZh": "两题均联系短文原句。孩子先自己读；需要时只报字音。选择后读一遍完整句子。",
+          "parentOnly": {
+            "goalZh": "积累表示动作轻重和时间先后的常用表达。",
+            "answers": {
+              "w1": "C｜轻轻",
+              "w2": "A｜过了一会儿"
+            },
+            "distractorRationaleZh": {
+              "w1": "三个选项都是自然的动作方式；只有“轻轻”与短文原句一致。",
+              "w2": "三个选项都是自然的时间表达；只有“过了一会儿”与等待后再检查的顺序一致。"
+            },
+            "scoringZh": "选对并能把完整句子读通即可；成人报选项读音只记pronunciationSupport。",
+            "supportLadderZh": [
+              "等5秒。",
+              "不会读时只报当前词读音。",
+              "第一次答错，只说“回到短文找一样的说法”。",
+              "仍不会则核对答案并进入下一题。"
+            ],
+            "stopRuleZh": "完成两题，或轻量2分钟/标准2.5分钟到时即停。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "perQuestion": "w1/w2分别记录selectedLetter、correct、textLocationClueUsed"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "读句子，选择短文中的词语填空。"
+          }
+        },
+        {
+          "id": "comprehension",
+          "type": "comprehension",
+          "title": "阅读理解",
+          "plannedMinutes": 3,
+          "plannedMinutesByMode": {
+            "light": 3,
+            "standard": 3.5
+          },
+          "childInstructionZh": "读短文，回答问题。",
+          "questions": [
+            {
+              "id": "c1",
+              "prompt": "安安为什么轻轻推了一下水杯？",
+              "options": [],
+              "answer": "",
+              "responseMode": "spoken",
+              "referenceAnswer": "她想看看水是不是从这个水杯里流出来的。",
+              "readAloud": {
+                "policy": "prompt_only",
+                "spokenTextZh": "安安为什么轻轻推了一下水杯？"
+              }
+            },
+            {
+              "id": "c2",
+              "prompt": "安安为什么在水杯下面放一张干纸？",
+              "options": [
+                "想看看水杯会不会倒",
+                "想看看杯盖好以后还会不会漏水",
+                "想看看水杯下面原来有没有水"
+              ],
+              "answer": "想看看杯盖好以后还会不会漏水",
+              "answerPosition": "B",
+              "responseMode": "select",
+              "selectable": true,
+              "preserveOptionOrder": true,
+              "referenceAnswer": "干纸能帮助她们确认杯盖好以后还有没有水漏出来。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "安安为什么在水杯下面放一张干纸？A，想看看水杯会不会倒。B，想看看杯盖好以后还会不会漏水。C，想看看水杯下面原来有没有水。",
+                "optionSpokenTexts": [
+                  "A，想看看水杯会不会倒",
+                  "B，想看看杯盖好以后还会不会漏水",
+                  "C，想看看水杯下面原来有没有水"
+                ]
+              }
+            },
+            {
+              "id": "c3",
+              "prompt": "后来纸一直是干的，这说明什么？",
+              "options": [],
+              "answer": "",
+              "responseMode": "spoken",
+              "referenceAnswer": "水杯不再漏水，盖好杯盖的办法有用。",
+              "readAloud": {
+                "policy": "prompt_only",
+                "spokenTextZh": "后来纸一直是干的，这说明什么？"
+              }
+            }
+          ],
+          "answerMode": "mixed",
+          "childVisible": {
+            "title": "阅读理解",
+            "instructionZh": "读短文，回答问题。",
+            "questions": [
+              {
+                "number": 1,
+                "prompt": "安安为什么轻轻推了一下水杯？",
+                "options": [],
+                "responseMode": "spoken"
+              },
+              {
+                "number": 2,
+                "prompt": "安安为什么在水杯下面放一张干纸？",
+                "options": [
+                  "想看看水杯会不会倒",
+                  "想看看杯盖好以后还会不会漏水",
+                  "想看看水杯下面原来有没有水"
+                ],
+                "responseMode": "select"
+              },
+              {
+                "number": 3,
+                "prompt": "后来纸一直是干的，这说明什么？",
+                "options": [],
+                "responseMode": "spoken"
+              }
+            ]
+          },
+          "parentInstructionZh": "两题口答、一题选择。先等5—7秒；读题支架、定位线索和答案线索分开记录。",
+          "parentOnly": {
+            "goalZh": "检测因果理解、验证办法的目的和根据结果作推断，不用选择题替代口头生成。",
+            "answers": {
+              "c1": "她想看看水是不是从这个水杯里流出来的。",
+              "c2": "B｜想看看杯盖好以后还会不会漏水。",
+              "c3": "水杯不再漏水，盖好杯盖的办法有用。"
+            },
+            "distractorRationaleZh": {
+              "c2": "三项都是“放纸想看看什么”的目的；B对应验证是否继续漏水，A只检查旧水，C与故事无关但不是语法荒谬项。"
+            },
+            "scoringZh": "口答不要求复述参考句；能说清目的或结果即可。选择题记录点击正误，口答另记独立度。",
+            "supportLadderZh": [
+              "等5—7秒。",
+              "无回应时完整重读题目一次。",
+              "仍无回应时只提示回到相关一句，如“看看第三段”。",
+              "最多一个线索；随后记录并结束，不追加同类题。"
+            ],
+            "stopRuleZh": "三题完成，或轻量3分钟/标准3.5分钟到时，完成当前回答后停止。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "perQuestion": "c1/c2/c3分别记录responseText或selectedLetter、correct、support"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "读短文，回答问题。"
+          }
+        },
+        {
+          "id": "four_grid_retell",
+          "type": "four_grid_retell",
+          "title": "压缩复述",
+          "plannedMinutes": 3,
+          "plannedMinutesByMode": {
+            "light": 3,
+            "standard": 3.5
+          },
+          "childInstructionZh": "看下面四步，用自己的话讲一讲。每步说一句话。",
+          "prompt": "看下面四步，用自己的话讲一讲。每步说一句话。",
+          "prompts": [
+            "看见水：桌边怎么了？",
+            "找到水杯：她们怎么知道水从哪里来？",
+            "盖好擦干：小禾做了什么？",
+            "纸还是干：她们怎么知道办法有用？"
+          ],
+          "answerMode": "spoken",
+          "childVisible": {
+            "title": "压缩复述",
+            "instructionZh": "看下面四步，用自己的话讲一讲。每步说一句话。",
+            "prompts": [
+              "看见水：桌边怎么了？",
+              "找到水杯：她们怎么知道水从哪里来？",
+              "盖好擦干：小禾做了什么？",
+              "纸还是干：她们怎么知道办法有用？"
+            ]
+          },
+          "parentInstructionZh": "一格一格呈现。允许孩子用自己的话；不显示参考答案，不用“还有呢”连续追问。",
+          "parentOnly": {
+            "goalZh": "保留Helen已经形成的四步组织能力，用新故事检测顺序和因果，不复制Day14四格问题。",
+            "referenceAnswers": [
+              "安安发现桌边有一小片水。",
+              "她推了一下水杯，看见水从杯口流出来。",
+              "小禾盖好杯盖，又把地面擦干。",
+              "她们放干纸再看，纸一直是干的，说明办法有用。"
+            ],
+            "scoringZh": "四步顺序基本正确，每步说出核心意思即可；人物名称或原文词不要求完全一致。",
+            "supportLadderZh": [
+              "每格先等7秒。",
+              "无回应时只重读当前格。",
+              "仍无回应时给一个关键词，如“推水杯”或“干纸”。",
+              "不追问无关细节，不要求把四句话扩成长篇。"
+            ],
+            "stopRuleZh": "每格最多约35秒；轻量3分钟/标准3.5分钟到时，完成当前一句后停止。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "perGrid": "grid1—grid4分别记录coreMeaning、sequenceCorrect、support",
+              "overallCoherence": "clear | partial | unclear"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "看下面四步，用自己的话讲一讲。每步说一句话。"
+          }
+        },
+        {
+          "id": "fixed_break",
+          "type": "break",
+          "title": "固定休息",
+          "plannedMinutes": 5,
+          "plannedMinutesByMode": {
+            "light": 5,
+            "standard": 5
+          },
+          "childInstructionZh": "休息5分钟：喝水、走动、看看远处。",
+          "prompt": "休息5分钟：喝水、走动、看看远处。",
+          "answerMode": "none",
+          "childVisible": {
+            "title": "固定休息",
+            "instructionZh": "休息5分钟：喝水、走动、看看远处。"
+          },
+          "parentInstructionZh": "第六个学习任务完成后立即休息5分钟。休息中不讲字、不核对答案、不预告后题。",
+          "parentOnly": {
+            "goalZh": "在连续学习轻量18分钟/标准约21.5分钟后固定中断。",
+            "stopRuleZh": "计时5分钟；结束后再进入小学情境。",
+            "recordFields": {
+              "completion": "completed | skipped",
+              "actualSeconds": "非负整数",
+              "notes": "string"
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "休息5分钟：喝水、走动、看看远处。"
+          }
+        },
+        {
+          "id": "school_scenario",
+          "type": "school_scenario",
+          "title": "小学情境",
+          "plannedMinutes": 3,
+          "plannedMinutesByMode": {
+            "light": 3,
+            "standard": 3.5
+          },
+          "childInstructionZh": "联系生活，说一说你会怎么做。",
+          "prompt": "活动课下课时，大家要拿回写着自己名字的水杯。你手里的水杯写着“小雨”，不是你的名字。你会怎样对小雨说？接下来怎样找到自己的水杯？",
+          "answerMode": "spoken",
+          "childVisible": {
+            "title": "小学情境",
+            "instructionZh": "联系生活，说一说你会怎么做。",
+            "prompt": "活动课下课时，大家要拿回写着自己名字的水杯。你手里的水杯写着“小雨”，不是你的名字。你会怎样对小雨说？接下来怎样找到自己的水杯？"
+          },
+          "parentInstructionZh": "题面已给最小背景，不要求孩子知道收作业等小学制度。先让孩子独立回答，再按阶梯提示。",
+          "parentOnly": {
+            "goalZh": "在Helen有经验的“带名字的物品”情境中，检测礼貌表达和具体查找办法。",
+            "referenceAnswer": "小雨，这个水杯写着你的名字，可能是你的。我拿错了。我们看看其他水杯上的名字，找出我的水杯。",
+            "passRuleZh": "说清拿错水杯；对同学表达自然；提出看名字、逐个找或询问同学等可执行办法。",
+            "supportLadderZh": [
+              "等8—10秒。",
+              "若把情境理解错，只重复背景：“每个水杯上都有名字，大家各拿自己的。”",
+              "仍想不到办法，只给一个线索：“可以先看每个水杯上的什么？”",
+              "最多一个线索；不提供整句答案。"
+            ],
+            "stopRuleZh": "轻量3分钟/标准3.5分钟到时，完成当前回答后停止。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "backgroundSupport": "none | minimal_background_repeated | context_explained",
+              "politeExpression": "clear | partial | absent",
+              "concreteSearchPlan": "clear | partial | absent"
+            }
+          },
+          "readAloud": {
+            "policy": "prompt_only",
+            "spokenTextZh": "活动课下课时，大家要拿回写着自己名字的水杯。你手里的水杯写着小雨，不是你的名字。你会怎样对小雨说？接下来怎样找到自己的水杯？"
+          }
+        },
+        {
+          "id": "post_check",
+          "type": "post_check",
+          "title": "阅读后测",
+          "plannedMinutes": 2,
+          "plannedMinutesByMode": {
+            "light": 2,
+            "standard": 3
+          },
+          "childInstructionZh": "读一读这些字和词语。",
+          "characters": [
+            "标",
+            "配",
+            "签",
+            "杯",
+            "推",
+            "流"
+          ],
+          "words": [
+            "标签",
+            "核对",
+            "杯盖"
+          ],
+          "answerMode": "spoken_reading",
+          "childVisible": {
+            "title": "阅读后测",
+            "instructionZh": "读一读这些字和词语。",
+            "characters": [
+              "标",
+              "配",
+              "签",
+              "杯",
+              "推",
+              "流"
+            ],
+            "words": [
+              "标签",
+              "核对",
+              "杯盖"
+            ]
+          },
+          "parentInstructionZh": "屏幕不显示拼音。每项先等约3秒；不会读时只报读音并进入下一项。",
+          "parentOnly": {
+            "goalZh": "复测Day14不稳定字形，并抽测Day15正文中的三个新字和一个新词。",
+            "answerKey": {
+              "标": "biāo",
+              "配": "pèi",
+              "签": "qiān",
+              "杯": "bēi",
+              "推": "tuī",
+              "流": "liú",
+              "标签": "biāo qiān",
+              "核对": "hé duì",
+              "杯盖": "bēi gài"
+            },
+            "validityZh": "核、干不作为脱离语境单字测验；盖只在“杯盖”词语中测，不以姓氏读音造成孤立字歧义。",
+            "scoringZh": "每项记录首次独立读、听到读音后读对、读错或无回应；不把sound_only记成独立。",
+            "supportLadderZh": [
+              "每项等约3秒。",
+              "不会读时只报读音。",
+              "孩子跟读一次后立即进入下一项。",
+              "不解释词义、不造句、不追加同类题。"
+            ],
+            "stopRuleZh": "九项各测一次；轻量2分钟/标准3分钟到时即停。",
+            "recordFields": {
+              "completion": "not_started | completed | stopped_by_rule",
+              "actualSeconds": "非负整数",
+              "independence": "independent | pronunciation_only | prompt_repeated | context_explained | one_clue | answer_given",
+              "pronunciationSupport": "none | sound_only",
+              "answerSupport": "none | prompt_repeated | context_explained | one_clue | answer_revealed",
+              "unfamiliarInstructionCharacters": "string[]",
+              "notes": "string",
+              "perItem": "每字词记录firstResponse、soundOnlyUsed、finalResponse"
+            }
+          },
+          "readAloud": {
+            "policy": "disabled_during_assessment",
+            "spokenTextZh": ""
+          }
+        }
+      ],
+      "answerKey": {
+        "word_review": {
+          "标签": "正确认读，并解释意思或说完整句子。",
+          "核对": "正确认读，并解释意思或说完整句子。",
+          "相配": "正确认读，并解释意思或说完整句子。"
+        },
+        "fill_blanks": {
+          "f1": "B｜先",
+          "f2": "A｜然后",
+          "f3": "C｜最后"
+        },
+        "word_accumulation": {
+          "w1": "C｜轻轻",
+          "w2": "A｜过了一会儿"
+        },
+        "comprehension": {
+          "c1": "想验证水是不是从这个水杯里流出来。",
+          "c2": "B｜想看看杯盖好以后还会不会漏水。",
+          "c3": "水杯不再漏水，办法有用。"
+        },
+        "four_grid_retell": [
+          "发现桌边有水",
+          "推水杯找到水的来源",
+          "盖好杯盖并擦干地面",
+          "用干纸确认不再漏水"
+        ],
+        "school_scenario": "礼貌说明拿错水杯，并通过查看名字等办法找回自己的水杯。",
+        "post_check": {
+          "characters": [
+            "标 biāo",
+            "配 pèi",
+            "签 qiān",
+            "杯 bēi",
+            "推 tuī",
+            "流 liú"
+          ],
+          "words": [
+            "标签 biāo qiān",
+            "核对 hé duì",
+            "杯盖 bēi gài"
+          ]
+        }
+      }
+    },
+    "timing": {
+      "plannedActiveMinutesByMode": {
+        "light": 23,
+        "standard": 28
+      },
+      "plannedBreakMinutes": 5,
+      "plannedTotalMinutesByMode": {
+        "light": 28,
+        "standard": 33
+      },
+      "hardActiveStopMinutes": 28,
+      "hardWallClockStopMinutes": 35,
+      "preBreakActiveMinutesByMode": {
+        "light": 18,
+        "standard": 21.5
+      },
+      "sameDayFullRereadAllowed": false
+    },
+    "supportPolicy": {
+      "pronunciationSupportValues": [
+        "none",
+        "sound_only"
+      ],
+      "answerSupportValues": [
+        "none",
+        "prompt_repeated",
+        "context_explained",
+        "one_clue",
+        "answer_revealed"
+      ],
+      "independenceValues": [
+        "independent",
+        "pronunciation_only",
+        "prompt_repeated",
+        "context_explained",
+        "one_clue",
+        "answer_given"
+      ],
+      "rulesZh": [
+        "读音帮助与答案帮助分开记录。",
+        "正文生字与题目语言生字分开记录。",
+        "成人读题后答对，不记为完全独立；按实际支架类型记录。",
+        "小学情境的背景解释单独记录，不把制度性知识缺口记成逻辑错误。",
+        "每题最多一个答案线索，不追加同类题。"
+      ]
+    },
+    "instructionCharacterPlan": {
+      "deliberateReviewCharacters": [
+        "选",
+        "填",
+        "按"
+      ],
+      "ruleZh": "选、填、按来自Day14题目语言卡顿，本课只在固定、短小的标准指令中复现；不再加入被、由、既、以此、缩等高成本题干词。",
+      "readingAndInstructionSeparateRecording": true
+    },
+    "readingLoad": {
+      "day14ReadingHanzi": 380,
+      "day15ReadingHanzi": 160,
+      "reductionPercent": 57.9,
+      "day14DistinctHanzi": 173,
+      "day15DistinctHanzi": 77,
+      "highPrioritySoundSupportCandidates": [
+        "杯",
+        "盖",
+        "推",
+        "流",
+        "擦"
+      ],
+      "contextOnlyPolyphonicCharacter": "干",
+      "ruleZh": "正文只读一遍；读音支架不等于理解错误。"
+    },
+    "globalStopRulesZh": [
+      "轻量版有效活动23分钟，标准版约28分钟，另加固定休息5分钟。",
+      "第六个学习任务后立即固定休息，不把学习连续拖到39分钟。",
+      "有效活动达到28分钟或总时长达到35分钟，完成当前一句或当前回答后停止。",
+      "孩子明显疲劳、烦躁、走神加重或不适时立即停止。",
+      "当天不做全文第二遍，不为完成率或全对继续加题。"
+    ],
+    "metrics": {
+      "mainTaskCount": 9,
+      "learningTaskCount": 8,
+      "choiceQuestionCount": 6,
+      "choiceAnswerSequence": [
+        "B",
+        "A",
+        "C",
+        "C",
+        "A",
+        "B"
+      ],
+      "choiceAnswerCounts": {
+        "A": 2,
+        "B": 2,
+        "C": 2
+      },
+      "postCheckProbeCount": 9,
+      "plannedActiveMinutesByMode": {
+        "light": 23,
+        "standard": 28
+      },
+      "plannedBreakMinutes": 5,
+      "status": "approved_by_dr_george_for_elon_integration"
+    }
+  },
+  "english": {
+    "storyId": "hello_school",
+    "storyTitle": "Hello, School!",
+    "anchorSentence": "Our teacher says, “Open your books. Let’s read together.”",
+    "translationZh": "我们的老师说：“打开你们的书。让我们一起读吧。”",
+    "chunks": [
+      "Our teacher says",
+      "Open your books",
+      "Let’s read together"
+    ],
+    "words": [
+      {
+        "text": "our",
+        "meaningZh": "我们的，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "teacher",
+        "meaningZh": "老师，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "says",
+        "meaningZh": "说，注意本句读 /sez/",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "open",
+        "meaningZh": "打开，重点词",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "your",
+        "meaningZh": "你们的/你的，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "books",
+        "meaningZh": "书（复数），重点词",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "let's",
+        "meaningZh": "让我们……，句型词",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "read",
+        "meaningZh": "阅读，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "together",
+        "meaningZh": "一起，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      }
+    ],
+    "pattern": {
+      "id": "teacher_says_open_books",
+      "displayZh": "Our teacher says＋指令：老师说……",
+      "blocks": [
+        "Our teacher says,",
+        "“Open your books.",
+        "Let’s read together.”"
+      ]
+    },
+    "phonics": [
+      {
+        "focus": "says /sez/",
+        "words": [
+          "says"
+        ],
+        "noteZh": "says 在本句读 /sez/。"
+      },
+      {
+        "focus": "books /s/",
+        "words": [
+          "books"
+        ],
+        "noteZh": "books 末尾是轻短的 /s/。"
+      }
+    ],
+    "lesson": {
+      "lessonId": "en-hello-school-open-books",
+      "defaultMode": "light",
+      "allowedModes": [
+        "light",
+        "standard"
+      ],
+      "previousSentence": "",
+      "anchorSentence": "Our teacher says, “Open your books. Let’s read together.”",
+      "translationZh": "我们的老师说：“打开你们的书。让我们一起读吧。”",
+      "appLocator": {
+        "appName": "每日英语听力",
+        "folder": "Helen place",
+        "article": "Hello, School!",
+        "targetSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "settingsZh": "隐藏英文和中文，按步骤完成听、说、读、理解。"
+      },
+      "steps": [
+        {
+          "id": "retrieval",
+          "number": 1,
+          "titleZh": "场景检索",
+          "tool": "website_and_parent",
+          "minutesByMode": {
+            "light": 2,
+            "standard": 2
+          },
+          "parentSaysZh": "先看学校场景，不播放英文。老师请大家打开书、一起读，她可能会说什么？",
+          "actionsZh": [
+            "孩子可先说中文或已记得的英文",
+            "不要求把本句当作“昨天已经学会”的句子"
+          ],
+          "successCriteriaZh": "能说出“打开书、一起读”的主要意思。",
+          "expectedAnswer": "打开书、一起读。",
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "先看学校场景，不播放英文。老师请大家打开书、一起读，她可能会说什么？"
+          }
+        },
+        {
+          "id": "blind_listening",
+          "number": 2,
+          "titleZh": "新句盲听",
+          "tool": "daily_english_listening",
+          "minutesByMode": {
+            "light": 2,
+            "standard": 3
+          },
+          "parentSaysZh": "隐藏英文和中文，完整播放两遍；孩子说出听到的熟词或大意。",
+          "actionsZh": [
+            "在《每日英语听力》中定位 Helen place / Hello, School!",
+            "隐藏英文和中文",
+            "完整播放两遍",
+            "孩子说出听到的熟词或大意"
+          ],
+          "successCriteriaZh": "听出 teacher、open、books、read、together 中至少两个，或说出主要意思。",
+          "expectedAnswer": "Our teacher says, “Open your books. Let’s read together.”",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "现在去每日英语听力。隐藏英文和中文，完整播放两遍，然后说出听到的熟词或大意。"
+          }
+        },
+        {
+          "id": "meaning_and_text",
+          "number": 3,
+          "titleZh": "原文理解",
+          "tool": "daily_english_listening",
+          "minutesByMode": {
+            "light": 3,
+            "standard": 3
+          },
+          "parentSaysZh": "打开原文，点击并理解 our、teacher、says、open、your、books、Let’s、read、together；指出谁说话、让大家做哪两件事。",
+          "actionsZh": [
+            "打开原文",
+            "点击并理解 our、teacher、says、open、your、books、Let’s、read、together",
+            "指出谁说话",
+            "说出老师让大家做哪两件事"
+          ],
+          "successCriteriaZh": "知道老师说“打开书，我们一起读”。",
+          "expectedAnswer": "老师说：“打开你们的书。让我们一起读吧。”",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "现在打开原文。找一找谁说话，老师让大家做哪两件事。"
+          }
+        },
+        {
+          "id": "echo",
+          "number": 4,
+          "titleZh": "Echo跟读",
+          "tool": "daily_english_listening",
+          "minutesByMode": {
+            "light": 4,
+            "standard": 5
+          },
+          "parentSaysZh": "先听完整句；分三块各跟读一次；完整跟读两遍；最后尝试不看原文说一次。",
+          "actionsZh": [
+            "先听完整句",
+            "分三块各跟读一次：Our teacher says｜Open your books｜Let’s read together",
+            "完整跟读两遍",
+            "最后尝试不看原文说一次"
+          ],
+          "successCriteriaZh": "三块基本连贯；不追求机器评分。",
+          "expectedAnswer": "Our teacher says, “Open your books. Let’s read together.”",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "先听完整句，再分三块跟读。最后试着不看原文说一次。"
+          }
+        },
+        {
+          "id": "blocks",
+          "number": 5,
+          "titleZh": "积木拼句",
+          "tool": "website",
+          "minutesByMode": {
+            "light": 2,
+            "standard": 3
+          },
+          "parentSaysZh": "先拼出原句，并口头替换一个 Let’s 加动作加 together 句子。",
+          "actionsZh": [
+            "用积木拼出原句",
+            "口头说 Open your books.",
+            "口头说 Let’s read together.",
+            "口头说 Let’s play together."
+          ],
+          "successCriteriaZh": "拼出原句，并口头替换一个 Let’s + 动作 + together 句子。",
+          "expectedAnswer": "Our teacher says, “Open your books. Let’s read together.”",
+          "blocks": [
+            "Close your books.",
+            "Let’s read together.”",
+            "Our teacher says,",
+            "“Open your books."
+          ],
+          "targetSentences": [
+            "Our teacher says, “Open your books. Let’s read together.”",
+            "Open your books.",
+            "Let’s read together.",
+            "Let’s play together."
+          ],
+          "acceptedAnswers": [
+            "Our teacher says, “Open your books. Let’s read together.”"
+          ],
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "先拼出今天的句子，再口头替换一个 Let’s 加动作加 together 句子。"
+          }
+        },
+        {
+          "id": "phonics",
+          "number": 6,
+          "titleZh": "声音发现",
+          "tool": "website_and_parent",
+          "minutesByMode": {
+            "light": 1,
+            "standard": 2
+          },
+          "parentSaysZh": "says 在本句读 /sez/；books 末尾是轻短的 /s/；只听和读整词，不要求拼写。",
+          "actionsZh": [
+            "跟读 says",
+            "跟读 books",
+            "只听和读整词，不要求拼写"
+          ],
+          "successCriteriaZh": "能跟读 says、books，不把 says 读成 /seɪz/。",
+          "expectedAnswer": "says /sez/；books 末尾轻短 /s/。",
+          "focus": "says /sez/；books /s/",
+          "items": [
+            "says",
+            "books"
+          ],
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "听一听 says 和 books。says 在本句读 sez，books 末尾是轻短的 s。"
+          }
+        },
+        {
+          "id": "dialogue_exit",
+          "number": 7,
+          "titleZh": "对话离场",
+          "tool": "website_and_parent",
+          "minutesByMode": {
+            "light": 1,
+            "standard": 2
+          },
+          "parentSaysZh": "现在做最后一个小对话。",
+          "actionsZh": [
+            "家长问 What does our teacher say?",
+            "孩子回答 Open your books. Let’s read together.",
+            "家长问 Who reads together?",
+            "孩子回答 We read together."
+          ],
+          "successCriteriaZh": "能听懂两个问题；不看原文说出目标句主要部分；能生成一个 Let’s … together 新句。",
+          "expectedAnswer": "Open your books. Let’s read together.",
+          "dialogue": [
+            {
+              "speaker": "parent",
+              "text": "What does our teacher say?",
+              "referenceZh": "我们的老师说什么？"
+            },
+            {
+              "speaker": "child",
+              "text": "Open your books. Let’s read together.",
+              "referenceZh": "打开你们的书。让我们一起读吧。"
+            },
+            {
+              "speaker": "parent",
+              "text": "Who reads together?",
+              "referenceZh": "谁一起读？"
+            },
+            {
+              "speaker": "child",
+              "text": "We read together.",
+              "referenceZh": "我们一起读。"
+            }
+          ],
+          "exitChecks": [
+            "能听懂两个问题",
+            "不看原文说出目标句主要部分",
+            "能生成一个 Let’s … together 新句"
+          ],
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "现在做最后一个小对话。请先听家长的问题，再回答。"
+          },
+          "recording": {
+            "mode": "optional_response",
+            "maxSeconds": 90,
+            "promptZh": "请完成最后的小对话，并说一个自己的 Let’s … together 新句。",
+            "startCueZh": "准备好后点麦克风。",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "exit_check"
+          }
+        }
+      ]
+    }
+  },
+  "art": {
+    "courseId": "marker-drawing-foundations",
+    "lessonId": "art-01-color-planet-v2",
+    "titleZh": "我的颜色星球｜从铅笔草稿到丙烯马克笔成品",
+    "plannedMinutes": 45,
+    "difficulty": "初级·第一次完整创作",
+    "techniqueFocus": [
+      "轻铅笔构图",
+      "草稿修改",
+      "干净勾线",
+      "试色",
+      "平涂",
+      "干后补色"
+    ],
+    "skillFocus": [
+      "观察",
+      "计划",
+      "控笔",
+      "修改",
+      "配色",
+      "表达"
+    ],
+    "creativeChoice": "Helen 自己选择星球的形状、三种主色、装饰纹理和作品名字。",
+    "materials": [
+      {
+        "nameZh": "HB或2B铅笔",
+        "required": true
+      },
+      {
+        "nameZh": "柔软橡皮",
+        "required": true
+      },
+      {
+        "nameZh": "儿童勾线笔或深色细头马克笔",
+        "required": true
+      },
+      {
+        "nameZh": "无毒儿童水性丙烯马克笔",
+        "required": true
+      },
+      {
+        "nameZh": "160—250克绘画纸或马克笔纸",
+        "required": true
+      },
+      {
+        "nameZh": "试色纸",
+        "required": true
+      },
+      {
+        "nameZh": "桌面垫板和纸巾",
+        "required": true
+      },
+      {
+        "nameZh": "白色马克笔",
+        "required": false
+      }
+    ],
+    "safetyNotesZh": [
+      "只使用标有儿童可用、无毒、水性的丙烯马克笔。",
+      "先铺垫板，笔只画在绘画纸和试色纸上。",
+      "笔帽太紧时请成人帮助，不用牙齿咬。",
+      "每用完一支笔立刻盖好笔帽。",
+      "颜色未干时不反复摩擦纸面。"
+    ],
+    "steps": [
+      {
+        "id": "observe_finished_reference",
+        "order": 1,
+        "titleZh": "先看完成图",
+        "instructionZh": "先不动笔。找一找最大的星球、星球环、三种主要颜色和最亮的三个小点，再说出你觉得应该先画什么。",
+        "childActionZh": "用手指在图上依次指出大形、星球环、主色和高光。",
+        "parentPromptZh": "只提问，不要求孩子复制颜色或装饰。",
+        "plannedMinutes": 2,
+        "imageAssetId": "art01_step01_finished_reference",
+        "narration": {
+          "textZh": "先不动笔。找一找最大的形状、星球环、三种主要颜色和最亮的小点。你觉得我们应该先画什么？",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先不动笔。找一找最大的形状、星球环、三种主要颜色和最亮的小点。你觉得我们应该先画什么？"
+        },
+        "successCriteriaZh": "能指出最大的形状，并说出先画大形、后画细节。",
+        "completionCheckZh": "孩子能用自己的话说出至少两层绘画顺序。",
+        "commonMistakeZh": "只盯着星星和圆点，不看整体位置。",
+        "hintLevels": [
+          {
+            "textZh": "先把眼睛眯起来看，哪一块最大？"
+          },
+          {
+            "textZh": "用手在空中描一遍最大的外轮廓。"
+          }
+        ]
+      },
+      {
+        "id": "prepare_materials",
+        "order": 2,
+        "titleZh": "检查材料和桌面",
+        "instructionZh": "把铅笔、橡皮、勾线笔、马克笔、绘画纸、试色纸和纸巾放到顺手的位置，再把垫板铺好。",
+        "childActionZh": "按图逐件核对并摆好材料。",
+        "parentPromptZh": "成人只帮助处理过紧的笔帽和桌面保护。",
+        "plannedMinutes": 2,
+        "imageAssetId": "art01_step02_materials",
+        "narration": {
+          "textZh": "先把材料摆好。特别检查铅笔、橡皮和试色纸。今天不能跳过铅笔草稿，也不要直接在作品上试颜色。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先把材料摆好。特别检查铅笔、橡皮和试色纸。今天不能跳过铅笔草稿，也不要直接在作品上试颜色。"
+        },
+        "successCriteriaZh": "全部必备材料到位，绘画纸下面有垫板。",
+        "completionCheckZh": "孩子能指出铅笔、橡皮和试色纸的位置。",
+        "commonMistakeZh": "没有准备试色纸，后来直接在作品上试笔。",
+        "hintLevels": [
+          {
+            "textZh": "按顺序找：铅笔、橡皮、勾线笔、马克笔、两张纸、纸巾。"
+          }
+        ]
+      },
+      {
+        "id": "line_and_shape_warmup",
+        "order": 3,
+        "titleZh": "线条和形状热身",
+        "instructionZh": "在练习区慢慢画三条直线、三条弧线、两个大椭圆和六个小圆点。先画轻线，再画一组稳定的深线。",
+        "childActionZh": "完成轻线和深线两组热身。",
+        "parentPromptZh": "提醒放慢速度，不评价圆是否标准。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step03_warmup",
+        "narration": {
+          "textZh": "先让手认识今天的线条。画直线、弧线、两个大椭圆和六个小圆点。第一组轻轻画，第二组再稳定一点。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先让手认识今天的线条。画直线、弧线、两个大椭圆和六个小圆点。第一组轻轻画，第二组再稳定一点。"
+        },
+        "successCriteriaZh": "完成两组热身，能够明显区分轻线和深线。",
+        "completionCheckZh": "铅笔轻线能被橡皮轻松擦掉。",
+        "commonMistakeZh": "为了画得像而反复描同一条热身线。",
+        "hintLevels": [
+          {
+            "textZh": "手腕放松，让线条慢慢走。"
+          },
+          {
+            "textZh": "椭圆不需要一次闭合，可以分两段相遇。"
+          }
+        ]
+      },
+      {
+        "id": "pencil_place_subject",
+        "order": 4,
+        "titleZh": "用铅笔给星球找位置",
+        "instructionZh": "把纸横放，用非常轻的铅笔线标出星球的上、下、左、右边界和中心点，只画位置记号，不画细节。",
+        "childActionZh": "在纸上画四个轻边界记号和一个中心点。",
+        "parentPromptZh": "问星球是否太靠边，不替孩子移动记号。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step04_pencil_position",
+        "narration": {
+          "textZh": "现在用轻轻的铅笔线给星球找房间。先标上、下、左、右和中心，不画装饰，也不画重线。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "现在用轻轻的铅笔线给星球找房间。先标上、下、左、右和中心，不画装饰，也不画重线。"
+        },
+        "successCriteriaZh": "主体不顶纸边，四周留有空间，位置线足够轻。",
+        "completionCheckZh": "用橡皮轻擦一个记号，能够干净擦掉。",
+        "commonMistakeZh": "第一笔就画出很重的完整圆形。",
+        "hintLevels": [
+          {
+            "textZh": "先用手在纸上比一个大圆，再落下五个轻记号。"
+          },
+          {
+            "textZh": "如果铅笔线发黑，就把手放轻一点。"
+          }
+        ]
+      },
+      {
+        "id": "pencil_draw_big_shapes",
+        "order": 5,
+        "titleZh": "铅笔画大形",
+        "instructionZh": "连接位置记号，画出星球的大椭圆；再用两条弧线画星球环。先只画大形，眼睛、纹理和小星星暂时都不画。",
+        "childActionZh": "完成星球主体和星球环的轻铅笔草稿。",
+        "parentPromptZh": "用“先搭房子，再装窗户”提醒孩子暂缓细节。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step05_pencil_big_shapes",
+        "narration": {
+          "textZh": "把轻记号连起来，画出星球的大椭圆，再加两条弧线做星球环。现在只搭大形，不画小装饰。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "把轻记号连起来，画出星球的大椭圆，再加两条弧线做星球环。现在只搭大形，不画小装饰。"
+        },
+        "successCriteriaZh": "草稿包含一个清楚的大主体和完整星球环，线条保持轻。",
+        "completionCheckZh": "遮住细节区域时仍能看出是一颗带环星球。",
+        "commonMistakeZh": "从小星星、圆点或表情开始画。",
+        "hintLevels": [
+          {
+            "textZh": "大椭圆可以边转纸边画，不需要手腕一次绕完。"
+          },
+          {
+            "textZh": "星球环先画前面一条，再补后面被挡住的部分。"
+          }
+        ]
+      },
+      {
+        "id": "check_and_erase_draft",
+        "order": 6,
+        "titleZh": "检查草稿并修改",
+        "instructionZh": "把画拿远一点，检查星球是否太大、太小、太靠边，星球环是否穿过正确位置。选择至少一处保留或修改，再用橡皮轻擦重画。",
+        "childActionZh": "说出一个检查决定，并完成需要的擦改。",
+        "parentPromptZh": "只问位置和比例，不用“像不像”评价。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step06_check_erase",
+        "narration": {
+          "textZh": "先停笔，把画拿远一点看。它太靠边吗？星球环的位置舒服吗？选一处保留或修改。轻线就是为了现在可以安全擦改。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先停笔，把画拿远一点看。它太靠边吗？星球环的位置舒服吗？选一处保留或修改。轻线就是为了现在可以安全擦改。"
+        },
+        "successCriteriaZh": "完成位置、大小和星球环检查，并作出至少一个具体决定。",
+        "completionCheckZh": "孩子能说“这里保留”或“这里改小、改高、改圆”等具体判断。",
+        "commonMistakeZh": "因为怕擦坏，明知位置不合适也直接进入勾线。",
+        "hardGate": {
+          "id": "pencil_draft_approved",
+          "requiredBeforeNext": true,
+          "messageZh": "草稿检查完成后，才能打开下一步勾线。"
+        },
+        "hintLevels": [
+          {
+            "textZh": "先只看星球和纸边之间的四块空白，哪边太挤？"
+          },
+          {
+            "textZh": "橡皮只擦要改的局部，不用把全部草稿擦掉。"
+          }
+        ]
+      },
+      {
+        "id": "trace_clean_outline",
+        "order": 7,
+        "titleZh": "沿草稿慢慢勾线",
+        "instructionZh": "确认草稿通过后，从不容易被手蹭到的一侧开始，一小段一小段描清主体和星球环。主要区域要闭合，小装饰先不勾。",
+        "childActionZh": "完成主体和星球环的干净勾线。",
+        "parentPromptZh": "提醒分段走线，不催孩子一次画完。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step07_outline",
+        "narration": {
+          "textZh": "草稿检查通过了，现在才能勾线。从不容易被手蹭到的一边开始，一小段一小段描清，不要来回磨成粗毛边。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "草稿检查通过了，现在才能勾线。从不容易被手蹭到的一边开始，一小段一小段描清，不要来回磨成粗毛边。"
+        },
+        "successCriteriaZh": "主要轮廓清楚，准备上色的区域基本闭合。",
+        "completionCheckZh": "用手指沿轮廓走一圈，找不到明显断口。",
+        "commonMistakeZh": "在同一条线来回描很多次，形成粗糙毛边。",
+        "hintLevels": [
+          {
+            "textZh": "每次只描两三厘米，停一下再接下一段。"
+          },
+          {
+            "textZh": "转弯时可以轻轻转动纸张。"
+          }
+        ]
+      },
+      {
+        "id": "dry_outline_and_erase_pencil",
+        "order": 8,
+        "titleZh": "等线干，再擦草稿",
+        "instructionZh": "先等待勾线不再发亮，用手背靠近检查，不直接摸线。确认干燥后，用橡皮轻轻擦掉多余铅笔线和位置记号。",
+        "childActionZh": "等待并清理多余铅笔线。",
+        "parentPromptZh": "成人只提醒等待，不替孩子大力擦。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step08_erase_pencil",
+        "narration": {
+          "textZh": "先等勾线变干，再轻轻擦掉多余铅笔线。没有干的时候不要擦，擦的时候也不要用力来回搓。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先等勾线变干，再轻轻擦掉多余铅笔线。没有干的时候不要擦，擦的时候也不要用力来回搓。"
+        },
+        "successCriteriaZh": "纸面基本干净，勾线没有被擦花。",
+        "completionCheckZh": "多余铅笔记号明显减少，勾线仍完整。",
+        "commonMistakeZh": "勾线未干就擦，造成灰黑色污迹。",
+        "hintLevels": [
+          {
+            "textZh": "先在最不重要的一小段旁边轻擦一下，确认不会花。"
+          }
+        ]
+      },
+      {
+        "id": "test_colors_and_plan",
+        "order": 9,
+        "titleZh": "试色并做好配色计划",
+        "instructionZh": "在试色纸上试每一支候选笔，选一个主色、一个辅助色和一个少量强调色，再用手指出每种颜色准备放在哪里。",
+        "childActionZh": "完成至少三块试色并说出配色位置。",
+        "parentPromptZh": "不替孩子选颜色，只提醒颜色数量不要过多。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step09_color_plan",
+        "narration": {
+          "textZh": "先在试色纸上试笔。选一个主色、一个陪伴它的辅助色，再选一个只亮一下的强调色。先说好它们各自住在哪里。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先在试色纸上试笔。选一个主色、一个陪伴它的辅助色，再选一个只亮一下的强调色。先说好它们各自住在哪里。"
+        },
+        "successCriteriaZh": "至少完成三块试色，并确定主色、辅助色和强调色。",
+        "completionCheckZh": "孩子能指着作品说出三种颜色的大致位置。",
+        "commonMistakeZh": "颜色越拿越多，或没试色就直接下笔。",
+        "hintLevels": [
+          {
+            "textZh": "主色用得最多，辅助色少一点，强调色只用几处。"
+          },
+          {
+            "textZh": "如果两种颜色太像，可以换一支深浅差别更大的。"
+          }
+        ]
+      },
+      {
+        "id": "fill_first_color_layer",
+        "order": 10,
+        "titleZh": "涂第一层大色块",
+        "instructionZh": "先沿大区域边缘慢慢围一圈，再用同一个方向铺中间。一次只涂一个区域，看到小白缝先留下，不在湿颜色上反复摩擦。",
+        "childActionZh": "完成主体和星球环的第一层大色块。",
+        "parentPromptZh": "提醒边缘优先、同向铺色，不追求第一层完全无缝。",
+        "plannedMinutes": 6,
+        "imageAssetId": "art01_step10_first_color",
+        "narration": {
+          "textZh": "开始第一层上色。先围边，再用同一个方向铺中间。看到小白缝先别着急，湿颜色不要反复摩擦。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "开始第一层上色。先围边，再用同一个方向铺中间。看到小白缝先别着急，湿颜色不要反复摩擦。"
+        },
+        "successCriteriaZh": "大区域基本有颜色，边缘得到控制，纸面没有被反复磨破。",
+        "completionCheckZh": "第一层覆盖主要区域，允许保留少量待补白缝。",
+        "commonMistakeZh": "没有方向地乱涂，或不断摩擦湿纸面。",
+        "hintLevels": [
+          {
+            "textZh": "边缘用短笔画，中间用稍长的同向笔画。"
+          },
+          {
+            "textZh": "手快要碰到湿色时，转一下纸再继续。"
+          }
+        ]
+      },
+      {
+        "id": "let_color_dry",
+        "order": 11,
+        "titleZh": "让颜色休息变干",
+        "instructionZh": "把笔帽盖好，让作品平放。观察颜色从亮亮的湿润状态变成不再反光，同时活动手指和肩膀，不继续覆盖。",
+        "childActionZh": "等待干燥并完成短暂手部放松。",
+        "parentPromptZh": "不要用手直接摸颜色，也不需要吹或擦。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step11_drying",
+        "narration": {
+          "textZh": "现在让颜色休息。盖好笔帽，作品平放。等亮亮的湿色不再反光，我们再回来补第二层。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "现在让颜色休息。盖好笔帽，作品平放。等亮亮的湿色不再反光，我们再回来补第二层。"
+        },
+        "successCriteriaZh": "主要色块表面不再明显反光或粘笔。",
+        "completionCheckZh": "孩子能指出至少一块已经干燥的区域。",
+        "commonMistakeZh": "为了赶快完成，在湿色上连续覆盖第二层。",
+        "hintLevels": [
+          {
+            "textZh": "趁等待做三次张手、握拳，再转一转肩膀。"
+          }
+        ]
+      },
+      {
+        "id": "repair_second_layer_and_edges",
+        "order": 12,
+        "titleZh": "补第二层和小白缝",
+        "instructionZh": "只找还能看见白纸、颜色太薄或边缘不齐的小地方，逐块补好。不要把整张作品无差别重新涂一遍。",
+        "childActionZh": "完成局部补色和边缘整理。",
+        "parentPromptZh": "提醒像医生补小伤口，只补需要的位置。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step12_second_layer",
+        "narration": {
+          "textZh": "第二层不是全部重涂。只找小白缝、太薄和边缘不齐的地方，一小块一小块补好。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "第二层不是全部重涂。只找小白缝、太薄和边缘不齐的地方，一小块一小块补好。"
+        },
+        "successCriteriaZh": "主要白缝和薄色得到修补，同时保留清楚勾线。",
+        "completionCheckZh": "退远看时，大色块整体均匀，线条没有被厚色完全盖住。",
+        "commonMistakeZh": "整张再涂一遍，导致颜色太厚和轮廓被盖住。",
+        "hintLevels": [
+          {
+            "textZh": "先退远找最明显的一处，只补这一处，再重新看。"
+          }
+        ]
+      },
+      {
+        "id": "add_texture_and_highlights",
+        "order": 13,
+        "titleZh": "加纹理和高光",
+        "instructionZh": "选择一种重复纹理，例如圆点、短弧线或小星星，重复三到五次；最后用白色或浅色笔加不超过三个高光点。",
+        "childActionZh": "添加一种纹理和少量高光。",
+        "parentPromptZh": "提醒每加一处就退远看，不把所有空白塞满。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step13_details",
+        "narration": {
+          "textZh": "最后加少量细节。选一种纹理重复三到五次，再加不超过三个小高光。每加一处就退远看一次。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "最后加少量细节。选一种纹理重复三到五次，再加不超过三个小高光。每加一处就退远看一次。"
+        },
+        "successCriteriaZh": "细节能够增强主体，远看时星球仍是最清楚的重点。",
+        "completionCheckZh": "纹理有重复规律，高光数量不超过三个。",
+        "commonMistakeZh": "看到空白就继续加装饰，最后失去视觉重点。",
+        "hintLevels": [
+          {
+            "textZh": "先加三个相同的小图案，停下来退远看。"
+          },
+          {
+            "textZh": "如果已经很丰富，可以不再加新的图案。"
+          }
+        ]
+      },
+      {
+        "id": "sign_name_and_reflect",
+        "order": 14,
+        "titleZh": "签名、取名和回看",
+        "instructionZh": "在角落签名，给星球取一个名字，再说出最满意的一处、今天学会的一种方法，以及下次想调整的一处。",
+        "childActionZh": "完成签名和三句作品回看。",
+        "parentPromptZh": "只听孩子说，不替她判断像不像范画。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step14_reflection",
+        "narration": {
+          "textZh": "作品完成了。请签上名字，给星球取名，再说说最满意哪里、今天学会了什么、下次想调整哪里。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "作品完成了。请签上名字，给星球取名，再说说最满意哪里、今天学会了什么、下次想调整哪里。"
+        },
+        "recording": {
+          "mode": "optional_response",
+          "maxSeconds": 90,
+          "promptZh": "请介绍你的颜色星球和今天学到的方法。",
+          "startCueZh": "准备好后点麦克风。",
+          "stopAction": "done_button",
+          "allowMultipleTakes": true,
+          "includeInFeedback": true,
+          "category": "art_reflection"
+        },
+        "successCriteriaZh": "完成签名、作品名字，并说出至少一个具体方法。",
+        "completionCheckZh": "表达包含一个具体位置或具体方法，不只说“好看”。",
+        "commonMistakeZh": "只和范画比较，说自己画得像或不像。",
+        "hintLevels": [
+          {
+            "textZh": "可以从草稿修改、勾线、试色、平涂或补色里选一个今天学会的方法。"
+          },
+          {
+            "textZh": "最满意的一处可以说具体颜色、星球环或某个小纹理。"
+          }
+        ]
+      }
+    ],
+    "reflection": {
+      "nameArtwork": true,
+      "promptsZh": [
+        "我的星球叫什么名字？",
+        "我最满意作品的哪一处？",
+        "我今天学会了哪个具体方法？",
+        "我下次想调整哪里？"
+      ]
+    },
+    "completionCriteriaZh": "完成轻铅笔草稿、至少一次主动检查修改、干净勾线、三色试色、第一层平涂、干后补色、少量纹理和作品回看。",
+    "assetManifest": {
+      "packId": "art-01-color-planet-v2-assets",
+      "assets": [
+        {
+          "id": "art01_step01_finished_reference",
+          "fileName": "art01-step01-finished-reference.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step02_materials",
+          "fileName": "art01-step02-materials.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step03_warmup",
+          "fileName": "art01-step03-warmup.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step04_pencil_position",
+          "fileName": "art01-step04-pencil-position.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step05_pencil_big_shapes",
+          "fileName": "art01-step05-pencil-big-shapes.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step06_check_erase",
+          "fileName": "art01-step06-check-erase.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step07_outline",
+          "fileName": "art01-step07-outline.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step08_erase_pencil",
+          "fileName": "art01-step08-erase-pencil.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step09_color_plan",
+          "fileName": "art01-step09-color-plan.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step10_first_color",
+          "fileName": "art01-step10-first-color.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step11_drying",
+          "fileName": "art01-step11-drying.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step12_second_layer",
+          "fileName": "art01-step12-second-layer.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step13_details",
+          "fileName": "art01-step13-details.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step14_reflection",
+          "fileName": "art01-step14-reflection.webp",
+          "mime": "image/webp"
+        }
+      ]
+    },
+    "title": "我的颜色星球｜从铅笔草稿到丙烯马克笔成品",
+    "assetBasePath": "assets/art/color-planet-lesson-01"
+  }
+}

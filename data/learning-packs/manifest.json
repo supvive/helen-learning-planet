@@ -1,9 +1,23 @@
 {
   "version": 1,
   "timezone": "Asia/Shanghai",
-  "latestPackId": "2026-07-26-helen-day14-revision-e-open-books-art01",
-  "latest": "./helen-learning-pack-2026-07-26-day14-revision-e.json",
+  "latestPackId": "2026-07-27-helen-day15-revision-b-water-table-art01",
+  "latest": "./helen-learning-pack-2026-07-27-day15-revision-b.json",
   "packs": [
+    {
+      "packId": "2026-07-27-helen-day15-revision-b-water-table-art01",
+      "date": "2026-07-27",
+      "title": "Helen Day 15 Revision B｜桌边的一小片水、Hello School与颜色星球续课",
+      "availableSubjects": [
+        "chinese",
+        "english",
+        "art"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "day15-chinese-revision-b-hello-school-art01",
+      "publishedAt": "2026-07-27T00:00:00+08:00",
+      "path": "./helen-learning-pack-2026-07-27-day15-revision-b.json"
+    },
     {
       "packId": "2026-07-26-helen-day14-revision-e-open-books-art01",
       "date": "2026-07-26",
