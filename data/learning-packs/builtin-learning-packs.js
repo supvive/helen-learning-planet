@@ -2,8 +2,8 @@
 // This lets the app load authoritative built-in lessons when opened as file://.
 (function () {
   const bundle = {
-  "version": "v3.4.8",
-  "generatedAt": "2026-07-26T11:25:00+08:00",
+  "version": "v3.4.9",
+  "generatedAt": "2026-07-26T16:24:06+08:00",
   "source": "data/learning-packs/manifest.json",
   "manifest": {
     "version": 1,

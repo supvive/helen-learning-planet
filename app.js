@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.4.8",
-  buildId: "2026-07-26T11:25:00+08:00",
+  version: "v3.4.9",
+  buildId: "2026-07-26T16:24:06+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -77,6 +77,9 @@ const SUPPORTED_LEARNING_PACK_SCHEMAS = ["helen-learning-pack/1", "helen-learnin
 const LEARNING_PACK_STORAGE_KEY = "helen-learning-packs-v1";
 const LEARNING_PACK_MAX_BYTES = 100 * 1024;
 const BUILTIN_LEARNING_PACK_MANIFEST = "./data/learning-packs/manifest.json";
+const ENGLISH_LESSON_LIBRARY_URL = "./data/english-libraries/hello-school-32-lesson-library.json";
+const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
+const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
 const WITHDRAWN_BUILTIN_PACK_IDS = new Set([
   "2026-07-26-helen-day14-open-books-art01",
   "2026-07-26-helen-day14-revision-d-open-books-art01"
@@ -2423,6 +2426,8 @@ let dictionaryLookupToken = 0;
 let dictionarySearchTimer = 0;
 let generationInFlight = false;
 let englishProgress = loadEnglishProgress();
+let englishLessonLibrary = null;
+let englishLessonLibraryLoad = null;
 let englishLibrary = buildEnglishWordLibrary();
 let currentEnglishWord = null;
 let englishActionLocked = false;
@@ -2509,6 +2514,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLearningPackApiStatus();
   restoreLearningPackInput();
   loadBuiltinLearningPack();
+  loadEnglishLessonLibrary();
   startCourseTimerTicker();
   window.addEventListener("popstate", () => showView(getInitialView(), false));
   window.addEventListener("hashchange", () => showView(getInitialView(), false));
@@ -2573,7 +2579,11 @@ function loadState() {
     selectedLearningPackId: "",
     learningPackSelectionSource: "",
     lastAutoSelectedBuiltinPackId: "",
+    selectedEnglishLibraryId: "",
+    selectedEnglishLessonId: "",
+    lastAutoSelectedEnglishLessonId: "",
     builtinLearningPackLoad: null,
+    englishLessonLibraryLoad: null,
     lastLearningPackRaw: "",
     focusTitleOverride: "",
     answerPanelsHidden: false
@@ -3028,7 +3038,7 @@ function bindDailyPractice() {
 
 function bindDailyCoursePages() {
   document.addEventListener("click", (event) => {
-    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy]");
+    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy]");
     if (!target) return;
     if (target.dataset.courseSessionStart) startCourseSession(target.dataset.courseSessionStart);
     if (target.dataset.courseSessionReset) resetCourseSession(target.dataset.courseSessionReset);
@@ -3045,6 +3055,7 @@ function bindDailyCoursePages() {
     if (target.dataset.breakStart) startBreak(target.dataset.breakStart, Number(target.dataset.breakMinutes || 5));
     if (target.dataset.breakEnd) endBreak(target.dataset.breakEnd, "manual");
   if (target.dataset.englishAppComplete) completeEnglishAppStage(target.dataset.englishAppComplete);
+  if (target.dataset.englishLessonNav) selectRelativeEnglishLesson(target.dataset.englishLessonNav);
   if (target.dataset.artAudio) playArtNarration(target);
   if (target.dataset.artHint) revealArtHint(target);
   if (target.dataset.artImageRetry) retryArtImage(target);
@@ -3086,6 +3097,9 @@ function bindDailyCoursePages() {
     const target = event.target;
     if (target.matches?.("[data-course-ease], [data-course-hardest], [data-course-audio], [data-course-note]")) {
       updateCourseFeedbackField(target);
+    }
+    if (target.matches?.("[data-english-library-select]")) {
+      selectEnglishLibraryLesson(target.value);
     }
   });
 }
@@ -6139,6 +6153,217 @@ function renderBuiltinPackLoadNotice(pack = getSelectedLearningPack()) {
   `;
 }
 
+async function loadEnglishLessonLibrary() {
+  const isFileUrl = /^file:/i.test(location.protocol || location.href || "");
+  let fetchError = null;
+  if (!isFileUrl && typeof fetch === "function") {
+    try {
+      const response = await fetch(withBuiltinCacheBust(ENGLISH_LESSON_LIBRARY_URL), { cache: "no-store" });
+      if (!response.ok) throw new Error(`library ${response.status}`);
+      importEnglishLessonLibrary(await response.json(), { source: "fetch" });
+      return;
+    } catch (error) {
+      fetchError = error;
+    }
+  }
+  const bundle = getEnglishLessonLibraryBundle();
+  const bundledLibrary = bundle?.libraries?.[bundle.latestLibraryId || HELLO_SCHOOL_LIBRARY_ID] || bundle?.library;
+  if (bundledLibrary) {
+    try {
+      importEnglishLessonLibrary(bundledLibrary, {
+        source: isFileUrl ? "file_bundle" : "bundle_fallback",
+        fallbackReason: fetchError?.message || ""
+      });
+      return;
+    } catch (error) {
+      englishLessonLibraryLoad = { ok: false, stage: "bundle_error", message: error.message || "英语课程库读取失败" };
+    }
+  } else {
+    englishLessonLibraryLoad = {
+      ok: false,
+      stage: isFileUrl ? "file_bundle_unavailable" : "load_error",
+      message: fetchError ? `网络读取失败：${fetchError.message}；页面内置英语课程库不可用。` : "页面内置英语课程库不可用。"
+    };
+  }
+  state.englishLessonLibraryLoad = englishLessonLibraryLoad;
+  saveState();
+  rerenderCourseViews();
+}
+
+function getEnglishLessonLibraryBundle() {
+  const root = typeof globalThis !== "undefined" ? globalThis : window;
+  const bundle = root?.HELEN_ENGLISH_LESSON_LIBRARIES || root?.window?.HELEN_ENGLISH_LESSON_LIBRARIES;
+  if (!bundle || typeof bundle !== "object") return null;
+  return bundle;
+}
+
+function importEnglishLessonLibrary(library, options = {}) {
+  const normalized = normalizeEnglishLessonLibrary(library);
+  englishLessonLibrary = normalized;
+  englishLessonLibraryLoad = {
+    ok: true,
+    stage: options.source || "complete",
+    libraryId: normalized.libraryId,
+    currentLessonId: normalized.currentLessonId,
+    loadedAt: new Date().toISOString()
+  };
+  if (options.fallbackReason) englishLessonLibraryLoad.fallbackReason = safePlainText(options.fallbackReason, 220);
+  state.englishLessonLibraryLoad = englishLessonLibraryLoad;
+  state.selectedEnglishLibraryId = normalized.libraryId;
+  const selectedExists = normalized.lessons.some((lesson) => lesson.lessonId === state.selectedEnglishLessonId);
+  if (!selectedExists || state.lastAutoSelectedEnglishLessonId === state.selectedEnglishLessonId || !state.selectedEnglishLessonId) {
+    state.selectedEnglishLessonId = normalized.currentLessonId || HELLO_SCHOOL_CURRENT_LESSON_ID;
+    state.lastAutoSelectedEnglishLessonId = state.selectedEnglishLessonId;
+  }
+  englishLibrary = buildEnglishWordLibrary();
+  initializeCourseProgress(getActiveEnglishPack());
+  saveState();
+  renderEnglishRecognition();
+  renderEnglishBlocks();
+  rerenderCourseViews();
+}
+
+function normalizeEnglishLessonLibrary(library) {
+  const source = structuredCloneSafe(library || {});
+  if (source.schemaVersion !== "hello-school-lesson-library/1") throw new Error("英语课程库 schema 不正确");
+  if (source.contentPolicy?.authority !== "codex-course-designer") throw new Error("英语课程库 authority 不正确");
+  if (source.contentPolicy?.allowModelGeneration !== false) throw new Error("英语课程库不得允许模型生成");
+  const lessons = Array.isArray(source.lessons) ? source.lessons : [];
+  if (source.libraryId !== HELLO_SCHOOL_LIBRARY_ID || lessons.length !== 32) throw new Error("英语课程库不是 Story 3 的32课");
+  lessons.forEach((entry, index) => {
+    const lesson = entry.lesson || {};
+    const steps = lesson.steps || [];
+    if (!entry.lessonId || !lesson.lessonId) throw new Error(`英语第${index + 1}课缺少 lessonId`);
+    if (steps.length !== 7) throw new Error(`英语第${index + 1}课不是7步`);
+    if (!lesson.anchorSentence || !lesson.translationZh) throw new Error(`英语第${index + 1}课缺少目标句`);
+    if (!lesson.allowedModes?.includes("light") || !lesson.allowedModes?.includes("standard")) throw new Error(`英语第${index + 1}课缺少轻量/标准模式`);
+    steps.forEach((step) => {
+      if (!step.childVisible?.instructionZh && !step.childVisible?.actionsZh?.length && !step.childVisible?.blocks?.length && !step.childVisible?.items?.length) {
+        throw new Error(`英语第${index + 1}课 ${step.id} 缺少 childVisible`);
+      }
+    });
+  });
+  return source;
+}
+
+function getEnglishLessonLibrary() {
+  return englishLessonLibrary;
+}
+
+function getSelectedEnglishLibraryLesson() {
+  const library = getEnglishLessonLibrary();
+  if (!library?.lessons?.length) return null;
+  const lessonId = state.selectedEnglishLessonId || library.currentLessonId || HELLO_SCHOOL_CURRENT_LESSON_ID;
+  return library.lessons.find((lesson) => lesson.lessonId === lessonId) || library.lessons.find((lesson) => lesson.lessonId === library.currentLessonId) || library.lessons[0];
+}
+
+function getEnglishLessonPackId(library, lessonRecord) {
+  return `english-library:${safeId(library?.libraryId || HELLO_SCHOOL_LIBRARY_ID)}:${safeId(lessonRecord?.lessonId || HELLO_SCHOOL_CURRENT_LESSON_ID)}`;
+}
+
+function getActiveEnglishPack() {
+  const library = getEnglishLessonLibrary();
+  const lessonRecord = getSelectedEnglishLibraryLesson();
+  if (!library || !lessonRecord) return getLatestLearningPack();
+  return buildEnglishLessonPackFromLibraryLesson(library, lessonRecord);
+}
+
+function getActivePackForCourse(course) {
+  return course === "english" ? getActiveEnglishPack() : getLatestLearningPack();
+}
+
+function getActiveProgressForCourse(course) {
+  const pack = getActivePackForCourse(course);
+  return pack ? getCourseProgress(pack.packId) : getCourseProgress();
+}
+
+function getCourseProgressForKey(key) {
+  return getActiveProgressForCourse(getCourseKindFromKey(key));
+}
+
+function buildEnglishLessonPackFromLibraryLesson(library, lessonRecord) {
+  const lesson = structuredCloneSafe(lessonRecord.lesson || {});
+  lesson.lessonId = lesson.lessonId || lessonRecord.lessonId;
+  lesson.anchorSentence = lesson.anchorSentence || lessonRecord.anchorSentence || "";
+  lesson.translationZh = lesson.translationZh || lessonRecord.translationZh || "";
+  lesson.allowedModes = lesson.allowedModes?.length ? lesson.allowedModes : ["light", "standard"];
+  lesson.defaultMode = lesson.defaultMode || "light";
+  lesson.minutesByMode ||= lessonRecord.lesson?.minutesByMode || { light: 18, standard: 21 };
+  lesson.steps = (lesson.steps || []).map((step) => ({
+    ...step,
+    items: step.items?.length ? step.items : step.childVisible?.items || [],
+    blocks: step.blocks?.length ? step.blocks : step.childVisible?.blocks || []
+  }));
+  const words = (lessonRecord.wordFocus || []).map((word) => ({
+    id: normalizeEnglishWord(word),
+    text: word,
+    source: library.libraryId,
+    status: "story3_lesson_focus"
+  }));
+  return {
+    schemaVersion: "helen-learning-pack/2",
+    packId: getEnglishLessonPackId(library, lessonRecord),
+    date: "english-story3",
+    title: `${library.storyTitle || "Hello, School!"} · Lesson ${lessonRecord.lessonIndex || ""}`,
+    revision: library.contentRevision || "",
+    loadMode: lesson.defaultMode,
+    contentPolicy: FULL_COURSE_CONTENT_POLICY,
+    sharedPlan: {
+      defaultEnglishMode: lesson.defaultMode,
+      plannedEnglishMinutes: getLessonModeTotalMinutes(lesson, lesson.defaultMode),
+      sequenceNoteZh: "字母星球 Story 3 独立选课，不随中文日期完成。"
+    },
+    chinese: { courseId: "", characters: [], words: [], confusedPairs: [], lesson: null },
+    english: {
+      courseId: library.storyId || "story_primary_school",
+      storyId: library.storyId || "",
+      libraryId: library.libraryId,
+      lessonIndex: lessonRecord.lessonIndex,
+      sourceSentenceId: lessonRecord.sourceSentenceId || "",
+      progressSeedStatus: lessonRecord.progressSeedStatus || "",
+      previousLessonId: lessonRecord.previousLessonId || "",
+      nextLessonId: lessonRecord.nextLessonId || "",
+      storyTitle: library.storyTitle || "",
+      anchorSentence: lesson.anchorSentence,
+      translationZh: lesson.translationZh,
+      words,
+      pattern: { blocks: lessonRecord.solutionBlocks || lessonRecord.blocks || splitSentenceToBlocks(lesson.anchorSentence) },
+      lesson
+    },
+    art: null
+  };
+}
+
+function getLessonModeTotalMinutes(lesson, mode) {
+  if (lesson?.minutesByMode?.[mode]) return Number(lesson.minutesByMode[mode]);
+  return (lesson?.steps || []).reduce((sum, step) => sum + getStepMinutes(step, mode), 0);
+}
+
+function selectEnglishLibraryLesson(lessonId) {
+  const library = getEnglishLessonLibrary();
+  if (!library?.lessons?.some((lesson) => lesson.lessonId === lessonId)) return false;
+  state.selectedEnglishLibraryId = library.libraryId;
+  state.selectedEnglishLessonId = lessonId;
+  if (lessonId !== library.currentLessonId) state.lastAutoSelectedEnglishLessonId = "";
+  initializeCourseProgress(getActiveEnglishPack());
+  saveState();
+  renderTodayDashboard();
+  renderPlanetOverview();
+  renderPlanetPages();
+  renderEnglishLesson();
+  updateCourseTimerUi();
+  return true;
+}
+
+function selectRelativeEnglishLesson(direction) {
+  const library = getEnglishLessonLibrary();
+  const current = getSelectedEnglishLibraryLesson();
+  if (!library || !current) return false;
+  if (direction === "current") return selectEnglishLibraryLesson(library.currentLessonId || HELLO_SCHOOL_CURRENT_LESSON_ID);
+  const nextId = direction === "prev" ? current.previousLessonId : current.nextLessonId;
+  return nextId ? selectEnglishLibraryLesson(nextId) : false;
+}
+
 function shouldAutoSelectBuiltinRevision(selectedPack, latestPack) {
   if (!selectedPack || !latestPack) return false;
   if (selectedPack.packId === latestPack.packId) return false;
@@ -7151,7 +7376,7 @@ function selectLatestLearningPackForPrimaryCourse() {
 }
 
 function getDynamicEnglishWordsFromPacks() {
-  return Object.values(state.learningPacks || {}).flatMap((record) => {
+  const dailyWords = Object.values(state.learningPacks || {}).flatMap((record) => {
     const pack = record.data || record;
     const source = `daily_pack:${pack.packId}`;
     return (pack.english?.words || []).map((item) => ({
@@ -7163,15 +7388,25 @@ function getDynamicEnglishWordsFromPacks() {
       translationZh: pack.english?.translationZh || ""
     }));
   });
+  const libraryWords = (getEnglishLessonLibrary()?.lessons || []).flatMap((lesson) => (lesson.wordFocus || []).map((word) => ({
+    id: normalizeEnglishWord(word),
+    text: word,
+    source: `english_library:${lesson.lessonId}`,
+    packId: getEnglishLessonPackId(getEnglishLessonLibrary(), lesson),
+    packDate: "english-story3",
+    anchorSentence: lesson.anchorSentence || "",
+    translationZh: lesson.translationZh || ""
+  })));
+  return [...dailyWords, ...libraryWords];
 }
 
 function getTodayPackWordIds() {
-  const pack = getLatestLearningPack();
+  const pack = getActiveEnglishPack() || getLatestLearningPack();
   return new Set((pack?.english?.words || []).map((item) => item.id || normalizeEnglishWord(item.text)));
 }
 
 function getTodayPackBlockPattern() {
-  const pack = getLatestLearningPack();
+  const pack = getActiveEnglishPack() || getLatestLearningPack();
   if (!pack?.english?.anchorSentence) return null;
   const patternId = `daily_pack_${safeId(pack.packId)}`;
   const blocks = pack.english.pattern?.blocks?.length ? pack.english.pattern.blocks : splitSentenceToBlocks(pack.english.anchorSentence);
@@ -7282,9 +7517,11 @@ function renderTodayDashboard() {
   const progress = getCourseProgress(pack.packId);
   const chineseDone = countCompletedCourseItems(progress.chinese.sections);
   const chineseTotal = getChineseLessonSections(pack).length;
-  const englishDone = countCompletedCourseItems(progress.english.steps);
-  const englishTotal = getEnglishLessonSteps(pack).length;
-  const selectedMode = getSelectedEnglishMode(pack);
+  const englishPack = getActiveEnglishPack() || pack;
+  const englishProgressState = getCourseProgress(englishPack.packId);
+  const englishDone = countCompletedCourseItems(englishProgressState.english.steps);
+  const englishTotal = getEnglishLessonSteps(englishPack).length;
+  const selectedMode = getSelectedEnglishMode(englishPack);
   const readiness = getFullCourseReadiness(pack);
   $("#todayDashboardTitle").textContent = `${pack.date} · ${pack.title || "Helen 每日学习"}`;
   $("#todayDashboardSummary").innerHTML = `
@@ -7292,7 +7529,7 @@ function renderTodayDashboard() {
       <div><strong>日期</strong><span>${escapeHtml(pack.date)}</span></div>
       <div><strong>课程标题</strong><span>${escapeHtml(pack.title || pack.chinese?.lesson?.title || "今日学习")}</span></div>
       <div><strong>中文预计</strong><span>${getPlannedChineseMinutes(pack)} 分钟</span></div>
-      <div><strong>英语模式</strong><span>${escapeHtml(englishModeLabel(selectedMode))} · ${getPlannedEnglishMinutes(pack, selectedMode)} 分钟</span></div>
+      <div><strong>英语模式</strong><span>${escapeHtml(englishModeLabel(selectedMode))} · ${getPlannedEnglishMinutes(englishPack, selectedMode)} 分钟</span></div>
       <div><strong>共同负荷</strong><span>${escapeHtml(loadModeLabel(pack.loadMode))}</span></div>
       <div><strong>完成进度</strong><span>中文 ${chineseDone}/${chineseTotal} · 英语 ${englishDone}/${englishTotal}</span></div>
     </div>
@@ -7348,9 +7585,13 @@ function getPlanetStatus(kind, pack) {
     return { hasCourse: Boolean(pack.chinese?.lesson || pack.chinese?.characters?.length || pack.chinese?.words?.length), minutes: getPlannedChineseMinutes(pack), progress: `${done}/${total}` };
   }
   if (kind === "english") {
-    const total = getEnglishLessonSteps(pack).length;
-    const done = countCompletedCourseItems(progress.english.steps);
-    return { hasCourse: Boolean(pack.english?.lesson || pack.english?.words?.length || pack.english?.anchorSentence), minutes: getPlannedEnglishMinutes(pack), progress: `${done}/${total}` };
+    const englishPack = getActiveEnglishPack() || pack;
+    const englishProgressState = getCourseProgress(englishPack.packId);
+    const total = getEnglishLessonSteps(englishPack).length;
+    const done = countCompletedCourseItems(englishProgressState.english.steps);
+    const lesson = getSelectedEnglishLibraryLesson();
+    const label = lesson?.lessonIndex ? `第${lesson.lessonIndex}课 ${done}/${total}` : `${done}/${total}`;
+    return { hasCourse: Boolean(englishPack.english?.lesson || englishPack.english?.words?.length || englishPack.english?.anchorSentence), minutes: getPlannedEnglishMinutes(englishPack), progress: label };
   }
   if (kind === "art") {
     const total = getArtLessonSteps(pack).length;
@@ -7455,10 +7696,10 @@ function renderChineseLesson() {
 }
 
 function renderEnglishLesson() {
-  const pack = getLatestLearningPack();
+  const pack = getActiveEnglishPack();
   if (!$("#englishLessonHeader")) return;
   if (!pack) {
-    $("#englishLessonHeader").innerHTML = renderEmptyCourse("请先导入今日学习包");
+    $("#englishLessonHeader").innerHTML = renderEmptyCourse("英语课程库暂未准备好");
     $("#englishListeningZone").innerHTML = "";
     $("#englishLessonSteps").innerHTML = "";
     return;
@@ -7475,14 +7716,18 @@ function renderEnglishLesson() {
   const selectedMode = getSelectedEnglishMode(pack);
   const suggestedMode = getSuggestedEnglishMode(pack, progress);
   const steps = getEnglishLessonSteps(pack);
+  const library = getEnglishLessonLibrary();
+  const lessonRecord = getSelectedEnglishLibraryLesson();
   $("#englishLessonHeader").innerHTML = `
-    <div class="course-pack-load-status">${renderBuiltinPackLoadNotice(pack)}</div>
-    ${renderDateSwitcher()}
+    <div class="course-pack-load-status">${renderEnglishLibraryLoadNotice()}</div>
+    ${renderEnglishLessonSwitcher(library, lessonRecord)}
+    ${renderEnglishLessonViewingMeta(library, lessonRecord)}
     <div class="course-topline">
       <div>
         <p class="eyebrow">字母星球 / Letter Planet</p>
         <h2>${escapeHtml(pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "今日英语")}</h2>
         <p class="pack-muted">${escapeHtml(pack.english?.lesson?.translationZh || pack.english?.translationZh || "")}</p>
+        <p class="pack-muted">${escapeHtml(library?.storyTitle || "Hello, School!")} · 第 ${escapeHtml(lessonRecord?.lessonIndex || "")} 课 · ${escapeHtml(englishSeedStatusLabel(lessonRecord?.progressSeedStatus))}</p>
         <p class="pack-muted">建议 ${escapeHtml(englishModeLabel(suggestedMode))} · 当前 ${escapeHtml(englishModeLabel(selectedMode))} · 预计 ${getPlannedEnglishMinutes(pack, selectedMode)} 分钟</p>
       </div>
       <div class="mode-picker">${getAllowedEnglishModes(pack).map((mode) => `<button class="button ${mode === selectedMode ? "primary" : "secondary"} compact-button" data-english-mode="${escapeHtml(mode)}" type="button">${escapeHtml(englishModeLabel(mode))}</button>`).join("")}</div>
@@ -7497,6 +7742,59 @@ function renderEnglishLesson() {
   const websiteSteps = steps.filter((step) => !listeningSteps.includes(step));
   $("#englishListeningZone").innerHTML = renderListeningZone(pack, listeningSteps, selectedMode, progress);
   $("#englishLessonSteps").innerHTML = websiteSteps.map((step, index) => renderEnglishStep(pack, step, index + listeningSteps.length, selectedMode, progress)).join("") + renderCourseEndFeedback("english", progress.english, steps);
+}
+
+function renderEnglishLibraryLoadNotice() {
+  const load = englishLessonLibraryLoad || state.englishLessonLibraryLoad;
+  if (!load) return "";
+  if (load.ok) return "";
+  return `<div class="pack-load-notice error" role="alert"><strong>英语课程库读取失败</strong><span>${escapeHtml(load.message || "无法读取 Story 3 课程库。")}</span></div>`;
+}
+
+function renderEnglishLessonSwitcher(library, lessonRecord) {
+  if (!library?.lessons?.length || !lessonRecord) return "";
+  return `
+    <div class="date-switcher english-lesson-switcher">
+      <button class="button ghost compact-button" data-english-lesson-nav="prev" ${lessonRecord.previousLessonId ? "" : "disabled"} type="button">← 上一课</button>
+      <label class="english-lesson-select-label">
+        <span>Story 3 选课</span>
+        <select data-english-library-select>
+          ${library.lessons.map((lesson) => `<option value="${escapeHtml(lesson.lessonId)}" ${lesson.lessonId === lessonRecord.lessonId ? "selected" : ""}>${escapeHtml(`第${lesson.lessonIndex}课 · ${lesson.anchorSentence}`)}</option>`).join("")}
+        </select>
+      </label>
+      <button class="button secondary compact-button" data-english-lesson-nav="current" type="button">回到第26课</button>
+      <button class="button ghost compact-button" data-english-lesson-nav="next" ${lessonRecord.nextLessonId ? "" : "disabled"} type="button">下一课 →</button>
+    </div>
+  `;
+}
+
+function renderEnglishLessonViewingMeta(library, lessonRecord) {
+  if (!library?.lessons?.length || !lessonRecord) return "";
+  const anchor = getEnglishCurrentAnchorLesson(library);
+  return `
+    <div class="pack-load-notice ok english-lesson-meta">
+      <span>正在查看：${escapeHtml(formatEnglishLessonLine(lessonRecord))}</span>
+      <span>当前学习定位：${escapeHtml(formatEnglishLessonLine(anchor))}</span>
+    </div>
+  `;
+}
+
+function getEnglishCurrentAnchorLesson(library = getEnglishLessonLibrary()) {
+  if (!library?.lessons?.length) return null;
+  return library.lessons.find((lesson) => lesson.lessonId === (library.currentLessonId || HELLO_SCHOOL_CURRENT_LESSON_ID)) || library.lessons.find((lesson) => lesson.lessonId === HELLO_SCHOOL_CURRENT_LESSON_ID) || library.lessons[0];
+}
+
+function formatEnglishLessonLine(lessonRecord) {
+  if (!lessonRecord) return "";
+  return `第${lessonRecord.lessonIndex || ""}课 · ${lessonRecord.anchorSentence || lessonRecord.lesson?.anchorSentence || ""}`;
+}
+
+function englishSeedStatusLabel(status = "") {
+  return {
+    history_learned_unverified: "历史已学待核验",
+    current_confirmed: "当前定位",
+    future_not_started: "未来未开始"
+  }[status] || status || "未标记";
 }
 
 function renderArtLesson() {
@@ -8243,7 +8541,7 @@ function renderListeningZone(pack, steps, mode, progress) {
       </div>
       <div class="course-app-path"><strong>App路径</strong><span>${escapeHtml(renderAppPath(pack))}</span></div>
       <ol class="app-stage-list">
-        ${steps.map((step) => `<li><strong>${escapeHtml(step.titleZh)}</strong><span>${escapeHtml(step.parentSaysZh || step.actionsZh?.[0] || "")}</span></li>`).join("")}
+        ${steps.map((step) => `<li><strong>${escapeHtml(step.titleZh)}</strong><span>${escapeHtml(getEnglishStepInstructionText(step))}</span></li>`).join("")}
       </ol>
       <div class="actions compact">
         <button class="button success compact-button" data-english-app-complete="${escapeHtml(key)}" type="button">${itemProgress.finishedAt ? "App阶段已完成" : "已完成App阶段，继续"}<br /><span>Continue</span></button>
@@ -8258,7 +8556,7 @@ function renderEnglishStep(pack, step, index, mode, progress, compact = false) {
   if (step.type === "break" || step.id === "break") return renderBreakCard(key, step.titleZh || "休息一下", getStepMinutes(step, mode) || 5, itemProgress, step.parentSaysZh || step.actionsZh?.[0] || "");
   const body = renderEnglishStepBody(pack, step, mode);
   const assessment = /exit|check|reading|assessment/i.test(step.id || step.titleZh || "");
-  const readText = assessment ? (step.parentSaysZh || step.actionsZh?.[0] || step.titleZh) : [step.titleZh, step.parentSaysZh, ...(step.actionsZh || [])].filter(Boolean).join("。");
+  const readText = [step.titleZh, getEnglishStepInstructionText(step), ...(step.childVisible?.actionsZh || step.actionsZh || [])].filter(Boolean).join("。");
   const readAloud = normalizeReadAloudConfig(step.readAloud, readText, assessment ? "instruction_only" : "full");
   return `
     <article class="${compact ? "course-mini-step" : "course-card"}" data-course-card="${escapeHtml(key)}">
@@ -8275,10 +8573,23 @@ function renderEnglishStep(pack, step, index, mode, progress, compact = false) {
 function renderEnglishStepBody(pack, step, mode) {
   if (step.id === "blocks" || step.blocks?.length || step.acceptedAnswers?.length) return renderCourseBlocks(step, pack);
   if (step.id === "phonics" || step.focus) {
-    return `<div class="phonics-panel"><strong>${escapeHtml(step.focus || "拼读小目标")}</strong><div class="course-chip-list">${(step.items || []).map((item) => `<span>${escapeHtml(item.text || item)}</span>`).join("")}</div><p>${escapeHtml(step.successCriteriaZh || "读整词即可")}</p></div>`;
+    const child = step.childVisible || {};
+    const items = child.items?.length ? child.items : step.items || [];
+    return `<div class="phonics-panel"><strong>${escapeHtml(step.focus || "声音发现")}</strong><p>${escapeHtml(child.instructionZh || "听读整词即可，不要求拼写。")}</p><div class="course-chip-list">${items.map((item) => `<span>${escapeHtml(item.text || item)}</span>`).join("")}</div></div>`;
   }
   if (step.id === "dialogue_exit" || step.dialogue?.length) {
-    return `<div class="dialogue-panel">${(step.dialogue || []).map((line) => `<p><strong>${escapeHtml(line.speaker === "child" ? "孩子" : "家长")}：</strong>${escapeHtml(line.text)}</p>`).join("")}${step.exitChecks?.length ? `<div class="course-chip-list">${step.exitChecks.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>` : ""}${step.expectedAnswer ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(step.id)}" type="button">查看参考<br /><span>Answer</span></button><p class="course-answer" data-course-answer="${escapeHtml(step.id)}" hidden>${escapeHtml(step.expectedAnswer)}</p>` : ""}</div>`;
+    const child = step.childVisible || {};
+    const actions = child.actionsZh || [];
+    return `<div class="dialogue-panel"><p>${escapeHtml(child.instructionZh || "听一句话并自然回答。")}</p>${actions.length ? `<ul>${actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}</div>`;
+  }
+  const child = step.childVisible || {};
+  if (child.instructionZh || child.actionsZh?.length) {
+    return `
+      <div class="course-instructions">
+        ${child.instructionZh ? `<p>${escapeHtml(child.instructionZh)}</p>` : ""}
+        ${child.actionsZh?.length ? `<ul>${child.actionsZh.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+      </div>
+    `;
   }
   return `
     <div class="course-instructions">
@@ -8296,7 +8607,7 @@ function renderCourseBlocks(step, pack) {
   const blocks = getCourseBlockPool(step, pack);
   return `
     <div class="course-block-builder">
-      <p>${escapeHtml(step.parentSaysZh || "点击积木，拼出今天的句子")}</p>
+      <p>${escapeHtml(step.childVisible?.instructionZh || "点击积木，拼出今天的句子")}</p>
       <div class="course-block-pool">
         ${blocks.map((block, index) => selected.includes(index) ? "" : `<button class="block-chip" data-course-block="${escapeHtml(key)}" data-block-index="${index}" type="button">${escapeHtml(block)}</button>`).join("")}
       </div>
@@ -8307,9 +8618,15 @@ function renderCourseBlocks(step, pack) {
         <button class="button primary compact-button" data-course-submit-blocks="${escapeHtml(key)}" type="button">提交<br /><span>Submit</span></button>
         <button class="button secondary compact-button" data-course-reset-blocks="${escapeHtml(key)}" type="button">重置<br /><span>Reset</span></button>
       </div>
+      ${step.childVisible?.transferCueZh ? `<p class="pack-muted">${escapeHtml(step.childVisible.transferCueZh)}</p>` : ""}
       <p class="course-block-feedback" data-block-feedback="${escapeHtml(key)}">${escapeHtml(progress.english.steps[key]?.blockFeedback || "")}</p>
     </div>
   `;
+}
+
+function getEnglishStepInstructionText(step) {
+  const child = step?.childVisible || {};
+  return child.instructionZh || child.actionsZh?.[0] || step.actionsZh?.[0] || step.titleZh || "";
 }
 
 function renderCourseItemControls(key, itemProgress) {
@@ -8593,7 +8910,7 @@ function renderCourseMissingBox(missing, title = "今天的学习包内容不完
 }
 
 function startCourseItem(key) {
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
   const bucket = getCourseBucket(progress, key);
   const item = bucket[key] || {};
   if (item.runningSince) return;
@@ -8605,13 +8922,13 @@ function startCourseItem(key) {
 }
 
 async function startCourseSession(kind, options = {}) {
-  const progress = getCourseProgress();
+  const progress = getActiveProgressForCourse(kind);
   const side = progress?.[kind];
   if (!side) return;
   normalizeCourseTimer(side);
   if (side.isRunning) return;
   const now = Date.now();
-  pauseOtherRunningCourses(progress, kind, "switched_course");
+  pauseOtherRunningCoursesAcrossProgress(progress, kind, "switched_course", { skipRecording: true });
   side.startedAt ||= new Date(now).toISOString();
   side.accumulatedMs = Number(side.accumulatedMs || 0);
   side.isRunning = true;
@@ -8647,7 +8964,7 @@ function normalizeCourseTimer(side) {
 }
 
 function pauseCourseItem(key) {
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
   const bucket = getCourseBucket(progress, key);
   const item = bucket[key] || {};
   if (!item.runningSince) return;
@@ -8709,7 +9026,7 @@ function endBreak(key, reason = "manual") {
 }
 
 function completeCourseItem(key) {
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
   if (isCourseItemLocked(key, progress)) return;
   const bucket = getCourseBucket(progress, key);
   const item = bucket[key] || {};
@@ -8720,11 +9037,33 @@ function completeCourseItem(key) {
     return;
   }
   const elapsedMs = (item.elapsedMs || 0) + (item.runningSince ? Date.now() - item.runningSince : 0);
-  bucket[key] = { ...item, elapsedMs, runningSince: null, finishedAt: new Date().toISOString(), result: item.result || "independent" };
+  const finishedAt = new Date().toISOString();
+  const nextItem = { ...item, elapsedMs, runningSince: null, finishedAt, result: item.result || "independent" };
+  if (key.startsWith("english:")) appendEnglishStepAttempt(nextItem, key, progress, finishedAt);
+  bucket[key] = nextItem;
   if (key.startsWith("chinese:")) progress.chinese.finishedAt = maybeAllDone(progress.chinese.sections) ? new Date().toISOString() : progress.chinese.finishedAt;
   if (key.startsWith("english:")) progress.english.finishedAt = maybeAllDone(progress.english.steps) ? new Date().toISOString() : progress.english.finishedAt;
   saveState();
   rerenderCourseViews();
+}
+
+function appendEnglishStepAttempt(item, key, progress, completedAt) {
+  const pack = getActiveEnglishPack();
+  const lesson = getSelectedEnglishLibraryLesson();
+  item.attemptHistory ||= [];
+  item.attemptHistory.push({
+    attemptId: `${key}:${Date.now().toString(36)}:${item.attemptHistory.length + 1}`,
+    packId: pack?.packId || progress?.packId || "",
+    libraryId: pack?.english?.libraryId || "",
+    lessonId: pack?.english?.lesson?.lessonId || lesson?.lessonId || "",
+    lessonIndex: lesson?.lessonIndex || pack?.english?.lessonIndex || null,
+    stepId: key.replace(/^english:/, ""),
+    mode: progress?.english?.selectedMode || "",
+    result: item.result || "independent",
+    elapsedMs: item.elapsedMs || 0,
+    completedAt
+  });
+  item.attempts = item.attemptHistory.length;
 }
 
 function confirmChineseObjectiveSection(sectionKey, item, progress) {
@@ -8840,7 +9179,7 @@ function toggleChineseOralConcept(button) {
 }
 
 function completeEnglishAppStage(key = "english:app_stage") {
-  const pack = getLatestLearningPack();
+  const pack = getActiveEnglishPack();
   const progress = getCourseProgress(pack?.packId);
   if (!progress) return;
   const now = new Date().toISOString();
@@ -8851,6 +9190,7 @@ function completeEnglishAppStage(key = "english:app_stage") {
     finishedAt: now,
     result: "independent"
   };
+  appendEnglishStepAttempt(progress.english.steps[key], key, progress, now);
   listeningSteps.forEach((step) => {
     const stepKey = `english:${step.id}`;
     progress.english.steps[stepKey] = {
@@ -8860,6 +9200,7 @@ function completeEnglishAppStage(key = "english:app_stage") {
       result: progress.english.steps[stepKey]?.result || "independent",
       completedViaAppStage: true
     };
+    appendEnglishStepAttempt(progress.english.steps[stepKey], stepKey, progress, now);
   });
   saveState();
   renderEnglishLesson();
@@ -8898,6 +9239,15 @@ function pauseOtherRunningCourses(progress, activeKind, reason = "switched_cours
   });
 }
 
+function pauseOtherRunningCoursesAcrossProgress(activeProgress, activeKind, reason = "switched_course", options = {}) {
+  Object.values(state.courseProgress || {}).forEach((progress) => {
+    ["chinese", "english", "art"].forEach((course) => {
+      if (progress === activeProgress && course === activeKind) return;
+      if (progress?.[course]?.isRunning || hasRunningCourseItems(progress?.[course])) pauseCourseSide(progress, course, reason, options);
+    });
+  });
+}
+
 function pauseAllRunningCourseTimers(reason = "page_hidden", options = {}) {
   let changed = false;
   Object.values(state.courseProgress || {}).forEach((progress) => {
@@ -8920,7 +9270,7 @@ function hasRunningCourseItems(side) {
 }
 
 function pauseCourse(kind) {
-  const progress = getCourseProgress();
+  const progress = getActiveProgressForCourse(kind);
   if (!progress?.[kind]) return;
   pauseCourseSide(progress, kind, "manual");
   saveState();
@@ -8929,7 +9279,7 @@ function pauseCourse(kind) {
 }
 
 async function resetCourseSession(kind) {
-  const pack = getLatestLearningPack();
+  const pack = getActivePackForCourse(kind);
   const progress = pack ? getCourseProgress(pack.packId) : getCourseProgress();
   if (!pack || !progress?.[kind]) return false;
   const label = courseLabel(kind);
@@ -8951,7 +9301,7 @@ async function resetCourseSession(kind) {
 }
 
 function endCourse(kind, status = "stopped_early") {
-  const progress = getCourseProgress();
+  const progress = getActiveProgressForCourse(kind);
   const side = progress?.[kind];
   if (!side) return;
   normalizeCourseTimer(side);
@@ -8961,7 +9311,7 @@ function endCourse(kind, status = "stopped_early") {
     side.isRunning = false;
     side.runningSince = null;
   }
-  side.sessionStatus = countPendingActivities(kind).pending.length ? status : "completed";
+  side.sessionStatus = countPendingActivities(kind, getActivePackForCourse(kind), progress).pending.length ? status : "completed";
   side.finishedAt = new Date().toISOString();
   if (activeRecording?.course === kind) stopActiveRecording("complete");
   saveState();
@@ -8971,7 +9321,7 @@ function endCourse(kind, status = "stopped_early") {
 }
 
 function setCourseItemResult(key, result, hintLevelValue = 0) {
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
   if (isCourseItemLocked(key, progress)) return;
   const bucket = getCourseBucket(progress, key);
   const hintLevel = Number(hintLevelValue || 0);
@@ -9544,7 +9894,7 @@ function revealArtHint(button) {
 }
 
 function setEnglishCourseMode(mode) {
-  const pack = getLatestLearningPack();
+  const pack = getActiveEnglishPack();
   if (!pack || !getAllowedEnglishModes(pack).includes(mode)) return;
   const progress = getCourseProgress(pack.packId);
   progress.english.selectedMode = mode;
@@ -9625,7 +9975,7 @@ function formatElapsed(ms) {
 }
 
 function getCourseTimerState(kind) {
-  const pack = getLatestLearningPack();
+  const pack = getActivePackForCourse(kind);
   const progress = pack ? getCourseProgress(pack.packId) : getCourseProgress();
   const side = progress?.[kind];
   normalizeCourseTimer(side);
@@ -9766,10 +10116,10 @@ function shouldShowCourseFloatingTimer(root, viewportHeight = window.innerHeight
 }
 
 function updateCourseFeedbackField(target) {
-  const pack = getLatestLearningPack();
+  const kind = target.dataset.courseEase || target.dataset.courseHardest || target.dataset.courseAudio || target.dataset.courseNote;
+  const pack = getActivePackForCourse(kind);
   if (!pack) return;
   const progress = getCourseProgress(pack.packId);
-  const kind = target.dataset.courseEase || target.dataset.courseHardest || target.dataset.courseAudio || target.dataset.courseNote;
   const bucket = kind === "english" ? progress.english : kind === "art" ? progress.art : progress.chinese;
   if (target.dataset.courseEase) bucket[target.dataset.easeKind] = target.value === "" ? null : clampNumber(target.value, 0, 10, null);
   if (target.dataset.courseHardest) {
@@ -9792,14 +10142,14 @@ function updateCourseFeedbackField(target) {
 }
 
 function getCourseBlockPool(step, pack) {
-  const required = step.blocks?.length ? step.blocks : pack.english?.pattern?.blocks || splitSentenceToBlocks(step.targetSentences?.[0] || pack.english?.anchorSentence || "");
+  const required = step.childVisible?.blocks?.length ? step.childVisible.blocks : step.blocks?.length ? step.blocks : pack.english?.pattern?.blocks || splitSentenceToBlocks(step.targetSentences?.[0] || pack.english?.anchorSentence || "");
   return stableShuffle(required, `${pack.packId}:${step.id}:blocks`);
 }
 
 function selectCourseBlock(button) {
   const key = button.dataset.courseBlock;
   const index = Number(button.dataset.blockIndex);
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
   progress.english.blockAnswers ||= {};
   const selected = progress.english.blockAnswers[key] || [];
   progress.english.blockAnswers[key] = selected.includes(index) ? selected.filter((item) => item !== index) : [...selected, index];
@@ -9808,7 +10158,7 @@ function selectCourseBlock(button) {
 }
 
 function resetCourseBlocks(key) {
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
   progress.english.blockAnswers ||= {};
   progress.english.blockAnswers[key] = [];
   progress.english.steps[key] = { ...(progress.english.steps[key] || {}), blockFeedback: "" };
@@ -9817,7 +10167,7 @@ function resetCourseBlocks(key) {
 }
 
 function submitCourseBlocks(key) {
-  const pack = getLatestLearningPack();
+  const pack = getActiveEnglishPack();
   const step = getEnglishLessonSteps(pack).find((item) => `english:${item.id}` === key);
   if (!step) return;
   const progress = getCourseProgress(pack.packId);
@@ -9897,16 +10247,22 @@ function buildFeedbackPackage(course = "snapshot") {
   const pack = getLatestLearningPack();
   if (!pack) return null;
   const progress = getCourseProgress(pack.packId);
-  if (["chinese", "english", "art"].includes(course)) return buildSingleCourseFeedback(pack, progress, course);
+  if (course === "english") {
+    const englishPack = getActiveEnglishPack() || pack;
+    return buildSingleCourseFeedback(englishPack, getCourseProgress(englishPack.packId), course);
+  }
+  if (["chinese", "art"].includes(course)) return buildSingleCourseFeedback(pack, progress, course);
   return buildCurrentFeedbackSnapshot(pack, progress);
 }
 
 function buildCurrentFeedbackSnapshot(pack, progress) {
   const sequence = Number(state.feedbackSnapshotSequence || 0) + 1;
   const generatedAt = new Date().toISOString();
+  const englishPack = getActiveEnglishPack() || pack;
+  const englishProgressState = getCourseProgress(englishPack.packId);
   const planets = {
     chinese: buildPlanetSnapshot(pack, progress, "chinese"),
-    english: buildPlanetSnapshot(pack, progress, "english"),
+    english: buildPlanetSnapshot(englishPack, englishProgressState, "english"),
     art: buildPlanetSnapshot(pack, progress, "art")
   };
   const plannedPlanetCount = Object.values(planets).filter((planet) => planet.status !== "not_scheduled").length;
@@ -9928,7 +10284,7 @@ function buildCurrentFeedbackSnapshot(pack, progress) {
       importedPackIds: Object.keys(state.learningPacks || {}),
       activePackIdsByPlanet: {
         chinese: planets.chinese.status === "not_scheduled" ? [] : [pack.packId],
-        english: planets.english.status === "not_scheduled" ? [] : [pack.packId],
+        english: planets.english.status === "not_scheduled" ? [] : [englishPack.packId],
         art: planets.art.status === "not_scheduled" ? [] : [pack.packId]
       }
     },
@@ -10222,7 +10578,8 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       blockResults: collectBlockResults(progress.english.steps),
       phonicsResults: collectStepResults(progress.english.steps, "phonics"),
       exitCheckResults: collectStepResults(progress.english.steps, "dialogue_exit"),
-      anchorSentence: pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || ""
+      anchorSentence: pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "",
+      lessonLibrary: buildEnglishLessonLibraryFeedback(pack)
     };
   } else if (course === "art") {
     base.art = {
@@ -10299,6 +10656,55 @@ function collectBlockResults(map) {
   }));
 }
 
+function buildEnglishLessonLibraryFeedback(activePack = getActiveEnglishPack()) {
+  const library = getEnglishLessonLibrary();
+  if (!library?.lessons?.length) return null;
+  const selected = getSelectedEnglishLibraryLesson();
+  return {
+    schemaVersion: "hello-school-lesson-library-feedback/1",
+    libraryId: library.libraryId,
+    storyId: library.storyId || "",
+    storyTitle: library.storyTitle || "",
+    currentLessonId: selected?.lessonId || "",
+    currentLessonIndex: selected?.lessonIndex || null,
+    currentPackId: activePack?.packId || "",
+    currentAnchorSentence: selected?.anchorSentence || "",
+    progressIndependentFromChineseDate: true,
+    lessons: library.lessons.map((lessonRecord) => summarizeEnglishLibraryLessonProgress(library, lessonRecord))
+  };
+}
+
+function summarizeEnglishLibraryLessonProgress(library, lessonRecord) {
+  const packId = getEnglishLessonPackId(library, lessonRecord);
+  const progress = state.courseProgress?.[packId]?.english || createDefaultCourseSide("english", packId);
+  const steps = lessonRecord.lesson?.steps || [];
+  const expectedKeys = steps.map((step) => `english:${step.id}`);
+  const completedKeys = expectedKeys.filter((key) => progress.steps?.[key]?.finishedAt);
+  const hasActivity = expectedKeys.some((key) => {
+    const item = progress.steps?.[key] || {};
+    return item.startedAt || item.finishedAt || item.result || item.blockAnswer || item.attempts || item.attemptHistory?.length;
+  });
+  const status = completedKeys.length === expectedKeys.length && expectedKeys.length ? "completed" : hasActivity ? "partial" : "not_started";
+  return {
+    lessonId: lessonRecord.lessonId,
+    lessonIndex: lessonRecord.lessonIndex,
+    sourceSentenceId: lessonRecord.sourceSentenceId || "",
+    anchorSentence: lessonRecord.anchorSentence || lessonRecord.lesson?.anchorSentence || "",
+    progressSeedStatus: lessonRecord.progressSeedStatus || "",
+    status,
+    stepCompletion: {
+      completed: completedKeys.length,
+      total: expectedKeys.length,
+      completedStepIds: completedKeys.map((key) => key.replace(/^english:/, ""))
+    },
+    elapsedSeconds: Math.round(getCourseElapsed(progress, progress.steps || {}) / 1000),
+    mode: progress.selectedMode || lessonRecord.lesson?.defaultMode || "",
+    attempts: expectedKeys.flatMap((key) => (progress.steps?.[key]?.attemptHistory || []).map((attempt) => ({ activityId: key, ...attempt }))),
+    blockAnswers: Object.entries(progress.blockAnswers || {}).map(([activityId, blockIndexes]) => ({ activityId, blockIndexes })),
+    stepRecords: summarizeCourseItems(Object.fromEntries(expectedKeys.map((key) => [key, progress.steps?.[key] || {}])), "step")
+  };
+}
+
 function collectStepResults(map, stepId) {
   return Object.entries(map || {}).filter(([key]) => key.includes(stepId)).map(([activityId, item]) => ({
     activityId,
@@ -10308,7 +10714,7 @@ function collectStepResults(map, stepId) {
   }));
 }
 
-function countPendingActivities(course, pack = getLatestLearningPack(), progress = getCourseProgress()) {
+function countPendingActivities(course, pack = getActivePackForCourse(course), progress = getActiveProgressForCourse(course)) {
   const expected = getExpectedActivityIds(pack, course);
   const side = progress?.[course] || {};
   const map = side.sections || side.steps || {};
@@ -12537,8 +12943,10 @@ function renderParentProgressPanel() {
   }
   const progress = getCourseProgress(pack.packId);
   const lines = ["chinese", "english", "art"].map((course) => {
-    const status = getPlanetStatus(course, pack);
-    const pending = countPendingActivities(course, pack, progress);
+    const coursePack = getActivePackForCourse(course) || pack;
+    const courseProgress = course === "english" ? getCourseProgress(coursePack.packId) : progress;
+    const status = getPlanetStatus(course, coursePack);
+    const pending = countPendingActivities(course, coursePack, courseProgress);
     return `<div class="parent-progress-line"><strong>${escapeHtml(courseLabel(course))}</strong><span>${escapeHtml(status.hasCourse ? `${pending.completed}/${pending.total}` : "这一天未安排")}</span><em>${escapeHtml(status.progress)}</em></div>`;
   }).join("");
   panel.innerHTML = `
