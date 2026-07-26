@@ -1,0 +1,1426 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "packId": "2026-07-26-helen-day14-open-books-art01",
+  "date": "2026-07-26",
+  "revision": "day14-authoritative-open-books-art01",
+  "sourceSpec": "day14-authoritative-learning-pack-spec-2026-07-26.md",
+  "loadMode": "light",
+  "title": "Helen Day 14｜贴歪的作品标签、Hello School与颜色星球续课",
+  "sharedPlan": {
+    "plannedChineseMinutes": 35,
+    "plannedBreakMinutes": 5,
+    "defaultEnglishMode": "light",
+    "plannedEnglishMinutes": 15,
+    "sequenceNoteZh": "中文和英语可以分开完成；颜色星球继续第1课，不因某一星球未完成追加补课。",
+    "fallbackRules": {
+      "chineseOverMinutes": 40,
+      "easeBelow": 7,
+      "recoveryEaseBelow": 6
+    }
+  },
+  "chinese": {
+    "characters": [
+      {
+        "text": "测",
+        "pinyin": "cè",
+        "meaning": "测量、检验的意思。",
+        "words": [
+          "测量",
+          "测试",
+          "预测"
+        ],
+        "example": "他们用尺子测量标签的位置。",
+        "status": "new",
+        "priority": 5,
+        "source": "Day14阅读后测"
+      },
+      {
+        "text": "顶",
+        "pinyin": "dǐng",
+        "meaning": "最高的部分，也可以表示用头或上端托住。",
+        "words": [
+          "顶端",
+          "山顶",
+          "屋顶"
+        ],
+        "example": "标签的顶端要对齐。",
+        "status": "new",
+        "priority": 5,
+        "source": "Day14阅读后测"
+      },
+      {
+        "text": "移",
+        "pinyin": "yí",
+        "meaning": "把位置改变。",
+        "words": [
+          "移动",
+          "移开",
+          "转移"
+        ],
+        "example": "乐乐负责移动标签。",
+        "status": "new",
+        "priority": 5,
+        "source": "Day14阅读后测"
+      },
+      {
+        "text": "标",
+        "pinyin": "biāo",
+        "meaning": "用来说明、记号或目标。",
+        "words": [
+          "标签",
+          "标志",
+          "目标"
+        ],
+        "example": "每张作品都有标签。",
+        "status": "new",
+        "priority": 5,
+        "source": "Day14阅读后测"
+      },
+      {
+        "text": "齐",
+        "pinyin": "qí",
+        "meaning": "在同一条线上，或完整地聚在一起。",
+        "words": [
+          "整齐",
+          "对齐",
+          "齐全"
+        ],
+        "example": "标签要和作品左边对齐。",
+        "status": "new",
+        "priority": 5,
+        "source": "Day14阅读后测"
+      },
+      {
+        "text": "调",
+        "pinyin": "tiáo / diào",
+        "meaning": "在“调整”中读 tiáo，表示改变到合适状态；还可读 diào，如“声调”。",
+        "words": [
+          "调整",
+          "调节",
+          "声调"
+        ],
+        "example": "他们逐个调整标签的位置。",
+        "status": "new",
+        "priority": 5,
+        "source": "Day14阅读后测"
+      }
+    ],
+    "words": [
+      {
+        "text": "负责",
+        "meaning": "把自己应该做的事情做好。",
+        "status": "review",
+        "source": "Day14词语复习"
+      },
+      {
+        "text": "记录",
+        "meaning": "把日期、时间和结果写下来。",
+        "status": "review",
+        "source": "Day14词语复习"
+      },
+      {
+        "text": "补救",
+        "meaning": "发现问题以后想办法改好。",
+        "status": "review",
+        "source": "Day14词语复习"
+      },
+      {
+        "text": "逐个",
+        "meaning": "一个接一个地。",
+        "status": "review",
+        "source": "Day14题目词语"
+      },
+      {
+        "text": "稳定",
+        "meaning": "连续几次都能做到，不忽好忽坏。",
+        "status": "review",
+        "source": "Day14题目词语"
+      },
+      {
+        "text": "能否",
+        "meaning": "能不能。",
+        "status": "review",
+        "source": "Day14题目词语"
+      },
+      {
+        "text": "准确",
+        "meaning": "重要信息正确，没有弄错。",
+        "status": "review",
+        "source": "Day14题目词语"
+      },
+      {
+        "text": "对齐",
+        "meaning": "放在同一条线或同一位置关系上。",
+        "status": "new",
+        "source": "Day14词语积累"
+      },
+      {
+        "text": "调整",
+        "meaning": "把不合适的位置或状态改到合适。",
+        "status": "new",
+        "source": "Day14词语积累"
+      },
+      {
+        "text": "测量",
+        "meaning": "用工具量出长度、距离或位置。",
+        "status": "new",
+        "source": "Day14阅读后测"
+      }
+    ],
+    "confusedPairs": [],
+    "lesson": {
+      "lessonId": "cn-day-14-crooked-art-labels",
+      "title": "Day 14｜贴歪的作品标签",
+      "sections": [
+        {
+          "id": "review_words",
+          "type": "word_review",
+          "title": "词语复习",
+          "plannedMinutes": 2,
+          "parentInstructionZh": "让孩子先读词，再完成一道情境选择。每词最多30秒；读音提示和答案提示分开记录。选中后统一点“确认”，不要求另外造句或说成人式定义。",
+          "items": [
+            {
+              "text": "负责"
+            },
+            {
+              "text": "记录"
+            },
+            {
+              "text": "补救"
+            }
+          ],
+          "questions": [
+            {
+              "id": "rw1",
+              "prompt": "下面哪种情况最能说明“负责”？",
+              "options": [
+                "看见别人做事，自己在旁边等",
+                "答应每天浇花，并按约定认真做完",
+                "不知道该谁做，也不主动询问"
+              ],
+              "answer": "答应每天浇花，并按约定认真做完",
+              "referenceAnswer": "负责就是把答应或应该做的事认真做完。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "下面哪种情况最能说明负责？"
+              }
+            },
+            {
+              "id": "rw2",
+              "prompt": "下面哪种做法是在“记录”？",
+              "options": [
+                "只在心里猜今天用了多长时间",
+                "做完以后马上忘记结果",
+                "把日期、时间和结果写在表格里"
+              ],
+              "answer": "把日期、时间和结果写在表格里",
+              "referenceAnswer": "记录就是把日期、时间和结果写下来。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "下面哪种做法是在记录？"
+              }
+            },
+            {
+              "id": "rw3",
+              "prompt": "下面哪种做法是在“补救”？",
+              "options": [
+                "发现标签贴歪后，把它揭下来重新贴正",
+                "第一次就把标签贴得很整齐",
+                "发现错误以后把它藏起来"
+              ],
+              "answer": "发现标签贴歪后，把它揭下来重新贴正",
+              "referenceAnswer": "补救是发现问题以后想办法改好。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "下面哪种做法是在补救？"
+              }
+            }
+          ],
+          "answerMode": "choice",
+          "readAloud": {
+            "policy": "disabled_during_assessment",
+            "spokenTextZh": ""
+          }
+        },
+        {
+          "id": "instruction_words",
+          "type": "comprehension",
+          "title": "题目词语",
+          "plannedMinutes": 3,
+          "parentInstructionZh": "四题全部完成后统一确认。选项必须显示 A/B/C，可点击并蓝色高亮。每题只有一个正确答案；答案位置不得固定在A。",
+          "questions": [
+            {
+              "id": "iw1",
+              "prompt": "“请逐个检查”的意思是：",
+              "options": [
+                "只检查最前面的一个",
+                "大家同时快速检查",
+                "一个接一个地检查"
+              ],
+              "answer": "一个接一个地检查",
+              "referenceAnswer": "逐个就是一个接一个。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "请逐个检查的意思是？"
+              }
+            },
+            {
+              "id": "iw2",
+              "prompt": "“已经稳定掌握”的意思是：",
+              "options": [
+                "连续几次都能做到，不忽好忽坏",
+                "偶尔做对一次",
+                "做得特别快，但常常出错"
+              ],
+              "answer": "连续几次都能做到，不忽好忽坏",
+              "referenceAnswer": "稳定掌握是连续几次都能做到。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "已经稳定掌握的意思是？"
+              }
+            },
+            {
+              "id": "iw3",
+              "prompt": "“请判断自己能否完成”的意思是：",
+              "options": [
+                "请说一说为什么要完成",
+                "请判断自己能不能完成",
+                "请说一说怎样完成"
+              ],
+              "answer": "请判断自己能不能完成",
+              "referenceAnswer": "能否就是能不能。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "请判断自己能否完成的意思是？"
+              }
+            },
+            {
+              "id": "iw4",
+              "prompt": "“把事情说准确”的意思是：",
+              "options": [
+                "说得声音特别大",
+                "说得很快，不停下来",
+                "把重要信息说正确，没有弄错"
+              ],
+              "answer": "把重要信息说正确，没有弄错",
+              "referenceAnswer": "准确就是重要信息正确，没有弄错。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "把事情说准确的意思是？"
+              }
+            }
+          ],
+          "answerMode": "choice"
+        },
+        {
+          "id": "reading",
+          "type": "reading_text",
+          "title": "今日阅读",
+          "plannedMinutes": 8,
+          "parentInstructionZh": "孩子分段自主阅读。卡顿时只报当前字的读音，不解释词义，不要求立刻重复三遍。点击标记不认识/不熟悉的字。到8分钟即停止追求完美流畅，不在当天追加全文第二遍。",
+          "textTitle": "贴歪的作品标签",
+          "paragraphs": [
+            "美术课后，刘老师准备把全班的画贴到展示墙上。明天，家长们会来参观。她请小满、乐乐和小雨共同负责贴作品标签。每张标签上都写着作者和作品的名字。",
+            "三个人想快点完成任务。小满从左边开始贴，乐乐从右边开始贴，小雨从中间开始贴。他们没有先商量标签应该放在什么位置，只凭眼睛估计。",
+            "贴完几张以后，问题出现了。有的标签离作品很近，有的离得很远；有的标签向左歪，有的向右歪。大家退后几步再看，标签明显没有对齐。",
+            "乐乐说：“标签上的名字都写对了，应该不用重贴吧？”小雨摇摇头：“名字虽然准确，位置不整齐，别人看起来还是会觉得乱。”",
+            "刘老师问：“你们能否想出一个稳定的方法，让每张标签的位置都一样？”",
+            "三个人商量以后，决定共同使用一把尺子。标签的顶端离作品的下边两厘米，标签的左边要和作品的左边对齐。这样，每个人都按照相同的标准来贴。",
+            "他们重新分工。小满负责用尺子测量并点出位置，乐乐负责移动标签，小雨负责记录已经完成的作品编号，并请另外一个人检查。三个人互相配合，逐个调整。",
+            "有一张标签已经贴得很牢，却明显歪了。乐乐没有把它扔掉，而是轻轻揭开一边，按照测量好的位置重新贴正。这就是对前面错误的补救。",
+            "全部完成以后，他们又从远处看了一遍。每张标签都排得整整齐齐，作品名字也准确无误。小满说：“先把方法商量清楚，再分工、测量和检查，做出来的结果就稳定多了。”"
+          ],
+          "answerMode": "spoken",
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "请分段读今天的故事。遇到不会的字可以请家长只告诉你读音。"
+          }
+        },
+        {
+          "id": "fixed_break",
+          "type": "break",
+          "title": "固定休息",
+          "plannedMinutes": 5,
+          "parentInstructionZh": "喝水、走动、看远处。休息时不讲生字、不核对答案。",
+          "prompt": "休息5分钟，结束后再继续。",
+          "answerMode": "none",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "现在休息五分钟。可以喝水、走动、看远处。休息时不讲生字，也不核对答案。"
+          }
+        },
+        {
+          "id": "word_accumulation",
+          "type": "word_review",
+          "title": "词语积累",
+          "plannedMinutes": 2,
+          "parentInstructionZh": "动作正确就通过，不要求抽象定义，不追加造句。",
+          "items": [
+            {
+              "text": "对齐",
+              "prompt": "请把两本书的下边放在同一条线上，用动作表示“对齐”。",
+              "answer": "动作表示同一条线即可。"
+            },
+            {
+              "text": "调整",
+              "prompt": "请把一个歪着的物品移动到合适位置，用动作表示“调整”。",
+              "answer": "动作表示移动到合适位置即可。"
+            }
+          ],
+          "answerMode": "spoken",
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "请用动作表示对齐和调整。动作正确就可以。"
+          }
+        },
+        {
+          "id": "comprehension",
+          "type": "comprehension",
+          "title": "阅读理解",
+          "plannedMinutes": 5,
+          "parentInstructionZh": "第1题选择后点“确认”；第2、3题孩子说到核心意思就通过，不追问原文全部细节。",
+          "questions": [
+            {
+              "id": "cq1",
+              "prompt": "他们最开始为什么把标签贴得不整齐？",
+              "options": [
+                "大家使用同一把尺子，却忘记写作品名字",
+                "大家只凭眼睛估计，也没有先商量统一位置",
+                "大家已经统一了位置，只是标签颜色不同"
+              ],
+              "answer": "大家只凭眼睛估计，也没有先商量统一位置",
+              "referenceAnswer": "他们只凭眼睛估计，也没有先商量统一位置。",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "他们最开始为什么把标签贴得不整齐？"
+              }
+            },
+            {
+              "id": "cq2",
+              "prompt": "他们用了什么方法补救贴歪的标签？",
+              "options": [],
+              "answer": "",
+              "referenceAnswer": "他们先商量统一标准，用同一把尺子测量，重新分工，把贴歪的标签揭开并按照测好的位置重新贴正。",
+              "readAloud": {
+                "policy": "prompt_only",
+                "spokenTextZh": "他们用了什么方法补救贴歪的标签？"
+              }
+            },
+            {
+              "id": "cq3",
+              "prompt": "为什么每张标签贴完以后，还要请另外一个人检查？",
+              "options": [],
+              "answer": "",
+              "referenceAnswer": "一个人可能看漏或弄错，请另一个人检查可以及时发现问题，让结果更准确、稳定。",
+              "readAloud": {
+                "policy": "prompt_only",
+                "spokenTextZh": "为什么每张标签贴完以后，还要请另外一个人检查？"
+              }
+            }
+          ],
+          "answerMode": "spoken"
+        },
+        {
+          "id": "four_grid_retell",
+          "type": "four_grid_retell",
+          "title": "压缩复述",
+          "plannedMinutes": 4,
+          "parentInstructionZh": "四格必须纵向显示，每格只说一句话。每格核心意思正确就进入下一格；家长不得问“还有呢”。总用时到4分钟结束。",
+          "prompt": "每格只说一句话。",
+          "prompts": [
+            "开始：谁在做什么任务？",
+            "问题：标签为什么不整齐？",
+            "办法：他们怎样统一方法并补救？",
+            "结果：最后怎样，他们明白了什么？"
+          ],
+          "answerMode": "spoken",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "请按照开始、问题、办法、结果讲故事。每格只说一句话。"
+          },
+          "recording": {
+            "mode": "optional_response",
+            "maxSeconds": 150,
+            "promptZh": "请完成压缩复述。",
+            "startCueZh": "准备好后点麦克风。",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "retell"
+          }
+        },
+        {
+          "id": "school_scenario",
+          "type": "school_scenario",
+          "title": "小学情境",
+          "plannedMinutes": 3,
+          "parentInstructionZh": "有称呼；说明没听清的信息；提出一个准确问题；说出记录办法。表达自然即可，不要求背参考句。",
+          "prompt": "老师说：“明天美术课要带彩笔。”你没有听清楚是每个人带一盒，还是每个小组共用一盒。你会怎样向老师问清楚？听到答案以后，你会怎样记录？",
+          "answerMode": "spoken",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "老师说明天美术课要带彩笔。你没有听清楚是每个人带一盒，还是每个小组共用一盒。你会怎样向老师问清楚？听到答案以后，你会怎样记录？"
+          },
+          "recording": {
+            "mode": "optional_response",
+            "maxSeconds": 90,
+            "promptZh": "请说出你会怎样问清楚，并怎样记录。",
+            "startCueZh": "准备好后点麦克风。",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "oral_answer"
+          }
+        },
+        {
+          "id": "post_check",
+          "type": "post_check",
+          "title": "阅读后测",
+          "plannedMinutes": 3,
+          "parentInstructionZh": "只检查认读，不解释、不造句。所有项目完成后统一核对。九项全部得到真实记录即可，不以全对作为课程成功标准。",
+          "characters": [
+            "测",
+            "顶",
+            "移",
+            "标",
+            "齐",
+            "调"
+          ],
+          "words": [
+            "测量",
+            "准确",
+            "调整"
+          ],
+          "answerMode": "spoken",
+          "readAloud": {
+            "policy": "disabled_during_assessment",
+            "spokenTextZh": ""
+          }
+        }
+      ],
+      "answerKey": {
+        "rw1": "答应每天浇花，并按约定认真做完",
+        "rw2": "把日期、时间和结果写在表格里",
+        "rw3": "发现标签贴歪后，把它揭下来重新贴正",
+        "iw1": "一个接一个地检查",
+        "iw2": "连续几次都能做到，不忽好忽坏",
+        "iw3": "请判断自己能不能完成",
+        "iw4": "把重要信息说正确，没有弄错",
+        "cq1": "大家只凭眼睛估计，也没有先商量统一位置",
+        "cq2": "他们先商量统一标准，用同一把尺子测量，重新分工，把贴歪的标签揭开并按照测好的位置重新贴正。",
+        "cq3": "一个人可能看漏或弄错，请另一个人检查可以及时发现问题，让结果更准确、稳定。",
+        "four_grid_retell": {
+          "开始": "小满、乐乐和小雨一起给展示墙上的作品贴标签。",
+          "问题": "他们没有统一位置，只凭眼睛估计，所以标签贴得高低不一。",
+          "办法": "他们用同一把尺子测量，重新分工，并把贴歪的标签调整好。",
+          "结果": "标签变得整齐，他们明白了先统一方法再分工检查的重要性。"
+        },
+        "school_scenario": "老师，我想确认一下，明天的彩笔是每个人带一盒，还是每个小组共用一盒？听到答案以后，把要求准确记录在记事本或作业本上。"
+      }
+    }
+  },
+  "english": {
+    "storyId": "hello_school",
+    "storyTitle": "Hello, School!",
+    "anchorSentence": "Our teacher says, “Open your books. Let’s read together.”",
+    "translationZh": "我们的老师说：“打开你们的书。让我们一起读吧。”",
+    "chunks": [
+      "Our teacher says",
+      "Open your books",
+      "Let’s read together"
+    ],
+    "words": [
+      {
+        "text": "our",
+        "meaningZh": "我们的，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "teacher",
+        "meaningZh": "老师，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "says",
+        "meaningZh": "说，注意本句读 /sez/",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "open",
+        "meaningZh": "打开，重点词",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "your",
+        "meaningZh": "你们的/你的，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "books",
+        "meaningZh": "书（复数），重点词",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "let's",
+        "meaningZh": "让我们……，句型词",
+        "status": "new",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 5
+      },
+      {
+        "text": "read",
+        "meaningZh": "阅读，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      },
+      {
+        "text": "together",
+        "meaningZh": "一起，复习词",
+        "status": "review",
+        "sourceSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "priority": 3
+      }
+    ],
+    "pattern": {
+      "id": "teacher_says_open_books",
+      "displayZh": "Our teacher says＋指令：老师说……",
+      "blocks": [
+        "Our teacher says,",
+        "“Open your books.",
+        "Let’s read together.”"
+      ]
+    },
+    "phonics": [
+      {
+        "focus": "says /sez/",
+        "words": [
+          "says"
+        ],
+        "noteZh": "says 在本句读 /sez/。"
+      },
+      {
+        "focus": "books /s/",
+        "words": [
+          "books"
+        ],
+        "noteZh": "books 末尾是轻短的 /s/。"
+      }
+    ],
+    "lesson": {
+      "lessonId": "en-hello-school-open-books",
+      "defaultMode": "light",
+      "allowedModes": [
+        "light",
+        "standard"
+      ],
+      "previousSentence": "",
+      "anchorSentence": "Our teacher says, “Open your books. Let’s read together.”",
+      "translationZh": "我们的老师说：“打开你们的书。让我们一起读吧。”",
+      "appLocator": {
+        "appName": "每日英语听力",
+        "folder": "Helen place",
+        "article": "Hello, School!",
+        "targetSentence": "Our teacher says, “Open your books. Let’s read together.”",
+        "settingsZh": "隐藏英文和中文，按步骤完成听、说、读、理解。"
+      },
+      "steps": [
+        {
+          "id": "retrieval",
+          "number": 1,
+          "titleZh": "场景检索",
+          "tool": "website_and_parent",
+          "minutesByMode": {
+            "light": 2,
+            "standard": 2
+          },
+          "parentSaysZh": "先看学校场景，不播放英文。老师请大家打开书、一起读，她可能会说什么？",
+          "actionsZh": [
+            "孩子可先说中文或已记得的英文",
+            "不要求把本句当作“昨天已经学会”的句子"
+          ],
+          "successCriteriaZh": "能说出“打开书、一起读”的主要意思。",
+          "expectedAnswer": "打开书、一起读。",
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "先看学校场景，不播放英文。老师请大家打开书、一起读，她可能会说什么？"
+          }
+        },
+        {
+          "id": "blind_listening",
+          "number": 2,
+          "titleZh": "新句盲听",
+          "tool": "daily_english_listening",
+          "minutesByMode": {
+            "light": 2,
+            "standard": 3
+          },
+          "parentSaysZh": "隐藏英文和中文，完整播放两遍；孩子说出听到的熟词或大意。",
+          "actionsZh": [
+            "在《每日英语听力》中定位 Helen place / Hello, School!",
+            "隐藏英文和中文",
+            "完整播放两遍",
+            "孩子说出听到的熟词或大意"
+          ],
+          "successCriteriaZh": "听出 teacher、open、books、read、together 中至少两个，或说出主要意思。",
+          "expectedAnswer": "Our teacher says, “Open your books. Let’s read together.”",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "现在去每日英语听力。隐藏英文和中文，完整播放两遍，然后说出听到的熟词或大意。"
+          }
+        },
+        {
+          "id": "meaning_and_text",
+          "number": 3,
+          "titleZh": "原文理解",
+          "tool": "daily_english_listening",
+          "minutesByMode": {
+            "light": 3,
+            "standard": 3
+          },
+          "parentSaysZh": "打开原文，点击并理解 our、teacher、says、open、your、books、Let’s、read、together；指出谁说话、让大家做哪两件事。",
+          "actionsZh": [
+            "打开原文",
+            "点击并理解 our、teacher、says、open、your、books、Let’s、read、together",
+            "指出谁说话",
+            "说出老师让大家做哪两件事"
+          ],
+          "successCriteriaZh": "知道老师说“打开书，我们一起读”。",
+          "expectedAnswer": "老师说：“打开你们的书。让我们一起读吧。”",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "现在打开原文。找一找谁说话，老师让大家做哪两件事。"
+          }
+        },
+        {
+          "id": "echo",
+          "number": 4,
+          "titleZh": "Echo跟读",
+          "tool": "daily_english_listening",
+          "minutesByMode": {
+            "light": 4,
+            "standard": 5
+          },
+          "parentSaysZh": "先听完整句；分三块各跟读一次；完整跟读两遍；最后尝试不看原文说一次。",
+          "actionsZh": [
+            "先听完整句",
+            "分三块各跟读一次：Our teacher says｜Open your books｜Let’s read together",
+            "完整跟读两遍",
+            "最后尝试不看原文说一次"
+          ],
+          "successCriteriaZh": "三块基本连贯；不追求机器评分。",
+          "expectedAnswer": "Our teacher says, “Open your books. Let’s read together.”",
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "先听完整句，再分三块跟读。最后试着不看原文说一次。"
+          }
+        },
+        {
+          "id": "blocks",
+          "number": 5,
+          "titleZh": "积木拼句",
+          "tool": "website",
+          "minutesByMode": {
+            "light": 2,
+            "standard": 3
+          },
+          "parentSaysZh": "先拼出原句，并口头替换一个 Let’s 加动作加 together 句子。",
+          "actionsZh": [
+            "用积木拼出原句",
+            "口头说 Open your books.",
+            "口头说 Let’s read together.",
+            "口头说 Let’s play together."
+          ],
+          "successCriteriaZh": "拼出原句，并口头替换一个 Let’s + 动作 + together 句子。",
+          "expectedAnswer": "Our teacher says, “Open your books. Let’s read together.”",
+          "blocks": [
+            "Close your books.",
+            "Let’s read together.”",
+            "Our teacher says,",
+            "“Open your books."
+          ],
+          "targetSentences": [
+            "Our teacher says, “Open your books. Let’s read together.”",
+            "Open your books.",
+            "Let’s read together.",
+            "Let’s play together."
+          ],
+          "acceptedAnswers": [
+            "Our teacher says, “Open your books. Let’s read together.”"
+          ],
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "先拼出今天的句子，再口头替换一个 Let’s 加动作加 together 句子。"
+          }
+        },
+        {
+          "id": "phonics",
+          "number": 6,
+          "titleZh": "声音发现",
+          "tool": "website_and_parent",
+          "minutesByMode": {
+            "light": 1,
+            "standard": 2
+          },
+          "parentSaysZh": "says 在本句读 /sez/；books 末尾是轻短的 /s/；只听和读整词，不要求拼写。",
+          "actionsZh": [
+            "跟读 says",
+            "跟读 books",
+            "只听和读整词，不要求拼写"
+          ],
+          "successCriteriaZh": "能跟读 says、books，不把 says 读成 /seɪz/。",
+          "expectedAnswer": "says /sez/；books 末尾轻短 /s/。",
+          "focus": "says /sez/；books /s/",
+          "items": [
+            "says",
+            "books"
+          ],
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "听一听 says 和 books。says 在本句读 sez，books 末尾是轻短的 s。"
+          }
+        },
+        {
+          "id": "dialogue_exit",
+          "number": 7,
+          "titleZh": "对话离场",
+          "tool": "website_and_parent",
+          "minutesByMode": {
+            "light": 1,
+            "standard": 2
+          },
+          "parentSaysZh": "现在做最后一个小对话。",
+          "actionsZh": [
+            "家长问 What does our teacher say?",
+            "孩子回答 Open your books. Let’s read together.",
+            "家长问 Who reads together?",
+            "孩子回答 We read together."
+          ],
+          "successCriteriaZh": "能听懂两个问题；不看原文说出目标句主要部分；能生成一个 Let’s … together 新句。",
+          "expectedAnswer": "Open your books. Let’s read together.",
+          "dialogue": [
+            {
+              "speaker": "parent",
+              "text": "What does our teacher say?",
+              "referenceZh": "我们的老师说什么？"
+            },
+            {
+              "speaker": "child",
+              "text": "Open your books. Let’s read together.",
+              "referenceZh": "打开你们的书。让我们一起读吧。"
+            },
+            {
+              "speaker": "parent",
+              "text": "Who reads together?",
+              "referenceZh": "谁一起读？"
+            },
+            {
+              "speaker": "child",
+              "text": "We read together.",
+              "referenceZh": "我们一起读。"
+            }
+          ],
+          "exitChecks": [
+            "能听懂两个问题",
+            "不看原文说出目标句主要部分",
+            "能生成一个 Let’s … together 新句"
+          ],
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "现在做最后一个小对话。请先听家长的问题，再回答。"
+          },
+          "recording": {
+            "mode": "optional_response",
+            "maxSeconds": 90,
+            "promptZh": "请完成最后的小对话，并说一个自己的 Let’s … together 新句。",
+            "startCueZh": "准备好后点麦克风。",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "exit_check"
+          }
+        }
+      ]
+    }
+  },
+  "art": {
+    "courseId": "marker-drawing-foundations",
+    "lessonId": "art-01-color-planet-v2",
+    "titleZh": "我的颜色星球｜从铅笔草稿到丙烯马克笔成品",
+    "plannedMinutes": 45,
+    "difficulty": "初级·第一次完整创作",
+    "techniqueFocus": [
+      "轻铅笔构图",
+      "草稿修改",
+      "干净勾线",
+      "试色",
+      "平涂",
+      "干后补色"
+    ],
+    "skillFocus": [
+      "观察",
+      "计划",
+      "控笔",
+      "修改",
+      "配色",
+      "表达"
+    ],
+    "creativeChoice": "Helen 自己选择星球的形状、三种主色、装饰纹理和作品名字。",
+    "materials": [
+      {
+        "nameZh": "HB或2B铅笔",
+        "required": true
+      },
+      {
+        "nameZh": "柔软橡皮",
+        "required": true
+      },
+      {
+        "nameZh": "儿童勾线笔或深色细头马克笔",
+        "required": true
+      },
+      {
+        "nameZh": "无毒儿童水性丙烯马克笔",
+        "required": true
+      },
+      {
+        "nameZh": "160—250克绘画纸或马克笔纸",
+        "required": true
+      },
+      {
+        "nameZh": "试色纸",
+        "required": true
+      },
+      {
+        "nameZh": "桌面垫板和纸巾",
+        "required": true
+      },
+      {
+        "nameZh": "白色马克笔",
+        "required": false
+      }
+    ],
+    "safetyNotesZh": [
+      "只使用标有儿童可用、无毒、水性的丙烯马克笔。",
+      "先铺垫板，笔只画在绘画纸和试色纸上。",
+      "笔帽太紧时请成人帮助，不用牙齿咬。",
+      "每用完一支笔立刻盖好笔帽。",
+      "颜色未干时不反复摩擦纸面。"
+    ],
+    "steps": [
+      {
+        "id": "observe_finished_reference",
+        "order": 1,
+        "titleZh": "先看完成图",
+        "instructionZh": "先不动笔。找一找最大的星球、星球环、三种主要颜色和最亮的三个小点，再说出你觉得应该先画什么。",
+        "childActionZh": "用手指在图上依次指出大形、星球环、主色和高光。",
+        "parentPromptZh": "只提问，不要求孩子复制颜色或装饰。",
+        "plannedMinutes": 2,
+        "imageAssetId": "art01_step01_finished_reference",
+        "narration": {
+          "textZh": "先不动笔。找一找最大的形状、星球环、三种主要颜色和最亮的小点。你觉得我们应该先画什么？",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先不动笔。找一找最大的形状、星球环、三种主要颜色和最亮的小点。你觉得我们应该先画什么？"
+        },
+        "successCriteriaZh": "能指出最大的形状，并说出先画大形、后画细节。",
+        "completionCheckZh": "孩子能用自己的话说出至少两层绘画顺序。",
+        "commonMistakeZh": "只盯着星星和圆点，不看整体位置。",
+        "hintLevels": [
+          {
+            "textZh": "先把眼睛眯起来看，哪一块最大？"
+          },
+          {
+            "textZh": "用手在空中描一遍最大的外轮廓。"
+          }
+        ]
+      },
+      {
+        "id": "prepare_materials",
+        "order": 2,
+        "titleZh": "检查材料和桌面",
+        "instructionZh": "把铅笔、橡皮、勾线笔、马克笔、绘画纸、试色纸和纸巾放到顺手的位置，再把垫板铺好。",
+        "childActionZh": "按图逐件核对并摆好材料。",
+        "parentPromptZh": "成人只帮助处理过紧的笔帽和桌面保护。",
+        "plannedMinutes": 2,
+        "imageAssetId": "art01_step02_materials",
+        "narration": {
+          "textZh": "先把材料摆好。特别检查铅笔、橡皮和试色纸。今天不能跳过铅笔草稿，也不要直接在作品上试颜色。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先把材料摆好。特别检查铅笔、橡皮和试色纸。今天不能跳过铅笔草稿，也不要直接在作品上试颜色。"
+        },
+        "successCriteriaZh": "全部必备材料到位，绘画纸下面有垫板。",
+        "completionCheckZh": "孩子能指出铅笔、橡皮和试色纸的位置。",
+        "commonMistakeZh": "没有准备试色纸，后来直接在作品上试笔。",
+        "hintLevels": [
+          {
+            "textZh": "按顺序找：铅笔、橡皮、勾线笔、马克笔、两张纸、纸巾。"
+          }
+        ]
+      },
+      {
+        "id": "line_and_shape_warmup",
+        "order": 3,
+        "titleZh": "线条和形状热身",
+        "instructionZh": "在练习区慢慢画三条直线、三条弧线、两个大椭圆和六个小圆点。先画轻线，再画一组稳定的深线。",
+        "childActionZh": "完成轻线和深线两组热身。",
+        "parentPromptZh": "提醒放慢速度，不评价圆是否标准。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step03_warmup",
+        "narration": {
+          "textZh": "先让手认识今天的线条。画直线、弧线、两个大椭圆和六个小圆点。第一组轻轻画，第二组再稳定一点。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先让手认识今天的线条。画直线、弧线、两个大椭圆和六个小圆点。第一组轻轻画，第二组再稳定一点。"
+        },
+        "successCriteriaZh": "完成两组热身，能够明显区分轻线和深线。",
+        "completionCheckZh": "铅笔轻线能被橡皮轻松擦掉。",
+        "commonMistakeZh": "为了画得像而反复描同一条热身线。",
+        "hintLevels": [
+          {
+            "textZh": "手腕放松，让线条慢慢走。"
+          },
+          {
+            "textZh": "椭圆不需要一次闭合，可以分两段相遇。"
+          }
+        ]
+      },
+      {
+        "id": "pencil_place_subject",
+        "order": 4,
+        "titleZh": "用铅笔给星球找位置",
+        "instructionZh": "把纸横放，用非常轻的铅笔线标出星球的上、下、左、右边界和中心点，只画位置记号，不画细节。",
+        "childActionZh": "在纸上画四个轻边界记号和一个中心点。",
+        "parentPromptZh": "问星球是否太靠边，不替孩子移动记号。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step04_pencil_position",
+        "narration": {
+          "textZh": "现在用轻轻的铅笔线给星球找房间。先标上、下、左、右和中心，不画装饰，也不画重线。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "现在用轻轻的铅笔线给星球找房间。先标上、下、左、右和中心，不画装饰，也不画重线。"
+        },
+        "successCriteriaZh": "主体不顶纸边，四周留有空间，位置线足够轻。",
+        "completionCheckZh": "用橡皮轻擦一个记号，能够干净擦掉。",
+        "commonMistakeZh": "第一笔就画出很重的完整圆形。",
+        "hintLevels": [
+          {
+            "textZh": "先用手在纸上比一个大圆，再落下五个轻记号。"
+          },
+          {
+            "textZh": "如果铅笔线发黑，就把手放轻一点。"
+          }
+        ]
+      },
+      {
+        "id": "pencil_draw_big_shapes",
+        "order": 5,
+        "titleZh": "铅笔画大形",
+        "instructionZh": "连接位置记号，画出星球的大椭圆；再用两条弧线画星球环。先只画大形，眼睛、纹理和小星星暂时都不画。",
+        "childActionZh": "完成星球主体和星球环的轻铅笔草稿。",
+        "parentPromptZh": "用“先搭房子，再装窗户”提醒孩子暂缓细节。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step05_pencil_big_shapes",
+        "narration": {
+          "textZh": "把轻记号连起来，画出星球的大椭圆，再加两条弧线做星球环。现在只搭大形，不画小装饰。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "把轻记号连起来，画出星球的大椭圆，再加两条弧线做星球环。现在只搭大形，不画小装饰。"
+        },
+        "successCriteriaZh": "草稿包含一个清楚的大主体和完整星球环，线条保持轻。",
+        "completionCheckZh": "遮住细节区域时仍能看出是一颗带环星球。",
+        "commonMistakeZh": "从小星星、圆点或表情开始画。",
+        "hintLevels": [
+          {
+            "textZh": "大椭圆可以边转纸边画，不需要手腕一次绕完。"
+          },
+          {
+            "textZh": "星球环先画前面一条，再补后面被挡住的部分。"
+          }
+        ]
+      },
+      {
+        "id": "check_and_erase_draft",
+        "order": 6,
+        "titleZh": "检查草稿并修改",
+        "instructionZh": "把画拿远一点，检查星球是否太大、太小、太靠边，星球环是否穿过正确位置。选择至少一处保留或修改，再用橡皮轻擦重画。",
+        "childActionZh": "说出一个检查决定，并完成需要的擦改。",
+        "parentPromptZh": "只问位置和比例，不用“像不像”评价。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step06_check_erase",
+        "narration": {
+          "textZh": "先停笔，把画拿远一点看。它太靠边吗？星球环的位置舒服吗？选一处保留或修改。轻线就是为了现在可以安全擦改。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先停笔，把画拿远一点看。它太靠边吗？星球环的位置舒服吗？选一处保留或修改。轻线就是为了现在可以安全擦改。"
+        },
+        "successCriteriaZh": "完成位置、大小和星球环检查，并作出至少一个具体决定。",
+        "completionCheckZh": "孩子能说“这里保留”或“这里改小、改高、改圆”等具体判断。",
+        "commonMistakeZh": "因为怕擦坏，明知位置不合适也直接进入勾线。",
+        "hardGate": {
+          "id": "pencil_draft_approved",
+          "requiredBeforeNext": true,
+          "messageZh": "草稿检查完成后，才能打开下一步勾线。"
+        },
+        "hintLevels": [
+          {
+            "textZh": "先只看星球和纸边之间的四块空白，哪边太挤？"
+          },
+          {
+            "textZh": "橡皮只擦要改的局部，不用把全部草稿擦掉。"
+          }
+        ]
+      },
+      {
+        "id": "trace_clean_outline",
+        "order": 7,
+        "titleZh": "沿草稿慢慢勾线",
+        "instructionZh": "确认草稿通过后，从不容易被手蹭到的一侧开始，一小段一小段描清主体和星球环。主要区域要闭合，小装饰先不勾。",
+        "childActionZh": "完成主体和星球环的干净勾线。",
+        "parentPromptZh": "提醒分段走线，不催孩子一次画完。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step07_outline",
+        "narration": {
+          "textZh": "草稿检查通过了，现在才能勾线。从不容易被手蹭到的一边开始，一小段一小段描清，不要来回磨成粗毛边。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "草稿检查通过了，现在才能勾线。从不容易被手蹭到的一边开始，一小段一小段描清，不要来回磨成粗毛边。"
+        },
+        "successCriteriaZh": "主要轮廓清楚，准备上色的区域基本闭合。",
+        "completionCheckZh": "用手指沿轮廓走一圈，找不到明显断口。",
+        "commonMistakeZh": "在同一条线来回描很多次，形成粗糙毛边。",
+        "hintLevels": [
+          {
+            "textZh": "每次只描两三厘米，停一下再接下一段。"
+          },
+          {
+            "textZh": "转弯时可以轻轻转动纸张。"
+          }
+        ]
+      },
+      {
+        "id": "dry_outline_and_erase_pencil",
+        "order": 8,
+        "titleZh": "等线干，再擦草稿",
+        "instructionZh": "先等待勾线不再发亮，用手背靠近检查，不直接摸线。确认干燥后，用橡皮轻轻擦掉多余铅笔线和位置记号。",
+        "childActionZh": "等待并清理多余铅笔线。",
+        "parentPromptZh": "成人只提醒等待，不替孩子大力擦。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step08_erase_pencil",
+        "narration": {
+          "textZh": "先等勾线变干，再轻轻擦掉多余铅笔线。没有干的时候不要擦，擦的时候也不要用力来回搓。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先等勾线变干，再轻轻擦掉多余铅笔线。没有干的时候不要擦，擦的时候也不要用力来回搓。"
+        },
+        "successCriteriaZh": "纸面基本干净，勾线没有被擦花。",
+        "completionCheckZh": "多余铅笔记号明显减少，勾线仍完整。",
+        "commonMistakeZh": "勾线未干就擦，造成灰黑色污迹。",
+        "hintLevels": [
+          {
+            "textZh": "先在最不重要的一小段旁边轻擦一下，确认不会花。"
+          }
+        ]
+      },
+      {
+        "id": "test_colors_and_plan",
+        "order": 9,
+        "titleZh": "试色并做好配色计划",
+        "instructionZh": "在试色纸上试每一支候选笔，选一个主色、一个辅助色和一个少量强调色，再用手指出每种颜色准备放在哪里。",
+        "childActionZh": "完成至少三块试色并说出配色位置。",
+        "parentPromptZh": "不替孩子选颜色，只提醒颜色数量不要过多。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step09_color_plan",
+        "narration": {
+          "textZh": "先在试色纸上试笔。选一个主色、一个陪伴它的辅助色，再选一个只亮一下的强调色。先说好它们各自住在哪里。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "先在试色纸上试笔。选一个主色、一个陪伴它的辅助色，再选一个只亮一下的强调色。先说好它们各自住在哪里。"
+        },
+        "successCriteriaZh": "至少完成三块试色，并确定主色、辅助色和强调色。",
+        "completionCheckZh": "孩子能指着作品说出三种颜色的大致位置。",
+        "commonMistakeZh": "颜色越拿越多，或没试色就直接下笔。",
+        "hintLevels": [
+          {
+            "textZh": "主色用得最多，辅助色少一点，强调色只用几处。"
+          },
+          {
+            "textZh": "如果两种颜色太像，可以换一支深浅差别更大的。"
+          }
+        ]
+      },
+      {
+        "id": "fill_first_color_layer",
+        "order": 10,
+        "titleZh": "涂第一层大色块",
+        "instructionZh": "先沿大区域边缘慢慢围一圈，再用同一个方向铺中间。一次只涂一个区域，看到小白缝先留下，不在湿颜色上反复摩擦。",
+        "childActionZh": "完成主体和星球环的第一层大色块。",
+        "parentPromptZh": "提醒边缘优先、同向铺色，不追求第一层完全无缝。",
+        "plannedMinutes": 6,
+        "imageAssetId": "art01_step10_first_color",
+        "narration": {
+          "textZh": "开始第一层上色。先围边，再用同一个方向铺中间。看到小白缝先别着急，湿颜色不要反复摩擦。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "开始第一层上色。先围边，再用同一个方向铺中间。看到小白缝先别着急，湿颜色不要反复摩擦。"
+        },
+        "successCriteriaZh": "大区域基本有颜色，边缘得到控制，纸面没有被反复磨破。",
+        "completionCheckZh": "第一层覆盖主要区域，允许保留少量待补白缝。",
+        "commonMistakeZh": "没有方向地乱涂，或不断摩擦湿纸面。",
+        "hintLevels": [
+          {
+            "textZh": "边缘用短笔画，中间用稍长的同向笔画。"
+          },
+          {
+            "textZh": "手快要碰到湿色时，转一下纸再继续。"
+          }
+        ]
+      },
+      {
+        "id": "let_color_dry",
+        "order": 11,
+        "titleZh": "让颜色休息变干",
+        "instructionZh": "把笔帽盖好，让作品平放。观察颜色从亮亮的湿润状态变成不再反光，同时活动手指和肩膀，不继续覆盖。",
+        "childActionZh": "等待干燥并完成短暂手部放松。",
+        "parentPromptZh": "不要用手直接摸颜色，也不需要吹或擦。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step11_drying",
+        "narration": {
+          "textZh": "现在让颜色休息。盖好笔帽，作品平放。等亮亮的湿色不再反光，我们再回来补第二层。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "现在让颜色休息。盖好笔帽，作品平放。等亮亮的湿色不再反光，我们再回来补第二层。"
+        },
+        "successCriteriaZh": "主要色块表面不再明显反光或粘笔。",
+        "completionCheckZh": "孩子能指出至少一块已经干燥的区域。",
+        "commonMistakeZh": "为了赶快完成，在湿色上连续覆盖第二层。",
+        "hintLevels": [
+          {
+            "textZh": "趁等待做三次张手、握拳，再转一转肩膀。"
+          }
+        ]
+      },
+      {
+        "id": "repair_second_layer_and_edges",
+        "order": 12,
+        "titleZh": "补第二层和小白缝",
+        "instructionZh": "只找还能看见白纸、颜色太薄或边缘不齐的小地方，逐块补好。不要把整张作品无差别重新涂一遍。",
+        "childActionZh": "完成局部补色和边缘整理。",
+        "parentPromptZh": "提醒像医生补小伤口，只补需要的位置。",
+        "plannedMinutes": 4,
+        "imageAssetId": "art01_step12_second_layer",
+        "narration": {
+          "textZh": "第二层不是全部重涂。只找小白缝、太薄和边缘不齐的地方，一小块一小块补好。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "第二层不是全部重涂。只找小白缝、太薄和边缘不齐的地方，一小块一小块补好。"
+        },
+        "successCriteriaZh": "主要白缝和薄色得到修补，同时保留清楚勾线。",
+        "completionCheckZh": "退远看时，大色块整体均匀，线条没有被厚色完全盖住。",
+        "commonMistakeZh": "整张再涂一遍，导致颜色太厚和轮廓被盖住。",
+        "hintLevels": [
+          {
+            "textZh": "先退远找最明显的一处，只补这一处，再重新看。"
+          }
+        ]
+      },
+      {
+        "id": "add_texture_and_highlights",
+        "order": 13,
+        "titleZh": "加纹理和高光",
+        "instructionZh": "选择一种重复纹理，例如圆点、短弧线或小星星，重复三到五次；最后用白色或浅色笔加不超过三个高光点。",
+        "childActionZh": "添加一种纹理和少量高光。",
+        "parentPromptZh": "提醒每加一处就退远看，不把所有空白塞满。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step13_details",
+        "narration": {
+          "textZh": "最后加少量细节。选一种纹理重复三到五次，再加不超过三个小高光。每加一处就退远看一次。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "最后加少量细节。选一种纹理重复三到五次，再加不超过三个小高光。每加一处就退远看一次。"
+        },
+        "successCriteriaZh": "细节能够增强主体，远看时星球仍是最清楚的重点。",
+        "completionCheckZh": "纹理有重复规律，高光数量不超过三个。",
+        "commonMistakeZh": "看到空白就继续加装饰，最后失去视觉重点。",
+        "hintLevels": [
+          {
+            "textZh": "先加三个相同的小图案，停下来退远看。"
+          },
+          {
+            "textZh": "如果已经很丰富，可以不再加新的图案。"
+          }
+        ]
+      },
+      {
+        "id": "sign_name_and_reflect",
+        "order": 14,
+        "titleZh": "签名、取名和回看",
+        "instructionZh": "在角落签名，给星球取一个名字，再说出最满意的一处、今天学会的一种方法，以及下次想调整的一处。",
+        "childActionZh": "完成签名和三句作品回看。",
+        "parentPromptZh": "只听孩子说，不替她判断像不像范画。",
+        "plannedMinutes": 3,
+        "imageAssetId": "art01_step14_reflection",
+        "narration": {
+          "textZh": "作品完成了。请签上名字，给星球取名，再说说最满意哪里、今天学会了什么、下次想调整哪里。",
+          "replayLabel": "再听一遍"
+        },
+        "readAloud": {
+          "policy": "full",
+          "spokenTextZh": "作品完成了。请签上名字，给星球取名，再说说最满意哪里、今天学会了什么、下次想调整哪里。"
+        },
+        "recording": {
+          "mode": "optional_response",
+          "maxSeconds": 90,
+          "promptZh": "请介绍你的颜色星球和今天学到的方法。",
+          "startCueZh": "准备好后点麦克风。",
+          "stopAction": "done_button",
+          "allowMultipleTakes": true,
+          "includeInFeedback": true,
+          "category": "art_reflection"
+        },
+        "successCriteriaZh": "完成签名、作品名字，并说出至少一个具体方法。",
+        "completionCheckZh": "表达包含一个具体位置或具体方法，不只说“好看”。",
+        "commonMistakeZh": "只和范画比较，说自己画得像或不像。",
+        "hintLevels": [
+          {
+            "textZh": "可以从草稿修改、勾线、试色、平涂或补色里选一个今天学会的方法。"
+          },
+          {
+            "textZh": "最满意的一处可以说具体颜色、星球环或某个小纹理。"
+          }
+        ]
+      }
+    ],
+    "reflection": {
+      "nameArtwork": true,
+      "promptsZh": [
+        "我的星球叫什么名字？",
+        "我最满意作品的哪一处？",
+        "我今天学会了哪个具体方法？",
+        "我下次想调整哪里？"
+      ]
+    },
+    "completionCriteriaZh": "完成轻铅笔草稿、至少一次主动检查修改、干净勾线、三色试色、第一层平涂、干后补色、少量纹理和作品回看。",
+    "assetManifest": {
+      "packId": "art-01-color-planet-v2-assets",
+      "assets": [
+        {
+          "id": "art01_step01_finished_reference",
+          "fileName": "art01-step01-finished-reference.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step02_materials",
+          "fileName": "art01-step02-materials.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step03_warmup",
+          "fileName": "art01-step03-warmup.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step04_pencil_position",
+          "fileName": "art01-step04-pencil-position.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step05_pencil_big_shapes",
+          "fileName": "art01-step05-pencil-big-shapes.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step06_check_erase",
+          "fileName": "art01-step06-check-erase.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step07_outline",
+          "fileName": "art01-step07-outline.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step08_erase_pencil",
+          "fileName": "art01-step08-erase-pencil.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step09_color_plan",
+          "fileName": "art01-step09-color-plan.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step10_first_color",
+          "fileName": "art01-step10-first-color.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step11_drying",
+          "fileName": "art01-step11-drying.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step12_second_layer",
+          "fileName": "art01-step12-second-layer.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step13_details",
+          "fileName": "art01-step13-details.webp",
+          "mime": "image/webp"
+        },
+        {
+          "id": "art01_step14_reflection",
+          "fileName": "art01-step14-reflection.webp",
+          "mime": "image/webp"
+        }
+      ]
+    },
+    "title": "我的颜色星球｜从铅笔草稿到丙烯马克笔成品",
+    "assetBasePath": "assets/art/color-planet-lesson-01"
+  }
+}

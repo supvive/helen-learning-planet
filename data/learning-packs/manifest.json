@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "timezone": "Asia/Shanghai",
+  "latestPackId": "2026-07-26-helen-day14-revision-e-open-books-art01",
+  "latest": "./helen-learning-pack-2026-07-26-day14-revision-e.json",
+  "packs": [
+    {
+      "packId": "2026-07-26-helen-day14-revision-e-open-books-art01",
+      "date": "2026-07-26",
+      "title": "Helen Day 14 Revision E｜贴歪的作品标签、Hello School与颜色星球续课",
+      "availableSubjects": [
+        "chinese",
+        "english",
+        "art"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "day14-chinese-revision-e-open-books-art01",
+      "publishedAt": "2026-07-26T11:25:00+08:00",
+      "path": "./helen-learning-pack-2026-07-26-day14-revision-e.json"
+    },
+    {
+      "packId": "2026-07-25-helen-day13-en-next-art01-rev2",
+      "date": "2026-07-25",
+      "title": "Helen Day 13｜阅读、英语与颜色星球14步课",
+      "availableSubjects": [
+        "chinese",
+        "english",
+        "art"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "color-planet-lesson-01-v2-14-step",
+      "publishedAt": "2026-07-25T12:20:00+08:00",
+      "path": "./helen-learning-pack-2026-07-25-day13-rev2.json"
+    },
+    {
+      "packId": "2026-07-25-helen-day13-en-next-art01",
+      "date": "2026-07-25",
+      "title": "Helen Day 13｜阅读、英语与颜色星图",
+      "availableSubjects": [
+        "chinese",
+        "english",
+        "art"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "publishedAt": "2026-07-25T00:00:00+08:00",
+      "path": "./helen-learning-pack-2026-07-25-day13.json"
+    }
+  ]
+}

@@ -1,0 +1,4646 @@
+{
+  "model": "deepseek-v4-pro",
+  "total": 177,
+  "updatedAt": "2026-07-04T21:11:07.898Z",
+  "stats": [
+    {
+      "batch": 1,
+      "chars": [
+        "输",
+        "练",
+        "认",
+        "河",
+        "路",
+        "包",
+        "校",
+        "师",
+        "友",
+        "测",
+        "秒",
+        "确"
+      ],
+      "latencyMs": 13712,
+      "requestId": "e7d10d02-30fe-43a6-ad8e-42e46108cb06",
+      "invalid": []
+    },
+    {
+      "batch": 2,
+      "chars": [
+        "容",
+        "熟",
+        "危",
+        "恶",
+        "易",
+        "预",
+        "境"
+      ],
+      "latencyMs": 9520,
+      "requestId": "615a4113-45cb-4986-8221-259a5204c17e",
+      "invalid": []
+    }
+  ],
+  "items": [
+    {
+      "text": "日",
+      "type": "character",
+      "pinyin": "rì",
+      "meaning": "天上的太阳，也指一天的时间。",
+      "words": [
+        {
+          "word": "日出",
+          "pinyin": "rì chū",
+          "meaning": "早晨太阳从东方升起。"
+        },
+        {
+          "word": "日子",
+          "pinyin": "rì zi",
+          "meaning": "一天一天的生活。"
+        },
+        {
+          "word": "生日",
+          "pinyin": "shēng rì",
+          "meaning": "一个人出生的那一天。"
+        }
+      ],
+      "sentence": "太阳每天从东方升起。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "月",
+      "type": "character",
+      "pinyin": "yuè",
+      "meaning": "夜晚天上弯弯或圆圆的月亮，也指一个月的时间。",
+      "words": [
+        {
+          "word": "月亮",
+          "pinyin": "yuè liang",
+          "meaning": "夜晚天上发光的圆球。"
+        },
+        {
+          "word": "月饼",
+          "pinyin": "yuè bǐng",
+          "meaning": "中秋节吃的圆饼。"
+        },
+        {
+          "word": "一月",
+          "pinyin": "yī yuè",
+          "meaning": "一年的第一个月。"
+        }
+      ],
+      "sentence": "中秋的月亮又圆又亮。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "水",
+      "type": "character",
+      "pinyin": "shuǐ",
+      "meaning": "没有颜色、没有味道的液体，可以喝，可以洗东西。",
+      "words": [
+        {
+          "word": "水果",
+          "pinyin": "shuǐ guǒ",
+          "meaning": "可以吃的果子，里面有很多水分。"
+        },
+        {
+          "word": "喝水",
+          "pinyin": "hē shuǐ",
+          "meaning": "把水喝进肚子里。"
+        },
+        {
+          "word": "开水",
+          "pinyin": "kāi shuǐ",
+          "meaning": "烧开过的水，可以喝。"
+        }
+      ],
+      "sentence": "我每天要喝很多水。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "火",
+      "type": "character",
+      "pinyin": "huǒ",
+      "meaning": "东西燃烧时发出的光和热，很烫。",
+      "words": [
+        {
+          "word": "火车",
+          "pinyin": "huǒ chē",
+          "meaning": "在铁轨上跑的长长的车。"
+        },
+        {
+          "word": "大火",
+          "pinyin": "dà huǒ",
+          "meaning": "很大的火，很危险。"
+        },
+        {
+          "word": "点火",
+          "pinyin": "diǎn huǒ",
+          "meaning": "让火开始烧起来。"
+        }
+      ],
+      "sentence": "不要玩火，很危险。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "山",
+      "type": "character",
+      "pinyin": "shān",
+      "meaning": "地面上高高凸起的地方，比周围高很多。",
+      "words": [
+        {
+          "word": "上山",
+          "pinyin": "shàng shān",
+          "meaning": "往山的高处走。"
+        },
+        {
+          "word": "大山",
+          "pinyin": "dà shān",
+          "meaning": "很高很大的山。"
+        },
+        {
+          "word": "山水",
+          "pinyin": "shān shuǐ",
+          "meaning": "山和水，也指风景。"
+        }
+      ],
+      "sentence": "远处有一座高高的山。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "田",
+      "type": "character",
+      "pinyin": "tián",
+      "meaning": "种庄稼的土地，一块一块的。",
+      "words": [
+        {
+          "word": "水田",
+          "pinyin": "shuǐ tián",
+          "meaning": "里面有水的田，可以种稻子。"
+        },
+        {
+          "word": "田地",
+          "pinyin": "tián dì",
+          "meaning": "用来种东西的土地。"
+        },
+        {
+          "word": "田野",
+          "pinyin": "tián yě",
+          "meaning": "大片的田地和野地。"
+        }
+      ],
+      "sentence": "农民在田里种稻子。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "人",
+      "type": "character",
+      "pinyin": "rén",
+      "meaning": "我们这样的，会说话、会走路、会思考的生命。",
+      "words": [
+        {
+          "word": "大人",
+          "pinyin": "dà rén",
+          "meaning": "已经长大的人，像爸爸妈妈。"
+        },
+        {
+          "word": "人们",
+          "pinyin": "rén men",
+          "meaning": "很多很多人。"
+        },
+        {
+          "word": "好人",
+          "pinyin": "hǎo rén",
+          "meaning": "心地善良的人。"
+        }
+      ],
+      "sentence": "公园里有很多人。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "口",
+      "type": "character",
+      "pinyin": "kǒu",
+      "meaning": "嘴巴，吃东西和说话的地方；也指一个洞或出入的地方。",
+      "words": [
+        {
+          "word": "口水",
+          "pinyin": "kǒu shuǐ",
+          "meaning": "嘴巴里流出来的水。"
+        },
+        {
+          "word": "开口",
+          "pinyin": "kāi kǒu",
+          "meaning": "张开嘴巴说话。"
+        },
+        {
+          "word": "门口",
+          "pinyin": "mén kǒu",
+          "meaning": "门的前面。"
+        }
+      ],
+      "sentence": "请张开你的口。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "木",
+      "type": "character",
+      "pinyin": "mù",
+      "meaning": "树木，可以做成家具、纸等东西的材料。",
+      "words": [
+        {
+          "word": "木头",
+          "pinyin": "mù tou",
+          "meaning": "树砍下来后变成的材料。"
+        },
+        {
+          "word": "树木",
+          "pinyin": "shù mù",
+          "meaning": "很多树，统称树木。"
+        },
+        {
+          "word": "木马",
+          "pinyin": "mù mǎ",
+          "meaning": "用木头做的玩具马。"
+        }
+      ],
+      "sentence": "这张桌子是木头做的。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "禾",
+      "type": "character",
+      "pinyin": "hé",
+      "meaning": "谷类植物的苗，比如稻子、麦子小时候的样子。",
+      "words": [
+        {
+          "word": "禾苗",
+          "pinyin": "hé miáo",
+          "meaning": "刚刚长出来的谷类小苗。"
+        },
+        {
+          "word": "锄禾",
+          "pinyin": "chú hé",
+          "meaning": "给禾苗松土除草。"
+        },
+        {
+          "word": "禾场",
+          "pinyin": "hé cháng",
+          "meaning": "打谷子、晒谷子的平地。"
+        }
+      ],
+      "sentence": "田里的禾苗绿绿的。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "上",
+      "type": "character",
+      "pinyin": "shàng",
+      "meaning": "位置在高处，或者从低处到高处去。",
+      "words": [
+        {
+          "word": "上学",
+          "pinyin": "shàng xué",
+          "meaning": "去学校学习。"
+        },
+        {
+          "word": "上面",
+          "pinyin": "shàng miàn",
+          "meaning": "在高的地方。"
+        },
+        {
+          "word": "上车",
+          "pinyin": "shàng chē",
+          "meaning": "走进车里。"
+        }
+      ],
+      "sentence": "我每天早上去上学。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "下",
+      "type": "character",
+      "pinyin": "xià",
+      "meaning": "位置在低处，或者从高处到低处去。",
+      "words": [
+        {
+          "word": "下雨",
+          "pinyin": "xià yǔ",
+          "meaning": "雨从天上落下来。"
+        },
+        {
+          "word": "下面",
+          "pinyin": "xià miàn",
+          "meaning": "在低的地方。"
+        },
+        {
+          "word": "下车",
+          "pinyin": "xià chē",
+          "meaning": "从车里走出来。"
+        }
+      ],
+      "sentence": "天黑了，要下雨了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "一",
+      "type": "character",
+      "pinyin": "yī",
+      "meaning": "数字1，表示最小的整数。",
+      "words": [
+        {
+          "word": "一个",
+          "pinyin": "yī gè",
+          "meaning": "数量是1的人或东西。"
+        },
+        {
+          "word": "一天",
+          "pinyin": "yī tiān",
+          "meaning": "从早到晚的一整天。"
+        },
+        {
+          "word": "一起",
+          "pinyin": "yī qǐ",
+          "meaning": "大家一块儿做同一件事。"
+        }
+      ],
+      "sentence": "我有一个苹果。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "二",
+      "type": "character",
+      "pinyin": "èr",
+      "meaning": "数字2，表示比1多1。",
+      "words": [
+        {
+          "word": "二月",
+          "pinyin": "èr yuè",
+          "meaning": "一年里的第二个月。"
+        },
+        {
+          "word": "二手",
+          "pinyin": "èr shǒu",
+          "meaning": "别人用过的，不是全新的。"
+        },
+        {
+          "word": "二胡",
+          "pinyin": "èr hú",
+          "meaning": "一种有两根弦的中国乐器。"
+        }
+      ],
+      "sentence": "我有两只铅笔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "三",
+      "type": "character",
+      "pinyin": "sān",
+      "meaning": "数字3，表示比2多1。",
+      "words": [
+        {
+          "word": "三个",
+          "pinyin": "sān gè",
+          "meaning": "数量是3的人或东西。"
+        },
+        {
+          "word": "三月",
+          "pinyin": "sān yuè",
+          "meaning": "一年里的第三个月。"
+        },
+        {
+          "word": "三角",
+          "pinyin": "sān jiǎo",
+          "meaning": "有三个角的形状。"
+        }
+      ],
+      "sentence": "桌上有三本书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "四",
+      "type": "character",
+      "pinyin": "sì",
+      "meaning": "数字4，表示比3多1。",
+      "words": [
+        {
+          "word": "四个",
+          "pinyin": "sì gè",
+          "meaning": "数量是4的人或东西。"
+        },
+        {
+          "word": "四月",
+          "pinyin": "sì yuè",
+          "meaning": "一年里的第四个月。"
+        },
+        {
+          "word": "四方",
+          "pinyin": "sì fāng",
+          "meaning": "东、南、西、北四个方向。"
+        }
+      ],
+      "sentence": "我有四支彩笔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "五",
+      "type": "character",
+      "pinyin": "wǔ",
+      "meaning": "数字5，表示比4多1。",
+      "words": [
+        {
+          "word": "五个",
+          "pinyin": "wǔ gè",
+          "meaning": "数量是5的人或东西。"
+        },
+        {
+          "word": "五月",
+          "pinyin": "wǔ yuè",
+          "meaning": "一年里的第五个月。"
+        },
+        {
+          "word": "五星",
+          "pinyin": "wǔ xīng",
+          "meaning": "五颗星星，常指国旗上的星。"
+        }
+      ],
+      "sentence": "手有五根手指。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "天",
+      "type": "character",
+      "pinyin": "tiān",
+      "meaning": "天空；也指一昼夜的时间。",
+      "words": [
+        {
+          "word": "天空",
+          "pinyin": "tiān kōng",
+          "meaning": "头顶上方高高的地方，有云和太阳。"
+        },
+        {
+          "word": "今天",
+          "pinyin": "jīn tiān",
+          "meaning": "说话时的这一天。"
+        },
+        {
+          "word": "天气",
+          "pinyin": "tiān qì",
+          "meaning": "冷、热、晴、雨等自然现象。"
+        }
+      ],
+      "sentence": "今天天气真好。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "地",
+      "type": "character",
+      "pinyin": "dì",
+      "meaning": "大地，我们脚下踩的地方。",
+      "words": [
+        {
+          "word": "大地",
+          "pinyin": "dà dì",
+          "meaning": "广阔的地面。"
+        },
+        {
+          "word": "地方",
+          "pinyin": "dì fāng",
+          "meaning": "某个位置或区域。"
+        },
+        {
+          "word": "草地",
+          "pinyin": "cǎo dì",
+          "meaning": "长满草的地面。"
+        }
+      ],
+      "sentence": "小花开在草地上。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "你",
+      "type": "character",
+      "pinyin": "nǐ",
+      "meaning": "称对方，指说话时对面的人。",
+      "words": [
+        {
+          "word": "你们",
+          "pinyin": "nǐ men",
+          "meaning": "指两个或两个以上的人。"
+        },
+        {
+          "word": "你好",
+          "pinyin": "nǐ hǎo",
+          "meaning": "见面时打招呼的话。"
+        },
+        {
+          "word": "你的",
+          "pinyin": "nǐ de",
+          "meaning": "属于你的东西。"
+        }
+      ],
+      "sentence": "你好，我叫小明。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "我",
+      "type": "character",
+      "pinyin": "wǒ",
+      "meaning": "称自己，指说话的人。",
+      "words": [
+        {
+          "word": "我们",
+          "pinyin": "wǒ men",
+          "meaning": "指包括自己在内的几个人。"
+        },
+        {
+          "word": "我的",
+          "pinyin": "wǒ de",
+          "meaning": "属于我的东西。"
+        },
+        {
+          "word": "自我",
+          "pinyin": "zì wǒ",
+          "meaning": "自己本人。"
+        }
+      ],
+      "sentence": "我爱我的家。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "他",
+      "type": "character",
+      "pinyin": "tā",
+      "meaning": "称男性或未知性别的人，指说话双方以外的人。",
+      "words": [
+        {
+          "word": "他们",
+          "pinyin": "tā men",
+          "meaning": "指两个或两个以上的人。"
+        },
+        {
+          "word": "他的",
+          "pinyin": "tā de",
+          "meaning": "属于他的东西。"
+        },
+        {
+          "word": "他人",
+          "pinyin": "tā rén",
+          "meaning": "别的人。"
+        }
+      ],
+      "sentence": "他是我的同学。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "该",
+      "type": "character",
+      "pinyin": "gāi",
+      "meaning": "应当，表示应该这样做。",
+      "words": [
+        {
+          "word": "应该",
+          "pinyin": "yīng gāi",
+          "meaning": "表示情理上必须这样。"
+        },
+        {
+          "word": "该当",
+          "pinyin": "gāi dāng",
+          "meaning": "应当，应该。"
+        },
+        {
+          "word": "活该",
+          "pinyin": "huó gāi",
+          "meaning": "表示不值得同情，自作自受。"
+        }
+      ],
+      "sentence": "我们该回家了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "刻",
+      "type": "character",
+      "pinyin": "kè",
+      "meaning": "用刀等工具在硬东西上划出痕迹；也指时间单位，15分钟为一刻。",
+      "words": [
+        {
+          "word": "立刻",
+          "pinyin": "lì kè",
+          "meaning": "马上，很快地。"
+        },
+        {
+          "word": "时刻",
+          "pinyin": "shí kè",
+          "meaning": "时间里的某一点。"
+        },
+        {
+          "word": "刻字",
+          "pinyin": "kè zì",
+          "meaning": "用刀在石头或木头上划出字。"
+        }
+      ],
+      "sentence": "请立刻过来。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "放",
+      "type": "character",
+      "pinyin": "fàng",
+      "meaning": "把东西安放在某处，或让它离开手。",
+      "words": [
+        {
+          "word": "放下",
+          "pinyin": "fàng xià",
+          "meaning": "把拿着的东西放到下面或别处。"
+        },
+        {
+          "word": "放心",
+          "pinyin": "fàng xīn",
+          "meaning": "心里不担心。"
+        },
+        {
+          "word": "放学",
+          "pinyin": "fàng xué",
+          "meaning": "一天的课结束后离开学校。"
+        }
+      ],
+      "sentence": "请把书放桌上。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "收",
+      "type": "character",
+      "pinyin": "shōu",
+      "meaning": "把东西聚拢或拿回来。",
+      "words": [
+        {
+          "word": "收好",
+          "pinyin": "shōu hǎo",
+          "meaning": "把东西整理好放起来。"
+        },
+        {
+          "word": "收下",
+          "pinyin": "shōu xià",
+          "meaning": "接受别人给的东西。"
+        },
+        {
+          "word": "收工",
+          "pinyin": "shōu gōng",
+          "meaning": "结束工作。"
+        }
+      ],
+      "sentence": "妈妈把衣服收进柜子。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "骄",
+      "type": "character",
+      "pinyin": "jiāo",
+      "meaning": "觉得自己很了不起，看不起别人。",
+      "words": [
+        {
+          "word": "骄傲",
+          "pinyin": "jiāo ào",
+          "meaning": "觉得自己很厉害，看不起别人。"
+        },
+        {
+          "word": "骄阳",
+          "pinyin": "jiāo yáng",
+          "meaning": "夏天很热很晒的太阳。"
+        },
+        {
+          "word": "骄兵",
+          "pinyin": "jiāo bīng",
+          "meaning": "因为骄傲而打败仗的士兵。"
+        }
+      ],
+      "sentence": "他考了满分，有点骄傲。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "傲",
+      "type": "character",
+      "pinyin": "ào",
+      "meaning": "觉得自己很了不起，不把别人放在眼里。",
+      "words": [
+        {
+          "word": "骄傲",
+          "pinyin": "jiāo ào",
+          "meaning": "觉得自己很厉害，看不起别人。"
+        },
+        {
+          "word": "傲慢",
+          "pinyin": "ào màn",
+          "meaning": "对别人态度很冷淡，看不起人。"
+        },
+        {
+          "word": "傲气",
+          "pinyin": "ào qì",
+          "meaning": "觉得自己很了不起的样子。"
+        }
+      ],
+      "sentence": "他太傲慢了，没人喜欢他。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "坚",
+      "type": "character",
+      "pinyin": "jiān",
+      "meaning": "很硬，不容易坏；也指不动摇。",
+      "words": [
+        {
+          "word": "坚持",
+          "pinyin": "jiān chí",
+          "meaning": "一直做下去，不放弃。"
+        },
+        {
+          "word": "坚硬",
+          "pinyin": "jiān yìng",
+          "meaning": "很硬，不容易碎。"
+        },
+        {
+          "word": "坚固",
+          "pinyin": "jiān gù",
+          "meaning": "结实，不容易坏。"
+        }
+      ],
+      "sentence": "这块石头很坚硬。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "持",
+      "type": "character",
+      "pinyin": "chí",
+      "meaning": "拿着；保持下去。",
+      "words": [
+        {
+          "word": "坚持",
+          "pinyin": "jiān chí",
+          "meaning": "一直做下去，不放弃。"
+        },
+        {
+          "word": "保持",
+          "pinyin": "bǎo chí",
+          "meaning": "让原来的样子不改变。"
+        },
+        {
+          "word": "手持",
+          "pinyin": "shǒu chí",
+          "meaning": "用手拿着。"
+        }
+      ],
+      "sentence": "他坚持每天读书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "终",
+      "type": "character",
+      "pinyin": "zhōng",
+      "meaning": "最后，结束。",
+      "words": [
+        {
+          "word": "终于",
+          "pinyin": "zhōng yú",
+          "meaning": "等了很久之后，最后实现了。"
+        },
+        {
+          "word": "终点",
+          "pinyin": "zhōng diǎn",
+          "meaning": "结束的地方。"
+        },
+        {
+          "word": "始终",
+          "pinyin": "shǐ zhōng",
+          "meaning": "从开始到最后。"
+        }
+      ],
+      "sentence": "我们终于到终点了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "点",
+      "type": "character",
+      "pinyin": "diǎn",
+      "meaning": "小的痕迹或位置；时间单位；用笔加上小点。",
+      "words": [
+        {
+          "word": "雨点",
+          "pinyin": "yǔ diǎn",
+          "meaning": "一滴一滴的雨。"
+        },
+        {
+          "word": "点心",
+          "pinyin": "diǎn xīn",
+          "meaning": "糕饼之类的小吃。"
+        },
+        {
+          "word": "点头",
+          "pinyin": "diǎn tóu",
+          "meaning": "头向下动一下，表示同意。"
+        }
+      ],
+      "sentence": "小雨点落在地上。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "兔",
+      "type": "character",
+      "pinyin": "tù",
+      "meaning": "一种小动物，耳朵长，尾巴短，跑得快。",
+      "words": [
+        {
+          "word": "兔子",
+          "pinyin": "tù zi",
+          "meaning": "一种长耳朵、短尾巴的小动物。"
+        },
+        {
+          "word": "白兔",
+          "pinyin": "bái tù",
+          "meaning": "白色的兔子。"
+        },
+        {
+          "word": "小兔",
+          "pinyin": "xiǎo tù",
+          "meaning": "幼小的兔子。"
+        }
+      ],
+      "sentence": "小白兔爱吃萝卜。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "龟",
+      "type": "character",
+      "pinyin": "guī",
+      "meaning": "一种爬行动物，背上有硬壳，走得慢。",
+      "words": [
+        {
+          "word": "乌龟",
+          "pinyin": "wū guī",
+          "meaning": "一种背上有硬壳、爬得慢的动物。"
+        },
+        {
+          "word": "海龟",
+          "pinyin": "hǎi guī",
+          "meaning": "生活在海里的龟。"
+        },
+        {
+          "word": "龟壳",
+          "pinyin": "guī ké",
+          "meaning": "乌龟背上的硬壳。"
+        }
+      ],
+      "sentence": "乌龟慢慢地爬着。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "赛",
+      "type": "character",
+      "pinyin": "sài",
+      "meaning": "比一比谁更好、更快。",
+      "words": [
+        {
+          "word": "比赛",
+          "pinyin": "bǐ sài",
+          "meaning": "比一比谁做得好。"
+        },
+        {
+          "word": "赛跑",
+          "pinyin": "sài pǎo",
+          "meaning": "比谁跑得快。"
+        },
+        {
+          "word": "赛车",
+          "pinyin": "sài chē",
+          "meaning": "比谁开车或骑车快。"
+        }
+      ],
+      "sentence": "我们参加跑步比赛。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "跑",
+      "type": "character",
+      "pinyin": "pǎo",
+      "meaning": "用脚快速向前移动。",
+      "words": [
+        {
+          "word": "跑步",
+          "pinyin": "pǎo bù",
+          "meaning": "用脚快速向前移动的运动。"
+        },
+        {
+          "word": "跑车",
+          "pinyin": "pǎo chē",
+          "meaning": "跑得很快的汽车。"
+        },
+        {
+          "word": "跑开",
+          "pinyin": "pǎo kāi",
+          "meaning": "快速离开。"
+        }
+      ],
+      "sentence": "小明在操场上跑步。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "铃",
+      "type": "character",
+      "pinyin": "líng",
+      "meaning": "用金属做成的小钟，摇动会发出声音。",
+      "words": [
+        {
+          "word": "铃声",
+          "pinyin": "líng shēng",
+          "meaning": "铃发出的声音。"
+        },
+        {
+          "word": "门铃",
+          "pinyin": "mén líng",
+          "meaning": "装在门上的铃，按一下会响。"
+        },
+        {
+          "word": "铃铛",
+          "pinyin": "líng dang",
+          "meaning": "一种摇晃会响的小玩具。"
+        }
+      ],
+      "sentence": "下课铃声一响，我们就出去玩。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "响",
+      "type": "character",
+      "pinyin": "xiǎng",
+      "meaning": "发出声音。",
+      "words": [
+        {
+          "word": "响声",
+          "pinyin": "xiǎng shēng",
+          "meaning": "听到的声音。"
+        },
+        {
+          "word": "响亮",
+          "pinyin": "xiǎng liàng",
+          "meaning": "声音很大，很清楚。"
+        },
+        {
+          "word": "响动",
+          "pinyin": "xiǎng dòng",
+          "meaning": "东西动时发出的声音。"
+        }
+      ],
+      "sentence": "外面有鞭炮的响声。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "回",
+      "type": "character",
+      "pinyin": "huí",
+      "meaning": "从别处到原来的地方。",
+      "words": [
+        {
+          "word": "回家",
+          "pinyin": "huí jiā",
+          "meaning": "回到自己的家。"
+        },
+        {
+          "word": "回来",
+          "pinyin": "huí lái",
+          "meaning": "从别处到说话人所在的地方。"
+        },
+        {
+          "word": "回去",
+          "pinyin": "huí qù",
+          "meaning": "从所在的地方到别处。"
+        }
+      ],
+      "sentence": "放学后，我马上回家。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "答",
+      "type": "character",
+      "pinyin": "dá",
+      "meaning": "回答别人问的话。",
+      "words": [
+        {
+          "word": "回答",
+          "pinyin": "huí dá",
+          "meaning": "对问题说出自己的话。"
+        },
+        {
+          "word": "答案",
+          "pinyin": "dá àn",
+          "meaning": "问题的正确结果。"
+        },
+        {
+          "word": "答应",
+          "pinyin": "dā yìng",
+          "meaning": "同意别人的要求。"
+        }
+      ],
+      "sentence": "老师提问，我举手回答。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "后",
+      "type": "character",
+      "pinyin": "hòu",
+      "meaning": "在背面或未来的时间。",
+      "words": [
+        {
+          "word": "后面",
+          "pinyin": "hòu miàn",
+          "meaning": "位置在背面的地方。"
+        },
+        {
+          "word": "后来",
+          "pinyin": "hòu lái",
+          "meaning": "指过去某一时间之后的时间。"
+        },
+        {
+          "word": "以后",
+          "pinyin": "yǐ hòu",
+          "meaning": "现在或所说时间之后的时间。"
+        }
+      ],
+      "sentence": "小狗跟在我后面跑。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "来",
+      "type": "character",
+      "pinyin": "lái",
+      "meaning": "从别处到说话人这里。",
+      "words": [
+        {
+          "word": "来到",
+          "pinyin": "lái dào",
+          "meaning": "到达某个地方。"
+        },
+        {
+          "word": "出来",
+          "pinyin": "chū lái",
+          "meaning": "从里面到外面。"
+        },
+        {
+          "word": "起来",
+          "pinyin": "qǐ lái",
+          "meaning": "从躺着或坐着到站立。"
+        }
+      ],
+      "sentence": "妈妈下班回来了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "第",
+      "type": "character",
+      "pinyin": "dì",
+      "meaning": "表示次序，用在数字前。",
+      "words": [
+        {
+          "word": "第一",
+          "pinyin": "dì yī",
+          "meaning": "排在最前面的。"
+        },
+        {
+          "word": "第二",
+          "pinyin": "dì èr",
+          "meaning": "排在第一后面的。"
+        },
+        {
+          "word": "第三",
+          "pinyin": "dì sān",
+          "meaning": "排在第二后面的。"
+        }
+      ],
+      "sentence": "我考了全班第一名。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "乌",
+      "type": "character",
+      "pinyin": "wū",
+      "meaning": "黑色，或者一种黑色的鸟。",
+      "words": [
+        {
+          "word": "乌鸦",
+          "pinyin": "wū yā",
+          "meaning": "一种全身黑色的鸟，叫声不好听。"
+        },
+        {
+          "word": "乌云",
+          "pinyin": "wū yún",
+          "meaning": "黑色的云，快要下雨了。"
+        },
+        {
+          "word": "乌黑",
+          "pinyin": "wū hēi",
+          "meaning": "很黑很黑的颜色。"
+        }
+      ],
+      "sentence": "天上飘来一朵乌云。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "课",
+      "type": "character",
+      "pinyin": "kè",
+      "meaning": "学校里分科目教学的时间。",
+      "words": [
+        {
+          "word": "上课",
+          "pinyin": "shàng kè",
+          "meaning": "老师教学生知识。"
+        },
+        {
+          "word": "下课",
+          "pinyin": "xià kè",
+          "meaning": "一节课结束。"
+        },
+        {
+          "word": "课本",
+          "pinyin": "kè běn",
+          "meaning": "上课用的书。"
+        }
+      ],
+      "sentence": "上课要认真听讲。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "耳",
+      "type": "character",
+      "pinyin": "ěr",
+      "meaning": "人和动物用来听声音的器官。",
+      "words": [
+        {
+          "word": "耳朵",
+          "pinyin": "ěr duo",
+          "meaning": "头两边听声音的器官。"
+        },
+        {
+          "word": "木耳",
+          "pinyin": "mù ěr",
+          "meaning": "一种可以吃的黑色菌类。"
+        },
+        {
+          "word": "耳环",
+          "pinyin": "ěr huán",
+          "meaning": "戴在耳朵上的装饰品。"
+        }
+      ],
+      "sentence": "小兔子有长长的耳朵。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "目",
+      "type": "character",
+      "pinyin": "mù",
+      "meaning": "眼睛，或者看的意思。",
+      "words": [
+        {
+          "word": "目光",
+          "pinyin": "mù guāng",
+          "meaning": "眼睛看东西时的样子。"
+        },
+        {
+          "word": "目前",
+          "pinyin": "mù qián",
+          "meaning": "现在，眼前的时候。"
+        },
+        {
+          "word": "节目",
+          "pinyin": "jié mù",
+          "meaning": "电视或表演里的一段内容。"
+        }
+      ],
+      "sentence": "他的目光很温柔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "手",
+      "type": "character",
+      "pinyin": "shǒu",
+      "meaning": "人身体最前端能拿东西的部分。",
+      "words": [
+        {
+          "word": "小手",
+          "pinyin": "xiǎo shǒu",
+          "meaning": "小朋友的手。"
+        },
+        {
+          "word": "洗手",
+          "pinyin": "xǐ shǒu",
+          "meaning": "用水把手洗干净。"
+        },
+        {
+          "word": "手心",
+          "pinyin": "shǒu xīn",
+          "meaning": "手掌的中心部分。"
+        }
+      ],
+      "sentence": "饭前便后要洗手。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "足",
+      "type": "character",
+      "pinyin": "zú",
+      "meaning": "脚，人或动物用来走路的身体部分。",
+      "words": [
+        {
+          "word": "足球",
+          "pinyin": "zú qiú",
+          "meaning": "一种用脚踢的球类运动。"
+        },
+        {
+          "word": "足够",
+          "pinyin": "zú gòu",
+          "meaning": "数量或程度完全满足需要。"
+        },
+        {
+          "word": "不足",
+          "pinyin": "bù zú",
+          "meaning": "不够，缺少。"
+        }
+      ],
+      "sentence": "我喜欢踢足球。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "站",
+      "type": "character",
+      "pinyin": "zhàn",
+      "meaning": "身体直立，双脚着地。",
+      "words": [
+        {
+          "word": "站立",
+          "pinyin": "zhàn lì",
+          "meaning": "直着身体，脚踩在地上。"
+        },
+        {
+          "word": "车站",
+          "pinyin": "chē zhàn",
+          "meaning": "车辆停靠让乘客上下车的地方。"
+        },
+        {
+          "word": "站台",
+          "pinyin": "zhàn tái",
+          "meaning": "车站里供乘客等车的高出地面的平台。"
+        }
+      ],
+      "sentence": "请站在门口等我。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "坐",
+      "type": "character",
+      "pinyin": "zuò",
+      "meaning": "把屁股放在椅子、地上等，身体休息。",
+      "words": [
+        {
+          "word": "坐下",
+          "pinyin": "zuò xià",
+          "meaning": "把身体放到座位上。"
+        },
+        {
+          "word": "乘坐",
+          "pinyin": "chéng zuò",
+          "meaning": "搭车、船、飞机等交通工具。"
+        },
+        {
+          "word": "坐车",
+          "pinyin": "zuò chē",
+          "meaning": "搭乘汽车或火车。"
+        }
+      ],
+      "sentence": "请坐在椅子上。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "石",
+      "type": "character",
+      "pinyin": "shí",
+      "meaning": "坚硬的小块或大块矿物，如岩石。",
+      "words": [
+        {
+          "word": "石头",
+          "pinyin": "shí tou",
+          "meaning": "小块或大块的坚硬矿物。"
+        },
+        {
+          "word": "石子",
+          "pinyin": "shí zǐ",
+          "meaning": "小块的石头。"
+        },
+        {
+          "word": "宝石",
+          "pinyin": "bǎo shí",
+          "meaning": "珍贵美丽的石头，可做首饰。"
+        }
+      ],
+      "sentence": "路边有一块大石头。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "对",
+      "type": "character",
+      "pinyin": "duì",
+      "meaning": "正确，跟“错”相反；也指朝着、向着。",
+      "words": [
+        {
+          "word": "不对",
+          "pinyin": "bù duì",
+          "meaning": "错误，不正确。"
+        },
+        {
+          "word": "对面",
+          "pinyin": "duì miàn",
+          "meaning": "正前方或另一边。"
+        },
+        {
+          "word": "对话",
+          "pinyin": "duì huà",
+          "meaning": "两个人或更多人互相说话。"
+        }
+      ],
+      "sentence": "你的回答很对。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "云",
+      "type": "character",
+      "pinyin": "yún",
+      "meaning": "天空中的白色或灰色水汽团。",
+      "words": [
+        {
+          "word": "白云",
+          "pinyin": "bái yún",
+          "meaning": "白色的云朵。"
+        },
+        {
+          "word": "乌云",
+          "pinyin": "wū yún",
+          "meaning": "黑色的云，常带来雨。"
+        },
+        {
+          "word": "云朵",
+          "pinyin": "yún duǒ",
+          "meaning": "一朵一朵的云。"
+        }
+      ],
+      "sentence": "天上飘着白云。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "雨",
+      "type": "character",
+      "pinyin": "yǔ",
+      "meaning": "从云里落下的水滴。",
+      "words": [
+        {
+          "word": "下雨",
+          "pinyin": "xià yǔ",
+          "meaning": "雨从天上落下来。"
+        },
+        {
+          "word": "雨伞",
+          "pinyin": "yǔ sǎn",
+          "meaning": "挡雨用的伞。"
+        },
+        {
+          "word": "雨衣",
+          "pinyin": "yǔ yī",
+          "meaning": "防雨的外衣。"
+        }
+      ],
+      "sentence": "今天下雨了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "风",
+      "type": "character",
+      "pinyin": "fēng",
+      "meaning": "空气流动的现象。",
+      "words": [
+        {
+          "word": "大风",
+          "pinyin": "dà fēng",
+          "meaning": "很强的风。"
+        },
+        {
+          "word": "风筝",
+          "pinyin": "fēng zheng",
+          "meaning": "用线牵拉能飞上天的玩具。"
+        },
+        {
+          "word": "吹风",
+          "pinyin": "chuī fēng",
+          "meaning": "让风吹到身上。"
+        }
+      ],
+      "sentence": "外面刮大风了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "花",
+      "type": "character",
+      "pinyin": "huā",
+      "meaning": "植物开出的美丽部分，有各种颜色。",
+      "words": [
+        {
+          "word": "花朵",
+          "pinyin": "huā duǒ",
+          "meaning": "花的总称，一朵一朵的花。"
+        },
+        {
+          "word": "花园",
+          "pinyin": "huā yuán",
+          "meaning": "种了很多花的地方。"
+        },
+        {
+          "word": "开花",
+          "pinyin": "kāi huā",
+          "meaning": "植物长出花朵。"
+        }
+      ],
+      "sentence": "公园里开了很多花。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "鸟",
+      "type": "character",
+      "pinyin": "niǎo",
+      "meaning": "有羽毛、会飞的动物。",
+      "words": [
+        {
+          "word": "小鸟",
+          "pinyin": "xiǎo niǎo",
+          "meaning": "体型小的鸟。"
+        },
+        {
+          "word": "鸟儿",
+          "pinyin": "niǎo ér",
+          "meaning": "鸟的亲切叫法。"
+        },
+        {
+          "word": "鸟窝",
+          "pinyin": "niǎo wō",
+          "meaning": "鸟住的巢。"
+        }
+      ],
+      "sentence": "树上有一只小鸟。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "虫",
+      "type": "character",
+      "pinyin": "chóng",
+      "meaning": "小型的爬行或飞行的动物，如昆虫。",
+      "words": [
+        {
+          "word": "虫子",
+          "pinyin": "chóng zi",
+          "meaning": "小虫的总称。"
+        },
+        {
+          "word": "毛毛虫",
+          "pinyin": "máo mao chóng",
+          "meaning": "身上有毛的虫，会变蝴蝶。"
+        },
+        {
+          "word": "害虫",
+          "pinyin": "hài chóng",
+          "meaning": "对人有害的虫子。"
+        }
+      ],
+      "sentence": "叶子上有一条虫。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "六",
+      "type": "character",
+      "pinyin": "liù",
+      "meaning": "数字，比五多一。",
+      "words": [
+        {
+          "word": "六个",
+          "pinyin": "liù gè",
+          "meaning": "数量是六。"
+        },
+        {
+          "word": "六月",
+          "pinyin": "liù yuè",
+          "meaning": "一年中的第六个月。"
+        },
+        {
+          "word": "六天",
+          "pinyin": "liù tiān",
+          "meaning": "六天的时间。"
+        }
+      ],
+      "sentence": "我有六支铅笔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "七",
+      "type": "character",
+      "pinyin": "qī",
+      "meaning": "数字，比六多一。",
+      "words": [
+        {
+          "word": "七个",
+          "pinyin": "qī gè",
+          "meaning": "数量是七的人或东西。"
+        },
+        {
+          "word": "七天",
+          "pinyin": "qī tiān",
+          "meaning": "一个星期的时间。"
+        },
+        {
+          "word": "七岁",
+          "pinyin": "qī suì",
+          "meaning": "年龄是七岁。"
+        }
+      ],
+      "sentence": "我有七个苹果。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "八",
+      "type": "character",
+      "pinyin": "bā",
+      "meaning": "数字，比七多一。",
+      "words": [
+        {
+          "word": "八个",
+          "pinyin": "bā gè",
+          "meaning": "数量是八的人或东西。"
+        },
+        {
+          "word": "八月",
+          "pinyin": "bā yuè",
+          "meaning": "一年中的第八个月。"
+        },
+        {
+          "word": "八点",
+          "pinyin": "bā diǎn",
+          "meaning": "时间，早上或晚上的第八个小时。"
+        }
+      ],
+      "sentence": "桌子上有八本书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "九",
+      "type": "character",
+      "pinyin": "jiǔ",
+      "meaning": "数字，比八多一。",
+      "words": [
+        {
+          "word": "九个",
+          "pinyin": "jiǔ gè",
+          "meaning": "数量是九的人或东西。"
+        },
+        {
+          "word": "九天",
+          "pinyin": "jiǔ tiān",
+          "meaning": "九个白天和黑夜。"
+        },
+        {
+          "word": "九月",
+          "pinyin": "jiǔ yuè",
+          "meaning": "一年中的第九个月。"
+        }
+      ],
+      "sentence": "我有九支铅笔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "十",
+      "type": "character",
+      "pinyin": "shí",
+      "meaning": "数字，比九多一。",
+      "words": [
+        {
+          "word": "十个",
+          "pinyin": "shí gè",
+          "meaning": "数量是十的人或东西。"
+        },
+        {
+          "word": "十月",
+          "pinyin": "shí yuè",
+          "meaning": "一年中的第十个月。"
+        },
+        {
+          "word": "十分",
+          "pinyin": "shí fēn",
+          "meaning": "非常，很。"
+        }
+      ],
+      "sentence": "我有十个手指。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "爸",
+      "type": "character",
+      "pinyin": "bà",
+      "meaning": "称呼父亲。",
+      "words": [
+        {
+          "word": "爸爸",
+          "pinyin": "bà ba",
+          "meaning": "父亲。"
+        },
+        {
+          "word": "老爸",
+          "pinyin": "lǎo bà",
+          "meaning": "对爸爸的亲切称呼。"
+        },
+        {
+          "word": "爸妈",
+          "pinyin": "bà mā",
+          "meaning": "爸爸和妈妈。"
+        }
+      ],
+      "sentence": "我爸爸很高。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "妈",
+      "type": "character",
+      "pinyin": "mā",
+      "meaning": "称呼母亲。",
+      "words": [
+        {
+          "word": "妈妈",
+          "pinyin": "mā ma",
+          "meaning": "母亲。"
+        },
+        {
+          "word": "老妈",
+          "pinyin": "lǎo mā",
+          "meaning": "对妈妈的亲切称呼。"
+        },
+        {
+          "word": "爸妈",
+          "pinyin": "bà mā",
+          "meaning": "爸爸和妈妈。"
+        }
+      ],
+      "sentence": "妈妈给我讲故事。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "马",
+      "type": "character",
+      "pinyin": "mǎ",
+      "meaning": "一种动物，可以骑或拉车。",
+      "words": [
+        {
+          "word": "小马",
+          "pinyin": "xiǎo mǎ",
+          "meaning": "年纪小的马。"
+        },
+        {
+          "word": "马上",
+          "pinyin": "mǎ shàng",
+          "meaning": "立刻，很快。"
+        },
+        {
+          "word": "木马",
+          "pinyin": "mù mǎ",
+          "meaning": "木头做的马玩具。"
+        }
+      ],
+      "sentence": "小马在草地上跑。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "土",
+      "type": "character",
+      "pinyin": "tǔ",
+      "meaning": "地面上的泥或沙。",
+      "words": [
+        {
+          "word": "土地",
+          "pinyin": "tǔ dì",
+          "meaning": "可以种东西的地。"
+        },
+        {
+          "word": "泥土",
+          "pinyin": "ní tǔ",
+          "meaning": "湿的土。"
+        },
+        {
+          "word": "土豆",
+          "pinyin": "tǔ dòu",
+          "meaning": "一种长在土里的食物，也叫马铃薯。"
+        }
+      ],
+      "sentence": "地上有很多土。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "不",
+      "type": "character",
+      "pinyin": "bù",
+      "meaning": "表示否定或不要。",
+      "words": [
+        {
+          "word": "不是",
+          "pinyin": "bú shì",
+          "meaning": "表示否定，不对。"
+        },
+        {
+          "word": "不要",
+          "pinyin": "bú yào",
+          "meaning": "不想得到或不想做。"
+        },
+        {
+          "word": "不好",
+          "pinyin": "bù hǎo",
+          "meaning": "不让人满意。"
+        }
+      ],
+      "sentence": "我不是小学生。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "画",
+      "type": "character",
+      "pinyin": "huà",
+      "meaning": "用笔或颜料做出图形。",
+      "words": [
+        {
+          "word": "画画",
+          "pinyin": "huà huà",
+          "meaning": "用笔画出东西。"
+        },
+        {
+          "word": "图画",
+          "pinyin": "tú huà",
+          "meaning": "画出来的画。"
+        },
+        {
+          "word": "画家",
+          "pinyin": "huà jiā",
+          "meaning": "很会画画的人。"
+        }
+      ],
+      "sentence": "我喜欢画画。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "打",
+      "type": "character",
+      "pinyin": "dǎ",
+      "meaning": "用手或东西敲击。",
+      "words": [
+        {
+          "word": "打球",
+          "pinyin": "dǎ qiú",
+          "meaning": "玩球类游戏。"
+        },
+        {
+          "word": "打开",
+          "pinyin": "dǎ kāi",
+          "meaning": "把合着的东西弄开。"
+        },
+        {
+          "word": "打扫",
+          "pinyin": "dǎ sǎo",
+          "meaning": "清理干净。"
+        }
+      ],
+      "sentence": "我们一起去打球。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "棋",
+      "type": "character",
+      "pinyin": "qí",
+      "meaning": "一种游戏，有棋盘和棋子。",
+      "words": [
+        {
+          "word": "下棋",
+          "pinyin": "xià qí",
+          "meaning": "玩棋类游戏。"
+        },
+        {
+          "word": "棋子",
+          "pinyin": "qí zǐ",
+          "meaning": "下棋用的小块。"
+        },
+        {
+          "word": "象棋",
+          "pinyin": "xiàng qí",
+          "meaning": "一种棋，有将、士、象等棋子。"
+        }
+      ],
+      "sentence": "爷爷喜欢下棋。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "鸡",
+      "type": "character",
+      "pinyin": "jī",
+      "meaning": "一种家禽，会下蛋，肉可以吃。",
+      "words": [
+        {
+          "word": "小鸡",
+          "pinyin": "xiǎo jī",
+          "meaning": "刚孵出来的鸡宝宝。"
+        },
+        {
+          "word": "鸡蛋",
+          "pinyin": "jī dàn",
+          "meaning": "鸡生的蛋，可以吃。"
+        },
+        {
+          "word": "公鸡",
+          "pinyin": "gōng jī",
+          "meaning": "会打鸣的雄鸡。"
+        }
+      ],
+      "sentence": "小鸡在院子里吃米。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "字",
+      "type": "character",
+      "pinyin": "zì",
+      "meaning": "用来记录语言的符号，比如汉字。",
+      "words": [
+        {
+          "word": "汉字",
+          "pinyin": "hàn zì",
+          "meaning": "中国文字，每个字都有意思。"
+        },
+        {
+          "word": "写字",
+          "pinyin": "xiě zì",
+          "meaning": "用笔在纸上写出字来。"
+        },
+        {
+          "word": "名字",
+          "pinyin": "míng zi",
+          "meaning": "一个人或东西的称呼。"
+        }
+      ],
+      "sentence": "我会写自己的名字了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "词",
+      "type": "character",
+      "pinyin": "cí",
+      "meaning": "由字组成的、能表达意思的语言单位。",
+      "words": [
+        {
+          "word": "词语",
+          "pinyin": "cí yǔ",
+          "meaning": "由字组成的词，比如“花朵”。"
+        },
+        {
+          "word": "歌词",
+          "pinyin": "gē cí",
+          "meaning": "歌曲里唱出来的话。"
+        },
+        {
+          "word": "词典",
+          "pinyin": "cí diǎn",
+          "meaning": "查词语意思和用法的书。"
+        }
+      ],
+      "sentence": "这个词语的意思我不懂。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "语",
+      "type": "character",
+      "pinyin": "yǔ",
+      "meaning": "人们说的话，或者语言。",
+      "words": [
+        {
+          "word": "语文",
+          "pinyin": "yǔ wén",
+          "meaning": "学习语言和文字的课。"
+        },
+        {
+          "word": "汉语",
+          "pinyin": "hàn yǔ",
+          "meaning": "中国人说的语言。"
+        },
+        {
+          "word": "口语",
+          "pinyin": "kǒu yǔ",
+          "meaning": "用嘴说的话。"
+        }
+      ],
+      "sentence": "我喜欢上语文课。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "句",
+      "type": "character",
+      "pinyin": "jù",
+      "meaning": "由词组成的、能表达完整意思的话。",
+      "words": [
+        {
+          "word": "句子",
+          "pinyin": "jù zi",
+          "meaning": "由词组成的、能表达完整意思的话。"
+        },
+        {
+          "word": "句号",
+          "pinyin": "jù hào",
+          "meaning": "表示一句话说完的标点，像小圆圈。"
+        },
+        {
+          "word": "造句",
+          "pinyin": "zào jù",
+          "meaning": "用词语写出句子。"
+        }
+      ],
+      "sentence": "请用这个词造句。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "子",
+      "type": "character",
+      "pinyin": "zǐ",
+      "meaning": "指孩子或小的东西，也常用在词语末尾。",
+      "words": [
+        {
+          "word": "孩子",
+          "pinyin": "hái zi",
+          "meaning": "儿童，小朋友。"
+        },
+        {
+          "word": "桌子",
+          "pinyin": "zhuō zi",
+          "meaning": "用来放东西的家具。"
+        },
+        {
+          "word": "叶子",
+          "pinyin": "yè zi",
+          "meaning": "植物上的一片片绿色部分。"
+        }
+      ],
+      "sentence": "这个孩子很可爱。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "桌",
+      "type": "character",
+      "pinyin": "zhuō",
+      "meaning": "一种家具，上面可以放东西，用来吃饭或学习。",
+      "words": [
+        {
+          "word": "桌子",
+          "pinyin": "zhuō zi",
+          "meaning": "用来放东西的家具。"
+        },
+        {
+          "word": "书桌",
+          "pinyin": "shū zhuō",
+          "meaning": "专门用来看书、写字的桌子。"
+        },
+        {
+          "word": "饭桌",
+          "pinyin": "fàn zhuō",
+          "meaning": "吃饭用的桌子。"
+        }
+      ],
+      "sentence": "书桌上有一本故事书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "纸",
+      "type": "character",
+      "pinyin": "zhǐ",
+      "meaning": "用植物纤维做的薄片，可以写字、画画。",
+      "words": [
+        {
+          "word": "白纸",
+          "pinyin": "bái zhǐ",
+          "meaning": "白色的纸，没有写过字。"
+        },
+        {
+          "word": "折纸",
+          "pinyin": "zhé zhǐ",
+          "meaning": "把纸折成各种形状。"
+        },
+        {
+          "word": "纸巾",
+          "pinyin": "zhǐ jīn",
+          "meaning": "用来擦手、擦嘴的软纸。"
+        }
+      ],
+      "sentence": "请用白纸画一朵花。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "文",
+      "type": "character",
+      "pinyin": "wén",
+      "meaning": "文字或文章，也指文化。",
+      "words": [
+        {
+          "word": "语文",
+          "pinyin": "yǔ wén",
+          "meaning": "学习语言和文字的课。"
+        },
+        {
+          "word": "文字",
+          "pinyin": "wén zì",
+          "meaning": "记录语言的符号，比如汉字。"
+        },
+        {
+          "word": "作文",
+          "pinyin": "zuò wén",
+          "meaning": "自己写的文章。"
+        }
+      ],
+      "sentence": "我喜欢写作文。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "数",
+      "type": "character",
+      "pinyin": "shù",
+      "meaning": "数字，用来表示多少或第几。",
+      "words": [
+        {
+          "word": "数学",
+          "pinyin": "shù xué",
+          "meaning": "学习数字和计算的课。"
+        },
+        {
+          "word": "数字",
+          "pinyin": "shù zì",
+          "meaning": "表示数量的符号，比如1、2、3。"
+        },
+        {
+          "word": "数数",
+          "pinyin": "shǔ shù",
+          "meaning": "一个一个地数出数目。"
+        }
+      ],
+      "sentence": "我会从一数到一百。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "学",
+      "type": "character",
+      "pinyin": "xué",
+      "meaning": "学习知识或技能。",
+      "words": [
+        {
+          "word": "学习",
+          "pinyin": "xué xí",
+          "meaning": "通过听讲、读书、练习来获得知识。"
+        },
+        {
+          "word": "学校",
+          "pinyin": "xué xiào",
+          "meaning": "专门学习的地方。"
+        },
+        {
+          "word": "同学",
+          "pinyin": "tóng xué",
+          "meaning": "一起学习的人。"
+        }
+      ],
+      "sentence": "我在学校学拼音。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "音",
+      "type": "character",
+      "pinyin": "yīn",
+      "meaning": "声音，也指音乐。",
+      "words": [
+        {
+          "word": "音乐",
+          "pinyin": "yīn yuè",
+          "meaning": "有节奏、旋律的声音，可以唱歌或演奏。"
+        },
+        {
+          "word": "声音",
+          "pinyin": "shēng yīn",
+          "meaning": "耳朵能听到的响声。"
+        },
+        {
+          "word": "拼音",
+          "pinyin": "pīn yīn",
+          "meaning": "用字母表示汉字读音的方法。"
+        }
+      ],
+      "sentence": "我喜欢上音乐课。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "乐",
+      "type": "character",
+      "pinyin": "lè",
+      "meaning": "快乐，高兴。",
+      "words": [
+        {
+          "word": "快乐",
+          "pinyin": "kuài lè",
+          "meaning": "感到高兴、开心。"
+        },
+        {
+          "word": "音乐",
+          "pinyin": "yīn yuè",
+          "meaning": "有节奏和旋律的声音，可以唱歌或演奏。"
+        },
+        {
+          "word": "乐园",
+          "pinyin": "lè yuán",
+          "meaning": "让人快乐玩耍的地方。"
+        }
+      ],
+      "sentence": "我们快乐地唱歌。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "妹",
+      "type": "character",
+      "pinyin": "mèi",
+      "meaning": "比自己小的女孩，同一个父母生的。",
+      "words": [
+        {
+          "word": "妹妹",
+          "pinyin": "mèi mei",
+          "meaning": "比自己小的同父母女孩。"
+        },
+        {
+          "word": "姐妹",
+          "pinyin": "jiě mèi",
+          "meaning": "姐姐和妹妹。"
+        },
+        {
+          "word": "表妹",
+          "pinyin": "biǎo mèi",
+          "meaning": "爸爸或妈妈的兄弟姐妹的女儿，比自己小。"
+        }
+      ],
+      "sentence": "我的妹妹很可爱。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "奶",
+      "type": "character",
+      "pinyin": "nǎi",
+      "meaning": "乳房里流出的白色汁液，可以喝；也指祖母。",
+      "words": [
+        {
+          "word": "牛奶",
+          "pinyin": "niú nǎi",
+          "meaning": "从牛身上挤出来的奶，可以喝。"
+        },
+        {
+          "word": "奶奶",
+          "pinyin": "nǎi nai",
+          "meaning": "爸爸的妈妈。"
+        },
+        {
+          "word": "奶油",
+          "pinyin": "nǎi yóu",
+          "meaning": "牛奶上面一层黄黄的油，可以做蛋糕。"
+        }
+      ],
+      "sentence": "我每天早上喝牛奶。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "白",
+      "type": "character",
+      "pinyin": "bái",
+      "meaning": "像雪或牛奶一样的颜色。",
+      "words": [
+        {
+          "word": "白色",
+          "pinyin": "bái sè",
+          "meaning": "像雪一样的颜色。"
+        },
+        {
+          "word": "白天",
+          "pinyin": "bái tiān",
+          "meaning": "从天亮到天黑的时间。"
+        },
+        {
+          "word": "白云",
+          "pinyin": "bái yún",
+          "meaning": "白色的云朵。"
+        }
+      ],
+      "sentence": "天上飘着白云。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "皮",
+      "type": "character",
+      "pinyin": "pí",
+      "meaning": "人或动物身体外面的一层东西；也指东西的外壳。",
+      "words": [
+        {
+          "word": "皮肤",
+          "pinyin": "pí fū",
+          "meaning": "身体外面的一层皮。"
+        },
+        {
+          "word": "树皮",
+          "pinyin": "shù pí",
+          "meaning": "树干外面的一层硬皮。"
+        },
+        {
+          "word": "橡皮",
+          "pinyin": "xiàng pí",
+          "meaning": "用来擦掉铅笔字的东西。"
+        }
+      ],
+      "sentence": "大象的皮肤很厚。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "小",
+      "type": "character",
+      "pinyin": "xiǎo",
+      "meaning": "不大，比平常的尺寸、年纪、数量等要少或短。",
+      "words": [
+        {
+          "word": "大小",
+          "pinyin": "dà xiǎo",
+          "meaning": "大的和小的；指尺寸。"
+        },
+        {
+          "word": "小鸟",
+          "pinyin": "xiǎo niǎo",
+          "meaning": "体型不大的鸟。"
+        },
+        {
+          "word": "小孩",
+          "pinyin": "xiǎo hái",
+          "meaning": "年纪小的孩子。"
+        }
+      ],
+      "sentence": "树上有一只小鸟。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "桥",
+      "type": "character",
+      "pinyin": "qiáo",
+      "meaning": "架在水上或空中让人和车通过的东西。",
+      "words": [
+        {
+          "word": "小桥",
+          "pinyin": "xiǎo qiáo",
+          "meaning": "不大的桥。"
+        },
+        {
+          "word": "木桥",
+          "pinyin": "mù qiáo",
+          "meaning": "用木头做的桥。"
+        },
+        {
+          "word": "天桥",
+          "pinyin": "tiān qiáo",
+          "meaning": "架在空中的桥，让人从上面过马路。"
+        }
+      ],
+      "sentence": "我们走过小桥。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "台",
+      "type": "character",
+      "pinyin": "tái",
+      "meaning": "高起来的平面，可以放东西或站人。",
+      "words": [
+        {
+          "word": "讲台",
+          "pinyin": "jiǎng tái",
+          "meaning": "老师讲课站的高台子。"
+        },
+        {
+          "word": "阳台",
+          "pinyin": "yáng tái",
+          "meaning": "房子外面伸出去的平台。"
+        },
+        {
+          "word": "台灯",
+          "pinyin": "tái dēng",
+          "meaning": "放在桌子上的灯。"
+        }
+      ],
+      "sentence": "老师站在讲台上。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "雪",
+      "type": "character",
+      "pinyin": "xuě",
+      "meaning": "天冷时从云里落下来的白色小冰花。",
+      "words": [
+        {
+          "word": "雪花",
+          "pinyin": "xuě huā",
+          "meaning": "一片一片的雪，像花一样。"
+        },
+        {
+          "word": "下雪",
+          "pinyin": "xià xuě",
+          "meaning": "雪从天上落下来。"
+        },
+        {
+          "word": "雪人",
+          "pinyin": "xuě rén",
+          "meaning": "用雪堆成的人形。"
+        }
+      ],
+      "sentence": "冬天会下雪。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "儿",
+      "type": "character",
+      "pinyin": "ér",
+      "meaning": "小孩子；也用在词尾，表示小的意思。",
+      "words": [
+        {
+          "word": "儿子",
+          "pinyin": "ér zi",
+          "meaning": "爸爸妈妈生的男孩子。"
+        },
+        {
+          "word": "儿童",
+          "pinyin": "ér tóng",
+          "meaning": "年纪小的孩子。"
+        },
+        {
+          "word": "花儿",
+          "pinyin": "huār",
+          "meaning": "花朵，表示小的花。"
+        }
+      ],
+      "sentence": "儿童节我们很开心。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "草",
+      "type": "character",
+      "pinyin": "cǎo",
+      "meaning": "绿色的小植物，叶子细长，长在地上。",
+      "words": [
+        {
+          "word": "小草",
+          "pinyin": "xiǎo cǎo",
+          "meaning": "小小的草。"
+        },
+        {
+          "word": "草地",
+          "pinyin": "cǎo dì",
+          "meaning": "长满草的地方。"
+        },
+        {
+          "word": "青草",
+          "pinyin": "qīng cǎo",
+          "meaning": "绿色的草。"
+        }
+      ],
+      "sentence": "草地上有小花。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "家",
+      "type": "character",
+      "pinyin": "jiā",
+      "meaning": "一家人住的地方；也指家庭。",
+      "words": [
+        {
+          "word": "大家",
+          "pinyin": "dà jiā",
+          "meaning": "很多人，每一个人。"
+        },
+        {
+          "word": "回家",
+          "pinyin": "huí jiā",
+          "meaning": "回到自己住的地方。"
+        },
+        {
+          "word": "家人",
+          "pinyin": "jiā rén",
+          "meaning": "家里的人，爸爸妈妈等。"
+        }
+      ],
+      "sentence": "我爱我的家。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "是",
+      "type": "character",
+      "pinyin": "shì",
+      "meaning": "表示肯定、同意或正确。",
+      "words": [
+        {
+          "word": "是的",
+          "pinyin": "shì de",
+          "meaning": "表示同意或肯定。"
+        },
+        {
+          "word": "不是",
+          "pinyin": "bú shì",
+          "meaning": "表示否定或错误。"
+        },
+        {
+          "word": "可是",
+          "pinyin": "kě shì",
+          "meaning": "表示转折，但是。"
+        }
+      ],
+      "sentence": "我是小学生。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "车",
+      "type": "character",
+      "pinyin": "chē",
+      "meaning": "有轮子的交通工具。",
+      "words": [
+        {
+          "word": "汽车",
+          "pinyin": "qì chē",
+          "meaning": "用发动机驱动的车。"
+        },
+        {
+          "word": "火车",
+          "pinyin": "huǒ chē",
+          "meaning": "在铁轨上行驶的长车。"
+        },
+        {
+          "word": "自行车",
+          "pinyin": "zì xíng chē",
+          "meaning": "用脚蹬着走的两个轮子的车。"
+        }
+      ],
+      "sentence": "爸爸开汽车上班。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "羊",
+      "type": "character",
+      "pinyin": "yáng",
+      "meaning": "一种吃草的动物，毛可以纺线。",
+      "words": [
+        {
+          "word": "山羊",
+          "pinyin": "shān yáng",
+          "meaning": "一种羊，角向后弯。"
+        },
+        {
+          "word": "羊毛",
+          "pinyin": "yáng máo",
+          "meaning": "羊身上的毛，可以做衣服。"
+        },
+        {
+          "word": "小羊",
+          "pinyin": "xiǎo yáng",
+          "meaning": "幼小的羊。"
+        }
+      ],
+      "sentence": "小羊在吃青草。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "走",
+      "type": "character",
+      "pinyin": "zǒu",
+      "meaning": "用脚向前移动。",
+      "words": [
+        {
+          "word": "走路",
+          "pinyin": "zǒu lù",
+          "meaning": "用脚在地上移动。"
+        },
+        {
+          "word": "走开",
+          "pinyin": "zǒu kāi",
+          "meaning": "离开某个地方。"
+        },
+        {
+          "word": "行走",
+          "pinyin": "xíng zǒu",
+          "meaning": "步行，走路。"
+        }
+      ],
+      "sentence": "我们走路去学校。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "也",
+      "type": "character",
+      "pinyin": "yě",
+      "meaning": "表示同样或并列。",
+      "words": [
+        {
+          "word": "也是",
+          "pinyin": "yě shì",
+          "meaning": "同样也是。"
+        },
+        {
+          "word": "也好",
+          "pinyin": "yě hǎo",
+          "meaning": "表示可以或同意。"
+        },
+        {
+          "word": "也许",
+          "pinyin": "yě xǔ",
+          "meaning": "可能，不一定。"
+        }
+      ],
+      "sentence": "我也喜欢画画。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "早",
+      "type": "character",
+      "pinyin": "zǎo",
+      "meaning": "太阳出来的时候；时间靠前。",
+      "words": [
+        {
+          "word": "早上",
+          "pinyin": "zǎo shang",
+          "meaning": "早晨，天刚亮的时候。"
+        },
+        {
+          "word": "早饭",
+          "pinyin": "zǎo fàn",
+          "meaning": "早晨吃的饭。"
+        },
+        {
+          "word": "早起",
+          "pinyin": "zǎo qǐ",
+          "meaning": "很早就起床。"
+        }
+      ],
+      "sentence": "早上太阳升起来了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "书",
+      "type": "character",
+      "pinyin": "shū",
+      "meaning": "有文字或图画的册子。",
+      "words": [
+        {
+          "word": "书本",
+          "pinyin": "shū běn",
+          "meaning": "书的总称。"
+        },
+        {
+          "word": "看书",
+          "pinyin": "kàn shū",
+          "meaning": "阅读书籍。"
+        },
+        {
+          "word": "书包",
+          "pinyin": "shū bāo",
+          "meaning": "装书的包。"
+        }
+      ],
+      "sentence": "我喜欢看故事书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "刀",
+      "type": "character",
+      "pinyin": "dāo",
+      "meaning": "用来切东西的锋利工具。",
+      "words": [
+        {
+          "word": "小刀",
+          "pinyin": "xiǎo dāo",
+          "meaning": "小的刀。"
+        },
+        {
+          "word": "刀子",
+          "pinyin": "dāo zi",
+          "meaning": "刀的口语说法。"
+        },
+        {
+          "word": "剪刀",
+          "pinyin": "jiǎn dāo",
+          "meaning": "两片刀刃交叉，用来剪东西。"
+        }
+      ],
+      "sentence": "我用小刀削铅笔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "尺",
+      "type": "character",
+      "pinyin": "chǐ",
+      "meaning": "量长度的工具。",
+      "words": [
+        {
+          "word": "尺子",
+          "pinyin": "chǐ zi",
+          "meaning": "量长度的工具。"
+        },
+        {
+          "word": "直尺",
+          "pinyin": "zhí chǐ",
+          "meaning": "画直线用的尺。"
+        },
+        {
+          "word": "卷尺",
+          "pinyin": "juǎn chǐ",
+          "meaning": "可以卷起来的软尺。"
+        }
+      ],
+      "sentence": "我用尺子画直线。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "本",
+      "type": "character",
+      "pinyin": "běn",
+      "meaning": "册子；原来的；自己方面的。",
+      "words": [
+        {
+          "word": "书本",
+          "pinyin": "shū běn",
+          "meaning": "书的总称。"
+        },
+        {
+          "word": "本子",
+          "pinyin": "běn zi",
+          "meaning": "写字用的簿册。"
+        },
+        {
+          "word": "本来",
+          "pinyin": "běn lái",
+          "meaning": "原先，原来。"
+        }
+      ],
+      "sentence": "我买了一个新本子。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "林",
+      "type": "character",
+      "pinyin": "lín",
+      "meaning": "很多树木长在一起。",
+      "words": [
+        {
+          "word": "树林",
+          "pinyin": "shù lín",
+          "meaning": "成片生长的树木。"
+        },
+        {
+          "word": "森林",
+          "pinyin": "sēn lín",
+          "meaning": "大片生长的树木。"
+        },
+        {
+          "word": "竹林",
+          "pinyin": "zhú lín",
+          "meaning": "成片的竹子。"
+        }
+      ],
+      "sentence": "树林里有很多小鸟。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "力",
+      "type": "character",
+      "pinyin": "lì",
+      "meaning": "力气，力量。",
+      "words": [
+        {
+          "word": "力气",
+          "pinyin": "lì qi",
+          "meaning": "身体的力量。"
+        },
+        {
+          "word": "用力",
+          "pinyin": "yòng lì",
+          "meaning": "使出力气。"
+        },
+        {
+          "word": "大力",
+          "pinyin": "dà lì",
+          "meaning": "很大的力气。"
+        }
+      ],
+      "sentence": "我用力搬起椅子。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "心",
+      "type": "character",
+      "pinyin": "xīn",
+      "meaning": "人和动物身体里推动血液流动的器官，也指思想、感情。",
+      "words": [
+        {
+          "word": "心里",
+          "pinyin": "xīn lǐ",
+          "meaning": "胸口内部，也指思想里。"
+        },
+        {
+          "word": "开心",
+          "pinyin": "kāi xīn",
+          "meaning": "心情快乐。"
+        },
+        {
+          "word": "小心",
+          "pinyin": "xiǎo xīn",
+          "meaning": "注意、留神，避免危险或出错。"
+        }
+      ],
+      "sentence": "我心里很开心。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "中",
+      "type": "character",
+      "pinyin": "zhōng",
+      "meaning": "中间，位置在四周距离相等的地方。",
+      "words": [
+        {
+          "word": "中间",
+          "pinyin": "zhōng jiān",
+          "meaning": "在事物两端或周围等距离的位置。"
+        },
+        {
+          "word": "中午",
+          "pinyin": "zhōng wǔ",
+          "meaning": "白天十二点左右的时间。"
+        },
+        {
+          "word": "中心",
+          "pinyin": "zhōng xīn",
+          "meaning": "正中间的位置，也指主要部分。"
+        }
+      ],
+      "sentence": "书桌在房间中间。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "立",
+      "type": "character",
+      "pinyin": "lì",
+      "meaning": "站着，直着身体，脚踩在地上。",
+      "words": [
+        {
+          "word": "立正",
+          "pinyin": "lì zhèng",
+          "meaning": "站直身体，两脚并拢，表示严肃。"
+        },
+        {
+          "word": "立刻",
+          "pinyin": "lì kè",
+          "meaning": "马上，很快地。"
+        },
+        {
+          "word": "起立",
+          "pinyin": "qǐ lì",
+          "meaning": "从坐着或躺着变成站着的姿势。"
+        }
+      ],
+      "sentence": "请同学们立正站好。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "正",
+      "type": "character",
+      "pinyin": "zhèng",
+      "meaning": "不歪斜，位置在中间；也指对的、好的。",
+      "words": [
+        {
+          "word": "立正",
+          "pinyin": "lì zhèng",
+          "meaning": "站直身体，两脚并拢，表示严肃。"
+        },
+        {
+          "word": "正好",
+          "pinyin": "zhèng hǎo",
+          "meaning": "刚好合适，不早不晚。"
+        },
+        {
+          "word": "正方形",
+          "pinyin": "zhèng fāng xíng",
+          "meaning": "四条边一样长、四个角都是直角的图形。"
+        }
+      ],
+      "sentence": "这张纸是正方形。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "大",
+      "type": "character",
+      "pinyin": "dà",
+      "meaning": "在体积、面积、数量、力量等方面超过一般或超过比较对象。",
+      "words": [
+        {
+          "word": "大人",
+          "pinyin": "dà rén",
+          "meaning": "成年人。"
+        },
+        {
+          "word": "大小",
+          "pinyin": "dà xiǎo",
+          "meaning": "大的和小的，也指尺寸。"
+        },
+        {
+          "word": "大象",
+          "pinyin": "dà xiàng",
+          "meaning": "一种很大的动物，有长鼻子和大耳朵。"
+        }
+      ],
+      "sentence": "大象的耳朵很大。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "多",
+      "type": "character",
+      "pinyin": "duō",
+      "meaning": "数量大，跟“少”相对。",
+      "words": [
+        {
+          "word": "多少",
+          "pinyin": "duō shǎo",
+          "meaning": "问数量，也指数量的大小。"
+        },
+        {
+          "word": "许多",
+          "pinyin": "xǔ duō",
+          "meaning": "很多。"
+        },
+        {
+          "word": "多么",
+          "pinyin": "duō me",
+          "meaning": "表示程度高，带有感叹语气。"
+        }
+      ],
+      "sentence": "花园里有许多花。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "少",
+      "type": "character",
+      "pinyin": "shǎo",
+      "meaning": "数量小，跟“多”相对。",
+      "words": [
+        {
+          "word": "多少",
+          "pinyin": "duō shǎo",
+          "meaning": "问数量，也指数量的大小。"
+        },
+        {
+          "word": "少数",
+          "pinyin": "shǎo shù",
+          "meaning": "较小的数量。"
+        },
+        {
+          "word": "减少",
+          "pinyin": "jiǎn shǎo",
+          "meaning": "让数量变少。"
+        }
+      ],
+      "sentence": "今天作业很少。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "牛",
+      "type": "character",
+      "pinyin": "niú",
+      "meaning": "一种家畜，身体大，头上长角，能耕地或产奶。",
+      "words": [
+        {
+          "word": "水牛",
+          "pinyin": "shuǐ niú",
+          "meaning": "一种喜欢在水里的牛，角弯弯的。"
+        },
+        {
+          "word": "牛奶",
+          "pinyin": "niú nǎi",
+          "meaning": "母牛产的奶，可以喝。"
+        },
+        {
+          "word": "吹牛",
+          "pinyin": "chuī niú",
+          "meaning": "说大话，夸耀自己。"
+        }
+      ],
+      "sentence": "水牛在田里干活。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "果",
+      "type": "character",
+      "pinyin": "guǒ",
+      "meaning": "植物结的果实，里面一般有种子。",
+      "words": [
+        {
+          "word": "水果",
+          "pinyin": "shuǐ guǒ",
+          "meaning": "可以吃的植物果实，多汁，如苹果、香蕉。"
+        },
+        {
+          "word": "苹果",
+          "pinyin": "píng guǒ",
+          "meaning": "一种圆圆的、红色或绿色的水果。"
+        },
+        {
+          "word": "如果",
+          "pinyin": "rú guǒ",
+          "meaning": "表示假设，要是。"
+        }
+      ],
+      "sentence": "我喜欢吃水果。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "加",
+      "type": "character",
+      "pinyin": "jiā",
+      "meaning": "把两个或几个东西合在一起，使数量变多。",
+      "words": [
+        {
+          "word": "加法",
+          "pinyin": "jiā fǎ",
+          "meaning": "把两个数合起来算的方法。"
+        },
+        {
+          "word": "加油",
+          "pinyin": "jiā yóu",
+          "meaning": "比喻努力，也指给车加燃料。"
+        },
+        {
+          "word": "参加",
+          "pinyin": "cān jiā",
+          "meaning": "加入某个活动或组织。"
+        }
+      ],
+      "sentence": "一加一等于二。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "减",
+      "type": "character",
+      "pinyin": "jiǎn",
+      "meaning": "从整体中去掉一部分，使数量变少。",
+      "words": [
+        {
+          "word": "减法",
+          "pinyin": "jiǎn fǎ",
+          "meaning": "从一个数里去掉一部分的算法。"
+        },
+        {
+          "word": "减少",
+          "pinyin": "jiǎn shǎo",
+          "meaning": "让数量变少。"
+        },
+        {
+          "word": "加减",
+          "pinyin": "jiā jiǎn",
+          "meaning": "加法和减法，也指调整。"
+        }
+      ],
+      "sentence": "五减三等于二。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "等",
+      "type": "character",
+      "pinyin": "děng",
+      "meaning": "等待；或表示级别、程度相同。",
+      "words": [
+        {
+          "word": "等待",
+          "pinyin": "děng dài",
+          "meaning": "等着，不离开直到人或事物出现。"
+        },
+        {
+          "word": "等于",
+          "pinyin": "děng yú",
+          "meaning": "两个数量或事物一样。"
+        },
+        {
+          "word": "平等",
+          "pinyin": "píng děng",
+          "meaning": "地位或待遇一样，没有差别。"
+        }
+      ],
+      "sentence": "我在门口等你。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "于",
+      "type": "character",
+      "pinyin": "yú",
+      "meaning": "在；对；表示比较。",
+      "words": [
+        {
+          "word": "于是",
+          "pinyin": "yú shì",
+          "meaning": "表示接着前面的事情发生。"
+        },
+        {
+          "word": "对于",
+          "pinyin": "duì yú",
+          "meaning": "表示人、事物之间的关系。"
+        },
+        {
+          "word": "由于",
+          "pinyin": "yóu yú",
+          "meaning": "表示原因。"
+        }
+      ],
+      "sentence": "我于早上七点起床。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "共",
+      "type": "character",
+      "pinyin": "gòng",
+      "meaning": "一起；总合。",
+      "words": [
+        {
+          "word": "一共",
+          "pinyin": "yī gòng",
+          "meaning": "合在一起计算。"
+        },
+        {
+          "word": "共同",
+          "pinyin": "gòng tóng",
+          "meaning": "大家一起做。"
+        },
+        {
+          "word": "公共",
+          "pinyin": "gōng gòng",
+          "meaning": "属于大家的。"
+        }
+      ],
+      "sentence": "我们一共有五个人。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "还",
+      "type": "character",
+      "pinyin": "hái",
+      "meaning": "仍然；更加；再。",
+      "words": [
+        {
+          "word": "还有",
+          "pinyin": "hái yǒu",
+          "meaning": "另外存在。"
+        },
+        {
+          "word": "还是",
+          "pinyin": "hái shì",
+          "meaning": "表示选择或仍然。"
+        },
+        {
+          "word": "还好",
+          "pinyin": "hái hǎo",
+          "meaning": "不算坏，勉强可以。"
+        }
+      ],
+      "sentence": "我还没写完作业。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "剩",
+      "type": "character",
+      "pinyin": "shèng",
+      "meaning": "多余下来；留下。",
+      "words": [
+        {
+          "word": "剩下",
+          "pinyin": "shèng xià",
+          "meaning": "多出来的部分。"
+        },
+        {
+          "word": "剩余",
+          "pinyin": "shèng yú",
+          "meaning": "用不完留下的。"
+        },
+        {
+          "word": "剩饭",
+          "pinyin": "shèng fàn",
+          "meaning": "没吃完的饭。"
+        }
+      ],
+      "sentence": "盘子里剩了一点菜。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "左",
+      "type": "character",
+      "pinyin": "zuǒ",
+      "meaning": "面向南时靠东的一边。",
+      "words": [
+        {
+          "word": "左手",
+          "pinyin": "zuǒ shǒu",
+          "meaning": "左边的手。"
+        },
+        {
+          "word": "左右",
+          "pinyin": "zuǒ yòu",
+          "meaning": "左边和右边；大约。"
+        },
+        {
+          "word": "向左",
+          "pinyin": "xiàng zuǒ",
+          "meaning": "朝着左边。"
+        }
+      ],
+      "sentence": "请举起你的左手。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "右",
+      "type": "character",
+      "pinyin": "yòu",
+      "meaning": "面向南时靠西的一边。",
+      "words": [
+        {
+          "word": "右手",
+          "pinyin": "yòu shǒu",
+          "meaning": "右边的手。"
+        },
+        {
+          "word": "右边",
+          "pinyin": "yòu biān",
+          "meaning": "靠右的一侧。"
+        },
+        {
+          "word": "向右",
+          "pinyin": "xiàng yòu",
+          "meaning": "朝着右边。"
+        }
+      ],
+      "sentence": "他用右手写字。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "前",
+      "type": "character",
+      "pinyin": "qián",
+      "meaning": "面对的方向；过去的。",
+      "words": [
+        {
+          "word": "前面",
+          "pinyin": "qián miàn",
+          "meaning": "正对的方向。"
+        },
+        {
+          "word": "前天",
+          "pinyin": "qián tiān",
+          "meaning": "昨天的前一天。"
+        },
+        {
+          "word": "向前",
+          "pinyin": "xiàng qián",
+          "meaning": "朝着前面。"
+        }
+      ],
+      "sentence": "学校在我家前面。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "里",
+      "type": "character",
+      "pinyin": "lǐ",
+      "meaning": "内部；一定范围以内。",
+      "words": [
+        {
+          "word": "里面",
+          "pinyin": "lǐ miàn",
+          "meaning": "在内部。"
+        },
+        {
+          "word": "家里",
+          "pinyin": "jiā lǐ",
+          "meaning": "在家庭内部。"
+        },
+        {
+          "word": "心里",
+          "pinyin": "xīn lǐ",
+          "meaning": "在思想或感情中。"
+        }
+      ],
+      "sentence": "书包里有很多书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "外",
+      "type": "character",
+      "pinyin": "wài",
+      "meaning": "超出某个范围；不是内部的。",
+      "words": [
+        {
+          "word": "外面",
+          "pinyin": "wài miàn",
+          "meaning": "超出界限的地方。"
+        },
+        {
+          "word": "门外",
+          "pinyin": "mén wài",
+          "meaning": "门的外边。"
+        },
+        {
+          "word": "外出",
+          "pinyin": "wài chū",
+          "meaning": "到外面去。"
+        }
+      ],
+      "sentence": "请到门外等我。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "长",
+      "type": "character",
+      "pinyin": "cháng",
+      "meaning": "两点之间距离大；长度。",
+      "words": [
+        {
+          "word": "很长",
+          "pinyin": "hěn cháng",
+          "meaning": "长度大。"
+        },
+        {
+          "word": "长江",
+          "pinyin": "cháng jiāng",
+          "meaning": "中国最长的河流。"
+        },
+        {
+          "word": "长大",
+          "pinyin": "zhǎng dà",
+          "meaning": "生长变大。"
+        }
+      ],
+      "sentence": "这条绳子很长。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "短",
+      "type": "character",
+      "pinyin": "duǎn",
+      "meaning": "两点之间距离小；不长。",
+      "words": [
+        {
+          "word": "很短",
+          "pinyin": "hěn duǎn",
+          "meaning": "长度小。"
+        },
+        {
+          "word": "短处",
+          "pinyin": "duǎn chù",
+          "meaning": "不足的地方。"
+        },
+        {
+          "word": "短跑",
+          "pinyin": "duǎn pǎo",
+          "meaning": "距离短的跑步。"
+        }
+      ],
+      "sentence": "铅笔太短了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "高",
+      "type": "character",
+      "pinyin": "gāo",
+      "meaning": "从下到上距离大；等级在上。",
+      "words": [
+        {
+          "word": "很高",
+          "pinyin": "hěn gāo",
+          "meaning": "高度大。"
+        },
+        {
+          "word": "高兴",
+          "pinyin": "gāo xìng",
+          "meaning": "愉快而兴奋。"
+        },
+        {
+          "word": "高山",
+          "pinyin": "gāo shān",
+          "meaning": "很高的山。"
+        }
+      ],
+      "sentence": "他长得比我高。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "矮",
+      "type": "character",
+      "pinyin": "ǎi",
+      "meaning": "身材短小，高度低。",
+      "words": [
+        {
+          "word": "矮小",
+          "pinyin": "ǎi xiǎo",
+          "meaning": "又矮又小。"
+        },
+        {
+          "word": "矮凳",
+          "pinyin": "ǎi dèng",
+          "meaning": "矮的凳子。"
+        },
+        {
+          "word": "矮树",
+          "pinyin": "ǎi shù",
+          "meaning": "长得不高的树。"
+        }
+      ],
+      "sentence": "弟弟比我矮一点。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "轻",
+      "type": "character",
+      "pinyin": "qīng",
+      "meaning": "重量小，不重。",
+      "words": [
+        {
+          "word": "轻轻",
+          "pinyin": "qīng qīng",
+          "meaning": "动作很轻，不用力。"
+        },
+        {
+          "word": "轻声",
+          "pinyin": "qīng shēng",
+          "meaning": "说话声音很小。"
+        },
+        {
+          "word": "轻重",
+          "pinyin": "qīng zhòng",
+          "meaning": "轻和重，指重量大小。"
+        }
+      ],
+      "sentence": "这个书包很轻。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "重",
+      "type": "character",
+      "pinyin": "zhòng",
+      "meaning": "重量大，不轻。",
+      "words": [
+        {
+          "word": "重要",
+          "pinyin": "zhòng yào",
+          "meaning": "非常关键，不能缺少。"
+        },
+        {
+          "word": "重量",
+          "pinyin": "zhòng liàng",
+          "meaning": "东西有多重。"
+        },
+        {
+          "word": "重心",
+          "pinyin": "zhòng xīn",
+          "meaning": "物体最重的中心点。"
+        }
+      ],
+      "sentence": "这袋米很重。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "比",
+      "type": "character",
+      "pinyin": "bǐ",
+      "meaning": "比较，看看谁高谁低、谁多谁少。",
+      "words": [
+        {
+          "word": "比较",
+          "pinyin": "bǐ jiào",
+          "meaning": "比一比，看看有什么不同。"
+        },
+        {
+          "word": "比赛",
+          "pinyin": "bǐ sài",
+          "meaning": "比谁跑得快、跳得高等。"
+        },
+        {
+          "word": "比如",
+          "pinyin": "bǐ rú",
+          "meaning": "举个例子来说。"
+        }
+      ],
+      "sentence": "我比你高一点。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "几",
+      "type": "character",
+      "pinyin": "jǐ",
+      "meaning": "问数量多少，或表示不多的数目。",
+      "words": [
+        {
+          "word": "几个",
+          "pinyin": "jǐ gè",
+          "meaning": "问有多少个，或表示不多的几个。"
+        },
+        {
+          "word": "几天",
+          "pinyin": "jǐ tiān",
+          "meaning": "问有多少天，或表示不多的天数。"
+        },
+        {
+          "word": "十几",
+          "pinyin": "shí jǐ",
+          "meaning": "比十多一点的数量。"
+        }
+      ],
+      "sentence": "桌上有几个苹果？",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "图",
+      "type": "character",
+      "pinyin": "tú",
+      "meaning": "画出来的形象或形状。",
+      "words": [
+        {
+          "word": "图画",
+          "pinyin": "tú huà",
+          "meaning": "用笔画出来的画。"
+        },
+        {
+          "word": "图片",
+          "pinyin": "tú piàn",
+          "meaning": "印在纸上的图画或照片。"
+        },
+        {
+          "word": "地图",
+          "pinyin": "dì tú",
+          "meaning": "画着山河、道路的图。"
+        }
+      ],
+      "sentence": "这本书有很多图。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "形",
+      "type": "character",
+      "pinyin": "xíng",
+      "meaning": "样子，物体的外表。",
+      "words": [
+        {
+          "word": "形状",
+          "pinyin": "xíng zhuàng",
+          "meaning": "东西的样子，如圆的、方的。"
+        },
+        {
+          "word": "圆形",
+          "pinyin": "yuán xíng",
+          "meaning": "圆圆的形状。"
+        },
+        {
+          "word": "方形",
+          "pinyin": "fāng xíng",
+          "meaning": "方方的形状。"
+        }
+      ],
+      "sentence": "这个积木是什么形？",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "圆",
+      "type": "character",
+      "pinyin": "yuán",
+      "meaning": "像球或太阳的形状，没有角。",
+      "words": [
+        {
+          "word": "圆形",
+          "pinyin": "yuán xíng",
+          "meaning": "圆圆的形状。"
+        },
+        {
+          "word": "圆圈",
+          "pinyin": "yuán quān",
+          "meaning": "圆圆的圈。"
+        },
+        {
+          "word": "圆球",
+          "pinyin": "yuán qiú",
+          "meaning": "圆圆的球。"
+        }
+      ],
+      "sentence": "月亮有时是圆的。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "方",
+      "type": "character",
+      "pinyin": "fāng",
+      "meaning": "四个角都是直角的形状，或方向。",
+      "words": [
+        {
+          "word": "方形",
+          "pinyin": "fāng xíng",
+          "meaning": "方方的形状。"
+        },
+        {
+          "word": "方向",
+          "pinyin": "fāng xiàng",
+          "meaning": "东、南、西、北等朝向。"
+        },
+        {
+          "word": "地方",
+          "pinyin": "dì fāng",
+          "meaning": "一个位置或区域。"
+        }
+      ],
+      "sentence": "这个盒子是方的。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "角",
+      "type": "character",
+      "pinyin": "jiǎo",
+      "meaning": "物体边沿相接的地方，或牛、羊头上长的尖硬东西。",
+      "words": [
+        {
+          "word": "角落",
+          "pinyin": "jiǎo luò",
+          "meaning": "墙角或屋子里的边角地方。"
+        },
+        {
+          "word": "牛角",
+          "pinyin": "niú jiǎo",
+          "meaning": "牛头上长的角。"
+        },
+        {
+          "word": "三角形",
+          "pinyin": "sān jiǎo xíng",
+          "meaning": "有三个角的形状。"
+        }
+      ],
+      "sentence": "桌子的角很尖。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "元",
+      "type": "character",
+      "pinyin": "yuán",
+      "meaning": "货币单位，也指开始的、第一的。",
+      "words": [
+        {
+          "word": "一元",
+          "pinyin": "yī yuán",
+          "meaning": "一块钱。"
+        },
+        {
+          "word": "元旦",
+          "pinyin": "yuán dàn",
+          "meaning": "新年的第一天。"
+        },
+        {
+          "word": "元月",
+          "pinyin": "yuán yuè",
+          "meaning": "一年的第一个月，一月。"
+        }
+      ],
+      "sentence": "这支笔一元钱。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "分",
+      "type": "character",
+      "pinyin": "fēn",
+      "meaning": "把整体变成几部分，或货币单位，一角钱的十分之一。",
+      "words": [
+        {
+          "word": "分开",
+          "pinyin": "fēn kāi",
+          "meaning": "把合在一起的东西弄开。"
+        },
+        {
+          "word": "一分",
+          "pinyin": "yī fēn",
+          "meaning": "一角钱的十分之一。"
+        },
+        {
+          "word": "十分",
+          "pinyin": "shí fēn",
+          "meaning": "非常，很。"
+        }
+      ],
+      "sentence": "请把糖果分给大家。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "合",
+      "type": "character",
+      "pinyin": "hé",
+      "meaning": "闭上，或者把东西对在一起。",
+      "words": [
+        {
+          "word": "合上",
+          "pinyin": "hé shàng",
+          "meaning": "把打开的东西闭上。"
+        },
+        {
+          "word": "合作",
+          "pinyin": "hé zuò",
+          "meaning": "一起做事。"
+        },
+        {
+          "word": "合唱",
+          "pinyin": "hé chàng",
+          "meaning": "大家一起唱歌。"
+        }
+      ],
+      "sentence": "请把书合上。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "组",
+      "type": "character",
+      "pinyin": "zǔ",
+      "meaning": "把几个东西放在一起成为一群。",
+      "words": [
+        {
+          "word": "小组",
+          "pinyin": "xiǎo zǔ",
+          "meaning": "几个人组成的小队。"
+        },
+        {
+          "word": "组成",
+          "pinyin": "zǔ chéng",
+          "meaning": "由几个部分合成一个整体。"
+        },
+        {
+          "word": "分组",
+          "pinyin": "fēn zǔ",
+          "meaning": "把人分成几个小队。"
+        }
+      ],
+      "sentence": "我们分成小组做游戏。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "成",
+      "type": "character",
+      "pinyin": "chéng",
+      "meaning": "做好了，完成了。",
+      "words": [
+        {
+          "word": "完成",
+          "pinyin": "wán chéng",
+          "meaning": "把事情做完。"
+        },
+        {
+          "word": "成长",
+          "pinyin": "chéng zhǎng",
+          "meaning": "长大，变得更好。"
+        },
+        {
+          "word": "成为",
+          "pinyin": "chéng wéi",
+          "meaning": "变成。"
+        }
+      ],
+      "sentence": "我完成了作业。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "算",
+      "type": "character",
+      "pinyin": "suàn",
+      "meaning": "用数字来数一数、加一加。",
+      "words": [
+        {
+          "word": "计算",
+          "pinyin": "jì suàn",
+          "meaning": "用数字来算一算。"
+        },
+        {
+          "word": "算数",
+          "pinyin": "suàn shù",
+          "meaning": "做数学题。"
+        },
+        {
+          "word": "算了",
+          "pinyin": "suàn le",
+          "meaning": "表示不再计较或停止。"
+        }
+      ],
+      "sentence": "我会算十以内的加法。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "式",
+      "type": "character",
+      "pinyin": "shì",
+      "meaning": "样子或方法。",
+      "words": [
+        {
+          "word": "算式",
+          "pinyin": "suàn shì",
+          "meaning": "用数字和符号写的计算式子。"
+        },
+        {
+          "word": "方式",
+          "pinyin": "fāng shì",
+          "meaning": "做事情的方法。"
+        },
+        {
+          "word": "样式",
+          "pinyin": "yàng shì",
+          "meaning": "东西的样子。"
+        }
+      ],
+      "sentence": "请写出这个算式。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "题",
+      "type": "character",
+      "pinyin": "tí",
+      "meaning": "需要回答或解决的问题。",
+      "words": [
+        {
+          "word": "题目",
+          "pinyin": "tí mù",
+          "meaning": "问题的名称或内容。"
+        },
+        {
+          "word": "问题",
+          "pinyin": "wèn tí",
+          "meaning": "需要回答的事情。"
+        },
+        {
+          "word": "做题",
+          "pinyin": "zuò tí",
+          "meaning": "解答题目。"
+        }
+      ],
+      "sentence": "这道题我会做。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "案",
+      "type": "character",
+      "pinyin": "àn",
+      "meaning": "对问题的解答或计划。",
+      "words": [
+        {
+          "word": "答案",
+          "pinyin": "dá àn",
+          "meaning": "问题的正确结果。"
+        },
+        {
+          "word": "方案",
+          "pinyin": "fāng àn",
+          "meaning": "做事的计划。"
+        },
+        {
+          "word": "图案",
+          "pinyin": "tú àn",
+          "meaning": "画出来的花纹或图形。"
+        }
+      ],
+      "sentence": "我知道这道题的答案。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "写",
+      "type": "character",
+      "pinyin": "xiě",
+      "meaning": "用笔在纸上画出字或画。",
+      "words": [
+        {
+          "word": "写字",
+          "pinyin": "xiě zì",
+          "meaning": "用笔写出汉字。"
+        },
+        {
+          "word": "写作业",
+          "pinyin": "xiě zuò yè",
+          "meaning": "完成老师布置的功课。"
+        },
+        {
+          "word": "书写",
+          "pinyin": "shū xiě",
+          "meaning": "写字。"
+        }
+      ],
+      "sentence": "我在田字格里写字。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "读",
+      "type": "character",
+      "pinyin": "dú",
+      "meaning": "看着文字念出声音。",
+      "words": [
+        {
+          "word": "读书",
+          "pinyin": "dú shū",
+          "meaning": "看着书念出来。"
+        },
+        {
+          "word": "阅读",
+          "pinyin": "yuè dú",
+          "meaning": "看书并理解内容。"
+        },
+        {
+          "word": "朗读",
+          "pinyin": "lǎng dú",
+          "meaning": "大声清楚地读出来。"
+        }
+      ],
+      "sentence": "我喜欢读故事书。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "个",
+      "type": "character",
+      "pinyin": "gè",
+      "meaning": "表示单个的人或东西。",
+      "words": [
+        {
+          "word": "一个",
+          "pinyin": "yī gè",
+          "meaning": "数量是一。"
+        },
+        {
+          "word": "个人",
+          "pinyin": "gè rén",
+          "meaning": "一个人。"
+        },
+        {
+          "word": "个子",
+          "pinyin": "gè zi",
+          "meaning": "人的身高。"
+        }
+      ],
+      "sentence": "我有一个新书包。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "只",
+      "type": "character",
+      "pinyin": "zhī",
+      "meaning": "用于动物、器具或成对东西中的一个。",
+      "words": [
+        {
+          "word": "一只",
+          "pinyin": "yī zhī",
+          "meaning": "数量是一，用于动物等。"
+        },
+        {
+          "word": "只有",
+          "pinyin": "zhǐ yǒu",
+          "meaning": "仅仅有。"
+        },
+        {
+          "word": "只是",
+          "pinyin": "zhǐ shì",
+          "meaning": "仅仅是。"
+        }
+      ],
+      "sentence": "树上有一只小鸟。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "支",
+      "type": "character",
+      "pinyin": "zhī",
+      "meaning": "用于细长的东西，如笔。",
+      "words": [
+        {
+          "word": "一支",
+          "pinyin": "yī zhī",
+          "meaning": "数量是一，用于笔等。"
+        },
+        {
+          "word": "支持",
+          "pinyin": "zhī chí",
+          "meaning": "帮助别人，赞同。"
+        },
+        {
+          "word": "支出",
+          "pinyin": "zhī chū",
+          "meaning": "把钱花出去。"
+        }
+      ],
+      "sentence": "我有一支新铅笔。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "朵",
+      "type": "character",
+      "pinyin": "duǒ",
+      "meaning": "花朵，也用作量词，用于花或云彩。",
+      "words": [
+        {
+          "word": "花朵",
+          "pinyin": "huā duǒ",
+          "meaning": "花的总称，一朵一朵的花。"
+        },
+        {
+          "word": "耳朵",
+          "pinyin": "ěr duo",
+          "meaning": "人和动物用来听声音的器官。"
+        },
+        {
+          "word": "云朵",
+          "pinyin": "yún duǒ",
+          "meaning": "天上飘着的一团一团的云。"
+        }
+      ],
+      "sentence": "花园里开了一朵红花。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "条",
+      "type": "character",
+      "pinyin": "tiáo",
+      "meaning": "细长的东西，也用作量词，用于长形物。",
+      "words": [
+        {
+          "word": "面条",
+          "pinyin": "miàn tiáo",
+          "meaning": "用面粉做的细长条食物。"
+        },
+        {
+          "word": "一条",
+          "pinyin": "yī tiáo",
+          "meaning": "数量词，用于长形的东西。"
+        },
+        {
+          "word": "条件",
+          "pinyin": "tiáo jiàn",
+          "meaning": "影响事情发生或发展的因素。"
+        }
+      ],
+      "sentence": "妈妈煮了一碗面条。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "输",
+      "type": "character",
+      "pinyin": "shū",
+      "meaning": "在比赛或游戏中没有赢。",
+      "words": [
+        {
+          "word": "输赢",
+          "pinyin": "shū yíng",
+          "meaning": "比赛或游戏中的失败和胜利。"
+        },
+        {
+          "word": "认输",
+          "pinyin": "rèn shū",
+          "meaning": "承认自己输了。"
+        },
+        {
+          "word": "运输",
+          "pinyin": "yùn shū",
+          "meaning": "把东西从一个地方送到另一个地方。"
+        }
+      ],
+      "sentence": "这次比赛我们输了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "练",
+      "type": "character",
+      "pinyin": "liàn",
+      "meaning": "反复做一件事，让自己更熟练。",
+      "words": [
+        {
+          "word": "练习",
+          "pinyin": "liàn xí",
+          "meaning": "反复做题目或动作，让自己学得更好。"
+        },
+        {
+          "word": "练字",
+          "pinyin": "liàn zì",
+          "meaning": "反复写字，让字更好看。"
+        },
+        {
+          "word": "训练",
+          "pinyin": "xùn liàn",
+          "meaning": "通过练习学会某种本领。"
+        }
+      ],
+      "sentence": "我每天练习写字。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "认",
+      "type": "character",
+      "pinyin": "rèn",
+      "meaning": "认识、分辨人或东西。",
+      "words": [
+        {
+          "word": "认识",
+          "pinyin": "rèn shi",
+          "meaning": "知道某人或某物是谁或什么。"
+        },
+        {
+          "word": "认真",
+          "pinyin": "rèn zhēn",
+          "meaning": "做事不马虎，很用心。"
+        },
+        {
+          "word": "认字",
+          "pinyin": "rèn zì",
+          "meaning": "学习并记住汉字。"
+        }
+      ],
+      "sentence": "我认识这个字。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "河",
+      "type": "character",
+      "pinyin": "hé",
+      "meaning": "天然的大水流，比小溪大。",
+      "words": [
+        {
+          "word": "小河",
+          "pinyin": "xiǎo hé",
+          "meaning": "比较小的河流。"
+        },
+        {
+          "word": "河水",
+          "pinyin": "hé shuǐ",
+          "meaning": "河里的水。"
+        },
+        {
+          "word": "河边",
+          "pinyin": "hé biān",
+          "meaning": "河的旁边。"
+        }
+      ],
+      "sentence": "我家门前有一条小河。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "路",
+      "type": "character",
+      "pinyin": "lù",
+      "meaning": "供人或车走的地方。",
+      "words": [
+        {
+          "word": "马路",
+          "pinyin": "mǎ lù",
+          "meaning": "城市里供车行驶的宽路。"
+        },
+        {
+          "word": "走路",
+          "pinyin": "zǒu lù",
+          "meaning": "用脚在路上行进。"
+        },
+        {
+          "word": "路口",
+          "pinyin": "lù kǒu",
+          "meaning": "两条路交叉的地方。"
+        }
+      ],
+      "sentence": "我走路去学校。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "包",
+      "type": "character",
+      "pinyin": "bāo",
+      "meaning": "用纸、布等把东西裹起来；也指装东西的袋子。",
+      "words": [
+        {
+          "word": "书包",
+          "pinyin": "shū bāo",
+          "meaning": "学生用来装书本的包。"
+        },
+        {
+          "word": "包子",
+          "pinyin": "bāo zi",
+          "meaning": "一种有馅的面食。"
+        },
+        {
+          "word": "面包",
+          "pinyin": "miàn bāo",
+          "meaning": "用面粉烤制的食物。"
+        }
+      ],
+      "sentence": "我的书包很漂亮。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "校",
+      "type": "character",
+      "pinyin": "xiào",
+      "meaning": "学生学习的地方。",
+      "words": [
+        {
+          "word": "学校",
+          "pinyin": "xué xiào",
+          "meaning": "学生上学的地方。"
+        },
+        {
+          "word": "校园",
+          "pinyin": "xiào yuán",
+          "meaning": "学校里面的场地。"
+        },
+        {
+          "word": "校长",
+          "pinyin": "xiào zhǎng",
+          "meaning": "学校最大的负责人。"
+        }
+      ],
+      "sentence": "我们的学校很大。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "师",
+      "type": "character",
+      "pinyin": "shī",
+      "meaning": "教别人知识或技能的人。",
+      "words": [
+        {
+          "word": "老师",
+          "pinyin": "lǎo shī",
+          "meaning": "在学校教学生的人。"
+        },
+        {
+          "word": "师父",
+          "pinyin": "shī fu",
+          "meaning": "传授技艺的人。"
+        },
+        {
+          "word": "师生",
+          "pinyin": "shī shēng",
+          "meaning": "老师和学生。"
+        }
+      ],
+      "sentence": "老师教我们认字。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "友",
+      "type": "character",
+      "pinyin": "yǒu",
+      "meaning": "关系好、常在一起玩的人。",
+      "words": [
+        {
+          "word": "朋友",
+          "pinyin": "péng you",
+          "meaning": "和自己关系好的人。"
+        },
+        {
+          "word": "友好",
+          "pinyin": "yǒu hǎo",
+          "meaning": "像朋友一样亲近、和睦。"
+        },
+        {
+          "word": "友情",
+          "pinyin": "yǒu qíng",
+          "meaning": "朋友之间的感情。"
+        }
+      ],
+      "sentence": "他是我的好朋友。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "测",
+      "type": "character",
+      "pinyin": "cè",
+      "meaning": "用工具或方法来了解、检验。",
+      "words": [
+        {
+          "word": "测量",
+          "pinyin": "cè liáng",
+          "meaning": "用工具量出大小、长短等。"
+        },
+        {
+          "word": "测试",
+          "pinyin": "cè shì",
+          "meaning": "通过题目或操作检验能力。"
+        },
+        {
+          "word": "猜测",
+          "pinyin": "cāi cè",
+          "meaning": "根据线索试着想答案。"
+        }
+      ],
+      "sentence": "我们用尺子测量长度。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "秒",
+      "type": "character",
+      "pinyin": "miǎo",
+      "meaning": "时间单位，60秒是1分钟。",
+      "words": [
+        {
+          "word": "秒针",
+          "pinyin": "miǎo zhēn",
+          "meaning": "钟表上指示秒的指针。"
+        },
+        {
+          "word": "分秒",
+          "pinyin": "fēn miǎo",
+          "meaning": "分钟和秒，表示很短的时间。"
+        },
+        {
+          "word": "秒表",
+          "pinyin": "miǎo biǎo",
+          "meaning": "可以精确到秒的计时器。"
+        }
+      ],
+      "sentence": "一分钟有六十秒。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "确",
+      "type": "character",
+      "pinyin": "què",
+      "meaning": "真实、对的，没有错误。",
+      "words": [
+        {
+          "word": "正确",
+          "pinyin": "zhèng què",
+          "meaning": "答案或做法是对的。"
+        },
+        {
+          "word": "确实",
+          "pinyin": "què shí",
+          "meaning": "真的，不假。"
+        },
+        {
+          "word": "准确",
+          "pinyin": "zhǔn què",
+          "meaning": "完全符合要求，没有偏差。"
+        }
+      ],
+      "sentence": "你的回答很正确。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "容",
+      "type": "character",
+      "pinyin": "róng",
+      "meaning": "装得下，包含；也指脸上的样子。",
+      "words": [
+        {
+          "word": "容易",
+          "pinyin": "róng yì",
+          "meaning": "做起来不困难。"
+        },
+        {
+          "word": "笑容",
+          "pinyin": "xiào róng",
+          "meaning": "脸上高兴的样子。"
+        },
+        {
+          "word": "容器",
+          "pinyin": "róng qì",
+          "meaning": "装东西的器具。"
+        }
+      ],
+      "sentence": "这个箱子能容下很多玩具。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "熟",
+      "type": "character",
+      "pinyin": "shú",
+      "meaning": "食物加热到可以吃；也指对人或事很了解。",
+      "words": [
+        {
+          "word": "成熟",
+          "pinyin": "chéng shú",
+          "meaning": "果实长到可以吃；人长大懂事。"
+        },
+        {
+          "word": "熟悉",
+          "pinyin": "shú xī",
+          "meaning": "对人或地方很了解。"
+        },
+        {
+          "word": "熟人",
+          "pinyin": "shú rén",
+          "meaning": "认识很久的人。"
+        }
+      ],
+      "sentence": "苹果熟了，红红的真好看。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "危",
+      "type": "character",
+      "pinyin": "wēi",
+      "meaning": "不安全，可能受到伤害或损失。",
+      "words": [
+        {
+          "word": "危险",
+          "pinyin": "wēi xiǎn",
+          "meaning": "可能让人受伤或出事的。"
+        },
+        {
+          "word": "危害",
+          "pinyin": "wēi hài",
+          "meaning": "让东西或人受到伤害。"
+        },
+        {
+          "word": "危机",
+          "pinyin": "wēi jī",
+          "meaning": "很困难、很危险的时刻。"
+        }
+      ],
+      "sentence": "过马路时要注意危险。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "恶",
+      "type": "character",
+      "pinyin": "è",
+      "meaning": "很坏，让人讨厌或害怕的。",
+      "words": [
+        {
+          "word": "凶恶",
+          "pinyin": "xiōng è",
+          "meaning": "样子很可怕，不善良。"
+        },
+        {
+          "word": "恶人",
+          "pinyin": "è rén",
+          "meaning": "做坏事的人。"
+        },
+        {
+          "word": "恶劣",
+          "pinyin": "è liè",
+          "meaning": "很坏，让人不舒服。"
+        }
+      ],
+      "sentence": "大灰狼很凶恶，想吃小羊。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "易",
+      "type": "character",
+      "pinyin": "yì",
+      "meaning": "做起来不难；也指改变。",
+      "words": [
+        {
+          "word": "容易",
+          "pinyin": "róng yì",
+          "meaning": "做起来不困难。"
+        },
+        {
+          "word": "交易",
+          "pinyin": "jiāo yì",
+          "meaning": "互相交换东西。"
+        },
+        {
+          "word": "易手",
+          "pinyin": "yì shǒu",
+          "meaning": "东西从一个人转到另一个人手里。"
+        }
+      ],
+      "sentence": "这道题很容易，我很快就做完了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "预",
+      "type": "character",
+      "pinyin": "yù",
+      "meaning": "事先，提前做准备。",
+      "words": [
+        {
+          "word": "预习",
+          "pinyin": "yù xí",
+          "meaning": "上课前自己先学习。"
+        },
+        {
+          "word": "预报",
+          "pinyin": "yù bào",
+          "meaning": "提前告诉将要发生的事情。"
+        },
+        {
+          "word": "预备",
+          "pinyin": "yù bèi",
+          "meaning": "提前准备好。"
+        }
+      ],
+      "sentence": "明天要下雨，天气预报说了。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    },
+    {
+      "text": "境",
+      "type": "character",
+      "pinyin": "jìng",
+      "meaning": "地方，周围的情况。",
+      "words": [
+        {
+          "word": "环境",
+          "pinyin": "huán jìng",
+          "meaning": "周围的地方和情况。"
+        },
+        {
+          "word": "边境",
+          "pinyin": "biān jìng",
+          "meaning": "国家或地区边上的地方。"
+        },
+        {
+          "word": "处境",
+          "pinyin": "chǔ jìng",
+          "meaning": "现在的情况，多指困难或好的。"
+        }
+      ],
+      "sentence": "我们要保护环境，不乱扔垃圾。",
+      "source": "deepseek-v4-pro-bulk-v2.5.1",
+      "updatedAt": "2026-07-04"
+    }
+  ]
+}
