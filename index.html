@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>学习星球 Learning Planet</title>
-    <link rel="stylesheet" href="./styles.css?v=v3.7.0" />
+    <link rel="stylesheet" href="./styles.css?v=v3.7.1" />
   </head>
   <body>
     <div class="ambient" aria-hidden="true"></div>
 
     <header class="topbar">
       <a class="brand" href="#daily" aria-label="学习星球 Learning Planet">
-        <img class="brand-mark" src="./assets/brand/learning-planet-star-page.svg?v=v3.7.0" alt="" width="44" height="44" />
+        <img class="brand-mark" src="./assets/brand/learning-planet-star-page.svg?v=v3.7.1" alt="" width="44" height="44" />
         <span>
           <strong>学习星球</strong>
           <em>Learning Planet</em>
@@ -289,6 +289,15 @@
           <h1>家长观察站</h1>
         </div>
         <div class="parent-dashboard-grid">
+          <article class="surface parent-import-card">
+            <h2>导入课程</h2>
+            <label class="sr-only" for="learningPackInput">课程 JSON</label>
+            <textarea id="learningPackInput" class="pack-input compact-pack-input" rows="4" placeholder="粘贴完整课包" aria-describedby="packStatus"></textarea>
+            <div class="actions">
+              <button id="parsePackBtn" class="button primary" type="button">导入课程</button>
+            </div>
+            <p id="packStatus" class="status" role="status" aria-live="polite">导入失败时不会修改学习数据。</p>
+          </article>
           <article class="surface">
             <h2>三科进度 / Progress</h2>
             <p class="muted">查看进度、记录观察、生成反馈。</p>
@@ -315,16 +324,9 @@
               <summary>设置与备份</summary>
               <div id="learningPackApiStatus" class="report-panel">正在检查学习包接口</div>
             </details>
-            <details class="advanced-import">
-              <summary>开发应急导入</summary>
-              <p class="muted">仅用于调试或资源包应急导入。日常课程由站点内置课包准备。</p>
-              <textarea id="learningPackInput" class="pack-input compact-pack-input" rows="4" placeholder="粘贴应急学习包"></textarea>
-              <button id="parsePackBtn" class="button secondary" type="button">检查并导入</button>
-              <button id="confirmPackBtn" class="button success" type="button" disabled hidden>确认导入</button>
-              <input id="learningPackFile" class="file-input" type="file" accept=".txt,.json,.zip,.hspack,text/plain,application/json,application/zip" />
-            </details>
             <div id="legacyHomePanels" hidden aria-hidden="true">
-              <p id="packStatus"></p>
+              <button id="confirmPackBtn" type="button" disabled></button>
+              <input id="learningPackFile" type="file" accept=".txt,.json,.zip,.hspack,text/plain,application/json,application/zip" />
               <button id="lastPracticeBtn" type="button"></button>
               <section id="todayDashboardPanel"><h2 id="todayDashboardTitle"></h2><div id="todayDashboardSummary"></div></section>
               <section id="packPreviewPanel"><h2 id="packPreviewTitle"></h2><div id="packPreviewContent"></div></section>
@@ -338,9 +340,9 @@
       </section>
     </main>
 
-    <script src="./data/learning-history/helen-recognition-history-v1.js?v=v3.7.0"></script>
-    <script src="./data/learning-packs/builtin-learning-packs.js?v=v3.7.0"></script>
-    <script src="./data/english-libraries/hello-school-32-lesson-library.js?v=v3.7.0"></script>
-    <script src="./app.js?v=v3.7.0"></script>
+    <script src="./data/learning-history/helen-recognition-history-v1.js?v=v3.7.1"></script>
+    <script src="./data/learning-packs/builtin-learning-packs.js?v=v3.7.1"></script>
+    <script src="./data/english-libraries/hello-school-32-lesson-library.js?v=v3.7.1"></script>
+    <script src="./app.js?v=v3.7.1"></script>
   </body>
 </html>

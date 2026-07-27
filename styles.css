@@ -317,7 +317,7 @@ textarea {
   line-height: 1.6;
 }
 
-.compact-pack-input {
+.parent-import-card .compact-pack-input {
   min-height: 140px;
   max-height: 180px;
   overflow: auto;

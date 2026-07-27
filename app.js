@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.7.0",
-  buildId: "2026-07-27T14:30:00+08:00",
+  version: "v3.7.1",
+  buildId: "2026-07-28T03:10:04+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -2542,7 +2542,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderReport();
   renderLexicalCheck();
   renderLearningPackApiStatus();
-  restoreLearningPackInput();
   loadBuiltinLearningPack();
   loadEnglishLessonLibrary();
   startCourseTimerTicker();
@@ -6743,7 +6742,8 @@ function parseAndPreviewLearningPack() {
     $("#packStatus").textContent = preview.valid ? "解析成功，请确认导入 / Preview ready" : "学习包有问题，请先修改";
   } catch (error) {
     renderLearningPackError(error);
-    $("#packStatus").textContent = "解析失败，未修改任何数据 / Parse failed";
+    const message = String(error?.message || "课程格式不正确").replace(/[。.!！?？]+$/, "");
+    $("#packStatus").textContent = `导入失败：${message}。未修改任何学习数据。`;
   }
 }
 
@@ -6779,12 +6779,18 @@ function confirmLearningPackImport(options = {}) {
   localStorage.setItem(ENGLISH_BLOCK_SELECTED_PATTERN_KEY, selectedBlockPatternId);
   clearBlockPatternWorkState();
   renderEnglishBlocks();
+  $("#learningPackInput").value = "";
   $("#packStatus").textContent = `已导入：新增 ${result.added}，更新 ${result.updated}，保持 ${result.unchanged} / Imported`;
   if (options.autoNavigate) {
     $("#packPreviewPanel").hidden = true;
-    showView("daily", false);
-    document.querySelector("#planetOverview")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const nextView = getFirstLearningPackCourseView(pendingLearningPackPreview.pack);
+    showView(nextView, true, { skipRouteDateSelection: true });
+    document.querySelector(`#${getDomViewId(nextView)}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+}
+
+function getFirstLearningPackCourseView(pack) {
+  return { chinese: "chinese-course", english: "letter-course", art: "color-course" }[getPackAvailableSubjects(pack)[0]] || "daily";
 }
 
 function parseLearningPackInput(raw) {
@@ -15029,11 +15035,6 @@ function renderLexicalCheck() {
       <p>组词不足前20个：${escapeHtml(missingWordsPreview)}</p>
     </div>
   `;
-}
-
-function restoreLearningPackInput() {
-  const input = $("#learningPackInput");
-  if (input) input.value = state.lastLearningPackRaw || "";
 }
 
 function showLastPractice() {
