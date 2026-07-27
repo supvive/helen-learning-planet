@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.5.5",
-  buildId: "2026-07-27T10:20:00+08:00",
+  version: "v3.7.0",
+  buildId: "2026-07-27T14:30:00+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -78,6 +78,18 @@ const LEARNING_PACK_STORAGE_KEY = "helen-learning-packs-v1";
 const LEARNING_PACK_MAX_BYTES = 160 * 1024;
 const BUILTIN_LEARNING_PACK_MANIFEST = "./data/learning-packs/manifest.json";
 const ENGLISH_LESSON_LIBRARY_URL = "./data/english-libraries/hello-school-32-lesson-library.json";
+const COLOR_PLANET_CATALOG_URL = "./data/color-planet/color-planet-daily-five-courses.json";
+const COLOR_PLANET_REGISTER_URL = "./data/color-planet/color-card-register-120.json";
+const COLOR_COURSE_BOARD_URLS = Object.freeze({
+  "color-choice-001-squatting-puppy": "./assets/art/color-planet-boards/squatting-puppy-14-step-board-v1.png",
+  "color-choice-002-picnic-rabbit": "./assets/art/color-planet-boards/picnic-rabbit-14-step-board-v1.png",
+  "color-choice-003-reading-cat": "./assets/art/color-planet-boards/reading-cat-14-step-board-v1.png",
+  "color-choice-004-watering-bear": "./assets/art/color-planet-boards/watering-bear-14-step-board-v1.png",
+  "color-choice-005-kite-duck": "./assets/art/color-planet-boards/kite-duck-14-step-board-v1.png"
+});
+const COLOR_BOARD_POSITIONS = Object.freeze([0, 33.333, 66.667, 100]);
+const COLOR_PLANET_CATALOG_SCHEMA = "helen-color-planet-daily-choice/2-revision-b";
+const COLOR_PLANET_REGISTER_SCHEMA = "helen-color-card-registry/1";
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
 const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
 const WITHDRAWN_BUILTIN_PACK_IDS = new Set([
@@ -92,6 +104,7 @@ const RECORDING_DB_NAME = "helen-learning-recordings-v1";
 const RECORDING_DB_VERSION = 1;
 const RECORDING_TIMESLICE_MS = 10000;
 const RECORDING_MAX_SECONDS = 300;
+const COURSE_RECORDING_MAX_SECONDS = 3 * 60 * 60;
 const COURSE_RESULT_LABELS = {
   independent: "独立完成",
   prompted: "少量提醒",
@@ -104,9 +117,19 @@ const FULL_COURSE_CONTENT_POLICY = {
   allowModelGeneration: false
 };
 const PLANET_REGISTRY = [
-  { id: "chinese", nameZh: "中文星球", nameEn: "Chinese Planet", icon: "中", route: "today-chinese", theme: "chinese", enabled: true, symbols: ["故事", "汉字", "书页"] },
+  { id: "chinese", nameZh: "中文星球", nameEn: "Chinese Planet", icon: "中", route: "chinese-planet", theme: "chinese", enabled: true, symbols: ["故事", "汉字", "书页"] },
   { id: "english", nameZh: "字母星球", nameEn: "Letter Planet", icon: "Aa", route: "english-planet", theme: "english", enabled: true, symbols: ["声音", "对话", "积木"] },
   { id: "art", nameZh: "颜色星球", nameEn: "Color Planet", icon: "色", route: "art-planet", theme: "art", enabled: true, symbols: ["颜色", "笔触", "作品"] }
+];
+const COLOR_FOUNDATION_SKILLS = ["线条控制", "基础形状", "构图比例", "均匀平涂", "叠色渐变", "边缘收整"];
+const LEGACY_HOME_PANEL_IDS = [
+  "legacyHomePanels",
+  "todayDashboardPanel",
+  "packPreviewPanel",
+  "packSuccessPanel",
+  "focusPanel",
+  "reviewPanel",
+  "practiceRunner"
 ];
 const ALLOWED_ASSET_TYPES = {
   image: ["image/png", "image/jpeg", "image/webp"],
@@ -2407,6 +2430,7 @@ const SAMPLE_TEXT = "今日学习：日、月、水、火。词语：日光、�
 const STORAGE_KEY = "hanzi-memory-app-v1";
 
 let state = loadState();
+initializeHistoricalRecognitionProfile();
 let pendingLearningPackPreview = null;
 let currentReadAloud = { key: "", utterance: null, audio: null, button: null };
 let activeRecording = null;
@@ -2428,6 +2452,9 @@ let generationInFlight = false;
 let englishProgress = loadEnglishProgress();
 let englishLessonLibrary = null;
 let englishLessonLibraryLoad = null;
+let colorPlanetCatalog = null;
+let colorCardRegister = null;
+let colorPlanetDataLoad = { status: "idle", ok: false };
 let englishLibrary = buildEnglishWordLibrary();
 let currentEnglishWord = null;
 let englishActionLocked = false;
@@ -2497,6 +2524,9 @@ document.addEventListener("DOMContentLoaded", () => {
   bindEnglishBlocks();
   bindDictionarySearch();
   bindSettings();
+  bindColorBoardImages();
+  loadColorPlanetData();
+  keepLegacyHomePanelsHidden();
   showView(getInitialView(), false);
   renderCharacters();
   renderEnglishRecognition();
@@ -2554,10 +2584,36 @@ function getInitialView() {
 
 function parseRouteHash() {
   const raw = location.hash.replace(/^#/, "");
-  if (!raw) return { view: "", date: "" };
+  if (!raw) return { view: "", date: "", rawView: "", legacy: false };
   const [viewPart, queryPart = ""] = raw.split("?");
   const params = new URLSearchParams(queryPart);
-  return { view: viewPart, date: params.get("date") || "" };
+  const view = normalizeStudentRoute(viewPart);
+  const date = params.get("date") || "";
+  return { view, date, rawView: viewPart, legacy: view !== viewPart || Boolean(date) };
+}
+
+function normalizeStudentRoute(view) {
+  return {
+    "today-chinese": "chinese-course",
+    "today-english": "letter-course",
+    "today-art": "color-course",
+    english: "word-recognition",
+    "english-recognition": "word-recognition",
+    "english-words": "word-recognition"
+  }[view] || view;
+}
+
+function getDomViewId(view) {
+  return {
+    "chinese-course": "today-chinese",
+    "letter-course": "today-english",
+    "color-course": "today-art",
+    "word-recognition": "english"
+  }[normalizeStudentRoute(view)] || view;
+}
+
+function getVisibleRouteForView(view) {
+  return normalizeStudentRoute(view);
 }
 
 function loadState() {
@@ -2586,7 +2642,8 @@ function loadState() {
     englishLessonLibraryLoad: null,
     lastLearningPackRaw: "",
     focusTitleOverride: "",
-    answerPanelsHidden: false
+    answerPanelsHidden: false,
+    recognitionHistoryVersion: 0
   };
   try {
     const loaded = { ...fallback, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
@@ -2621,10 +2678,14 @@ function reconcilePersistedCourseTimers(targetState, now = Date.now()) {
 
 function reconcileCourseTimerSide(side, now = Date.now(), reason = "app_restore") {
   if (!side) return side;
-  const accumulated = clampDuration(Number(side.accumulatedMs ?? side.elapsedMs ?? 0));
+  const accumulated = clampDuration(Math.max(Number(side.accumulatedMs || 0), Number(side.elapsedMs || 0)));
   const wasRunning = Boolean(side.isRunning || side.runningSince);
   const runningSince = Number(side.runningSince || 0);
   const heartbeat = Number(side.lastHeartbeatAt || 0);
+  if (!side.timerStartedAt && (wasRunning || accumulated > 0)) {
+    side.timerStartedAt = side.startedAt || new Date(now).toISOString();
+  }
+  side.timerStartedAt ||= "";
   side.timerModelVersion = Number(side.timerModelVersion || 1);
   side.accumulatedMs = accumulated;
   side.elapsedMs = accumulated;
@@ -2672,6 +2733,7 @@ function normalizeStaleCourseRecordingStates(targetState) {
       const activityId = `${course}:course_recording`;
       const clips = Object.values(targetState.recordingClips || {}).filter((clip) => (
         clip.packId === progress.packId &&
+        (!side.sessionId || clip.sessionId === side.sessionId) &&
         clip.planetId === course &&
         clip.activityId === activityId &&
         clip.includeInFeedback !== false
@@ -2892,13 +2954,17 @@ function bindNavigation() {
     const target = event.target.closest("[data-go-view]");
     if (!target) return;
     event.preventDefault();
+    if (target.dataset.homeCourseKind) {
+      openPlanetHomeCourse(target.dataset.homeCourseKind, target.dataset.homeCourseId, target.dataset.goView);
+      return;
+    }
     navigateToView(target.dataset.goView);
   });
   document.addEventListener("click", (event) => {
     const target = event.target.closest("[data-route-back]");
     if (!target) return;
     event.preventDefault();
-    showView(getParentView(getActiveView()));
+    showView(getRouteBackTarget(target, getActiveView()));
   });
   document.addEventListener("click", (event) => {
     const target = event.target.closest("[data-pack-date], [data-date-nav]");
@@ -2907,21 +2973,47 @@ function bindNavigation() {
     if (target.dataset.packDate) selectLearningPackDate(target.dataset.packDate);
     if (target.dataset.dateNav) selectRelativeLearningDate(target.dataset.dateNav);
   });
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-course-pack], [data-course-sequence-nav]");
+    if (!target) return;
+    event.preventDefault();
+    const kind = target.dataset.courseKind || getActiveCourseKind() || "chinese";
+    if (target.dataset.coursePack) selectLearningCoursePack(target.dataset.coursePack, true, kind);
+    if (target.dataset.courseSequenceNav) selectRelativeLearningCourse(target.dataset.courseSequenceNav, kind);
+  });
 }
 
 function navigateToView(view) {
-  if (view === "today-chinese" && selectLatestLearningPackForPrimaryCourse()) return;
+  if (normalizeStudentRoute(view) === "chinese-course" && selectLatestLearningPackForPrimaryCourse()) return;
   showView(view);
 }
 
+function openPlanetHomeCourse(kind, courseId, view) {
+  if (kind === "english") {
+    const library = getEnglishLessonLibrary();
+    if (library?.lessons?.some((lesson) => lesson.lessonId === courseId)) {
+      state.selectedEnglishLessonId = courseId;
+      initializeCourseProgress(getActiveEnglishPack());
+    }
+  } else if (courseId && state.learningPacks?.[courseId]) {
+    state.selectedLearningPackId = courseId;
+    state.learningPackSelectionSource = "manual";
+  }
+  saveState();
+  showView(view, true, { skipRouteDateSelection: true });
+}
+
 function showView(view, updateHash = true, options = {}) {
-  const target = $(`#${view}`) ? view : "daily";
+  const visibleRoute = normalizeStudentRoute(view);
+  const domView = getDomViewId(visibleRoute);
+  const target = $(`#${domView}`) ? domView : "daily";
   const historyMode = typeof updateHash === "string" ? updateHash : updateHash ? "push" : "none";
   if (!options.skipRouteDateSelection) applyRouteDateSelection();
   stopReadAloud();
   if (target !== "english" && "speechSynthesis" in window) speechSynthesis.cancel();
   if (!["english", "english-blocks"].includes(target)) resetExampleDisplayState();
-  $$(".nav a").forEach((item) => item.classList.toggle("active", item.dataset.view === target));
+  const activeNavView = getTopNavigationView(target);
+  $$(".nav a").forEach((item) => item.classList.toggle("active", item.dataset.view === activeNavView));
   $$(".view").forEach((section) => section.classList.toggle("active", section.id === target));
   if (target === "daily") renderTodayDashboard();
   if (target === "daily") renderPlanetOverview();
@@ -2929,6 +3021,11 @@ function showView(view, updateHash = true, options = {}) {
   if (target === "today-chinese") renderChineseLesson();
   if (target === "today-english") renderEnglishLesson();
   if (target === "today-art") renderArtLesson();
+  if (target === "learning-records") renderEnglishLearningRecords();
+  if (target === "color-work-choice") renderColorWorkChoice();
+  if (target === "color-foundation") renderColorFoundation();
+  if (target === "color-gallery") renderColorGallery();
+  if (target === "color-materials") renderColorMaterials();
   if (target === "parent") {
     renderReport();
     renderRecordingLibrary();
@@ -2938,10 +3035,19 @@ function showView(view, updateHash = true, options = {}) {
   scheduleBreakCountdown();
   updateCourseTimerUi();
   if (historyMode !== "none") updateBrowserRoute(target, historyMode);
+  else {
+    const route = parseRouteHash();
+    if (route.legacy && getDomViewId(route.view) === target) updateBrowserRoute(target, "replace");
+  }
 }
 
 function getActiveView() {
   return $(".view.active")?.id || getInitialView();
+}
+
+function getTopNavigationView(view) {
+  const parent = getParentView(view);
+  return parent === "daily" ? view : parent;
 }
 
 function getParentView(view) {
@@ -2949,6 +3055,16 @@ function getParentView(view) {
     "today-chinese": "chinese-planet",
     "today-english": "english-planet",
     "today-art": "art-planet",
+    characters: "chinese-planet",
+    wordbook: "chinese-planet",
+    dictionary: "chinese-planet",
+    english: "english-planet",
+    "english-blocks": "english-planet",
+    "learning-records": "english-planet",
+    "color-work-choice": "art-planet",
+    "color-foundation": "art-planet",
+    "color-gallery": "art-planet",
+    "color-materials": "art-planet",
     "chinese-planet": "daily",
     "english-planet": "daily",
     "art-planet": "daily"
@@ -2956,8 +3072,19 @@ function getParentView(view) {
   return parents[view] || "daily";
 }
 
+function getRouteBackTarget(button, activeView) {
+  const explicitTarget = normalizeStudentRoute(button?.dataset?.routeBack || "");
+  return explicitTarget && explicitTarget !== "daily"
+    ? getDomViewId(explicitTarget)
+    : getParentView(activeView);
+}
+
 function updateRouteBackButtons(activeView) {
   $$("[data-route-back]").forEach((button) => {
+    if (button.dataset.routeBack === "color-work-choice") {
+      button.setAttribute("aria-label", "返回选择作品");
+      return;
+    }
     const section = button.closest(".view");
     const parent = getParentView(section?.id || activeView);
     const labels = {
@@ -2971,9 +3098,7 @@ function updateRouteBackButtons(activeView) {
 }
 
 function updateBrowserRoute(target, historyMode = "push") {
-  const date = getSelectedLearningPack()?.date || "";
-  const includeDate = date && ["daily", "parent", "chinese-planet", "english-planet", "art-planet", "today-chinese", "today-english", "today-art"].includes(target);
-  const hash = includeDate ? `#${target}?date=${encodeURIComponent(date)}` : `#${target}`;
+  const hash = `#${getVisibleRouteForView(target)}`;
   if (location.hash === hash) return;
   const method = historyMode === "replace" ? "replaceState" : "pushState";
   history[method]({ view: target }, "", hash);
@@ -3015,17 +3140,17 @@ function getShanghaiDateString(date = new Date()) {
 function bindDailyPractice() {
   $("#pastePackBtn")?.addEventListener("click", pasteLearningPack);
   $("#learningPackFile")?.addEventListener("change", loadLearningPackFile);
-  $("#parsePackBtn").addEventListener("click", checkAndImportLearningPack);
+  $("#parsePackBtn")?.addEventListener("click", checkAndImportLearningPack);
   $("#confirmPackBtn")?.addEventListener("click", confirmLearningPackImport);
   $("#lastPracticeBtn")?.addEventListener("click", showLastPractice);
-  $("#approveBtn").addEventListener("click", approvePractice);
-  $("#regenerateBtn").addEventListener("click", () => generatePracticeFromLatestPack());
-  $("#confirmFocusBtn").addEventListener("click", confirmFocusItems);
-  $("#correctBtn").addEventListener("click", () => answerCurrent("correct"));
-  $("#hesitatedBtn").addEventListener("click", () => answerCurrent("hesitated"));
-  $("#wrongBtn").addEventListener("click", () => answerCurrent("wrong"));
-  $("#toggleFocusBtn").addEventListener("click", () => toggleAnswerPanel("focus"));
-  $("#toggleReviewBtn").addEventListener("click", () => toggleAnswerPanel("review"));
+  $("#approveBtn")?.addEventListener("click", approvePractice);
+  $("#regenerateBtn")?.addEventListener("click", () => generatePracticeFromLatestPack());
+  $("#confirmFocusBtn")?.addEventListener("click", confirmFocusItems);
+  $("#correctBtn")?.addEventListener("click", () => answerCurrent("correct"));
+  $("#hesitatedBtn")?.addEventListener("click", () => answerCurrent("hesitated"));
+  $("#wrongBtn")?.addEventListener("click", () => answerCurrent("wrong"));
+  $("#toggleFocusBtn")?.addEventListener("click", () => toggleAnswerPanel("focus"));
+  $("#toggleReviewBtn")?.addEventListener("click", () => toggleAnswerPanel("review"));
   $$(".pack-next-actions [data-go-view]").forEach((button) => {
     button.addEventListener("click", () => showView(button.dataset.goView));
   });
@@ -3038,7 +3163,7 @@ function bindDailyPractice() {
 
 function bindDailyCoursePages() {
   document.addEventListener("click", (event) => {
-    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy]");
+    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step]");
     if (!target) return;
     if (target.dataset.courseSessionStart) startCourseSession(target.dataset.courseSessionStart);
     if (target.dataset.courseSessionReset) resetCourseSession(target.dataset.courseSessionReset);
@@ -3072,6 +3197,19 @@ function bindDailyCoursePages() {
     if (target.dataset.courseBlock) selectCourseBlock(target);
     if (target.dataset.courseSubmitBlocks) submitCourseBlocks(target.dataset.courseSubmitBlocks);
     if (target.dataset.copyFeedback || target.dataset.feedbackCopy) copyFeedbackPackage();
+    if (target.dataset.colorDataRetry) loadColorPlanetData();
+    if (target.dataset.colorCourseSelect) selectColorCourse(target.dataset.colorCourseSelect);
+    if (target.dataset.colorCourseReselect) reselectColorCourse();
+    if (target.dataset.colorCourseStart) startColorCourse(target.dataset.colorCourseStart);
+    if (target.dataset.colorStepJump !== undefined) setColorCourseStep(target.dataset.colorCourseId, Number(target.dataset.colorStepJump));
+    if (target.dataset.colorStepComplete) completeColorCourseStep(target.dataset.colorCourseId, target.dataset.colorStepComplete);
+    if (target.dataset.colorStepNav) {
+      const ui = getColorCourseUi(target.dataset.colorCourseId);
+      setColorCourseStep(target.dataset.colorCourseId, Number(ui.currentStepIndex || 0) + Number(target.dataset.colorStepNav || 0));
+    }
+    if (target.dataset.colorCourseComplete) completeColorCourse(target.dataset.colorCourseComplete);
+    if (target.dataset.colorFoundationToggle) toggleColorFoundation(target.dataset.colorFoundationToggle);
+    if (target.dataset.colorFoundationStep) completeColorFoundationStep(target.dataset.colorFoundationStep, target.dataset.colorFoundationStepId);
   });
   document.addEventListener("load", handleArtImageLoad, true);
   document.addEventListener("error", handleArtImageError, true);
@@ -3101,6 +3239,10 @@ function bindDailyCoursePages() {
     if (target.matches?.("[data-english-library-select]")) {
       selectEnglishLibraryLesson(target.value);
     }
+  });
+  document.addEventListener("input", (event) => {
+    const target = event.target;
+    if (target.matches?.("[data-color-material-search]")) setColorMaterialSearch(target.value);
   });
 }
 
@@ -3400,8 +3542,8 @@ function renderBlockExampleDisplay(pattern) {
           <p class="example-hint">当前不会显示句型、例句、音标或翻译。</p>
         </div>
         <div class="actions blocks-actions">
-          <button class="button ghost compact-button" data-end-block-exercise="true" type="button">结束练习<br><span>End</span></button>
-          <button class="button secondary compact-button" data-change-block-pattern="true" type="button">更换句型<br><span>Change</span></button>
+          <button class="button ghost compact-button" data-end-block-exercise="true" type="button">结束练习</button>
+          <button class="button secondary compact-button" data-change-block-pattern="true" type="button">更换句型</button>
         </div>
       </div>
     `;
@@ -3423,7 +3565,7 @@ function renderBlockExampleDisplay(pattern) {
       <div class="example-kicker">当前句型 / Current Pattern</div>
       <p class="collapsed-pattern-title">${escapeHtml(pattern.displayFormulaZh || pattern.example)}</p>
       <p class="example-hint">练习模式已收起例句，避免提示答案。</p>
-      <button class="button ghost compact-button" data-toggle-examples="true" type="button">展开例句<br><span>Show Examples</span></button>
+      <button class="button ghost compact-button" data-toggle-examples="true" type="button">展开例句</button>
     `;
     return;
   }
@@ -3447,7 +3589,7 @@ function renderBlockExampleDisplay(pattern) {
           : `<p class="example-empty">当前句型还没有可显示例句。</p>`}
         ${englishExamplePhoneticsVisible ? renderExamplePhoneticLine(sentence) : ""}
         ${translation && blockExampleTranslationVisible ? `<p class="example-chinese">${escapeHtml(translation)}</p>` : ""}
-        ${translation ? `<button class="button ghost compact-button" data-block-example-translation="true" type="button">${blockExampleTranslationVisible ? "隐藏中文" : "查看中文"}<br><span>${blockExampleTranslationVisible ? "Hide" : "Chinese"}</span></button>` : ""}
+        ${translation ? `<button class="button ghost compact-button" data-block-example-translation="true" type="button">${blockExampleTranslationVisible ? "隐藏中文" : "查看中文"}</button>` : ""}
         ${blockExampleDisplayMode === "source_example" && example.sourceTitle ? `<p class="example-hint">${escapeHtml(example.sourceTitle)}</p>` : ""}
       </div>
       ${examples.length > 1 ? `<button class="carousel-arrow" data-block-example-next="true" type="button" aria-label="下一个">›</button>` : `<span></span>`}
@@ -3456,7 +3598,7 @@ function renderBlockExampleDisplay(pattern) {
   const button = $("#samePatternBtn");
   if (button) {
     button.disabled = blockExampleGenerating;
-    button.innerHTML = blockExampleGenerating ? "AI生成中<br><span>AI Generating</span>" : "AI例句<br><span>AI Example</span>";
+    button.textContent = blockExampleGenerating ? "AI生成中" : "AI例句";
   }
 }
 
@@ -3622,7 +3764,7 @@ function renderPatternExampleControls() {
   const countPanel = $("#blocksExampleCountChips");
   if (countPanel) {
     countPanel.innerHTML = [1, 3, 5].map((count) => `
-      <button class="chip-button ${patternExampleCount === count ? "selected" : ""}" data-example-count="${count}" type="button">${count}句<span>${count} Examples</span></button>
+      <button class="chip-button ${patternExampleCount === count ? "selected" : ""}" data-example-count="${count}" type="button">${count}句</button>
     `).join("");
   }
 }
@@ -3737,28 +3879,28 @@ function renderBlockExerciseControls() {
   if (typePanel) {
     typePanel.innerHTML = getBlockAIExerciseTypes().map((type) => `
       <button class="chip-button exercise-type-tab bilingual-pill ${activeBlockExerciseType === type.id ? "selected" : ""}" data-block-exercise-type="${escapeHtml(type.id)}" type="button">
-        ${escapeHtml(type.labelZh)}<span class="exercise-type-tab__en">${escapeHtml(getExerciseTypeProgressLabel(type.id))}</span>
+        ${escapeHtml(type.labelZh)}${getExerciseTypeProgressLabel(type.id) ? `<span class="exercise-type-tab__en">${escapeHtml(getExerciseTypeProgressLabel(type.id))}</span>` : ""}
       </button>
     `).join("");
   }
   const countPanel = $("#blocksCountChips");
   if (countPanel) {
     countPanel.innerHTML = [1, 3, 5].map((count) => `
-      <button class="chip-button question-count-option bilingual-pill ${blockQuestionsPerType === count ? "selected" : ""}" data-block-count="${count}" type="button">每种${count}题<span>${count} Each</span></button>
+      <button class="chip-button question-count-option bilingual-pill ${blockQuestionsPerType === count ? "selected" : ""}" data-block-count="${count}" type="button">每种${count}题</button>
     `).join("");
   }
   const button = $("#generateBlockExercisesBtn");
   if (button) {
     button.disabled = blockGenerating;
     button.innerHTML = blockGenerating
-      ? "AI正在出题……<br><span>AI Generating</span>"
-      : `${hasGeneratedExerciseSet() ? "重新AI出题" : "AI出题"}<br><span>${hasGeneratedExerciseSet() ? "Regenerate AI" : "AI Generate"}</span>`;
+      ? "AI正在出题……"
+      : `${hasGeneratedExerciseSet() ? "重新AI出题" : "AI出题"}`;
   }
 }
 
 function getExerciseTypeProgressLabel(type) {
   const questions = getCurrentExerciseSetQuestions(type);
-  if (!questions.length) return "请先AI出题";
+  if (!questions.length) return "";
   const index = getExerciseTypeIndex(type) + 1;
   return `${index}/${questions.length}`;
 }
@@ -3886,7 +4028,7 @@ function renderBlockBuildCard(question, state, poolLabel, answerLabel) {
         </div>
       </div>
     </div>
-    <button class="button ghost compact-button" data-block-reset="true" type="button">重置本题<br><span>Reset</span></button>
+    <button class="button ghost compact-button" data-block-reset="true" type="button">重置本题</button>
     ${renderExerciseActions(question, state)}
   `;
 }
@@ -3894,10 +4036,10 @@ function renderBlockBuildCard(question, state, poolLabel, answerLabel) {
 function renderExerciseActions(question, state) {
   return `
     <div class="actions blocks-actions">
-      <button class="button ghost" data-block-global-prev="true" type="button">上一题<br><span>Previous</span></button>
-      <button class="button success" data-block-submit="true" type="button">提交<br><span>Submit</span></button>
-      <button class="button ghost" data-block-show-answer="true" ${Number(state.attempts || 0) < 1 ? "disabled" : ""} type="button">查看答案<br><span>Answer</span></button>
-      <button class="button secondary" data-block-global-next="true" type="button">下一题<br><span>Next</span></button>
+      <button class="button ghost" data-block-global-prev="true" type="button">上一题</button>
+      <button class="button success" data-block-submit="true" type="button">提交</button>
+      <button class="button ghost" data-block-show-answer="true" ${Number(state.attempts || 0) < 1 ? "disabled" : ""} type="button">查看答案</button>
+      <button class="button secondary" data-block-global-next="true" type="button">下一题</button>
     </div>
     ${renderExerciseFeedback(question, state)}
   `;
@@ -3935,8 +4077,8 @@ function renderGeneratedExercise(question, state) {
     ` : ""}
     ${selectedText ? `<p class="blocks-answer draft-answer">${escapeHtml(selectedText)}</p>` : ""}
     <div class="actions blocks-actions">
-      ${submitted ? `<button class="button secondary" data-block-retry="true" type="button">再试一次<br><span>Retry</span></button>` : `<button class="button success" data-block-submit="true" type="button">提交<br><span>Submit</span></button>`}
-      <button class="button ghost" data-block-show-answer="true" type="button">查看答案<br><span>Answer</span></button>
+      ${submitted ? `<button class="button secondary" data-block-retry="true" type="button">再试一次</button>` : `<button class="button success" data-block-submit="true" type="button">提交</button>`}
+      <button class="button ghost" data-block-show-answer="true" type="button">查看答案</button>
     </div>
     ${submitted ? `
       <div class="answer-feedback ${isCorrect ? "correct" : "needs-help"}">
@@ -4668,14 +4810,14 @@ function renderBlockPatternOptions() {
 
 function getBlockSourceFilterOptions() {
   return [
-    { id: "all_sources", label: "全部来源 / All Sources" },
-    { id: "daily_pack", label: "今日学习包 / Today's Pack" },
+    { id: "all_sources", label: "全部来源" },
+    { id: "daily_pack", label: "本课内容" },
     { id: "story_zoo", label: "Story 1 · ZOO" },
     { id: "story_kindergarten", label: "Story 2 · Kindergarten" },
     { id: "story_primary_school", label: "Story 3 · Hello, School" },
-    { id: "prior_lessons", label: "已学语法 / Prior Lessons" },
-    { id: "grade_one_core", label: "一年级核心 / Grade One Core" },
-    { id: "textbook_core", label: "教材结构 / Textbook" }
+    { id: "prior_lessons", label: "已学语法" },
+    { id: "grade_one_core", label: "一年级核心" },
+    { id: "textbook_core", label: "教材结构" }
   ];
 }
 
@@ -5097,7 +5239,7 @@ function renderSourceExampleCarousel({ label, examples, index, prevAttr, nextAtt
         <button class="example-english example-text-button" data-example-text="true" type="button">${highlightExampleWord(item.english, currentWord)}</button>
         ${phoneticsVisible ? renderSentencePhonetics(item.english) : ""}
         ${translationVisible ? `<p class="example-chinese">${escapeHtml(item.chinese || "")}</p>` : ""}
-        <button class="button ghost compact-button" data-example-translation="true" type="button">${translationVisible ? "隐藏中文" : "查看中文"}<br><span>${translationVisible ? "Hide Chinese" : "Show Chinese"}</span></button>
+        <button class="button ghost compact-button" data-example-translation="true" type="button">${translationVisible ? "隐藏中文" : "查看中文"}</button>
       </div>
       ${canMove ? `<button class="carousel-arrow" ${nextAttr}="true" type="button" aria-label="下一条例句">›</button>` : `<span></span>`}
     </div>
@@ -5240,8 +5382,8 @@ function renderBlockExamplePanel(example) {
       ${(example.blocks || []).map((block) => `<span>${escapeHtml(block)}</span>`).join("")}
     </div>
     <div class="example-actions">
-      <button class="button ghost compact-button" data-example-translation="true" type="button">${englishExampleTranslationVisible ? "隐藏中文" : "查看中文"}<br><span>${englishExampleTranslationVisible ? "Hide Chinese" : "Show Chinese"}</span></button>
-      <button class="button ghost compact-button" data-block-example-refresh="true" type="button">再来一个<br><span>Another</span></button>
+      <button class="button ghost compact-button" data-example-translation="true" type="button">${englishExampleTranslationVisible ? "隐藏中文" : "查看中文"}</button>
+      <button class="button ghost compact-button" data-block-example-refresh="true" type="button">再来一个</button>
     </div>
   `;
 }
@@ -5528,21 +5670,21 @@ function refreshEnglishScopeOptions() {
 
 function getEnglishScopeOptions() {
   return [
-    { id: "today_pack", label: "今日学习包 / Today's Pack" },
-    { id: "learned_learning", label: "已学 + 正在学 / Learned + Learning" },
-    { id: "all", label: "全部词汇 / All Words" },
-    { id: "stories_all", label: "三篇文章 / Stories 1-3" },
+    { id: "today_pack", label: "本课内容" },
+    { id: "learned_learning", label: "已学 + 正在学" },
+    { id: "all", label: "全部词汇" },
+    { id: "stories_all", label: "三篇文章" },
     { id: "story_zoo", label: "Story 1 · ZOO" },
     { id: "story_kindergarten", label: "Story 2 · Kindergarten" },
     { id: "story_primary_school", label: "Story 3 · Hello, School!" },
-    { id: "beijing_grade1_semester_1", label: "北京版一年级上册 / Beijing Grade 1A" },
+    { id: "beijing_grade1_semester_1", label: "北京版一年级上册" },
     ...getTextbookUnitFilters(),
-    { id: "grade_one_core", label: "一年级通用扩展 / Grade Core" },
-    { id: "learned", label: "已经学过 / Learned" },
-    { id: "learning", label: "正在学习 / Learning" },
-    { id: "preview", label: "教材预习 / Preview" },
-    { id: "mastered", label: "已经掌握 / Mastered" },
-    { id: "review", label: "重点复习 / Review" }
+    { id: "grade_one_core", label: "一年级通用扩展" },
+    { id: "learned", label: "已经学过" },
+    { id: "learning", label: "正在学习" },
+    { id: "preview", label: "教材预习" },
+    { id: "mastered", label: "已经掌握" },
+    { id: "review", label: "重点复习" }
   ];
 }
 
@@ -5635,15 +5777,15 @@ function renderEnglishWordCard(word, index = 0) {
         <p class="english-card-meaning" data-english-meaning-for="${escapeHtml(word.id)}" ${meaningVisible ? "" : "hidden"}>${escapeHtml(word.chinese || getEnglishMeaning(word.normalized))}</p>
       </div>
       <div class="mini-actions english-result-actions">
-        <button class="button warning" data-english-char="${escapeHtml(word.id)}" data-english-result="unknown" type="button">不认识<br><span>Unknown</span></button>
-        <button class="button secondary" data-english-char="${escapeHtml(word.id)}" data-english-result="unsure" type="button">有点熟<br><span>Unsure</span></button>
-        <button class="button success" data-english-char="${escapeHtml(word.id)}" data-english-result="mastered" type="button">已掌握<br><span>${progress.masteryCount}</span></button>
-        <button class="button ghost" data-english-char="${escapeHtml(word.id)}" data-english-result="skipped" type="button">跳过<br><span>Skip</span></button>
+        <button class="button warning" data-english-char="${escapeHtml(word.id)}" data-english-result="unknown" type="button">不认识</button>
+        <button class="button secondary" data-english-char="${escapeHtml(word.id)}" data-english-result="unsure" type="button">有点熟</button>
+        <button class="button success" data-english-char="${escapeHtml(word.id)}" data-english-result="mastered" type="button">已掌握</button>
+        <button class="button ghost" data-english-char="${escapeHtml(word.id)}" data-english-result="skipped" type="button">跳过</button>
       </div>
       <div class="mini-actions english-helper-actions">
-        <button class="button ghost" data-english-story="${escapeHtml(word.id)}" type="button">原文例句<br><span>Story</span></button>
-        <button class="button ghost" data-english-block="${escapeHtml(word.id)}" type="button">积木例句<br><span>Block</span></button>
-        <button class="button ghost" data-english-meaning="${escapeHtml(word.id)}" type="button">查看中文<br><span>Chinese</span></button>
+        <button class="button ghost" data-english-story="${escapeHtml(word.id)}" type="button">原文例句</button>
+        <button class="button ghost" data-english-block="${escapeHtml(word.id)}" type="button">积木例句</button>
+        <button class="button ghost" data-english-meaning="${escapeHtml(word.id)}" type="button">查看中文</button>
       </div>
     </article>
   `;
@@ -5889,7 +6031,7 @@ function resetEnglishProgress() {
 
 function getEnglishSourceLabel(word) {
   const labels = {
-    daily_pack: "今日学习包",
+    daily_pack: "本课内容",
     story_primary_school: "Hello, School!",
     story_kindergarten: "Kindergarten",
     story_zoo: "ZOO",
@@ -5898,7 +6040,7 @@ function getEnglishSourceLabel(word) {
     grade_one_core: "一年级扩展"
   };
   return word.sources.map((source) => {
-    if (source.startsWith("daily_pack:")) return "今日学习包";
+    if (source.startsWith("daily_pack:")) return "本课内容";
     return labels[source] || getTextbookSourceLabel(source) || source;
   }).join(" · ");
 }
@@ -6037,7 +6179,7 @@ function importBuiltinLearningPackSet(manifest, packSources, options = {}) {
   renderArtLesson();
   renderCoursePackLoadStatus();
   if ($("#packStatus")) $("#packStatus").textContent = `今日课程已准备好：${getSelectedLearningPack()?.date || ""}`;
-  if ($("#todayDashboardPanel")) $("#todayDashboardPanel").hidden = false;
+  keepLegacyHomePanelsHidden();
 }
 
 function hideWithdrawnBuiltinArchiveEntries() {
@@ -6148,15 +6290,12 @@ function renderCoursePackLoadStatus() {
 
 function renderBuiltinPackLoadNotice(pack = getSelectedLearningPack()) {
   const load = state.builtinLearningPackLoad;
-  if (!load || load.ok) {
-    if (!pack) return "";
-    return `<div class="pack-load-notice ok">当前课程：${escapeHtml(pack.date || "")} · 已更新</div>`;
-  }
+  if (!load || load.ok) return "";
   return `
     <div class="pack-load-notice error" role="alert">
       <strong>课程更新失败</strong>
       <span>暂时无法获取最新课程，请刷新页面重试。当前课程和学习记录没有丢失。</span>
-      <small>当前显示：${escapeHtml(load.selectedDate || pack?.date || "未知日期")}</small>
+      <small>当前课程仍可继续</small>
     </div>
   `;
 }
@@ -6231,6 +6370,186 @@ function importEnglishLessonLibrary(library, options = {}) {
   rerenderCourseViews();
 }
 
+async function loadColorPlanetData() {
+  colorPlanetCatalog = null;
+  colorCardRegister = null;
+  colorPlanetDataLoad = {
+    status: "loading",
+    ok: false,
+    startedAt: new Date().toISOString()
+  };
+  renderColorPlanetPages();
+  renderArtLesson();
+  if (typeof fetch !== "function") {
+    colorPlanetDataLoad = { status: "error", ok: false, message: "课程暂时无法打开" };
+    renderColorPlanetPages();
+    renderArtLesson();
+    return false;
+  }
+  try {
+    const [catalogResponse, registerResponse] = await Promise.all([
+      fetch(withBuiltinCacheBust(COLOR_PLANET_CATALOG_URL), { cache: "no-store" }),
+      fetch(withBuiltinCacheBust(COLOR_PLANET_REGISTER_URL), { cache: "no-store" })
+    ]);
+    if (!catalogResponse.ok || !registerResponse.ok) throw new Error("color planet data unavailable");
+    importColorPlanetData(await catalogResponse.json(), await registerResponse.json(), { source: "local_static" });
+    return true;
+  } catch {
+    colorPlanetCatalog = null;
+    colorCardRegister = null;
+    colorPlanetDataLoad = { status: "error", ok: false, message: "课程暂时无法打开" };
+    renderColorPlanetPages();
+    renderArtLesson();
+    return false;
+  }
+}
+
+function importColorPlanetData(catalog, register, options = {}) {
+  const normalizedCatalog = normalizeColorPlanetCatalog(catalog);
+  const normalizedRegister = normalizeColorCardRegister(register);
+  colorPlanetCatalog = normalizedCatalog;
+  colorCardRegister = normalizedRegister;
+  colorPlanetDataLoad = {
+    status: "ready",
+    ok: true,
+    source: options.source || "local_static",
+    loadedAt: new Date().toISOString()
+  };
+  getColorPlanetState();
+  saveState();
+  renderColorPlanetPages();
+  renderPlanetPages();
+  renderArtLesson();
+  return { catalog: colorPlanetCatalog, register: colorCardRegister };
+}
+
+function normalizeColorPlanetCatalog(source) {
+  const catalog = structuredCloneSafe(source);
+  if (catalog.schemaVersion !== COLOR_PLANET_CATALOG_SCHEMA || catalog.contentAuthority !== "Allen course design") {
+    throw new Error("颜色课程数据版本不正确");
+  }
+  const courses = catalog.candidateSet?.courses || [];
+  const skills = catalog.sections?.foundationSkills?.modules || [];
+  if (courses.length !== 5 || skills.length !== 6) throw new Error("颜色课程数量不正确");
+  courses.forEach((course) => {
+    if (!course.courseId || !course.titleZh || !course.choiceCardZh || course.steps?.length !== 14 || course.palette?.length !== 6) {
+      throw new Error(`颜色课程内容不完整：${course.courseId || "unknown"}`);
+    }
+    course.steps.forEach((step, index) => {
+      if (Number(step.order) !== index + 1 || !step.titleZh || !step.studentVoiceZh || !step.actionsZh?.length) {
+        throw new Error(`颜色课程步骤不完整：${course.courseId}:${index + 1}`);
+      }
+    });
+  });
+  skills.forEach((skill) => {
+    if (!skill.id || !skill.titleZh || skill.microPractice?.steps?.length !== 4) {
+      throw new Error(`基础技能内容不完整：${skill.id || "unknown"}`);
+    }
+  });
+  return catalog;
+}
+
+function normalizeColorCardRegister(source) {
+  const register = structuredCloneSafe(source);
+  if (
+    register.schemaVersion !== COLOR_PLANET_REGISTER_SCHEMA ||
+    register.registryId !== "zhangwo-120-soft-tip-acrylic" ||
+    register.colorCount !== 120 ||
+    register.colors?.length !== 120
+  ) {
+    throw new Error("120 色号数据不完整");
+  }
+  return register;
+}
+
+function getColorPlanetState() {
+  state.colorPlanet ||= {
+    schemaVersion: "helen-color-planet-state/1",
+    selectedCourseId: "",
+    activeCourseId: "",
+    stageCompletedCourseId: "",
+    courseUi: {},
+    foundationProgress: {},
+    expandedSkillId: "",
+    materialSearch: ""
+  };
+  state.colorPlanet.courseUi ||= {};
+  state.colorPlanet.foundationProgress ||= {};
+  return state.colorPlanet;
+}
+
+function getColorCourses() {
+  return colorPlanetCatalog?.candidateSet?.courses || [];
+}
+
+function getColorCourseById(courseId) {
+  return getColorCourses().find((course) => course.courseId === courseId) || null;
+}
+
+function getColorCourseProgress(courseId) {
+  const pack = buildColorCoursePack(getColorCourseById(courseId));
+  return pack ? getCourseProgress(pack.packId) : null;
+}
+
+function getInProgressColorCourse() {
+  return getColorCourses().find((course) => {
+    const side = getColorCourseProgress(course.courseId)?.art;
+    return Boolean(side?.startedAt && !side?.finishedAt);
+  }) || null;
+}
+
+function getActiveColorCourse() {
+  const colorState = getColorPlanetState();
+  return getInProgressColorCourse() ||
+    getColorCourseById(colorState.selectedCourseId) ||
+    getColorCourseById(colorState.activeCourseId) ||
+    null;
+}
+
+function buildColorCoursePack(course) {
+  if (!course) return null;
+  const materialsById = new Map((colorPlanetCatalog?.commonMaterials || []).map((item) => [item.id, item]));
+  return {
+    schemaVersion: "helen-learning-pack/2",
+    packId: `color-planet:${course.courseId}`,
+    title: course.titleZh,
+    art: {
+      courseId: course.courseId,
+      lessonId: course.courseId,
+      titleZh: course.titleZh,
+      choiceCardZh: course.choiceCardZh,
+      toolProfile: {
+        brandZh: colorCardRegister?.brandZh || "掌握",
+        displayNameZh: colorCardRegister?.productZh || "120 色直液式软头丙烯马克笔",
+        colorCount: colorCardRegister?.colorCount || 120
+      },
+      palette: structuredCloneSafe(course.palette),
+      materials: (course.materials || []).map((id) => ({
+        id,
+        nameZh: materialsById.get(id)?.nameZh || id,
+        usageZh: materialsById.get(id)?.usageZh || ""
+      })),
+      steps: structuredCloneSafe(course.steps),
+      imageAssetHooks: course.steps.map((step) => ({
+        stepId: step.id,
+        assetId: step.diagramRequirement?.assetId || "",
+        provided: false
+      }))
+    }
+  };
+}
+
+function getActiveColorCoursePack() {
+  return buildColorCoursePack(getActiveColorCourse());
+}
+
+function renderColorPlanetPages() {
+  renderColorWorkChoice();
+  renderColorFoundation();
+  renderColorGallery();
+  renderColorMaterials();
+}
+
 function normalizeEnglishLessonLibrary(library) {
   const source = structuredCloneSafe(library || {});
   if (source.schemaVersion !== "hello-school-lesson-library/1") throw new Error("英语课程库 schema 不正确");
@@ -6277,7 +6596,9 @@ function getActiveEnglishPack() {
 }
 
 function getActivePackForCourse(course) {
-  return course === "english" ? getActiveEnglishPack() : getLatestLearningPack();
+  if (course === "english") return getActiveEnglishPack();
+  if (course === "art") return getActiveColorCoursePack() || getLatestLearningPack();
+  return getLatestLearningPack();
 }
 
 function getActiveProgressForCourse(course) {
@@ -7215,7 +7536,7 @@ function describeLearningPackTargetChange(target, existingPack, isPackUpdate = f
 }
 
 function renderLearningPackPreview(preview) {
-  $("#packPreviewPanel").hidden = false;
+  keepLegacyHomePanelsHidden();
   $("#packPreviewTitle").textContent = `${preview.pack.date} · ${preview.pack.loadMode}`;
   const pack = preview.pack;
   const byAction = (action) => preview.changes.filter((item) => item.action === action);
@@ -7246,7 +7567,7 @@ function renderPackPreviewGroup(title, items) {
 }
 
 function renderLearningPackError(error) {
-  $("#packPreviewPanel").hidden = false;
+  keepLegacyHomePanelsHidden();
   $("#packPreviewTitle").textContent = "解析失败";
   $("#packPreviewContent").innerHTML = `
     <div class="pack-error">
@@ -7477,7 +7798,7 @@ function questionsFromLearningPack(pack) {
 }
 
 function renderLearningPackSuccess(pack, result) {
-  $("#packSuccessPanel").hidden = false;
+  keepLegacyHomePanelsHidden();
   $("#packSuccessTitle").textContent = `${pack.date} · ${loadModeLabel(pack.loadMode)}`;
   $("#packSuccessSummary").innerHTML = `
     <div class="pack-overview-grid">
@@ -7531,6 +7852,92 @@ function getLearningPackDates() {
     .sort();
 }
 
+function getLearningCourseSequence(kind = "chinese") {
+  const selectedByCourse = new Map();
+  (state.learningPackArchive?.entries || []).forEach((entry, archiveOrder) => {
+    const pack = state.learningPacks?.[entry.packId]?.data;
+    if (!pack || !isPackAvailableForCourse(pack, kind, entry)) return;
+    const courseKey = getLearningCourseKey(pack, kind);
+    if (!courseKey) return;
+    const candidate = {
+      courseKey,
+      packId: pack.packId,
+      pack,
+      publishedAt: entry.publishedAt || "",
+      archiveOrder,
+      title: getStudentCourseTitle(pack, kind)
+    };
+    const existing = selectedByCourse.get(courseKey);
+    if (!existing || compareCourseRevision(existing, candidate) < 0) selectedByCourse.set(courseKey, candidate);
+  });
+  return [...selectedByCourse.values()].sort((a, b) => {
+    const published = String(a.publishedAt || "").localeCompare(String(b.publishedAt || ""));
+    if (published) return published;
+    return a.archiveOrder - b.archiveOrder || String(a.packId).localeCompare(String(b.packId));
+  });
+}
+
+function isPackAvailableForCourse(pack, kind, entry = null) {
+  if (entry?.availableSubjects?.length && !entry.availableSubjects.includes(kind)) return false;
+  if (kind === "chinese") return Boolean(pack.chinese?.lesson || pack.chinese?.characters?.length || pack.chinese?.words?.length);
+  if (kind === "art") return Boolean(pack.art);
+  return false;
+}
+
+function getLearningCourseKey(pack, kind) {
+  if (kind === "art") {
+    return pack.art?.sequenceId || pack.art?.courseId || pack.art?.lessonId || `art:${pack.date || pack.packId}`;
+  }
+  const explicit = pack.chinese?.lesson?.sequenceId || pack.chinese?.sequenceId || "";
+  if (explicit) return explicit;
+  return `chinese:${pack.date || getStudentCourseTitle(pack, "chinese") || pack.packId}`;
+}
+
+function compareCourseRevision(a, b) {
+  const published = String(a.publishedAt || "").localeCompare(String(b.publishedAt || ""));
+  if (published) return published;
+  if (b.packId === state.latestLearningPackId) return -1;
+  if (a.packId === state.latestLearningPackId) return 1;
+  return String(a.packId).localeCompare(String(b.packId));
+}
+
+function cleanStudentCourseTitle(value, fallback = "课程") {
+  const cleaned = String(value || "")
+    .replace(/\b20\d{2}-\d{2}-\d{2}\b/g, "")
+    .replace(/\bHelen\s+Day\s*\d+\b/gi, "")
+    .replace(/\bDay\s*\d+\b/gi, "")
+    .replace(/\bRevision\s*[A-Z0-9._-]+\b/gi, "")
+    .replace(/^\s*(?:第\s*\d+\s*课)\s*/u, "")
+    .replace(/^[\s｜|·:：—-]+|[\s｜|·:：—-]+$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return cleaned || fallback;
+}
+
+function getStudentCourseTitle(pack, kind = "chinese") {
+  if (!pack) return kind === "art" ? "颜色课程" : "中文课程";
+  if (kind === "art") {
+    return cleanStudentCourseTitle(
+      pack.art?.displayTitle || pack.art?.title || pack.art?.projectTitleZh || pack.art?.lessonTitleZh,
+      "从草稿到成品"
+    );
+  }
+  return cleanStudentCourseTitle(
+    pack.chinese?.lesson?.displayTitle || pack.chinese?.lesson?.title || familyFacingPackTitle(pack.title),
+    "中文课程"
+  );
+}
+
+function getStudentSectionTitle(value, fallback = "学习环节") {
+  const title = safePlainText(value || fallback, 80);
+  if (title === "今日阅读") return "短文阅读";
+  return title
+    .replace(/^今日/u, "")
+    .replace(/^今天/u, "")
+    .replace(/^每日/u, "")
+    .trim() || fallback;
+}
+
 function selectLearningPackDate(date, push = true) {
   const packId = getPackIdForDate(date);
   if (!packId) return false;
@@ -7541,14 +7948,36 @@ function selectLearningPackDate(date, push = true) {
   return true;
 }
 
+function selectLearningCoursePack(packId, push = true, kind = "chinese") {
+  const entry = getLearningCourseSequence(kind).find((item) => item.packId === packId);
+  if (!entry) return false;
+  state.selectedLearningPackId = entry.packId;
+  state.learningPackSelectionSource = "manual";
+  saveState();
+  showView(getActiveView(), push, { skipRouteDateSelection: true });
+  return true;
+}
+
+function selectRelativeLearningCourse(direction, kind = "chinese") {
+  const sequence = getLearningCourseSequence(kind);
+  if (!sequence.length) return false;
+  const selectedPack = getSelectedLearningPack();
+  const selectedKey = selectedPack ? getLearningCourseKey(selectedPack, kind) : "";
+  let index = Math.max(0, sequence.findIndex((item) => item.courseKey === selectedKey));
+  if (direction === "prev") index = Math.max(0, index - 1);
+  if (direction === "next") index = Math.min(sequence.length - 1, index + 1);
+  if (direction === "latest") index = sequence.length - 1;
+  return selectLearningCoursePack(sequence[index].packId, true, kind);
+}
+
 function selectLatestLearningPackForPrimaryCourse() {
-  const latestPackId = state.latestLearningPackId || "";
+  const latestPackId = getLearningCourseSequence("chinese").at(-1)?.packId || state.latestLearningPackId || "";
   if (!latestPackId || !state.learningPacks?.[latestPackId]) return false;
   state.selectedLearningPackId = latestPackId;
   state.learningPackSelectionSource = "auto";
   state.lastAutoSelectedBuiltinPackId = latestPackId;
   saveState();
-  showView("today-chinese", true, { skipRouteDateSelection: true });
+  showView("chinese-course", true, { skipRouteDateSelection: true });
   return true;
 }
 
@@ -7590,11 +8019,11 @@ function getTodayPackBlockPattern() {
   return {
     id: patternId,
     category: "daily_pack",
-    displayZh: "今日学习包",
-    displayEn: "Today's Pack",
-    displayFormulaZh: pack.english.pattern?.displayZh || "今日句子",
+    displayZh: "本课句型",
+    displayEn: pack.english.anchorSentence,
+    displayFormulaZh: pack.english.pattern?.displayZh || "本课句子",
     displayFormulaEn: pack.english.anchorSentence,
-    explanationZh: pack.english.translationZh || "来自今日学习包",
+    explanationZh: pack.english.translationZh || "来自本课内容",
     example: pack.english.anchorSentence,
     translationZh: pack.english.translationZh || "",
     blocks,
@@ -7603,7 +8032,7 @@ function getTodayPackBlockPattern() {
     exampleSeeds: [{
       english: pack.english.anchorSentence,
       chinese: pack.english.translationZh || "",
-      source: "今日学习包 / Today's Pack"
+      source: "本课内容"
     }]
   };
 }
@@ -7632,6 +8061,7 @@ function createDefaultCourseSide(course, packId = state.selectedLearningPackId |
     startedAt: "",
     finishedAt: "",
     sessionStatus: "not_started",
+    timerStartedAt: "",
     accumulatedMs: 0,
     elapsedMs: 0,
     isRunning: false,
@@ -7681,16 +8111,24 @@ function initializeCourseProgress(pack) {
   return progress;
 }
 
+function keepLegacyHomePanelsHidden() {
+  LEGACY_HOME_PANEL_IDS.forEach((id) => {
+    const node = $(`#${id}`);
+    if (!node) return;
+    node.hidden = true;
+    node.setAttribute("aria-hidden", "true");
+  });
+}
+
 function renderTodayDashboard() {
   const pack = getLatestLearningPack();
   const panel = $("#todayDashboardPanel");
   if (!panel) return;
+  keepLegacyHomePanelsHidden();
   if (!pack) {
-    panel.hidden = true;
     return;
   }
   initializeCourseProgress(pack);
-  panel.hidden = false;
   const progress = getCourseProgress(pack.packId);
   const chineseDone = countCompletedCourseItems(progress.chinese.sections);
   const chineseTotal = getChineseLessonSections(pack).length;
@@ -7719,39 +8157,142 @@ function renderTodayDashboard() {
 function renderPlanetOverview() {
   const container = $("#planetOverview");
   if (!container) return;
-  const pack = getLatestLearningPack();
-  const cards = PLANET_REGISTRY.filter((planet) => planet.enabled).map((planet) => buildPlanetCard(planet, pack));
-  container.innerHTML = cards.join("") + `
-    <article class="planet-card planet-parent parent-console-card">
-      <div class="planet-orb" aria-hidden="true"></div>
-      <p>Parent Observatory</p>
-      <h2>家长观察站</h2>
-      <div class="planet-status"><span>◌ 查看进度</span><span>◌ 记录观察</span><span>◌ 生成反馈</span></div>
-      <button class="button secondary" data-go-view="parent" type="button">打开<br /><span>Open</span></button>
+  keepLegacyHomePanelsHidden();
+  container.innerHTML = PLANET_REGISTRY
+    .filter((planet) => planet.enabled)
+    .map((planet) => buildPlanetCard(planet))
+    .join("");
+}
+
+function buildPlanetCard(planet) {
+  const kind = planet.id;
+  const state = getPlanetHomeState(kind);
+  const progress = state.showProgress ? `
+    <div class="planet-card-progress" aria-label="课程进度 ${escapeHtml(state.progressText)}">
+      <div class="planet-card-progress-track" aria-hidden="true">
+        <span style="width: ${state.progressPercent}%"></span>
+      </div>
+      <strong>${escapeHtml(state.progressText)}</strong>
+    </div>
+  ` : "";
+  return `
+    <article class="planet-card planet-${kind}" data-planet-theme="${escapeHtml(planet.theme)}">
+      <div class="planet-orb" aria-hidden="true">${escapeHtml(planet.icon)}</div>
+      <h2>${escapeHtml(planet.nameZh)}</h2>
+      <p class="planet-card-status">${escapeHtml(state.status)}</p>
+      <h3 class="planet-card-course">${escapeHtml(state.title)}</h3>
+      ${progress}
+      <button class="button primary planet-card-action" data-go-view="${escapeHtml(state.route)}" data-home-course-kind="${escapeHtml(kind)}" data-home-course-id="${escapeHtml(state.courseId)}" type="button">${escapeHtml(state.actionText)}</button>
     </article>
   `;
 }
 
-function buildPlanetCard(planet, pack) {
-  const kind = planet.id;
-  const status = getPlanetStatus(kind, pack);
-  const actionText = status.hasCourse ? "继续探索" : "看看星球";
-  return `
-    <article class="planet-card planet-${kind}" data-planet-theme="${escapeHtml(planet.theme)}">
-      <div class="planet-orb" aria-hidden="true">${escapeHtml(planet.icon)}</div>
-      <p>${escapeHtml(planet.nameEn)}</p>
-      <h2>${escapeHtml(planet.nameZh)}</h2>
-      <div class="planet-symbols" aria-hidden="true">
-        ${planet.symbols.map((symbol) => `<span>${escapeHtml(symbol)}</span>`).join("")}
-      </div>
-      <div class="planet-status">
-        <span>● ${escapeHtml(status.hasCourse ? "今天有课" : "今天未安排")}</span>
-        <span>◷ ${escapeHtml(status.minutes ? `${status.minutes} 分钟` : "按需")}</span>
-        <span>◎ ${escapeHtml(status.progress)}</span>
-      </div>
-      <button class="button primary" data-go-view="${escapeHtml(planet.route)}" type="button">${escapeHtml(actionText)}<br /><span>Start</span></button>
-    </article>
-  `;
+function getPlanetHomeState(kind) {
+  if (kind === "english") return getEnglishPlanetHomeState();
+  if (kind === "chinese" || kind === "art") return getSequencedPlanetHomeState(kind);
+  return emptyPlanetHomeState(kind);
+}
+
+function getSequencedPlanetHomeState(kind) {
+  const sequence = getLearningCourseSequence(kind);
+  if (!sequence.length) return emptyPlanetHomeState(kind);
+  const courses = sequence.map((entry) => {
+    const progress = state.courseProgress?.[entry.packId] || null;
+    const side = progress?.[kind] || {};
+    const items = kind === "chinese" ? side.sections : side.steps;
+    const total = kind === "chinese" ? getChineseLessonSections(entry.pack).length : getArtLessonSteps(entry.pack).length;
+    return {
+      title: getStudentCourseTitle(entry.pack, kind),
+      route: kind === "chinese" ? "chinese-course" : "color-course",
+      courseId: entry.packId,
+      progress: getHomeCourseProgress(side, items, total)
+    };
+  });
+  const inProgress = courses.find((course) => course.progress.started && !course.progress.completed);
+  if (inProgress) return activePlanetHomeState(inProgress, "继续课程", "继续课程");
+  const next = courses.find((course) => !course.progress.completed);
+  if (next) return activePlanetHomeState(next, "下一课", "开始课程", false);
+  const latest = courses.at(-1);
+  return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
+}
+
+function getEnglishPlanetHomeState() {
+  const library = getEnglishLessonLibrary();
+  if (!library?.lessons?.length) {
+    const pack = getActiveEnglishPack();
+    if (!pack || !isPlanetScheduled(pack, "english")) return emptyPlanetHomeState("english");
+    const progress = state.courseProgress?.[pack.packId] || null;
+    const course = {
+      title: pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "字母课程",
+      route: "letter-course",
+      courseId: pack.english?.lesson?.lessonId || "",
+      progress: getHomeCourseProgress(progress?.english || {}, progress?.english?.steps, getEnglishLessonSteps(pack).length)
+    };
+    if (course.progress.started && !course.progress.completed) return activePlanetHomeState(course, "继续课程", "继续课程");
+    if (!course.progress.completed) return activePlanetHomeState(course, "下一课", "开始课程", false);
+    return activePlanetHomeState(course, "已完成最新课程", "查看课程", false);
+  }
+  const courses = library.lessons.map((lessonRecord) => {
+    const pack = buildEnglishLessonPackFromLibraryLesson(library, lessonRecord);
+    const progress = state.courseProgress?.[pack.packId] || null;
+    return {
+      lessonRecord,
+      title: lessonRecord.lesson?.anchorSentence || lessonRecord.anchorSentence || "字母课程",
+      route: "letter-course",
+      courseId: lessonRecord.lessonId,
+      progress: getHomeCourseProgress(progress?.english || {}, progress?.english?.steps, getEnglishLessonSteps(pack).length)
+    };
+  });
+  const inProgress = courses.find((course) => course.progress.started && !course.progress.completed);
+  if (inProgress) return activePlanetHomeState(inProgress, "继续课程", "继续课程");
+  const currentIndex = Math.max(0, courses.findIndex((course) => course.lessonRecord.lessonId === (library.currentLessonId || HELLO_SCHOOL_CURRENT_LESSON_ID)));
+  const releasedCourses = courses.slice(currentIndex);
+  const next = releasedCourses.find((course) => !course.progress.completed);
+  if (next) return activePlanetHomeState(next, "下一课", "开始课程", false);
+  const latest = releasedCourses.at(-1) || courses.at(-1);
+  return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
+}
+
+function getHomeCourseProgress(side, items, total) {
+  const records = Object.values(items || {});
+  const done = countCompletedCourseItems(items);
+  const started = Boolean(
+    side?.startedAt ||
+    side?.finishedAt ||
+    side?.isRunning ||
+    side?.sessionStatus === "in_progress" ||
+    records.some((item) => item.startedAt || item.finishedAt || item.completedAt || item.attempts || item.result || item.elapsedMs)
+  );
+  const completed = total > 0 ? done >= total : Boolean(side?.finishedAt || side?.sessionStatus === "completed");
+  return { done, total, started, completed };
+}
+
+function activePlanetHomeState(course, status, actionText, showProgress = true) {
+  const done = Number(course?.progress?.done || 0);
+  const total = Number(course?.progress?.total || 0);
+  return {
+    status,
+    title: course?.title || "课程",
+    progressText: total ? `${done}/${total}` : "",
+    progressPercent: total ? Math.max(0, Math.min(100, Math.round((done / total) * 100))) : 0,
+    showProgress: Boolean(showProgress && total),
+    actionText,
+    route: course?.route || "daily",
+    courseId: course?.courseId || ""
+  };
+}
+
+function emptyPlanetHomeState(kind) {
+  return {
+    status: "暂无课程",
+    title: kind === "art" ? "颜色课程" : kind === "english" ? "字母课程" : "中文课程",
+    progressText: "",
+    progressPercent: 0,
+    showProgress: false,
+    actionText: "进入星球",
+    route: kind === "art" ? "color-course" : kind === "english" ? "letter-course" : "chinese-course",
+    courseId: ""
+  };
 }
 
 function getPlanetStatus(kind, pack) {
@@ -7780,72 +8321,742 @@ function getPlanetStatus(kind, pack) {
 }
 
 function renderPlanetPages() {
-  const pack = getLatestLearningPack();
+  const englishRecords = getEnglishLearningRecordsSummary();
   renderPlanetModules("#chinesePlanetSummary", [
-    planetModule("今日阅读", "按学习包顺序完成中文课", "today-chinese", getPlanetStatus("chinese", pack)),
-    planetModule("识字练习", "练习今日目标字", "characters"),
-    planetModule("生字本", "查看自动同步的字词", "wordbook"),
-    planetModule("字典", "查询一个汉字", "dictionary")
+    planetModule("中文课程", "chinese-course", getPlanetHomeState("chinese").status),
+    planetModule("识字练习", "characters", String(getCharacterPracticeLibrary().length)),
+    planetModule("生字本", "wordbook", String(Object.keys(state.wordbook || {}).length)),
+    planetModule("字典", "dictionary", String(getCharacterLibrary().length))
   ]);
   renderPlanetModules("#englishPlanetSummary", [
-    planetModule("今日英语", "七步英语课", "today-english", getPlanetStatus("english", pack)),
-    planetModule("单词认读", "练今日包单词", "english"),
-    planetModule("积木英语", "拼句与句型", "english-blocks"),
-    planetModule("学习记录", "到家长观察站生成反馈", "parent")
+    planetModule("字母课程", "letter-course", getPlanetHomeState("english").status),
+    planetModule("单词认读", "word-recognition", String(englishLibrary.length)),
+    planetModule("积木英语", "english-blocks", String(getAllBlockPatterns().length)),
+    planetModule("学习记录", "learning-records", `${englishRecords.completed}/${englishRecords.total}`)
   ]);
   renderPlanetModules("#artPlanetSummary", [
-    planetModule("今日马克笔画", "材料、步骤、作品完成", "today-art", getPlanetStatus("art", pack)),
-    planetModule("基础技能", "线条、形状、平涂", "today-art"),
-    planetModule("作品画廊", "本机保存作品记录", "today-art"),
-    planetModule("材料与准备", "安全画材和桌面保护", "today-art")
+    planetModule("选择作品", "color-work-choice", ""),
+    planetModule("基础技能", "color-foundation", ""),
+    planetModule("作品画廊", "color-gallery", ""),
+    planetModule("材料准备", "color-materials", "")
   ]);
 }
 
-function planetModule(title, desc, view, status = null) {
-  return { title, desc, view, status };
+function planetModule(title, view, meta) {
+  return { title, view, meta };
 }
 
 function renderPlanetModules(selector, modules) {
   const container = $(selector);
   if (!container) return;
-  container.innerHTML = renderDateSwitcher() + modules.map((module) => `
-    <article class="surface planet-module-card">
-      <span class="landing-dot" aria-hidden="true"></span>
+  container.innerHTML = modules.map((module) => `
+    <a class="surface planet-module-card" href="#${escapeHtml(module.view)}" data-go-view="${escapeHtml(module.view)}" aria-label="${escapeHtml(module.title)}">
       <h2>${escapeHtml(module.title)}</h2>
-      <p>${escapeHtml(module.desc)}</p>
-      ${module.status ? `<p class="pack-muted">${escapeHtml(module.status.progress)} · ${module.status.minutes ? `${module.status.minutes} 分钟` : "按需"}</p>` : ""}
-      <button class="button primary" data-go-view="${escapeHtml(module.view)}" type="button">进入<br /><span>Open</span></button>
-    </article>
+      ${module.meta ? `<span class="planet-module-meta">${escapeHtml(module.meta)}</span>` : ""}
+      <span class="planet-module-arrow" aria-hidden="true">→</span>
+    </a>
   `).join("");
 }
 
-function renderDateSwitcher() {
-  const dates = getLearningPackDates();
+function getEnglishLearningRecordsSummary() {
+  const feedback = buildEnglishLessonLibraryFeedback();
+  const lessons = feedback?.lessons || [];
+  return {
+    total: lessons.length,
+    completed: lessons.filter((lesson) => lesson.status === "completed").length,
+    partial: lessons.filter((lesson) => lesson.status === "partial").length,
+    notStarted: lessons.filter((lesson) => lesson.status === "not_started").length,
+    currentAnchorSentence: feedback?.currentAnchorSentence || "",
+    lessons
+  };
+}
+
+function renderEnglishLearningRecords() {
+  const panel = $("#englishLearningRecords");
+  if (!panel) return;
+  const summary = getEnglishLearningRecordsSummary();
+  panel.innerHTML = `
+    <div class="student-metric-grid">
+      <div><strong>${summary.completed}</strong><span>已完成</span></div>
+      <div><strong>${summary.partial}</strong><span>进行中</span></div>
+      <div><strong>${summary.notStarted}</strong><span>未开始</span></div>
+      <div><strong>${summary.total}</strong><span>全部课程</span></div>
+    </div>
+    <div class="student-current-item">
+      <span>当前课程</span>
+      <strong>${escapeHtml(summary.currentAnchorSentence || "暂无课程记录")}</strong>
+    </div>
+  `;
+}
+
+function getLatestArtPack() {
+  return getActiveColorCoursePack() || getLearningCourseSequence("art").at(-1)?.pack || getSelectedLearningPack();
+}
+
+function renderColorDataError() {
+  return `
+    <article class="surface empty-student-page">
+      <h2>课程暂时无法打开</h2>
+      <button class="button primary" data-color-data-retry="true" type="button">重试</button>
+    </article>
+  `;
+}
+
+function getColorPlanetDataStatus() {
+  if (colorPlanetDataLoad?.status) return colorPlanetDataLoad.status;
+  if (colorPlanetDataLoad?.ok && colorPlanetCatalog && colorCardRegister) return "ready";
+  if (colorPlanetDataLoad && colorPlanetDataLoad.ok === false) return "error";
+  return "idle";
+}
+
+function renderColorLoadingSkeleton(view = "choice") {
+  const quietLine = (size = "medium") => `<span class="color-skeleton-line is-${size}"></span>`;
+  const image = `<span class="color-skeleton-image"></span>`;
+  if (view === "choice") {
+    return `
+      <div class="color-loading-skeleton color-loading-choice" data-color-loading-skeleton="choice" aria-hidden="true">
+        <div class="color-choice-grid">
+          ${Array.from({ length: 5 }, () => `
+            <article class="surface color-choice-card color-skeleton-card">
+              ${image}${quietLine("short")}${quietLine("long")}${quietLine("medium")}<span class="color-skeleton-action"></span>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+  if (view === "foundation") {
+    return Array.from({ length: 6 }, () => `
+      <article class="surface foundation-skill-card color-loading-skeleton color-skeleton-card" data-color-loading-skeleton="foundation" aria-hidden="true">
+        ${quietLine("short")}${quietLine("long")}${quietLine("medium")}<span class="color-skeleton-action"></span>
+      </article>
+    `).join("");
+  }
+  if (view === "gallery") {
+    return Array.from({ length: 4 }, () => `
+      <article class="surface gallery-record-card color-loading-skeleton color-skeleton-card" data-color-loading-skeleton="gallery" aria-hidden="true">
+        ${image}${quietLine("medium")}${quietLine("short")}
+      </article>
+    `).join("");
+  }
+  if (view === "materials") {
+    return `
+      <div class="color-material-sections color-loading-skeleton" data-color-loading-skeleton="materials" aria-hidden="true">
+        ${Array.from({ length: 4 }, () => `
+          <section class="surface materials-summary-card color-skeleton-card">
+            ${quietLine("short")}${quietLine("long")}${quietLine("medium")}${quietLine("long")}
+          </section>
+        `).join("")}
+      </div>
+    `;
+  }
+  return `
+    <div class="color-loading-skeleton color-loading-course-header" data-color-loading-skeleton="course-header" aria-hidden="true">
+      ${quietLine("medium")}<span class="color-skeleton-toolbar"></span><span class="color-skeleton-material"></span>
+    </div>
+  `;
+}
+
+function renderColorCourseLoadingSkeleton() {
+  return `
+    <div class="color-loading-skeleton color-loading-course-body" data-color-loading-skeleton="course-body" aria-hidden="true">
+      <div class="color-skeleton-step-rail">${Array.from({ length: 14 }, () => "<span></span>").join("")}</div>
+      <article class="course-card color-current-step color-skeleton-card">
+        <div>${renderColorLoadingSkeletonLine("short")}${renderColorLoadingSkeletonLine("medium")}</div>
+        <span class="color-skeleton-course-image"></span>
+        ${renderColorLoadingSkeletonLine("long")}
+        ${renderColorLoadingSkeletonLine("medium")}
+        ${renderColorLoadingSkeletonLine("long")}
+      </article>
+    </div>
+  `;
+}
+
+function renderColorLoadingSkeletonLine(size = "medium") {
+  return `<span class="color-skeleton-line is-${size}"></span>`;
+}
+
+function renderColorDataGate(container, view) {
+  const status = getColorPlanetDataStatus();
+  if (status === "ready" && colorPlanetCatalog && colorCardRegister) {
+    container.removeAttribute?.("aria-busy");
+    return true;
+  }
+  container.setAttribute?.("aria-busy", status === "error" ? "false" : "true");
+  container.innerHTML = status === "error" ? renderColorDataError() : renderColorLoadingSkeleton(view);
+  return false;
+}
+
+function getColorCourseCardStatus(course) {
+  const colorState = getColorPlanetState();
+  const progress = getColorCourseProgress(course.courseId)?.art;
+  if (progress?.finishedAt) return "已完成";
+  if (progress?.startedAt) return "进行中";
+  if (colorState.selectedCourseId === course.courseId) return "已选择";
+  if (colorState.stageCompletedCourseId && colorState.stageCompletedCourseId !== course.courseId) return "备用题材";
+  return "";
+}
+
+function sanitizeColorImageAssetUrl(value) {
+  const url = String(value || "").trim();
+  if (!/^(?:\.{0,2}\/)?(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9][a-zA-Z0-9._-]*\.(?:png|jpe?g|webp)(?:\?[a-zA-Z0-9=&._-]+)?$/i.test(url)) return "";
+  return url;
+}
+
+function resolveColorBoardCell({ kind, courseId, assetId, stepId = "" } = {}) {
+  const boardUrl = sanitizeColorImageAssetUrl(COLOR_COURSE_BOARD_URLS[courseId] || "");
+  if (!boardUrl) return null;
+  let cellIndex = 0;
+  if (kind === "step") {
+    const assetMatch = String(assetId || "").match(/_step(0[1-9]|1[0-4])$/i);
+    const course = getColorCourseById(courseId);
+    const stepIndex = course?.steps?.findIndex((step) => (
+      step.diagramRequirement?.assetId === assetId ||
+      (stepId && step.id === stepId)
+    ));
+    const resolvedStep = assetMatch ? Number(assetMatch[1]) : Number(stepIndex) + 1;
+    if (!Number.isInteger(resolvedStep) || resolvedStep < 1 || resolvedStep > 14) return null;
+    cellIndex = resolvedStep - 1;
+  }
+  const column = cellIndex % 4;
+  const row = Math.floor(cellIndex / 4);
+  return {
+    boardUrl,
+    cellIndex,
+    column,
+    row,
+    positionX: COLOR_BOARD_POSITIONS[column],
+    positionY: COLOR_BOARD_POSITIONS[row]
+  };
+}
+
+function resolveColorImageAsset({ kind, courseId, assetId, stepId = "", url = "", altZh = "" } = {}) {
+  const id = safeId(assetId || "");
+  const normalizedKind = ["choice", "step", "gallery"].includes(kind) ? kind : "choice";
+  const boardCell = resolveColorBoardCell({ kind: normalizedKind, courseId, assetId, stepId });
+  const manifestAsset = (colorPlanetCatalog?.assetManifest?.assets || []).find((item) => (
+    safeId(item.assetId || item.id) === id &&
+    (!item.courseId || item.courseId === courseId) &&
+    (!item.stepId || item.stepId === stepId)
+  ));
+  const resolvedUrl = boardCell?.boardUrl || sanitizeColorImageAssetUrl(url || manifestAsset?.url || manifestAsset?.path || "");
+  return {
+    kind: normalizedKind,
+    courseId: safePlainText(courseId || "", 120),
+    assetId: id,
+    stepId: safePlainText(stepId || "", 120),
+    url: resolvedUrl,
+    altZh: safePlainText(altZh || manifestAsset?.altZh || "", 120),
+    hasRealImage: Boolean(resolvedUrl),
+    usesBoardSprite: Boolean(boardCell),
+    boardUrl: boardCell?.boardUrl || "",
+    cellIndex: boardCell?.cellIndex ?? null,
+    cellColumn: boardCell?.column ?? null,
+    cellRow: boardCell?.row ?? null,
+    positionX: boardCell?.positionX ?? null,
+    positionY: boardCell?.positionY ?? null
+  };
+}
+
+function renderColorNeutralImageFallback(hidden = false) {
+  return `
+    <span class="color-board-fallback" ${hidden ? "hidden" : ""} aria-hidden="true">
+      <svg viewBox="0 0 64 48" focusable="false"><path d="M17 31 26 22l7 7 6-6 8 8M18 36h28M21 14h22" /></svg>
+    </span>
+  `;
+}
+
+function renderColorImageFrame(options = {}) {
+  const asset = resolveColorImageAsset(options);
+  const data = `
+    data-color-image-kind="${escapeHtml(asset.kind)}"
+    data-color-course-id="${escapeHtml(asset.courseId)}"
+    data-color-asset-id="${escapeHtml(asset.assetId)}"
+    data-color-step-id="${escapeHtml(asset.stepId)}"
+    data-has-real-image="${asset.hasRealImage ? "true" : "false"}"
+    data-color-cell-index="${asset.cellIndex === null ? "" : asset.cellIndex}"
+  `;
+  return `
+    <div class="color-image-frame color-image-frame-${escapeHtml(asset.kind)} ${asset.hasRealImage ? "has-real-image" : "is-empty"}" ${data} ${asset.hasRealImage ? "" : 'aria-hidden="true"'}>
+      ${asset.usesBoardSprite
+        ? `
+          <span
+            class="color-board-sprite"
+            role="img"
+            aria-label="${escapeHtml(asset.altZh)}"
+            style="background-image: url('${escapeHtml(asset.boardUrl)}'); background-position: ${asset.positionX}% ${asset.positionY}%;"
+          ></span>
+          <img
+            class="color-board-probe"
+            data-color-board-probe
+            src="${escapeHtml(asset.boardUrl)}"
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+          />
+          ${renderColorNeutralImageFallback(true)}
+        `
+        : asset.hasRealImage
+          ? `<img src="${escapeHtml(asset.url)}" alt="${escapeHtml(asset.altZh)}" loading="lazy" decoding="async" />`
+          : renderColorNeutralImageFallback(false)}
+    </div>
+  `;
+}
+
+function bindColorBoardImages() {
+  document.addEventListener("load", (event) => {
+    if (event.target?.matches?.("[data-color-board-probe]")) handleColorBoardProbeLoad(event.target);
+  }, true);
+  document.addEventListener("error", (event) => {
+    if (event.target?.matches?.("[data-color-board-probe]")) handleColorBoardProbeError(event.target);
+  }, true);
+}
+
+function setColorBoardFrameReady(probe, ready) {
+  const frame = probe?.closest?.(".color-image-frame");
+  if (!frame) return false;
+  frame.dataset.hasRealImage = ready ? "true" : "false";
+  frame.classList.toggle("has-real-image", ready);
+  frame.classList.toggle("is-empty", !ready);
+  if (ready) frame.removeAttribute?.("aria-hidden");
+  else frame.setAttribute?.("aria-hidden", "true");
+  const sprite = frame.querySelector?.(".color-board-sprite");
+  const fallback = frame.querySelector?.(".color-board-fallback");
+  if (sprite) sprite.hidden = !ready;
+  if (fallback) fallback.hidden = ready;
+  return true;
+}
+
+function handleColorBoardProbeLoad(probe) {
+  return setColorBoardFrameReady(probe, true);
+}
+
+function handleColorBoardProbeError(probe) {
+  return setColorBoardFrameReady(probe, false);
+}
+
+function renderColorWorkChoice() {
+  const container = $("#colorWorkChoiceContent");
+  if (!container) return;
+  if (!renderColorDataGate(container, "choice")) return;
+  const colorState = getColorPlanetState();
+  const courses = getColorCourses();
+  const inProgress = getInProgressColorCourse();
+  const selected = getColorCourseById(inProgress?.courseId || colorState.selectedCourseId);
+  const selectedProgress = selected ? getColorCourseProgress(selected.courseId)?.art : null;
+  container.innerHTML = `
+    <div class="color-choice-grid">
+      ${courses.map((course) => {
+        const status = getColorCourseCardStatus(course);
+        const canSelect = !inProgress && colorState.selectedCourseId !== course.courseId;
+        return `
+          <article class="surface color-choice-card ${colorState.selectedCourseId === course.courseId || inProgress?.courseId === course.courseId ? "is-selected" : ""}">
+            ${status ? `<span class="color-choice-status">${escapeHtml(status)}</span>` : ""}
+            ${renderColorImageFrame({
+              kind: "choice",
+              courseId: course.courseId,
+              assetId: course.choiceImageAssetId || `${course.courseId}_choice`,
+              url: course.choiceImageUrl || "",
+              altZh: course.titleZh
+            })}
+            <h2>${escapeHtml(course.titleZh)}</h2>
+            <p>${escapeHtml(course.choiceCardZh)}</p>
+            <div class="color-choice-action-slot">
+              ${canSelect ? `<button class="button secondary" data-color-course-select="${escapeHtml(course.courseId)}" type="button">选择</button>` : ""}
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+    ${selected && !selectedProgress?.finishedAt ? `
+      <article class="surface color-choice-confirmation">
+        <span>${selectedProgress?.startedAt && !selectedProgress?.finishedAt ? "进行中" : "已选择"}</span>
+        <h2>${escapeHtml(selected.titleZh)}</h2>
+        <div class="actions compact">
+          <button class="button primary" data-color-course-start="${escapeHtml(selected.courseId)}" type="button">${selectedProgress?.startedAt && !selectedProgress?.finishedAt ? "继续课程" : "开始课程"}</button>
+          ${selectedProgress?.startedAt ? "" : `<button class="button secondary" data-color-course-reselect="true" type="button">重新选择</button>`}
+        </div>
+      </article>
+    ` : ""}
+  `;
+}
+
+function getFoundationSkillProgress(skillId) {
+  const colorState = getColorPlanetState();
+  colorState.foundationProgress[skillId] ||= { startedAt: "", finishedAt: "", completedStepIds: [] };
+  return colorState.foundationProgress[skillId];
+}
+
+function foundationSkillStatus(skill) {
+  const progress = getFoundationSkillProgress(skill.id);
+  if (progress.finishedAt || progress.completedStepIds.length >= 4) return "已练习";
+  if (progress.startedAt || progress.completedStepIds.length) return "进行中";
+  return "";
+}
+
+function resolveColorMaterialNames(ids = []) {
+  const byId = new Map((colorPlanetCatalog?.commonMaterials || []).map((item) => [item.id, item.nameZh]));
+  return ids.map((id) => byId.get(id) || id);
+}
+
+function renderColorQualityCheck(completionStandard, selfCheck) {
+  return `
+    <div class="color-quality-check">
+      <section>
+        <h3>完成标准</h3>
+        <p>${escapeHtml(completionStandard)}</p>
+      </section>
+      <section>
+        <h3>自检</h3>
+        <p>${escapeHtml(selfCheck)}</p>
+      </section>
+    </div>
+  `;
+}
+
+function renderColorFoundation() {
+  const container = $("#colorFoundationContent");
+  if (!container) return;
+  if (!renderColorDataGate(container, "foundation")) return;
+  const colorState = getColorPlanetState();
+  const skills = colorPlanetCatalog.sections.foundationSkills.modules;
+  container.innerHTML = skills.map((skill) => {
+    const practice = skill.microPractice;
+    const progress = getFoundationSkillProgress(skill.id);
+    const expanded = colorState.expandedSkillId === skill.id;
+    const status = foundationSkillStatus(skill);
+    const hasProgress = Boolean(progress.startedAt || progress.finishedAt || progress.completedStepIds.length);
+    const practiceId = `color-foundation-practice-${safeId(skill.id)}`;
+    const toggleLabel = expanded ? "收起" : hasProgress ? "继续练习" : "练习";
+    return `
+      <article class="surface foundation-skill-card ${expanded ? "is-expanded" : ""}">
+        ${status ? `<span class="foundation-skill-status">${escapeHtml(status)}</span>` : ""}
+        <h2>${escapeHtml(skill.titleZh)}</h2>
+        <p>${escapeHtml(skill.contentZh)}</p>
+        <button class="button secondary" data-color-foundation-toggle="${escapeHtml(skill.id)}" aria-expanded="${expanded ? "true" : "false"}" aria-controls="${escapeHtml(practiceId)}" type="button">${toggleLabel}</button>
+        ${expanded ? `
+          <div class="foundation-practice" id="${escapeHtml(practiceId)}">
+            <div class="student-chip-list">
+              ${resolveColorMaterialNames(practice.materials).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+              ${(practice.palette || []).map((item) => `<span>${escapeHtml(item.code)} · ${escapeHtml(item.nameZh)}</span>`).join("")}
+            </div>
+            <ol>
+              ${practice.steps.map((step) => {
+                const complete = progress.completedStepIds.includes(step.id);
+                return `
+                <li class="${complete ? "is-complete" : ""}">
+                  <span>${escapeHtml(step.instructionZh)}</span>
+                  ${complete
+                    ? `<span class="foundation-step-complete"><span aria-hidden="true">✓</span> 已完成</span>`
+                    : `<button class="button ghost foundation-step-action" data-color-foundation-step="${escapeHtml(skill.id)}" data-color-foundation-step-id="${escapeHtml(step.id)}" type="button">完成</button>`}
+                </li>
+              `;
+              }).join("")}
+            </ol>
+            ${renderColorQualityCheck(practice.completionStandard, practice.selfCheck)}
+          </div>
+        ` : `<div class="foundation-practice" id="${escapeHtml(practiceId)}" hidden></div>`}
+      </article>
+    `;
+  }).join("");
+}
+
+function getColorGalleryEntries() {
+  const catalogEntries = getColorCourses().flatMap((course) => {
+    const progress = getColorCourseProgress(course.courseId)?.art;
+    if (!progress?.finishedAt) return [];
+    return [{
+      packId: `color-planet:${course.courseId}`,
+      courseId: course.courseId,
+      assetId: course.galleryImageAssetId || `${course.courseId}_gallery`,
+      imageUrl: course.galleryImageUrl || "",
+      fileName: progress.artworkFileName || "",
+      title: course.titleZh,
+      status: "已完成"
+    }];
+  });
+  const legacyEntries = Object.entries(state.courseProgress || {}).flatMap(([packId, progress]) => {
+    if (String(packId).startsWith("color-planet:")) return [];
+    const fileName = progress?.art?.artworkFileName || "";
+    if (!fileName) return [];
+    const pack = state.learningPacks?.[packId]?.data;
+    return [{
+      packId,
+      courseId: pack ? getCourseId(pack, "art") : packId,
+      assetId: `${safeId(packId)}_gallery`,
+      imageUrl: "",
+      fileName,
+      title: getStudentCourseTitle(pack, "art"),
+      status: "已完成"
+    }];
+  });
+  return [...catalogEntries, ...legacyEntries];
+}
+
+function renderColorGallery() {
+  const container = $("#colorGalleryContent");
+  if (!container) return;
+  if (!renderColorDataGate(container, "gallery")) return;
+  const entries = getColorGalleryEntries();
+  container.innerHTML = entries.length ? entries.map((entry) => `
+    <article class="surface gallery-record-card">
+      ${renderColorImageFrame({
+        kind: "gallery",
+        courseId: entry.courseId,
+        assetId: entry.assetId,
+        url: entry.imageUrl,
+        altZh: entry.title
+      })}
+      <h2>${escapeHtml(entry.title)}</h2>
+      <span>${escapeHtml(entry.status || "已完成")}</span>
+    </article>
+  `).join("") : `
+    <article class="surface empty-student-page">
+      <h2>还没有作品</h2>
+      <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择作品</a>
+    </article>
+  `;
+}
+
+function renderColorMaterials() {
+  const container = $("#colorMaterialsContent");
+  if (!container) return;
+  if (!renderColorDataGate(container, "materials")) return;
+  const colorState = getColorPlanetState();
+  const course = getActiveColorCourse();
+  const query = String(colorState.materialSearch || "").trim().toLowerCase();
+  const colors = colorCardRegister.colors.filter((item) => !query ||
+    String(item.code || "").toLowerCase().includes(query) ||
+    String(item.nameZh || "").toLowerCase().includes(query)
+  );
+  container.innerHTML = `
+    <div class="color-material-sections">
+      <section class="surface materials-summary-card">
+        <h2>本课六色</h2>
+        ${course ? `<div class="color-palette-grid">${course.palette.map((item) => `
+          <div><strong>${escapeHtml(item.code)}</strong><span>${escapeHtml(item.nameZh)}</span><small>${escapeHtml(item.roleZh)}</small></div>
+        `).join("")}</div>` : `<a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择作品</a>`}
+      </section>
+      <section class="surface materials-summary-card">
+        <h2>其他材料</h2>
+        <div class="student-chip-list">${(colorPlanetCatalog.commonMaterials || []).filter((item) => item.id !== "markers").map((item) => `<span>${escapeHtml(item.nameZh)}</span>`).join("")}</div>
+      </section>
+      <section class="surface materials-summary-card color-register-section">
+        <h2>120 色号</h2>
+        <input class="color-register-search" data-color-material-search type="search" value="${escapeHtml(colorState.materialSearch || "")}" placeholder="输入色号或颜色名" aria-label="输入色号或颜色名" />
+        ${colors.length ? `<div class="color-register-grid">${colors.map((item) => `
+          <div><strong>${escapeHtml(item.code)}</strong><span>${escapeHtml(item.nameZh)}</span></div>
+        `).join("")}</div>` : `<p class="color-register-empty">未找到色号</p>`}
+      </section>
+      <section class="surface materials-summary-card">
+        <h2>收纳与安全</h2>
+        <ul class="color-safety-list">
+          <li>使用前保护桌面并保持通风。</li>
+          <li>试色后再落笔，笔尖避免长时间按压。</li>
+          <li>使用后扣紧笔帽，按色系横放收纳。</li>
+          <li>颜料避免接触眼睛和口腔。</li>
+        </ul>
+      </section>
+    </div>
+  `;
+}
+
+function selectColorCourse(courseId) {
+  const course = getColorCourseById(courseId);
+  if (!course || getInProgressColorCourse()) return false;
+  const colorState = getColorPlanetState();
+  colorState.selectedCourseId = course.courseId;
+  saveState();
+  renderColorWorkChoice();
+  renderColorMaterials();
+  return true;
+}
+
+function reselectColorCourse() {
+  if (getInProgressColorCourse()) return false;
+  const colorState = getColorPlanetState();
+  colorState.selectedCourseId = "";
+  saveState();
+  renderColorWorkChoice();
+  renderColorMaterials();
+  return true;
+}
+
+function startColorCourse(courseId) {
+  const course = getColorCourseById(courseId);
+  if (!course) return false;
+  const inProgress = getInProgressColorCourse();
+  if (inProgress && inProgress.courseId !== course.courseId) return false;
+  const colorState = getColorPlanetState();
+  const pack = buildColorCoursePack(course);
+  const progress = initializeCourseProgress(pack);
+  progress.art.startedAt ||= new Date().toISOString();
+  progress.art.sessionStatus = "in_progress";
+  colorState.selectedCourseId = course.courseId;
+  colorState.activeCourseId = course.courseId;
+  colorState.courseUi[course.courseId] ||= { currentStepIndex: firstIncompleteColorStepIndex(course, progress) };
+  saveState();
+  showView("color-course");
+  return true;
+}
+
+function firstIncompleteColorStepIndex(course, progress = getColorCourseProgress(course?.courseId)) {
+  if (!course) return 0;
+  const index = course.steps.findIndex((step) => !progress?.art?.steps?.[`art:${step.id}`]?.finishedAt);
+  return index < 0 ? course.steps.length - 1 : index;
+}
+
+function getColorCourseUi(courseId) {
+  const colorState = getColorPlanetState();
+  const course = getColorCourseById(courseId);
+  colorState.courseUi[courseId] ||= {
+    currentStepIndex: firstIncompleteColorStepIndex(course)
+  };
+  return colorState.courseUi[courseId];
+}
+
+function setColorCourseStep(courseId, index) {
+  const course = getColorCourseById(courseId);
+  if (!course) return false;
+  getColorCourseUi(courseId).currentStepIndex = Math.max(0, Math.min(course.steps.length - 1, Number(index || 0)));
+  saveState();
+  renderArtLesson();
+  return true;
+}
+
+function scrollCurrentColorStepIntoView(root = $("#artLessonSections")) {
+  const track = root?.querySelector?.(".color-step-index");
+  const current = root?.querySelector?.(".color-step-index .is-current");
+  if (!track || !current) return false;
+  const trackRect = track.getBoundingClientRect?.();
+  const currentRect = current.getBoundingClientRect?.();
+  if (
+    trackRect &&
+    currentRect &&
+    currentRect.left >= trackRect.left &&
+    currentRect.right <= trackRect.right
+  ) {
+    return true;
+  }
+  if (typeof track.scrollTo === "function") {
+    const left = Math.max(0, Number(current.offsetLeft || 0) - (Number(track.clientWidth || 0) - Number(current.offsetWidth || 0)) / 2);
+    track.scrollTo({ left, behavior: "smooth" });
+    return true;
+  }
+  current.scrollIntoView?.({ behavior: "smooth", block: "nearest", inline: "center" });
+  return true;
+}
+
+function completeColorCourseStep(courseId, stepId) {
+  const course = getColorCourseById(courseId);
+  const stepIndex = course?.steps?.findIndex((step) => step.id === stepId) ?? -1;
+  if (!course || stepIndex < 0) return false;
+  const pack = buildColorCoursePack(course);
+  const progress = initializeCourseProgress(pack);
+  const key = `art:${stepId}`;
+  progress.art.startedAt ||= new Date().toISOString();
+  progress.art.sessionStatus = "in_progress";
+  progress.art.steps[key] = {
+    ...(progress.art.steps[key] || {}),
+    startedAt: progress.art.steps[key]?.startedAt || new Date().toISOString(),
+    finishedAt: new Date().toISOString(),
+    result: "independent"
+  };
+  const ui = getColorCourseUi(courseId);
+  if (stepIndex < course.steps.length - 1) ui.currentStepIndex = stepIndex + 1;
+  saveState();
+  renderArtLesson();
+  renderColorWorkChoice();
+  return true;
+}
+
+function completeColorCourse(courseId) {
+  const course = getColorCourseById(courseId);
+  const progress = getColorCourseProgress(courseId);
+  if (!course || !progress) return false;
+  const allComplete = course.steps.every((step) => progress.art.steps?.[`art:${step.id}`]?.finishedAt);
+  if (!allComplete) return false;
+  const colorState = getColorPlanetState();
+  progress.art.finishedAt = new Date().toISOString();
+  progress.art.sessionStatus = "completed";
+  progress.art.isRunning = false;
+  progress.art.runningSince = null;
+  colorState.stageCompletedCourseId ||= courseId;
+  colorState.activeCourseId = courseId;
+  colorState.selectedCourseId = courseId;
+  saveState();
+  renderArtLesson();
+  renderColorPlanetPages();
+  renderPlanetPages();
+  return true;
+}
+
+function toggleColorFoundation(skillId) {
+  const skill = colorPlanetCatalog?.sections?.foundationSkills?.modules?.find((item) => item.id === skillId);
+  if (!skill) return false;
+  const colorState = getColorPlanetState();
+  const progress = getFoundationSkillProgress(skillId);
+  progress.startedAt ||= new Date().toISOString();
+  colorState.expandedSkillId = colorState.expandedSkillId === skillId ? "" : skillId;
+  saveState();
+  renderColorFoundation();
+  return true;
+}
+
+function completeColorFoundationStep(skillId, stepId) {
+  const skill = colorPlanetCatalog?.sections?.foundationSkills?.modules?.find((item) => item.id === skillId);
+  if (!skill?.microPractice?.steps?.some((step) => step.id === stepId)) return false;
+  const progress = getFoundationSkillProgress(skillId);
+  if (progress.completedStepIds.includes(stepId)) return false;
+  progress.startedAt ||= new Date().toISOString();
+  progress.completedStepIds.push(stepId);
+  if (progress.completedStepIds.length >= skill.microPractice.steps.length) progress.finishedAt ||= new Date().toISOString();
+  saveState();
+  renderColorFoundation();
+  return true;
+}
+
+function setColorMaterialSearch(value) {
+  getColorPlanetState().materialSearch = safePlainText(value, 40);
+  saveState();
+  renderColorMaterials();
+  const input = $("[data-color-material-search]");
+  input?.focus?.();
+  input?.setSelectionRange?.(input.value.length, input.value.length);
+}
+
+function renderCourseSequenceSwitcher(kind = "chinese") {
+  const sequence = getLearningCourseSequence(kind);
   const pack = getSelectedLearningPack();
-  if (!pack) return "";
-  const currentIndex = dates.indexOf(pack.date);
+  if (!pack || !sequence.length) return "";
+  const currentKey = getLearningCourseKey(pack, kind);
+  const currentIndex = sequence.findIndex((item) => item.courseKey === currentKey);
   const canPrev = currentIndex > 0;
-  const canNext = currentIndex >= 0 && currentIndex < dates.length - 1;
+  const canNext = currentIndex >= 0 && currentIndex < sequence.length - 1;
   return `
     <div class="date-switcher">
-      <button class="button ghost compact-button" data-date-nav="prev" ${canPrev ? "" : "disabled"} type="button">← 前一天</button>
-      <button class="button secondary compact-button" data-date-nav="today" type="button">今天<br /><span>Today</span></button>
-      <button class="button ghost compact-button" data-date-nav="next" ${canNext ? "" : "disabled"} type="button">后一天 →</button>
+      <button class="button ghost compact-button" data-course-sequence-nav="prev" data-course-kind="${kind}" ${canPrev ? "" : "disabled"} type="button">← 上一课</button>
+      <button class="button secondary compact-button" data-course-sequence-nav="latest" data-course-kind="${kind}" type="button">最新课程</button>
+      <button class="button ghost compact-button" data-course-sequence-nav="next" data-course-kind="${kind}" ${canNext ? "" : "disabled"} type="button">下一课 →</button>
       <details class="date-menu">
-        <summary>往日课程</summary>
+        <summary>课程列表</summary>
         <div class="date-menu-list">
-          ${dates.map((date) => `<button class="button ${date === pack.date ? "primary" : "secondary"} compact-button" data-pack-date="${escapeHtml(date)}" type="button">${escapeHtml(date)}</button>`).join("")}
+          ${sequence.map((item) => `<button class="button ${item.courseKey === currentKey ? "primary" : "secondary"} compact-button" data-course-pack="${escapeHtml(item.packId)}" data-course-kind="${kind}" type="button">${escapeHtml(item.title)}</button>`).join("")}
         </div>
       </details>
     </div>
   `;
 }
 
+function renderDateSwitcher() {
+  return renderCourseSequenceSwitcher("chinese");
+}
+
 function renderChineseLesson() {
   const pack = getLatestLearningPack();
   if (!$("#chineseLessonHeader")) return;
   if (!pack) {
-    $("#chineseLessonHeader").innerHTML = renderEmptyCourse("请先导入今日学习包");
+    $("#chineseLessonHeader").innerHTML = renderEmptyCourse("课程尚未准备好");
     $("#chineseLessonSections").innerHTML = "";
     return;
   }
@@ -7859,13 +9070,10 @@ function renderChineseLesson() {
   const progress = getCourseProgress(pack.packId);
   const sections = getChineseLessonSections(pack);
   $("#chineseLessonHeader").innerHTML = `
-    <div class="course-pack-load-status">${renderBuiltinPackLoadNotice(pack)}</div>
-    ${renderDateSwitcher()}
+    ${renderCourseSequenceSwitcher("chinese")}
     <div class="course-topline">
       <div>
-        <p class="eyebrow">每日中文 / Daily Chinese</p>
-        <h2>${escapeHtml(pack.chinese?.lesson?.title || familyFacingPackTitle(pack.title) || "今日中文课")}</h2>
-        <p class="pack-muted">预计 ${getPlannedChineseMinutes(pack)} 分钟 · 按顺序完成，口头回答只需点选结果</p>
+        <h1>${escapeHtml(getStudentCourseTitle(pack, "chinese"))}</h1>
       </div>
     </div>
     ${renderCourseStartSettings("chinese", progress.chinese, sections)}
@@ -7892,29 +9100,20 @@ function renderEnglishLesson() {
   }
   const progress = getCourseProgress(pack.packId);
   const selectedMode = getSelectedEnglishMode(pack);
-  const suggestedMode = getSuggestedEnglishMode(pack, progress);
   const steps = getEnglishLessonSteps(pack);
   const library = getEnglishLessonLibrary();
   const lessonRecord = getSelectedEnglishLibraryLesson();
   $("#englishLessonHeader").innerHTML = `
-    <div class="course-pack-load-status">${renderEnglishLibraryLoadNotice()}</div>
+    ${renderEnglishLibraryLoadNotice()}
     ${renderEnglishLessonSwitcher(library, lessonRecord)}
-    ${renderEnglishLessonViewingMeta(library, lessonRecord)}
     <div class="course-topline">
       <div>
-        <p class="eyebrow">字母星球 / Letter Planet</p>
-        <h2>${escapeHtml(pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "今日英语")}</h2>
+        <h1>${escapeHtml(pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "字母课程")}</h1>
         <p class="pack-muted">${escapeHtml(pack.english?.lesson?.translationZh || pack.english?.translationZh || "")}</p>
-        <p class="pack-muted">${escapeHtml(library?.storyTitle || "Hello, School!")} · 第 ${escapeHtml(lessonRecord?.lessonIndex || "")} 课 · ${escapeHtml(englishSeedStatusLabel(lessonRecord?.progressSeedStatus))}</p>
-        <p class="pack-muted">建议 ${escapeHtml(englishModeLabel(suggestedMode))} · 当前 ${escapeHtml(englishModeLabel(selectedMode))} · 预计 ${getPlannedEnglishMinutes(pack, selectedMode)} 分钟</p>
       </div>
       <div class="mode-picker">${getAllowedEnglishModes(pack).map((mode) => `<button class="button ${mode === selectedMode ? "primary" : "secondary"} compact-button" data-english-mode="${escapeHtml(mode)}" type="button">${escapeHtml(englishModeLabel(mode))}</button>`).join("")}</div>
     </div>
-    <div class="course-app-path">
-      <strong>准备</strong>
-      <span>${escapeHtml(renderAppPath(pack))}</span>
-    </div>
-    ${renderCourseStartSettings("english", progress.english, steps, { pack, selectedMode, suggestedMode })}
+    ${renderCourseStartSettings("english", progress.english, steps, { pack, selectedMode })}
   `;
   const listeningSteps = steps.filter((step) => step.number <= 4 || ["retrieval", "blind_listening", "meaning_and_text", "echo"].includes(step.id));
   const websiteSteps = steps.filter((step) => !listeningSteps.includes(step));
@@ -7935,12 +9134,11 @@ function renderEnglishLessonSwitcher(library, lessonRecord) {
     <div class="date-switcher english-lesson-switcher">
       <button class="button ghost compact-button" data-english-lesson-nav="prev" ${lessonRecord.previousLessonId ? "" : "disabled"} type="button">← 上一课</button>
       <label class="english-lesson-select-label">
-        <span>Story 3 选课</span>
+        <span>课程选择</span>
         <select data-english-library-select>
           ${library.lessons.map((lesson) => `<option value="${escapeHtml(lesson.lessonId)}" ${lesson.lessonId === lessonRecord.lessonId ? "selected" : ""}>${escapeHtml(`第${lesson.lessonIndex}课 · ${lesson.anchorSentence}`)}</option>`).join("")}
         </select>
       </label>
-      <button class="button secondary compact-button" data-english-lesson-nav="current" type="button">回到第26课</button>
       <button class="button ghost compact-button" data-english-lesson-nav="next" ${lessonRecord.nextLessonId ? "" : "disabled"} type="button">下一课 →</button>
     </div>
   `;
@@ -8054,52 +9252,137 @@ function renderArtParentOnly(parentOnly) {
   `;
 }
 
-function renderArtLesson() {
-  const pack = getLatestLearningPack();
-  if (!$("#artLessonHeader")) return;
-  if (!pack) {
-    $("#artLessonHeader").innerHTML = renderEmptyCourse("请先导入今日学习包");
-    $("#artLessonSections").innerHTML = "";
+function renderColorChoiceLesson() {
+  const header = $("#artLessonHeader");
+  const sections = $("#artLessonSections");
+  if (!header || !sections) return;
+  const course = getActiveColorCourse();
+  if (!course) {
+    header.innerHTML = `
+      <div class="color-course-empty">
+        <p class="eyebrow">颜色星球 / 选择作品</p>
+        <h1>选择作品</h1>
+        <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择作品</a>
+      </div>
+    `;
+    sections.innerHTML = "";
     return;
   }
-  initializeCourseProgress(pack);
-  if (!pack.art) {
-    $("#artLessonHeader").innerHTML = renderEmptyCourse("今天未安排美术课");
-    $("#artLessonSections").innerHTML = "";
-    return;
-  }
-  const progress = getCourseProgress(pack.packId);
-  const steps = getArtLessonSteps(pack);
-  const toolProfile = formatArtToolProfile(pack.art.toolProfile);
-  const paletteRows = getArtPaletteRows(pack);
-  $("#artLessonHeader").innerHTML = `
-    <div class="course-pack-load-status">${renderBuiltinPackLoadNotice(pack)}</div>
-    ${renderDateSwitcher()}
-    <div class="course-topline">
+  const pack = buildColorCoursePack(course);
+  const progress = initializeCourseProgress(pack);
+  const ui = getColorCourseUi(course.courseId);
+  const stepIndex = Math.max(0, Math.min(course.steps.length - 1, Number(ui.currentStepIndex || 0)));
+  const step = course.steps[stepIndex];
+  const stepProgress = progress.art.steps?.[`art:${step.id}`] || {};
+  const completedCount = course.steps.filter((item) => progress.art.steps?.[`art:${item.id}`]?.finishedAt).length;
+  const allComplete = completedCount === course.steps.length;
+  const materialNames = resolveColorMaterialNames(step.materialRefs || []);
+  const stepColors = course.palette.filter((item) => (step.colorRefs || []).includes(item.code));
+  const readAloud = renderReadAloudButton(
+    `art:${course.courseId}:${step.id}`,
+    normalizeReadAloudConfig({ spokenTextZh: step.teacherAudioZh }, step.teacherAudioZh)
+  );
+  header.innerHTML = `
+    <div class="course-topline color-course-heading">
       <div>
-        <p class="eyebrow">颜色星球 / Color Planet</p>
-        <h2>${escapeHtml(pack.art.title || "今日马克笔画")}</h2>
-        <p class="pack-muted">预计 ${pack.art.plannedMinutes || 20} 分钟 · ${(pack.art.skillFocus || pack.art.techniqueFocus || []).map(escapeHtml).join("、") || "轻松创作"}</p>
+        <h1>${escapeHtml(course.titleZh)}</h1>
+        ${progress.art.finishedAt ? `<span class="color-course-status">已完成</span>` : ""}
       </div>
     </div>
-    ${renderCourseStartSettings("art", progress.art, steps)}
-    <div class="art-prep-grid">
-      <section class="art-materials-panel">
-        <h3>${toolProfile ? "专业工具与材料" : "材料准备"}</h3>
-        ${toolProfile ? `<p class="art-tool-profile">${escapeHtml(toolProfile)}</p>` : ""}
-        <div class="course-chip-list">${(pack.art.materials || []).map((item) => `<span>${escapeHtml(item.required ? "必备 " : "可选 ")}${escapeHtml(item.nameZh || item.name)}</span>`).join("") || "<span>按学习包准备</span>"}</div>
-        ${renderArtPaletteRows(paletteRows)}
-      </section>
-      <section><h3>安全提示</h3><ul>${getArtSafetyNotes(pack).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-    </div>
-    <div class="actions compact">
-      <label class="button secondary artwork-upload">选择作品照片<br /><span>Photo</span><input id="artworkPhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden /></label>
-    </div>
+    ${renderCourseStartSettings("art", progress.art, course.steps)}
+    <details class="color-course-material-overview">
+      <summary>
+        <span class="color-course-material-summary">
+          <strong>材料</strong>
+          <span class="color-course-material-codes">${course.palette.map((item) => `<span>${escapeHtml(item.code)}</span>`).join("")}</span>
+        </span>
+      </summary>
+      <div class="color-course-overview-row">
+        <section class="color-course-overview-group">
+          <h3>其他材料</h3>
+          <div class="student-chip-list">
+            ${resolveColorMaterialNames(course.materials).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+          </div>
+        </section>
+        <section class="color-course-overview-group">
+          <h3>本课六色</h3>
+          <div class="color-palette-grid compact">
+            ${course.palette.map((item) => `<div><strong>${escapeHtml(item.code)}</strong><span>${escapeHtml(item.nameZh)}</span></div>`).join("")}
+          </div>
+        </section>
+      </div>
+    </details>
   `;
-  bindArtworkPhotoInput();
-  const warmup = pack.art.warmup ? [pack.art.warmup] : [];
-  $("#artLessonSections").innerHTML = [...warmup, ...steps].map((step, index) => renderArtStep(pack, step, index, progress)).join("") + renderArtCompletion(pack, progress) + renderCourseEndFeedback("art", progress.art, steps);
-  preloadArtLessonImages(pack);
+  sections.innerHTML = `
+    <nav class="color-step-index" aria-label="步骤">
+      ${course.steps.map((item, index) => {
+        const complete = Boolean(progress.art.steps?.[`art:${item.id}`]?.finishedAt);
+        const current = index === stepIndex;
+        return `
+          <button class="${current ? "is-current" : ""} ${complete ? "is-complete" : ""}" data-color-step-jump="${index}" data-color-course-id="${escapeHtml(course.courseId)}" aria-label="第 ${index + 1} 步 ${escapeHtml(item.titleZh)}" ${current ? 'aria-current="step"' : ""} type="button">
+            <span>${current ? `第 ${index + 1} 步` : index + 1}</span>
+            ${current ? `<strong>${escapeHtml(item.titleZh)}</strong>` : ""}
+          </button>
+        `;
+      }).join("")}
+    </nav>
+    <article class="course-card color-current-step" data-image-asset-hook="${escapeHtml(step.diagramRequirement?.assetId || "")}">
+      <div class="color-current-step-heading">
+        <span>第 ${stepIndex + 1}/14 步</span>
+        ${renderPromptRow(`<h2>${escapeHtml(step.titleZh)}</h2>`, readAloud)}
+      </div>
+      ${renderColorImageFrame({
+        kind: "step",
+        courseId: course.courseId,
+        assetId: step.diagramRequirement?.assetId || `${course.courseId}_${step.id}`,
+        stepId: step.id,
+        url: step.diagramRequirement?.assetUrl || "",
+        altZh: `${course.titleZh} ${step.titleZh}`
+      })}
+      ${(step.actionsZh || []).some((action) => normalizeSentenceAnswer(action) === normalizeSentenceAnswer(step.studentVoiceZh)) ? "" : `<p class="color-step-voice">${escapeHtml(step.studentVoiceZh)}</p>`}
+      <ol class="color-step-actions">${step.actionsZh.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
+      <section class="color-step-materials">
+        <h3>材料</h3>
+        <div class="student-chip-list">
+          ${materialNames.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+          ${stepColors.map((item) => `<span>${escapeHtml(item.code)} · ${escapeHtml(item.nameZh)}</span>`).join("")}
+        </div>
+      </section>
+      ${renderColorQualityCheck(step.completionStandardZh, step.selfCheckZh)}
+      <div class="color-course-nav">
+        ${stepIndex > 0 ? `<button class="button secondary" data-color-step-nav="-1" data-color-course-id="${escapeHtml(course.courseId)}" type="button">上一步</button>` : ""}
+        ${stepProgress.finishedAt ? "" : `<button class="button primary" data-color-step-complete="${escapeHtml(step.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button">完成本步</button>`}
+        ${stepProgress.finishedAt && stepIndex < course.steps.length - 1 ? `<button class="button primary" data-color-step-nav="1" data-color-course-id="${escapeHtml(course.courseId)}" type="button">下一步</button>` : ""}
+        ${stepIndex === course.steps.length - 1 && allComplete && !progress.art.finishedAt ? `<button class="button success" data-color-course-complete="${escapeHtml(course.courseId)}" type="button">完成课程</button>` : ""}
+        ${stepProgress.finishedAt ? `<span class="color-step-completed-status" role="status"><span aria-hidden="true">✓</span> 本步已完成</span>` : ""}
+      </div>
+    </article>
+  `;
+  scrollCurrentColorStepIntoView(sections);
+}
+
+function renderArtLesson() {
+  const header = $("#artLessonHeader");
+  const sections = $("#artLessonSections");
+  if (!header || !sections) return;
+  const status = getColorPlanetDataStatus();
+  if (status === "ready" && colorPlanetCatalog && colorCardRegister) {
+    header.removeAttribute?.("aria-busy");
+    sections.removeAttribute?.("aria-busy");
+    renderColorChoiceLesson();
+    return;
+  }
+  if (status === "error") {
+    header.setAttribute?.("aria-busy", "false");
+    sections.setAttribute?.("aria-busy", "false");
+    header.innerHTML = renderColorDataError();
+    sections.innerHTML = "";
+    return;
+  }
+  header.setAttribute?.("aria-busy", "true");
+  sections.setAttribute?.("aria-busy", "true");
+  header.innerHTML = renderColorLoadingSkeleton("course");
+  sections.innerHTML = renderColorCourseLoadingSkeleton();
 }
 
 function normalizeReadAloudConfig(config = {}, fallbackText = "", fallbackPolicy = "instruction_only") {
@@ -8311,13 +9594,13 @@ function renderArtStep(pack, step, index, progress) {
           </div>
           ${renderArtParentOnly(step.parentOnly)}
           <div class="actions compact">
-            ${step.hintLevels?.length ? `<button class="button ghost compact-button" data-art-hint="${escapeHtml(key)}" data-hint-level="1" ${lock.locked ? "disabled" : ""} type="button">看小提示<br /><span>Hint</span></button>` : ""}
+            ${step.hintLevels?.length ? `<button class="button ghost compact-button" data-art-hint="${escapeHtml(key)}" data-hint-level="1" ${lock.locked ? "disabled" : ""} type="button">看小提示</button>` : ""}
           </div>
           <div class="art-hints">${(step.hintLevels || []).map((hint, hintIndex) => `<p data-art-hint-text="${escapeHtml(key)}" data-hint-index="${hintIndex + 1}" hidden>${escapeHtml(hint.textZh || hint)}</p>`).join("")}</div>
           <div class="actions compact">
-            <button class="button success compact-button" data-course-complete="${escapeHtml(key)}" ${lock.locked ? "disabled" : ""} type="button">我画好了<br /><span>Done</span></button>
-            <button class="button secondary compact-button" data-course-result="${escapeHtml(key)}" data-result-value="modeled" ${lock.locked ? "disabled" : ""} type="button">需要一点帮助<br /><span>Help</span></button>
-            <button class="button secondary compact-button" data-course-pause="art" type="button">暂停<br /><span>Pause</span></button>
+            <button class="button success compact-button" data-course-complete="${escapeHtml(key)}" ${lock.locked ? "disabled" : ""} type="button">完成</button>
+            <button class="button secondary compact-button" data-course-result="${escapeHtml(key)}" data-result-value="modeled" ${lock.locked ? "disabled" : ""} type="button">需要帮助</button>
+            <button class="button secondary compact-button" data-course-pause="art" type="button">暂停</button>
           </div>
         </div>
       </div>
@@ -8537,9 +9820,10 @@ function getChineseLessonSections(pack) {
   return [{
     id: "daily_words",
     type: "post_check",
-    title: "今日字词",
+    title: "字词认读",
     plannedMinutes: Math.max(3, Math.min(10, (pack.chinese?.characters?.length || 0) + (pack.chinese?.words?.length || 0))),
-    parentInstructionZh: "请孩子直接认读，能说意思更好。",
+    childInstructionZh: "直接认读；能说明意思即可。",
+    parentInstructionZh: "直接认读；能说明意思即可。",
     characters: (pack.chinese?.characters || []).map((item) => item.text),
     words: (pack.chinese?.words || []).map((item) => item.text),
     answerMode: "spoken"
@@ -8553,16 +9837,16 @@ function getEnglishLessonSteps(pack) {
 function renderChineseSection(pack, section, index, progress) {
   const key = `chinese:${section.id}`;
   const itemProgress = progress.chinese.sections[key] || {};
-  if (section.type === "break" || section.id === "break") return renderBreakCard(key, section.title || "休息一下", section.plannedMinutes || 5, itemProgress, getChineseSectionChildInstruction(section));
+  const sectionTitle = getStudentSectionTitle(section.title);
+  if (section.type === "break" || section.id === "break") return renderBreakCard(key, sectionTitle || "休息一下", section.plannedMinutes || 5, itemProgress, getChineseSectionChildInstruction(section));
   const assessment = ["post_check", "word_review"].includes(section.type);
   const childInstruction = getChineseSectionChildInstruction(section);
-  const readText = assessment ? (childInstruction || "请按要求完成这一部分。") : [section.title, childInstruction || section.prompt || ""].filter(Boolean).join("。");
+  const readText = assessment ? (childInstruction || "请按要求完成这一部分。") : [sectionTitle, childInstruction || section.prompt || ""].filter(Boolean).join("。");
   const readAloud = normalizeReadAloudConfig(section.readAloud, readText, assessment ? "instruction_only" : "full");
   return `
     <article class="course-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
-        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(section.title)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}<p>${escapeHtml(childInstruction || "按提示完成即可")}</p></div>
-        <strong>${section.plannedMinutes || 0} 分钟</strong>
+        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${escapeHtml(childInstruction)}</p>` : ""}</div>
       </div>
       ${renderChineseSectionBody(pack, section, itemProgress)}
       ${renderCourseItemControls(key, itemProgress)}
@@ -8649,7 +9933,7 @@ function renderInteractiveReadingText(section) {
   const stats = getReadingAnnotationStats(annotation);
   return `
     <div class="reading-annotation-bar">
-      <span>点1次 不认识｜点2次 不熟悉｜点3次 取消</span>
+      <span>红色：不认识　黄色：不熟悉</span>
       <strong>不认识 ${stats.unknown} 字｜不熟悉 ${stats.unsure} 字</strong>
     </div>
     <div class="reading-text interactive-reading-text" data-reading-section="${escapeHtml(section.id)}">
@@ -8715,8 +9999,106 @@ function toggleReadingCharacter(button) {
       updatedAt: new Date().toISOString()
     };
   }
+  syncReadingAnnotationEvidence(char, nextStatus, sectionId);
   saveState();
   renderChineseLesson();
+}
+
+function syncReadingAnnotationEvidence(char, status, sectionId) {
+  if (!status || !isSingleChineseChar(char)) return;
+  const pack = getLatestLearningPack();
+  const now = new Date().toISOString();
+  state.learnerChars ||= {};
+  const existing = state.learnerChars[char] || {};
+  const source = {
+    dayId: pack?.chinese?.lesson?.title || pack?.date || "每日中文",
+    status,
+    sectionId,
+    recordedAt: now
+  };
+  const liveSources = Array.isArray(existing.liveSources) ? [...existing.liveSources] : [];
+  if (!liveSources.some((item) => item.dayId === source.dayId && item.status === source.status && item.sectionId === sectionId)) {
+    liveSources.push(source);
+  }
+  const liveStatus = status === "unknown" ? "unknown" : "unstable";
+  state.learnerChars[char] = {
+    ...existing,
+    char,
+    status: liveStatus,
+    latestStatus: status,
+    latestFoundAt: now,
+    foundCount: Math.max(Number(existing.foundCount || 0), Number(existing.historicalFoundCount || 0)) + 1,
+    liveSources,
+    source: pack?.date || existing.source || "每日中文阅读",
+    selectionReason: "每日阅读真实标记",
+    inCharacterPractice: true,
+    inWordbook: true,
+    passiveRecognitionDays: []
+  };
+  const wordbook = state.wordbook?.[char] || {};
+  state.wordbook ||= {};
+  state.wordbook[char] = {
+    ...wordbook,
+    char,
+    text: char,
+    type: "char",
+    autoAdded: true,
+    mastered: false,
+    addedAt: wordbook.addedAt || now,
+    latestStatus: status,
+    latestFoundAt: now,
+    count: Math.max(Number(wordbook.count || 0), state.learnerChars[char].foundCount),
+    sources: [...(wordbook.sources || []), source]
+  };
+  updateChineseRecognitionResult(char, status, false);
+}
+
+function recordPassiveRecognitionEvidence(char, readingId, recordedAt = new Date().toISOString()) {
+  if (!isSingleChineseChar(char) || !readingId) return false;
+  state.learnerChars ||= {};
+  const learner = state.learnerChars[char] || { char };
+  const passiveDays = unique([...(learner.passiveRecognitionDays || []), readingId]);
+  learner.passiveRecognitionDays = passiveDays;
+  learner.lastPassiveRecognitionAt = recordedAt;
+  state.learnerChars[char] = learner;
+  if (passiveDays.length < 2) {
+    if (!["unknown", "confused"].includes(learner.status)) learner.status = "consolidating";
+    return false;
+  }
+  learner.status = "mastered";
+  learner.latestStatus = "mastered";
+  learner.inCharacterPractice = false;
+  learner.masteredReason = "在后续两篇文章中出现且未再标记";
+  learner.masteredAt = recordedAt;
+  learner.recognitionEvidence = mergeLiveRecognitionEvidence(learner.recognitionEvidence, {
+    evidenceId: `completed_reading:${readingId}`,
+    status: "mastered",
+    sourceType: "completed_reading",
+    order: getRecognitionEvidenceOrder(readingId),
+    recordedAt
+  });
+  const progress = getChineseProgress(char);
+  progress.lastResult = "mastered";
+  progress.lastSeenAt = Date.parse(recordedAt) || Date.now();
+  progress.masteryCount = Math.max(2, Number(progress.masteryCount || 0));
+  progress.recentResults = [...(progress.recentResults || []).slice(-7), "mastered"];
+  return true;
+}
+
+function recordPassiveRecognitionFromCompletedReading(sectionKey) {
+  const pack = getLatestLearningPack();
+  const sectionId = String(sectionKey || "").replace(/^chinese:/, "");
+  const section = getChineseLessonSections(pack).find((entry) => entry.id === sectionId);
+  if (!section || section.type !== "reading_text") return;
+  const progress = getCourseProgress(pack?.packId);
+  const annotation = getReadingAnnotationSection(progress, sectionId);
+  const marked = new Set(Object.keys(annotation.characters || {}));
+  const textChars = new Set((section.paragraphs || []).flatMap((paragraph) => [...String(paragraph || "")]).filter(isSingleChineseChar));
+  Object.entries(state.learnerChars || {}).forEach(([char, learner]) => {
+    if (!learner.inCharacterPractice || marked.has(char) || !textChars.has(char)) return;
+    const readingId = `${pack?.packId || pack?.date || "current"}:${sectionId}`;
+    recordPassiveRecognitionEvidence(char, readingId);
+  });
 }
 
 function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 0) {
@@ -8734,14 +10116,13 @@ function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 
     <div class="course-question">
       ${renderQuestionDisplayCards(question)}
       ${renderPromptRow(`<strong>${questionIndex + 1}. ${escapeHtml(question.prompt || "请回答")}</strong>`, renderReadAloudButton(`chinese:${key}`, readAloud, { assessment: isSpokenOpen, targetText: question.prompt || question.answer || "" }))}
-      ${isSpokenOpen ? `<p class="oral-answer-hint">口头回答即可。家长用下方四档结果记录，不需要输入文字。</p>` : ""}
       ${options.length ? `<div class="course-options">${options.map((option, optionIndex) => {
         const selectedClass = normalizeSentenceAnswer(option) === normalizeSentenceAnswer(selected) ? "selected" : "";
         return `<button class="button secondary compact-button course-choice-button ${selectedClass}" data-course-choice="${escapeHtml(key)}" data-choice-value="${escapeHtml(option)}" data-choice-answer="${escapeHtml(question.answer || "")}" data-choice-index="${optionIndex}" type="button"><span class="choice-letter">${choiceLetter(optionIndex)}</span><span class="choice-text">${escapeHtml(option)}</span></button>`;
       }).join("")}</div>` : ""}
       ${renderQuestionOralAssessment(question, key, oralResult)}
       ${showFeedback ? `<p class="answer-feedback ${result.correct ? "correct" : "needs-help"}"><strong>${result.correct ? "正确" : "再想想"}</strong><span>${escapeHtml(`你选了 ${result.selectedLetter || ""}`)}</span></p>` : ""}
-      ${!options.length && !isSpokenOpen && (question.referenceAnswer || question.answer) ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(key)}" type="button">查看参考<br /><span>Answer</span></button><p class="course-answer" data-course-answer="${escapeHtml(key)}" hidden>${escapeHtml(question.referenceAnswer || question.answer)}</p>` : ""}
+      ${!options.length && !isSpokenOpen && (question.referenceAnswer || question.answer) ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(key)}" type="button">查看参考</button><p class="course-answer" data-course-answer="${escapeHtml(key)}" hidden>${escapeHtml(question.referenceAnswer || question.answer)}</p>` : ""}
       ${isSpokenOpen ? renderCourseItemControls(`chinese:${key}`, getCourseProgress()?.chinese?.sections?.[`chinese:${key}`] || {}) : ""}
     </div>
   `;
@@ -8765,7 +10146,7 @@ function renderQuestionOralAssessment(question, key, oralResult) {
   return `
     <div class="oral-assessment-panel" data-oral-assessment="${escapeHtml(key)}">
       <strong>口答记录</strong>
-      <span>孩子是否说出：</span>
+      <span>回答要点</span>
       <div class="actions compact">
         ${config.requiredConcepts.map((concept) => `<button class="button secondary compact-button ${selected.has(concept) ? "selected" : ""}" data-chinese-oral-concept="${escapeHtml(key)}" data-oral-concept="${escapeHtml(concept)}" type="button">${escapeHtml(concept)}</button>`).join("")}
       </div>
@@ -8827,15 +10208,14 @@ function renderListeningZone(pack, steps, mode, progress) {
   return `
     <article class="course-listening-card">
       <div class="course-card-head">
-        <div><span>1-4</span><h3>每日英语听力阶段</h3><p>先看完说明，去 App 连续完成四步，回来只点一次完成</p></div>
-        <strong>${steps.reduce((sum, step) => sum + getStepMinutes(step, mode), 0)} 分钟</strong>
+        <div><span>1-4</span><h3>应用内学习</h3></div>
       </div>
-      <div class="course-app-path"><strong>App路径</strong><span>${escapeHtml(renderAppPath(pack))}</span></div>
+      <div class="course-app-path"><strong>路径</strong><span>${escapeHtml(renderAppPath(pack))}</span></div>
       <ol class="app-stage-list">
         ${steps.map((step) => `<li><strong>${escapeHtml(step.titleZh)}</strong><span>${escapeHtml(getEnglishStepInstructionText(step))}</span></li>`).join("")}
       </ol>
       <div class="actions compact">
-        <button class="button success compact-button" data-english-app-complete="${escapeHtml(key)}" type="button">${itemProgress.finishedAt ? "App阶段已完成" : "已完成App阶段，继续"}<br /><span>Continue</span></button>
+        <button class="button success compact-button" data-english-app-complete="${escapeHtml(key)}" type="button">${itemProgress.finishedAt ? "已完成" : "完成"}</button>
       </div>
     </article>
   `;
@@ -8852,8 +10232,7 @@ function renderEnglishStep(pack, step, index, mode, progress, compact = false) {
   return `
     <article class="${compact ? "course-mini-step" : "course-card"}" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
-        <div><span>${step.number || index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(step.titleZh)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: step.expectedAnswer || step.acceptedAnswers?.join(" ") || "" }))}<p>${escapeHtml(toolLabel(step.tool))}</p></div>
-        <strong>${getStepMinutes(step, mode)} 分钟</strong>
+        <div><span>${step.number || index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(step.titleZh)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: step.expectedAnswer || step.acceptedAnswers?.join(" ") || "" }))}</div>
       </div>
       ${body}
       ${renderCourseItemControls(key, itemProgress)}
@@ -8866,27 +10245,26 @@ function renderEnglishStepBody(pack, step, mode) {
   if (step.id === "phonics" || step.focus) {
     const child = step.childVisible || {};
     const items = child.items?.length ? child.items : step.items || [];
-    return `<div class="phonics-panel"><strong>${escapeHtml(step.focus || "声音发现")}</strong><p>${escapeHtml(child.instructionZh || "听读整词即可，不要求拼写。")}</p><div class="course-chip-list">${items.map((item) => `<span>${escapeHtml(item.text || item)}</span>`).join("")}</div></div>`;
+    return `<div class="phonics-panel"><strong>${escapeHtml(step.focus || "声音发现")}</strong><p>${escapeHtml(cleanStudentInstructionText(child.instructionZh || "听读整词即可，不要求拼写。"))}</p><div class="course-chip-list">${items.map((item) => `<span>${escapeHtml(item.text || item)}</span>`).join("")}</div></div>`;
   }
   if (step.id === "dialogue_exit" || step.dialogue?.length) {
     const child = step.childVisible || {};
     const actions = child.actionsZh || [];
-    return `<div class="dialogue-panel"><p>${escapeHtml(child.instructionZh || "听一句话并自然回答。")}</p>${actions.length ? `<ul>${actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}</div>`;
+    return `<div class="dialogue-panel"><p>${escapeHtml(cleanStudentInstructionText(child.instructionZh || "听一句话并自然回答。"))}</p>${actions.length ? `<ul>${actions.map((item) => `<li>${escapeHtml(cleanStudentInstructionText(item))}</li>`).join("")}</ul>` : ""}</div>`;
   }
   const child = step.childVisible || {};
   if (child.instructionZh || child.actionsZh?.length) {
     return `
       <div class="course-instructions">
-        ${child.instructionZh ? `<p>${escapeHtml(child.instructionZh)}</p>` : ""}
-        ${child.actionsZh?.length ? `<ul>${child.actionsZh.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+        ${child.instructionZh ? `<p>${escapeHtml(cleanStudentInstructionText(child.instructionZh))}</p>` : ""}
+        ${child.actionsZh?.length ? `<ul>${child.actionsZh.map((item) => `<li>${escapeHtml(cleanStudentInstructionText(item))}</li>`).join("")}</ul>` : ""}
       </div>
     `;
   }
   return `
     <div class="course-instructions">
-      ${step.parentSaysZh ? `<p><strong>家长说</strong>${escapeHtml(step.parentSaysZh)}</p>` : ""}
-      ${step.actionsZh?.length ? `<ul>${step.actionsZh.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
-      ${step.successCriteriaZh ? `<p><strong>结束标准</strong>${escapeHtml(step.successCriteriaZh)}</p>` : ""}
+      ${step.actionsZh?.length ? `<ul>${step.actionsZh.map((item) => `<li>${escapeHtml(cleanStudentInstructionText(item))}</li>`).join("")}</ul>` : ""}
+      ${step.successCriteriaZh ? `<p><strong>完成标准</strong>${escapeHtml(cleanStudentInstructionText(step.successCriteriaZh))}</p>` : ""}
     </div>
   `;
 }
@@ -8898,7 +10276,7 @@ function renderCourseBlocks(step, pack) {
   const blocks = getCourseBlockPool(step, pack);
   return `
     <div class="course-block-builder">
-      <p>${escapeHtml(step.childVisible?.instructionZh || "点击积木，拼出今天的句子")}</p>
+      <p>${escapeHtml(cleanStudentInstructionText(step.childVisible?.instructionZh || "点击积木，拼出本课句子"))}</p>
       <div class="course-block-pool">
         ${blocks.map((block, index) => selected.includes(index) ? "" : `<button class="block-chip" data-course-block="${escapeHtml(key)}" data-block-index="${index}" type="button">${escapeHtml(block)}</button>`).join("")}
       </div>
@@ -8906,10 +10284,10 @@ function renderCourseBlocks(step, pack) {
         ${selected.map((index) => `<button class="block-chip selected" data-course-block="${escapeHtml(key)}" data-block-index="${index}" type="button">${escapeHtml(blocks[index] || "")}</button>`).join("") || "<span>你的答案区</span>"}
       </div>
       <div class="actions compact">
-        <button class="button primary compact-button" data-course-submit-blocks="${escapeHtml(key)}" type="button">提交<br /><span>Submit</span></button>
-        <button class="button secondary compact-button" data-course-reset-blocks="${escapeHtml(key)}" type="button">重置<br /><span>Reset</span></button>
+        <button class="button primary compact-button" data-course-submit-blocks="${escapeHtml(key)}" type="button">提交</button>
+        <button class="button secondary compact-button" data-course-reset-blocks="${escapeHtml(key)}" type="button">重置</button>
       </div>
-      ${step.childVisible?.transferCueZh ? `<p class="pack-muted">${escapeHtml(step.childVisible.transferCueZh)}</p>` : ""}
+      ${step.childVisible?.transferCueZh ? `<p class="pack-muted">${escapeHtml(cleanStudentInstructionText(step.childVisible.transferCueZh))}</p>` : ""}
       <p class="course-block-feedback" data-block-feedback="${escapeHtml(key)}">${escapeHtml(progress.english.steps[key]?.blockFeedback || "")}</p>
     </div>
   `;
@@ -8917,17 +10295,28 @@ function renderCourseBlocks(step, pack) {
 
 function getEnglishStepInstructionText(step) {
   const child = step?.childVisible || {};
-  return child.instructionZh || child.actionsZh?.[0] || step.actionsZh?.[0] || step.titleZh || "";
+  return cleanStudentInstructionText(child.instructionZh || child.actionsZh?.[0] || step.actionsZh?.[0] || step.titleZh || "");
+}
+
+function cleanStudentInstructionText(value) {
+  return String(value || "")
+    .replace(/今天的原句/g, "本课原句")
+    .replace(/今天的句子/g, "本课句子")
+    .replace(/今天的积木/g, "本课积木")
+    .replace(/今天场景/g, "本课场景")
+    .replace(/今天最会的一块/g, "掌握最好的一块")
+    .replace(/完成今天的/g, "完成本课的")
+    .trim();
 }
 
 function renderCourseItemControls(key, itemProgress) {
   const isChinese = key.startsWith("chinese:");
-  const completeLabel = isChinese ? "确认" : "完成本环节";
+  const completeLabel = isChinese ? "确认" : "完成";
   const completeClass = isChinese ? "primary chinese-confirm-button" : "success";
   return `
     <div class="course-controls ${isChinese ? "is-chinese-confirm" : ""}">
       <div class="course-timing-row">
-        <button class="button ${completeClass} compact-button" data-course-complete="${escapeHtml(key)}" type="button">${escapeHtml(completeLabel)}${isChinese ? "" : "<br /><span>Done</span>"}</button>
+        <button class="button ${completeClass} compact-button" data-course-complete="${escapeHtml(key)}" type="button">${escapeHtml(completeLabel)}</button>
       </div>
       ${isChinese && itemProgress.confirmationMessage ? `<p class="course-confirm-message" role="alert">${escapeHtml(itemProgress.confirmationMessage)}</p>` : ""}
       <div class="course-result-row">
@@ -8938,36 +10327,7 @@ function renderCourseItemControls(key, itemProgress) {
 }
 
 function renderRecordingCard(activityKey, config, course) {
-  if (!config || config.mode === "none") return "";
-  const progress = getCourseProgress();
-  const side = progress?.[course] || {};
-  const bucket = getCourseBucket(progress, activityKey);
-  const item = bucket[activityKey] || {};
-  const clips = getRecordingClipsForActivity(activityKey);
-  const consent = side.recordingConsent;
-  const canRecord = consent === true && !side.recordingUnavailable;
-  const isActive = activeRecording?.activityKey === activityKey;
-  return `
-    <div class="recording-card" data-recording-card="${escapeHtml(activityKey)}">
-      <div class="recording-card-head">
-        <span class="recording-dot" aria-hidden="true"></span>
-        <div>
-          <strong>${escapeHtml(config.promptZh || "准备好了吗？")}</strong>
-          <p>${escapeHtml(config.startCueZh || "准备好后点麦克风")} · 最长 ${config.maxSeconds || 120} 秒</p>
-        </div>
-      </div>
-      ${consent === undefined ? `<p class="pack-muted">需要录音时请使用课程顶部的录音按钮。</p>` : ""}
-      ${consent === false ? `<p class="pack-muted">未开启录音，本题仍可继续完成。</p>` : ""}
-      ${side.recordingUnavailable ? `<p class="pack-warning">麦克风不可用：${escapeHtml(side.recordingUnavailableReason || "授权失败或浏览器不支持")}。</p>` : ""}
-      <div class="recording-status" data-recording-status="${escapeHtml(activityKey)}">${escapeHtml(item.recordingStatusText || (clips.length ? `已保存 ${clips.length} 段录音` : "尚未录音"))}</div>
-      <div class="actions compact">
-        <button class="button recording-start-button compact-button" data-recording-action="start" data-recording-key="${escapeHtml(activityKey)}" data-recording-course="${escapeHtml(course)}" ${canRecord && !isActive ? "" : "disabled"} type="button">开始录音<br /><span>Audio</span></button>
-        <button class="button recording-stop-button compact-button" data-recording-action="stop" data-recording-key="${escapeHtml(activityKey)}" ${isActive ? "" : "disabled"} type="button">我说完了<br /><span>Done</span></button>
-        ${config.allowMultipleTakes ? `<button class="button ghost compact-button" data-recording-action="retake" data-recording-key="${escapeHtml(activityKey)}" data-recording-course="${escapeHtml(course)}" ${canRecord && !isActive ? "" : "disabled"} type="button">重录<br /><span>Retake</span></button>` : ""}
-      </div>
-      ${clips.length ? `<div class="recording-clips">${clips.map((clip) => `<span>${escapeHtml(clip.status === "complete" ? "已保存" : "可恢复")} · ${Math.round(clip.duration || 0)}秒 · ${escapeHtml(clip.mimeType || "")}</span>`).join("")}</div>` : ""}
-    </div>
-  `;
+  return "";
 }
 
 function renderBreakCard(key, title, minutes = 5, itemProgress = {}, instruction = "") {
@@ -8977,14 +10337,12 @@ function renderBreakCard(key, title, minutes = 5, itemProgress = {}, instruction
     <article class="course-card break-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
         <div><span>休</span><h3>${escapeHtml(title || "休息一下")}</h3><p>${escapeHtml(instruction || "喝水、看远处，放松一下")}</p></div>
-        <strong>休息 ${minutes || 5} 分钟</strong>
       </div>
       <div class="break-countdown ${active ? "is-active" : ""}" aria-live="polite">${formatClock(remainingMs)}</div>
       <div class="actions compact">
-        <button class="button secondary compact-button" data-break-start="${escapeHtml(key)}" data-break-minutes="${Number(minutes || 5)}" ${active ? "disabled" : ""} type="button">开始${Number(minutes || 5)}分钟休息<br /><span>Break</span></button>
-        <button class="button primary compact-button" data-break-end="${escapeHtml(key)}" ${active ? "" : "disabled"} type="button">提前结束休息<br /><span>End</span></button>
+        <button class="button secondary compact-button" data-break-start="${escapeHtml(key)}" data-break-minutes="${Number(minutes || 5)}" ${active ? "disabled" : ""} type="button">开始</button>
+        <button class="button primary compact-button" data-break-end="${escapeHtml(key)}" ${active ? "" : "disabled"} type="button">结束</button>
       </div>
-      <p class="pack-muted">休息时间只计入 breakMinutes，不计入有效学习时间。</p>
     </article>
   `;
 }
@@ -8996,8 +10354,13 @@ function formatClock(ms) {
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
 }
 
-function getRecordingClipsForActivity(activityKey) {
-  return Object.values(state.recordingClips || {}).filter((clip) => clip.activityId === activityKey && clip.includeInFeedback !== false);
+function getRecordingClipsForActivity(activityKey, options = {}) {
+  return Object.values(state.recordingClips || {}).filter((clip) => (
+    clip.activityId === activityKey &&
+    clip.includeInFeedback !== false &&
+    (!options.packId || clip.packId === options.packId) &&
+    (!options.sessionId || clip.sessionId === options.sessionId)
+  ));
 }
 
 function getCourseRecordingKey(kind) {
@@ -9005,14 +10368,18 @@ function getCourseRecordingKey(kind) {
 }
 
 function getCourseRecordingClips(kind) {
-  const sessionId = getCourseProgress()?.[kind]?.sessionId || "";
-  return getRecordingClipsForActivity(getCourseRecordingKey(kind))
-    .filter((clip) => !sessionId || clip.sessionId === sessionId)
+  const pack = getActivePackForCourse(kind);
+  const progress = pack ? state.courseProgress?.[pack.packId] : null;
+  const sessionId = progress?.[kind]?.sessionId || "";
+  return getRecordingClipsForActivity(getCourseRecordingKey(kind), { packId: pack?.packId || "", sessionId })
     .sort((a, b) => Number(a.segmentIndex || 0) - Number(b.segmentIndex || 0) || String(a.startedAt).localeCompare(String(b.startedAt)));
 }
 
-function getCourseRecordingUiState(kind, side = getCourseProgress()?.[kind]) {
-  const active = activeRecording?.course === kind && activeRecording?.activityKey === getCourseRecordingKey(kind);
+function getCourseRecordingUiState(kind, side = getActiveProgressForCourse(kind)?.[kind]) {
+  const pack = getActivePackForCourse(kind);
+  const active = activeRecording?.course === kind &&
+    activeRecording?.activityKey === getCourseRecordingKey(kind) &&
+    (!pack?.packId || activeRecording?.packId === pack.packId);
   const clips = getCourseRecordingClips(kind);
   if (side?.recordingUnavailable) return "unavailable";
   if (side?.courseRecordingStatus === "requesting") return "requesting";
@@ -9025,77 +10392,71 @@ function getCourseRecordingUiState(kind, side = getCourseProgress()?.[kind]) {
   return "idle";
 }
 
-function renderCourseRecordingPanel(kind, progress) {
-  const stateName = getCourseRecordingUiState(kind, progress);
-  const clips = getCourseRecordingClips(kind);
-  const totalSeconds = Math.round(clips.reduce((sum, clip) => sum + (clip.duration || 0), 0));
-  const activeSeconds = activeRecording?.course === kind && activeRecording.startedAtMs ? Math.max(0, Math.round((Date.now() - activeRecording.startedAtMs) / 1000)) : 0;
-  const statusText = {
-    idle: "未开始录音",
-    requesting: "正在准备录音",
-    recording: `● 录音中 ${formatElapsed(activeSeconds * 1000)}`,
-    paused: "录音已暂停",
-    saving: "正在保存",
-    saved: `已保存 ${formatElapsed(totalSeconds * 1000)}`,
-    interrupted: "录音已中断，已保存前面的内容",
-    unavailable: `录音不可用：${progress.recordingUnavailableReason || "允许麦克风后重试"}`
-  }[stateName] || "未开始录音";
-  const button = (label, action, extra = "secondary") => `<button class="button ${extra} compact-button" data-course-recording-action="${action}" data-course-recording-kind="${kind}" type="button">${label}</button>`;
-  const actions = {
-    idle: button("开始录音", "start", "primary"),
-    requesting: `<button class="button secondary compact-button" disabled type="button">正在准备录音</button>`,
-    recording: `${button("暂停录音", "pause")}${button("结束并保存", "save", "primary")}`,
-    paused: `${button("继续录音", "resume", "primary")}${button("结束并保存", "save")}`,
-    saving: `<button class="button secondary compact-button" disabled type="button">正在保存</button>`,
-    saved: `${button("播放", "play")}${button("重新录音", "restart")}${button("删除录音", "delete", "ghost")}`,
-    interrupted: `${button("继续录音", "resume", "primary")}${button("保存现有录音", "save")}`,
-    unavailable: button("允许麦克风后重试", "start", "secondary")
-  }[stateName];
+function getCourseToolbarModel(kind, progress) {
+  normalizeCourseTimer(progress);
+  const elapsed = getCourseElapsed(progress);
+  const started = hasCourseTimerStarted(progress);
+  const running = Boolean(progress.isRunning);
+  const recordingState = getCourseRecordingUiState(kind, progress);
+  const recordingPressed = ["recording", "paused", "interrupted"].includes(recordingState);
+  const savedFlash = recordingState === "saved" && Number(progress.recordingSavedUiUntil || 0) > Date.now();
+  return {
+    kind,
+    elapsed,
+    elapsedText: started ? formatElapsed(elapsed) : "计时",
+    started,
+    running,
+    recordingState,
+    recordingPressed,
+    savedFlash,
+    showMicError: recordingState === "unavailable"
+  };
+}
+
+function renderCourseToolbarControls(kind, progress, options = {}) {
+  const model = getCourseToolbarModel(kind, progress);
+  const pauseAction = model.running ? `data-course-pause="${kind}"` : model.started ? `data-course-session-start="${kind}"` : "";
+  const pauseLabel = model.running ? "暂停计时" : "继续计时";
+  const recordingDisabled = ["requesting", "saving"].includes(model.recordingState);
+  const recordingLabel = model.recordingPressed ? "停止并保存录音" : "开始录音";
+  const timerLabel = model.started ? `已计时 ${formatElapsedForAria(model.elapsed)}` : "计时";
+  const recordingClass = model.recordingState === "requesting"
+    ? "is-requesting"
+    : model.recordingPressed
+      ? "is-recording"
+      : model.savedFlash
+        ? "is-saved"
+        : "";
   return `
-    <div class="recording-consent course-recording-panel" data-course-recording-panel="${escapeHtml(kind)}">
-      <strong>录音</strong>
-      <p>整节中文课录音默认只保存在本机，不自动上传。</p>
-      <div class="recording-status">${escapeHtml(statusText)}</div>
-      <div class="actions compact">${actions}</div>
-      ${clips.length ? `<div class="recording-clips">${clips.map((clip) => `<span>${escapeHtml(clip.status === "interrupted" ? "已中断" : "已保存")} · 第 ${Number(clip.segmentIndex || 0) + 1} 段 · ${Math.round(clip.duration || 0)}秒</span>`).join("")}</div>` : ""}
-    </div>
+    <button class="course-toolbar-time" data-course-timer-display="${escapeHtml(kind)}" ${model.started ? "disabled" : `data-course-session-start="${escapeHtml(kind)}"`} aria-label="${escapeHtml(timerLabel)}" type="button">${escapeHtml(model.elapsedText)}</button>
+    <button class="course-toolbar-icon course-toolbar-pause ${model.running ? "shows-pause" : "shows-resume"}" ${pauseAction} ${model.started ? "" : "disabled"} aria-label="${pauseLabel}" aria-pressed="${model.started && !model.running ? "true" : "false"}" type="button"><span aria-hidden="true">${model.running ? "Ⅱ" : "▷"}</span></button>
+    <button class="course-toolbar-icon course-toolbar-reset" data-course-session-reset="${escapeHtml(kind)}" ${model.started || model.elapsed > 0 ? "" : "disabled"} aria-label="复位计时" type="button"><span aria-hidden="true">↻</span></button>
+    <button class="course-toolbar-record ${recordingClass}" data-course-recording-action="toggle" data-course-recording-kind="${escapeHtml(kind)}" ${recordingDisabled ? "disabled" : ""} aria-label="${recordingLabel}" aria-pressed="${model.recordingPressed ? "true" : "false"}" type="button"><span aria-hidden="true">${model.savedFlash ? "✓" : ""}</span></button>
+    <span class="course-toolbar-error" role="status" ${model.showMicError ? "" : "hidden"}>麦克风未授权</span>
+    <span class="sr-only" aria-live="polite" data-course-toolbar-live="${escapeHtml(kind)}">${escapeHtml(model.running ? `计时 ${model.elapsedText}` : model.started ? `已暂停 ${model.elapsedText}` : "计时未开始")}</span>
   `;
 }
 
 function renderCourseStartSettings(kind, progress, items) {
-  normalizeCourseTimer(progress);
-  const isRunning = Boolean(progress.isRunning);
-  const hasStarted = Boolean(progress.startedAt);
-  const elapsed = getCourseElapsed(progress, progress.sections || progress.steps || {});
-  const statusText = isRunning ? `计时中 ${formatElapsed(elapsed)}` : hasStarted ? `已暂停 ${formatElapsed(elapsed)}` : "尚未开始 0:00";
   return `
     <div class="course-start-settings">
-      <p class="course-tool-note">⏱ 开始今天的学习只记录用时；需要录音时点“开始录音”。</p>
-      <div class="course-session-start" data-course-timer-root="${escapeHtml(kind)}">
-        ${isRunning
-          ? `<button class="button secondary compact-button" data-course-pause="${kind}" type="button">暂停<br /><span>Pause</span></button>`
-          : `<button class="button primary compact-button" data-course-session-start="${kind}" type="button">${hasStarted ? "继续" : "开始今天的学习"}<br /><span>${hasStarted ? "Resume" : "Start"}</span></button>`}
-        <button class="button ghost compact-button" data-course-session-reset="${escapeHtml(kind)}" type="button">↻ 重新开始本星球<br /><span>Restart</span></button>
-        <strong data-course-timer-display="${escapeHtml(kind)}">${statusText}</strong>
+      <div class="course-toolbar" data-course-toolbar="${escapeHtml(kind)}" data-course-timer-root="${escapeHtml(kind)}" role="toolbar" aria-label="${escapeHtml(courseLabel(kind))}课程工具">
+        ${renderCourseToolbarControls(kind, progress)}
       </div>
-      ${kind === "chinese" ? renderCourseRecordingPanel(kind, progress) : ""}
     </div>
   `;
 }
 
 function renderCourseEndFeedback(kind, progress, items) {
-  const hardestOptions = items.map((item, index) => ({ id: item.id || `item_${index}`, title: item.title || item.titleZh || `第 ${index + 1} 步` }));
+  const hardestOptions = items.map((item, index) => ({ id: item.id || `item_${index}`, title: getStudentSectionTitle(item.title || item.titleZh || `第 ${index + 1} 步`) }));
   const selectedHardest = progress.hardestSections || (progress.hardest ? [progress.hardest] : []);
   return `
     <article class="course-end-feedback">
       <div class="section-title">
-        <div>
-          <p>${escapeHtml(courseLabel(kind))}反馈 / Feedback</p>
-          <h2>今天学得怎么样？</h2>
-        </div>
+        <h2>学习反馈</h2>
       </div>
       <div class="course-feedback-controls">
-      <label>孩子轻松度 <input data-course-ease="${kind}" data-ease-kind="childEase" type="number" min="0" max="10" value="${progress.childEase ?? ""}" /></label>
+      <label>学习轻松度 <input data-course-ease="${kind}" data-ease-kind="childEase" type="number" min="0" max="10" value="${progress.childEase ?? ""}" /></label>
       <label>家长轻松度 <input data-course-ease="${kind}" data-ease-kind="parentEase" type="number" min="0" max="10" value="${progress.parentEase ?? ""}" /></label>
       <div class="hardest-picker">
         <strong>最困难环节（可多选）</strong>
@@ -9106,8 +10467,7 @@ function renderCourseEndFeedback(kind, progress, items) {
       </div>
       <label class="course-note">备注 <textarea data-course-note="${kind}" rows="2">${escapeHtml(progress.note || "")}</textarea></label>
       <div class="actions compact course-session-actions">
-        <button class="button secondary compact-button" data-course-pause="${kind}" type="button">暂停并保存<br /><span>Pause</span></button>
-        <button class="button primary compact-button" data-course-end="${kind}" type="button">结束本次学习<br /><span>Save</span></button>
+        <button class="button primary compact-button" data-course-end="${kind}" type="button">完成课程</button>
       </div>
       </div>
     </article>
@@ -9119,7 +10479,7 @@ function renderCourseFeedbackControls(kind, progress, items) {
 }
 
 function renderEmptyCourse(text) {
-  return `<div class="pack-error"><strong>${escapeHtml(text)}</strong><p>回到今日页面粘贴学习包即可开始。</p></div>`;
+  return `<div class="pack-error"><strong>${escapeHtml(text)}</strong></div>`;
 }
 
 function getFullCourseReadiness(pack, side = "all") {
@@ -9221,6 +10581,7 @@ async function startCourseSession(kind, options = {}) {
   const now = Date.now();
   pauseOtherRunningCoursesAcrossProgress(progress, kind, "switched_course", { skipRecording: true });
   side.startedAt ||= new Date(now).toISOString();
+  side.timerStartedAt ||= new Date(now).toISOString();
   side.accumulatedMs = Number(side.accumulatedMs || 0);
   side.isRunning = true;
   side.runningSince = now;
@@ -9238,20 +10599,34 @@ async function startCourseSession(kind, options = {}) {
 function getCourseElapsed(side, map = {}) {
   normalizeCourseTimer(side);
   const delta = side?.isRunning && side?.runningSince ? Math.max(0, Date.now() - Number(side.runningSince)) : 0;
-  const sessionElapsed = clampDuration((side?.accumulatedMs || 0) + delta);
-  return sessionElapsed || getTotalElapsed(map);
+  return clampDuration((side?.accumulatedMs || 0) + delta);
 }
 
 function normalizeCourseTimer(side) {
   if (!side) return side;
   side.timerModelVersion ||= COURSE_TIMER_MODEL_VERSION;
-  if (side.accumulatedMs === undefined) side.accumulatedMs = clampDuration(Number(side.elapsedMs || 0));
+  const accumulated = clampDuration(Math.max(Number(side.accumulatedMs || 0), Number(side.elapsedMs || 0)));
+  const hasLegacyTimerEvidence = Boolean(side.isRunning || side.runningSince || accumulated > 0);
+  if (!side.timerStartedAt && hasLegacyTimerEvidence) {
+    side.timerStartedAt = side.startedAt || new Date().toISOString();
+  }
+  side.timerStartedAt ||= "";
+  side.accumulatedMs = accumulated;
   if (side.isRunning === undefined) side.isRunning = Boolean(side.runningSince);
   if (side.isRunning && !side.runningSince) side.runningSince = Date.now();
   if (!side.isRunning) side.runningSince = null;
   side.accumulatedMs = clampDuration(Number(side.accumulatedMs || 0));
   side.elapsedMs = side.accumulatedMs;
   return side;
+}
+
+function hasCourseTimerStarted(side) {
+  return Boolean(
+    side?.timerStartedAt ||
+    side?.isRunning ||
+    side?.runningSince ||
+    Number(side?.accumulatedMs || 0) > 0
+  );
 }
 
 function pauseCourseItem(key) {
@@ -9332,7 +10707,10 @@ function completeCourseItem(key) {
   const nextItem = { ...item, elapsedMs, runningSince: null, finishedAt, result: item.result || "independent" };
   if (key.startsWith("english:")) appendEnglishStepAttempt(nextItem, key, progress, finishedAt);
   bucket[key] = nextItem;
-  if (key.startsWith("chinese:")) progress.chinese.finishedAt = maybeAllDone(progress.chinese.sections) ? new Date().toISOString() : progress.chinese.finishedAt;
+  if (key.startsWith("chinese:")) {
+    recordPassiveRecognitionFromCompletedReading(key);
+    progress.chinese.finishedAt = maybeAllDone(progress.chinese.sections) ? new Date().toISOString() : progress.chinese.finishedAt;
+  }
   if (key.startsWith("english:")) progress.english.finishedAt = maybeAllDone(progress.english.steps) ? new Date().toISOString() : progress.english.finishedAt;
   saveState();
   rerenderCourseViews();
@@ -9573,18 +10951,15 @@ async function resetCourseSession(kind) {
   const pack = getActivePackForCourse(kind);
   const progress = pack ? getCourseProgress(pack.packId) : getCourseProgress();
   if (!pack || !progress?.[kind]) return false;
-  const label = courseLabel(kind);
-  const ok = confirm(`确认重新开始${label}吗？只会重置当前日期、当前课包、当前星球的本次学习；不影响其他星球、其他日期和已保存录音。`);
-  if (!ok) return false;
-  if (activeRecording?.course === kind) await stopActiveRecording("course_reset");
-  const previousMode = progress.english?.selectedMode || "";
-  const fresh = createDefaultCourseSide(kind, pack.packId);
-  fresh.courseId = getCourseId(pack, kind);
-  fresh.lessonId = getLessonId(pack, kind);
-  if (kind === "english") fresh.selectedMode = previousMode || pack.english?.lesson?.defaultMode || pack.sharedPlan?.defaultEnglishMode || pack.loadMode || "light";
-  progress[kind] = fresh;
-  progress.breaks = (progress.breaks || []).filter((entry) => !String(entry.activityId || "").startsWith(`${kind}:`));
-  initializeCourseProgress(pack);
+  const side = progress[kind];
+  side.timerStartedAt = "";
+  side.accumulatedMs = 0;
+  side.elapsedMs = 0;
+  side.isRunning = false;
+  side.runningSince = null;
+  side.lastHeartbeatAt = "";
+  side.timerModelVersion = COURSE_TIMER_MODEL_VERSION;
+  side.timerResetAt = new Date().toISOString();
   saveState();
   rerenderCourseViews();
   updateCourseTimerUi();
@@ -9655,7 +11030,7 @@ function isCourseItemLocked(key, progress = getCourseProgress(), pack = getLates
 }
 
 function setRecordingConsent(kind, value) {
-  const progress = getCourseProgress();
+  const progress = getActiveProgressForCourse(kind);
   if (!progress?.[kind]) return;
   progress[kind].recordingConsent = value === "yes";
   progress[kind].recordingUnavailable = false;
@@ -9667,6 +11042,12 @@ function setRecordingConsent(kind, value) {
 async function handleCourseRecordingAction(button) {
   const action = button.dataset.courseRecordingAction;
   const kind = button.dataset.courseRecordingKind || "chinese";
+  if (action === "toggle") {
+    const recordingState = getCourseRecordingUiState(kind);
+    if (["requesting", "saving"].includes(recordingState)) return null;
+    if (["recording", "paused", "interrupted"].includes(recordingState)) return saveCourseRecording(kind);
+    return startCourseRecording(kind);
+  }
   if (action === "start") return startCourseRecording(kind);
   if (action === "pause") return pauseCourse(kind);
   if (action === "resume") {
@@ -9682,12 +11063,16 @@ async function handleCourseRecordingAction(button) {
 }
 
 async function startCourseRecording(kind, options = {}) {
-  const progress = getCourseProgress();
+  const pack = getActivePackForCourse(kind);
+  const progress = pack ? getCourseProgress(pack.packId) : null;
   const side = progress?.[kind];
-  if (!side) return;
-  const alreadyActive = activeRecording?.course === kind && activeRecording?.activityKey === getCourseRecordingKey(kind);
+  if (!pack || !side) return;
+  const alreadyActive = activeRecording?.course === kind &&
+    activeRecording?.activityKey === getCourseRecordingKey(kind) &&
+    activeRecording?.packId === pack.packId &&
+    activeRecording?.sessionId === side.sessionId;
   if (recordingStartPending.has(kind) || side.courseRecordingStatus === "requesting" || alreadyActive) return;
-  if (activeRecording && activeRecording.course !== kind) await stopActiveRecording("replaced");
+  if (activeRecording) await stopActiveRecording("replaced");
   recordingStartPending.add(kind);
   side.recordingConsent = true;
   side.recordingUnavailable = false;
@@ -9696,7 +11081,14 @@ async function startCourseRecording(kind, options = {}) {
   saveState();
   try {
     if (!side.isRunning) await startCourseSession(kind, { skipRecordingSync: true });
-    await startOrRetakeRecording(getCourseRecordingKey(kind), kind, Boolean(options.replace), { category: "course_recording", skipConsent: true, immediate: true });
+    await startOrRetakeRecording(getCourseRecordingKey(kind), kind, Boolean(options.replace), {
+      category: "course_recording",
+      skipConsent: true,
+      immediate: true,
+      pack,
+      packId: pack.packId,
+      sessionId: side.sessionId
+    });
   } finally {
     recordingStartPending.delete(kind);
   }
@@ -9710,11 +11102,11 @@ function pauseActiveRecording(kind) {
     session.recorder.pause();
     session.paused = true;
     updateRecordingClip(session.clipId, { status: "paused" });
-    updateCourseRecordingStatus(kind, "paused");
-    updateActivityRecordingStatus(session.activityKey, "录音已暂停");
+    updateCourseRecordingStatus(kind, "paused", "", session);
+    updateActivityRecordingStatus(session.activityKey, "录音已暂停", session);
   } else {
     stopActiveRecording("paused");
-    updateCourseRecordingStatus(kind, "interrupted");
+    updateCourseRecordingStatus(kind, "interrupted", "paused", session);
   }
   saveState();
 }
@@ -9726,8 +11118,8 @@ function resumeActiveRecording(kind) {
     session.recorder.resume();
     session.paused = false;
     updateRecordingClip(session.clipId, { status: "recording" });
-    updateCourseRecordingStatus(kind, "recording");
-    updateActivityRecordingStatus(session.activityKey, "正在录音");
+    updateCourseRecordingStatus(kind, "recording", "", session);
+    updateActivityRecordingStatus(session.activityKey, "正在录音", session);
     saveState();
     rerenderCourseViews();
     return true;
@@ -9736,12 +11128,17 @@ function resumeActiveRecording(kind) {
 }
 
 async function saveCourseRecording(kind) {
-  updateCourseRecordingStatus(kind, "saving");
+  const pack = getActivePackForCourse(kind);
+  const progress = pack ? getCourseProgress(pack.packId) : null;
+  const context = activeRecording?.course === kind
+    ? activeRecording
+    : { packId: pack?.packId || "", sessionId: progress?.[kind]?.sessionId || "" };
+  updateCourseRecordingStatus(kind, "saving", "", context);
   if (activeRecording?.course === kind) {
     try { activeRecording.recorder?.requestData?.(); } catch {}
     await stopActiveRecording("complete");
   } else {
-    updateCourseRecordingStatus(kind, "saved");
+    updateCourseRecordingStatus(kind, "saved", "", context);
   }
   rerenderCourseViews();
 }
@@ -9754,13 +11151,17 @@ async function restartCourseRecording(kind) {
 
 async function deleteCourseRecording(kind, options = {}) {
   if (!options.skipConfirm && !confirm("确认删除当前日期中文课录音吗？学习进度和计时不会受影响。")) return;
-  if (activeRecording?.course === kind) await stopActiveRecording("deleted");
+  const pack = getActivePackForCourse(kind);
+  const progress = pack ? getCourseProgress(pack.packId) : null;
+  const sessionId = progress?.[kind]?.sessionId || "";
+  if (activeRecording?.course === kind && activeRecording?.packId === pack?.packId && activeRecording?.sessionId === sessionId) {
+    await stopActiveRecording("deleted");
+  }
   const clips = getCourseRecordingClips(kind);
   for (const clip of clips) {
     try { await deleteRecordingChunks(clip.clipId); } catch {}
     delete state.recordingClips?.[clip.clipId];
   }
-  const progress = getCourseProgress();
   if (progress?.[kind]) {
     progress[kind].courseRecordingStatus = "idle";
     progress[kind].recordingConsent = false;
@@ -9793,11 +11194,14 @@ async function playCourseRecording(kind) {
   await audio.play();
 }
 
-function updateCourseRecordingStatus(kind, status, reason = "") {
-  const progress = getCourseProgress();
+function updateCourseRecordingStatus(kind, status, reason = "", context = {}) {
+  const packId = context.packId || getActivePackForCourse(kind)?.packId || "";
+  const progress = packId ? getCourseProgress(packId) : null;
   if (!progress?.[kind]) return;
+  if (context.sessionId && progress[kind].sessionId !== context.sessionId) return;
   progress[kind].courseRecordingStatus = status;
   if (reason) progress[kind].recordingInterruptionReason = reason;
+  if (status === "saved") progress[kind].recordingSavedUiUntil = Date.now() + 1600;
   progress[kind].recordingUpdatedAt = new Date().toISOString();
   saveState();
 }
@@ -9820,30 +11224,34 @@ async function handleRecordingAction(button) {
 async function startOrRetakeRecording(activityKey, course, retake = false, options = {}) {
   stopReadAloud();
   if (activeRecording) await stopActiveRecording("replaced");
-  const progress = getCourseProgress();
+  const pack = options.pack || getActivePackForCourse(course);
+  const progress = pack ? getCourseProgress(options.packId || pack.packId) : null;
   const side = progress?.[course];
-  if (!side?.recordingConsent && !options.skipConsent) return;
+  const sessionId = options.sessionId || side?.sessionId || "";
+  if (!pack || !side || (side.sessionId && sessionId !== side.sessionId)) return;
+  if (!side.recordingConsent && !options.skipConsent) return;
   if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
-    markRecordingUnavailable(course, "当前浏览器不支持网页录音");
+    markRecordingUnavailable(course, "当前浏览器不支持网页录音", { packId: pack.packId, sessionId });
     return;
   }
   const mimeType = getSupportedRecordingMime();
   if (!mimeType) {
-    markRecordingUnavailable(course, "当前浏览器没有可用音频格式");
+    markRecordingUnavailable(course, "当前浏览器没有可用音频格式", { packId: pack.packId, sessionId });
     return;
   }
   try {
-    updateCourseRecordingStatus(course, "requesting");
+    updateCourseRecordingStatus(course, "requesting", "", { packId: pack.packId, sessionId });
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const pack = getLatestLearningPack();
     const bucket = getCourseBucket(progress, activityKey);
-    const existingTakes = getRecordingClipsForActivity(activityKey).length;
+    const clipFilter = { packId: pack.packId, sessionId };
+    const existingClips = getRecordingClipsForActivity(activityKey, clipFilter);
+    const existingTakes = existingClips.length;
     const takeNumber = existingTakes + 1;
     const clipId = `${pack.packId}-${activityKey.replace(/[^a-z0-9_-]+/gi, "-")}-${Date.now().toString(36)}`;
     const startedAt = new Date().toISOString();
     const clip = {
       clipId,
-      sessionId: side.sessionId || `${pack.packId}:${course}`,
+      sessionId,
       packId: pack.packId,
       planetId: course,
       courseId: getCourseId(pack, course),
@@ -9861,19 +11269,37 @@ async function startOrRetakeRecording(activityKey, course, retake = false, optio
       category: options.category || findRecordingConfigForActivity(pack, activityKey)?.category || "oral_answer",
       segmentIndex: existingTakes,
       interruptionReason: "",
-      retakeOf: retake ? getRecordingClipsForActivity(activityKey).at(-1)?.clipId || "" : ""
+      retakeOf: retake ? existingClips.at(-1)?.clipId || "" : ""
     };
     state.recordingClips ||= {};
     state.recordingClips[clipId] = clip;
     bucket[activityKey] = { ...(bucket[activityKey] || {}), recordingStatusText: "3秒后开始记录", recordingUnavailable: false };
     saveState();
     rerenderCourseViews();
-    activeRecording = { clipId, activityKey, course, stream, recorder: null, startedAtMs: 0, countdownTimer: null, maxTimer: null, requesting: true, paused: false };
+    activeRecording = {
+      clipId,
+      activityKey,
+      course,
+      packId: pack.packId,
+      sessionId,
+      stream,
+      recorder: null,
+      startedAtMs: 0,
+      countdownTimer: null,
+      maxTimer: null,
+      maxSeconds: getRecordingMaxSeconds(activityKey, course, pack),
+      requesting: true,
+      paused: false
+    };
     const begin = () => beginMediaRecorder(activeRecording, mimeType);
     if (options.immediate) begin();
     else activeRecording.countdownTimer = setTimeout(begin, 3000);
   } catch (error) {
-    markRecordingUnavailable(course, error?.name === "NotAllowedError" ? "麦克风授权被拒绝" : "麦克风无法启动");
+    markRecordingUnavailable(
+      course,
+      error?.name === "NotAllowedError" ? "麦克风授权被拒绝" : "麦克风无法启动",
+      { packId: pack.packId, sessionId }
+    );
   }
 }
 
@@ -9884,8 +11310,8 @@ function beginMediaRecorder(session, mimeType) {
   session.requesting = false;
   session.startedAtMs = Date.now();
   updateRecordingClip(session.clipId, { status: "recording" });
-  updateCourseRecordingStatus(session.course, "recording");
-  updateActivityRecordingStatus(session.activityKey, "正在记录");
+  updateCourseRecordingStatus(session.course, "recording", "", session);
+  updateActivityRecordingStatus(session.activityKey, "正在记录", session);
   session.stream?.getTracks?.().forEach((track) => {
     track.onended = () => {
       if (activeRecording?.clipId === session.clipId) stopActiveRecording("track_ended");
@@ -9898,7 +11324,7 @@ function beginMediaRecorder(session, mimeType) {
   recorder.onerror = () => stopActiveRecording("recorder_error");
   recorder.onstop = () => finishRecordingSession(session);
   recorder.start(RECORDING_TIMESLICE_MS);
-  session.maxTimer = setTimeout(() => stopActiveRecording("max_seconds"), getRecordingMaxSeconds(session.activityKey) * 1000);
+  session.maxTimer = setTimeout(() => stopActiveRecording("max_seconds"), session.maxSeconds * 1000);
   rerenderCourseViews();
 }
 
@@ -9933,23 +11359,32 @@ function finishRecordingSession(session) {
     status: interrupted ? "interrupted" : "complete"
   });
   session.stream?.getTracks?.().forEach((track) => track.stop());
-  updateActivityRecordingStatus(session.activityKey, interrupted ? "录音已中断，可继续录一段" : "录音已保存");
-  updateCourseRecordingStatus(session.course, interrupted ? "interrupted" : "saved", clip?.interruptionReason || "");
+  updateActivityRecordingStatus(session.activityKey, interrupted ? "录音已中断，可继续录一段" : "录音已保存", session);
+  updateCourseRecordingStatus(session.course, interrupted ? "interrupted" : "saved", clip?.interruptionReason || "", session);
   saveState();
   rerenderCourseViews();
 }
 
-function updateActivityRecordingStatus(activityKey, text) {
-  const progress = getCourseProgress();
+function updateActivityRecordingStatus(activityKey, text, context = {}) {
+  const course = context.course || getCourseKindFromKey(activityKey);
+  const packId = context.packId || getActivePackForCourse(course)?.packId || "";
+  const progress = packId ? getCourseProgress(packId) : null;
+  if (!progress || (context.sessionId && progress[course]?.sessionId !== context.sessionId)) return;
   const bucket = getCourseBucket(progress, activityKey);
-  const clipIds = getRecordingClipsForActivity(activityKey).map((clip) => clip.clipId);
+  const clipIds = getRecordingClipsForActivity(activityKey, {
+    packId,
+    sessionId: context.sessionId || progress[course]?.sessionId || ""
+  }).map((clip) => clip.clipId);
   bucket[activityKey] = { ...(bucket[activityKey] || {}), recordingStatusText: text, recordingClipIds: clipIds, recordingUpdatedAt: new Date().toISOString() };
   saveState();
 }
 
-function markRecordingUnavailable(course, reason) {
-  const progress = getCourseProgress();
+function markRecordingUnavailable(course, reason, context = {}) {
+  const packId = context.packId || getActivePackForCourse(course)?.packId || "";
+  const progress = packId ? getCourseProgress(packId) : null;
   if (!progress?.[course]) return;
+  if (context.sessionId && progress[course].sessionId !== context.sessionId) return;
+  progress[course].courseRecordingStatus = "idle";
   progress[course].recordingUnavailable = true;
   progress[course].recordingUnavailableReason = reason;
   saveState();
@@ -9976,8 +11411,9 @@ function findRecordingConfigForActivity(pack, activityKey) {
   return null;
 }
 
-function getRecordingMaxSeconds(activityKey) {
-  const config = findRecordingConfigForActivity(getLatestLearningPack(), activityKey);
+function getRecordingMaxSeconds(activityKey, course = getCourseKindFromKey(activityKey), pack = getActivePackForCourse(course)) {
+  if (activityKey === getCourseRecordingKey(course)) return COURSE_RECORDING_MAX_SECONDS;
+  const config = findRecordingConfigForActivity(pack, activityKey);
   return Math.min(RECORDING_MAX_SECONDS, Math.max(1, Number(config?.maxSeconds || 120)));
 }
 
@@ -10085,8 +11521,8 @@ function renderRecordingLibrary() {
           <strong>${escapeHtml(courseLabel(clip.planetId))} · ${escapeHtml(clip.activityId)}</strong>
           <p>${escapeHtml(clip.status)} · ${Math.round(clip.duration || 0)}秒 · ${escapeHtml(clip.mimeType || "")} · ${clip.chunkCount || 0} chunks</p>
           <div class="actions compact">
-            <button class="button secondary compact-button" data-recording-play="${escapeHtml(clip.clipId)}" type="button">试听<br /><span>Play</span></button>
-            <button class="button ghost compact-button" data-recording-delete="${escapeHtml(clip.clipId)}" type="button">删除<br /><span>Delete</span></button>
+            <button class="button secondary compact-button" data-recording-play="${escapeHtml(clip.clipId)}" type="button">试听</button>
+            <button class="button ghost compact-button" data-recording-delete="${escapeHtml(clip.clipId)}" type="button">删除</button>
           </div>
         </div>
       `).join("")}
@@ -10234,7 +11670,7 @@ function getStepMinutes(step, mode) {
 }
 
 function englishModeLabel(mode) {
-  return { recovery: "恢复 / Recovery", light: "轻量 / Light", standard: "标准 / Standard" }[mode] || mode;
+  return { recovery: "恢复", light: "轻量", standard: "标准" }[mode] || mode;
 }
 
 function toolLabel(tool) {
@@ -10259,10 +11695,24 @@ function getTotalElapsed(map) {
 }
 
 function formatElapsed(ms) {
-  const seconds = Math.max(0, Math.round((ms || 0) / 1000));
-  const minutes = Math.floor(seconds / 60);
+  const seconds = Math.max(0, Math.floor((ms || 0) / 1000));
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
   const rest = seconds % 60;
+  if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
   return `${minutes}:${String(rest).padStart(2, "0")}`;
+}
+
+function formatElapsedForAria(ms) {
+  const seconds = Math.max(0, Math.floor((ms || 0) / 1000));
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const rest = seconds % 60;
+  return [
+    hours ? `${hours}小时` : "",
+    minutes ? `${minutes}分钟` : "",
+    `${rest}秒`
+  ].filter(Boolean).join("");
 }
 
 function getCourseTimerState(kind) {
@@ -10270,13 +11720,14 @@ function getCourseTimerState(kind) {
   const progress = pack ? getCourseProgress(pack.packId) : getCourseProgress();
   const side = progress?.[kind];
   normalizeCourseTimer(side);
-  const elapsed = getCourseElapsed(side, side?.sections || side?.steps || {});
+  const elapsed = getCourseElapsed(side);
+  const started = hasCourseTimerStarted(side);
   return {
     kind,
-    started: Boolean(side?.startedAt),
+    started,
     running: Boolean(side?.isRunning),
     elapsed,
-    label: side?.isRunning ? `计时中 ${formatElapsed(elapsed)}` : side?.startedAt ? `已暂停 ${formatElapsed(elapsed)}` : "尚未开始 0:00"
+    elapsedText: started ? formatElapsed(elapsed) : "计时"
   };
 }
 
@@ -10324,30 +11775,50 @@ function ensureCourseFloatingTimer() {
   }
   bar = document.createElement("div");
   bar.id = "courseFloatingTimer";
-  bar.className = "course-floating-timer";
+  bar.className = "course-floating-timer course-toolbar";
+  bar.setAttribute?.("role", "toolbar");
   bar.hidden = true;
-  bar.innerHTML = `
-    <span data-floating-timer-label>尚未开始 0:00</span>
-    <span class="floating-recording-state" data-floating-recording-state hidden></span>
-    <button class="button secondary compact-button" data-floating-timer-action type="button">开始今天的学习</button>
-  `;
   document.body.appendChild(bar);
-  bar.querySelector("[data-floating-timer-action]")?.addEventListener("click", () => {
-    const kind = bar.dataset.courseKind;
-    if (!kind) return;
-    const timer = getCourseTimerState(kind);
-    if (timer.running) pauseCourse(kind);
-    else startCourseSession(kind);
-  });
   return bar;
+}
+
+function syncCourseToolbar(root, kind) {
+  const progress = getActiveProgressForCourse(kind)?.[kind];
+  if (!root || !progress) return;
+  const model = getCourseToolbarModel(kind, progress);
+  const signature = [
+    model.started ? "started" : "idle",
+    model.running ? "running" : "paused",
+    model.recordingState,
+    model.savedFlash ? "saved-flash" : "",
+    model.showMicError ? "mic-error" : ""
+  ].join(":");
+  if (root.dataset.courseToolbarSignature !== signature) {
+    root.innerHTML = renderCourseToolbarControls(kind, progress, { floating: root.id === "courseFloatingTimer" });
+    root.dataset.courseToolbarSignature = signature;
+  }
+  root.dataset.courseToolbar = kind;
+  root.setAttribute?.("aria-label", `${courseLabel(kind)}课程工具`);
+  const time = root.querySelector?.(`[data-course-timer-display="${kind}"]`);
+  if (time) {
+    time.textContent = model.elapsedText;
+    time.setAttribute?.("aria-label", model.started ? `已计时 ${formatElapsedForAria(model.elapsed)}` : "计时");
+  }
+  const live = root.querySelector?.(`[data-course-toolbar-live="${kind}"]`);
+  if (live) {
+    live.textContent = model.running
+      ? `计时 ${model.elapsedText}`
+      : model.started
+        ? `已暂停 ${model.elapsedText}`
+        : "计时未开始";
+  }
 }
 
 function updateCourseTimerUi() {
   persistCourseTimerHeartbeat(false);
   const activeKind = getActiveCourseKind();
   ["chinese", "english", "art"].forEach((kind) => {
-    const timer = getCourseTimerState(kind);
-    $$(`[data-course-timer-display="${kind}"]`).forEach((node) => { node.textContent = timer.label; });
+    $$(`[data-course-toolbar="${kind}"]`).forEach((toolbar) => syncCourseToolbar(toolbar, kind));
   });
   const bar = ensureCourseFloatingTimer();
   if (!activeKind) {
@@ -10357,22 +11828,12 @@ function updateCourseTimerUi() {
     courseTimerObservedKind = "";
     return;
   }
-  const timer = getCourseTimerState(activeKind);
   bar.dataset.courseKind = activeKind;
-  const label = bar.querySelector("[data-floating-timer-label]");
-  const action = bar.querySelector("[data-floating-timer-action]");
-  const recording = bar.querySelector("[data-floating-recording-state]");
-  if (label) label.textContent = timer.label;
-  if (recording) {
-    const recordingState = getCourseRecordingUiState(activeKind);
-    const visible = ["recording", "paused", "interrupted"].includes(recordingState);
-    recording.hidden = !visible;
-    recording.textContent = recordingState === "recording" ? "● 录音中" : recordingState === "paused" ? "录音已暂停" : "录音已中断";
+  if (bar.dataset.courseToolbar !== activeKind) {
+    bar.dataset.courseToolbarSignature = "";
+    bar.dataset.courseToolbar = activeKind;
   }
-  if (action) {
-    action.textContent = timer.running ? "暂停" : timer.started ? "继续" : "开始今天的学习";
-    action.className = `button ${timer.running ? "secondary" : "primary"} compact-button`;
-  }
+  syncCourseToolbar(bar, activeKind);
   setupCourseTimerObserver(activeKind);
   updateFloatingTimerVisibility(activeKind);
 }
@@ -10689,9 +12150,16 @@ function collectSnapshotAttachments(planets) {
 }
 
 function getRecordingManifestForCourse(course) {
-  const sessionId = getCourseProgress()?.[course]?.sessionId || "";
+  const pack = getActivePackForCourse(course);
+  const progress = pack ? getCourseProgress(pack.packId) : null;
+  const sessionId = progress?.[course]?.sessionId || "";
   return Object.values(state.recordingClips || {})
-    .filter((clip) => clip.planetId === course && clip.includeInFeedback !== false && (!sessionId || clip.sessionId === sessionId))
+    .filter((clip) => (
+      clip.planetId === course &&
+      clip.includeInFeedback !== false &&
+      (!pack?.packId || clip.packId === pack.packId) &&
+      (!sessionId || clip.sessionId === sessionId)
+    ))
     .map((clip) => ({
       clipId: clip.clipId,
       sessionId: clip.sessionId,
@@ -10717,9 +12185,13 @@ function getRecordingManifestForCourse(course) {
 function summarizeCourseRecording(course) {
   const courseClips = getRecordingManifestForCourse(course)
     .filter((clip) => clip.category === "course_recording" || clip.activityId === `${course}:course_recording`);
+  const progress = getActiveProgressForCourse(course);
   return {
-    enabled: Boolean(getCourseProgress()?.[course]?.recordingConsent),
-    active: activeRecording?.course === course && activeRecording?.activityKey === `${course}:course_recording`,
+    enabled: Boolean(progress?.[course]?.recordingConsent),
+    active: activeRecording?.course === course &&
+      activeRecording?.activityKey === `${course}:course_recording` &&
+      activeRecording?.packId === progress?.packId &&
+      activeRecording?.sessionId === progress?.[course]?.sessionId,
     clipCount: courseClips.length,
     totalSeconds: Math.round(courseClips.reduce((sum, clip) => sum + (clip.duration || 0), 0)),
     totalBytes: courseClips.reduce((sum, clip) => sum + (clip.size || 0), 0),
@@ -12174,7 +13646,7 @@ function makeSentenceReference(sentence, theme) {
   if (sentence.includes("上课铃响了")) return "参考：上课铃响了，说明要开始上课或回到教室";
   if (sentence.includes("终点")) return "参考：这句话在说谁坚持到了终点";
   if (sentence.includes("骄傲")) return "参考：这句话提醒我们不要骄傲";
-  return `参考：这句话和“${theme || "今日阅读"}”有关，说清谁在做什么即可`;
+  return `参考：这句话和“${theme || "短文阅读"}”有关，说清谁在做什么即可`;
 }
 
 function makeFallbackChar(char) {
@@ -12287,6 +13759,237 @@ function normalizeWordExamples(words) {
   }).filter((item) => item.word);
 }
 
+function getRecognitionHistoryProfile() {
+  return globalThis.HELEN_RECOGNITION_HISTORY || {};
+}
+
+function initializeHistoricalRecognitionProfile() {
+  const profile = getRecognitionHistoryProfile();
+  const version = Number(profile.version || 0);
+  if (!version || Number(state.recognitionHistoryVersion || 0) >= version) return;
+  state.learnerChars ||= {};
+  state.wordbook ||= {};
+  const snapshot = buildHistoricalRecognitionSnapshot(profile);
+  snapshot.forEach((history, char) => {
+    const existing = state.learnerChars[char] || {};
+    const liveEvidence = getLatestLiveRecognitionEvidence(char, existing);
+    const useLiveEvidence = isRecognitionEvidenceNewer(liveEvidence, history.latest, profile);
+    const effective = useLiveEvidence ? liveEvidence : history.latest;
+    const active = effective.status !== "mastered";
+    state.learnerChars[char] = {
+      ...existing,
+      char,
+      historicalStatus: history.latest.status,
+      historicalSources: history.sources,
+      historicalFoundCount: history.difficultyCount,
+      historyOrder: history.latest.historyOrder,
+      latestDifficultyOrder: Math.max(
+        Number(existing.latestDifficultyOrder || 0),
+        ...history.sources.filter((item) => item.status !== "mastered").map((item) => Number(item.historyOrder || 0)),
+        effective.status !== "mastered" ? Number(effective.order || effective.historyOrder || 0) : 0
+      ),
+      source: existing.source || "过往中文阅读反馈",
+      selectionReason: existing.selectionReason || "过往真实卡顿记录",
+      status: effective.status,
+      inCharacterPractice: active,
+      effectiveRecognitionSource: useLiveEvidence ? "live" : "history"
+    };
+    const oldWordbook = state.wordbook[char] || {};
+    if (active || Object.keys(oldWordbook).length) {
+      state.wordbook[char] = {
+        ...oldWordbook,
+        char,
+        text: char,
+        type: "char",
+        autoAdded: oldWordbook.autoAdded ?? true,
+        addedAt: oldWordbook.addedAt || profile.updatedAt || new Date().toISOString(),
+        latestStatus: effective.status,
+        mastered: effective.status === "mastered" ? true : Boolean(oldWordbook.mastered),
+        count: Math.max(Number(oldWordbook.count || 0), history.difficultyCount),
+        sources: oldWordbook.sources?.length ? oldWordbook.sources : history.sources
+      };
+    }
+  });
+  state.recognitionHistoryVersion = version;
+  state.recognitionHistoryAudit = {
+    auditedThrough: profile.auditedThrough || "",
+    totalHistoricalCharacters: snapshot.size,
+    activeHistoricalCharacters: [...snapshot.keys()].filter((char) => state.learnerChars[char]?.inCharacterPractice).length,
+    importedAt: new Date().toISOString()
+  };
+  saveState();
+}
+
+function buildHistoricalRecognitionSnapshot(profile) {
+  const snapshot = new Map();
+  (profile.chinese?.days || []).forEach((day, index) => {
+    const historyOrder = getRecognitionEvidenceOrder(day.dayId, index + 1);
+    [
+      ["unstable", day.unsure],
+      ["unknown", day.unknown],
+      ["mastered", day.mastered]
+    ].forEach(([status, characters]) => {
+      [...new Set([...(characters || "")])].filter(isSingleChineseChar).forEach((char) => {
+        const current = snapshot.get(char) || { sources: [], latest: null, difficultyCount: 0 };
+        const source = { dayId: day.dayId, status, historyOrder };
+        current.sources = mergeHistoricalRecognitionSources(current.sources, source);
+        if (status !== "mastered") current.difficultyCount += 1;
+        if (!current.latest
+          || historyOrder > current.latest.historyOrder
+          || (historyOrder === current.latest.historyOrder && recognitionStatusPriority(status) > recognitionStatusPriority(current.latest.status))) {
+          current.latest = source;
+        }
+        snapshot.set(char, current);
+      });
+    });
+  });
+  return snapshot;
+}
+
+function recognitionStatusPriority(status) {
+  if (status === "mastered") return 3;
+  if (status === "unknown" || status === "confused") return 2;
+  if (status === "unstable" || status === "unsure") return 1;
+  return 0;
+}
+
+function normalizeRecognitionEvidenceStatus(status) {
+  const value = String(status || "").trim().toLowerCase();
+  if (["mastered", "掌握", "已掌握", "correct"].includes(value)) return "mastered";
+  if (["unknown", "不认识", "错误"].includes(value)) return "unknown";
+  if (["confused", "混淆"].includes(value)) return "confused";
+  if (["unstable", "unsure", "不熟悉", "有点熟", "迟疑"].includes(value)) return "unstable";
+  return "";
+}
+
+function getRecognitionEvidenceOrder(value, fallback = 0) {
+  const match = String(value || "").match(/(?:day|第)\s*0*(\d+)/i);
+  return match ? Number(match[1]) : Number(fallback || 0);
+}
+
+function getLatestLiveRecognitionEvidence(char, learner = {}) {
+  const candidates = [];
+  (learner.recognitionEvidence || []).forEach((item) => {
+    const status = normalizeRecognitionEvidenceStatus(item.status);
+    if (!status || !["reading_annotation", "recognition_action", "feedback", "completed_reading"].includes(item.sourceType)) return;
+    candidates.push({ ...item, status, order: Number(item.order || getRecognitionEvidenceOrder(item.dayId)) });
+  });
+  (learner.liveSources || []).forEach((item) => {
+    const status = normalizeRecognitionEvidenceStatus(item.status);
+    if (!status) return;
+    candidates.push({
+      evidenceId: `reading:${item.dayId || ""}:${item.sectionId || ""}:${status}`,
+      status,
+      sourceType: "reading_annotation",
+      order: getRecognitionEvidenceOrder(item.dayId),
+      recordedAt: item.recordedAt || ""
+    });
+  });
+  (learner.feedbackSources || []).forEach((item) => {
+    const status = normalizeRecognitionEvidenceStatus(item.status);
+    if (!status) return;
+    candidates.push({
+      evidenceId: `feedback:${item.day || ""}:${status}`,
+      status,
+      sourceType: "feedback",
+      order: getRecognitionEvidenceOrder(item.day),
+      recordedAt: item.recordedAt || ""
+    });
+  });
+  const progress = state.chineseRecognition?.items?.[`char:${char}`];
+  const progressStatus = normalizeRecognitionEvidenceStatus(progress?.lastResult);
+  if (progressStatus && progress?.lastSeenAt && (progressStatus !== "mastered" || Number(progress.masteryCount || 0) >= 2)) {
+    candidates.push({
+      evidenceId: `recognition:${progress.lastSeenAt}:${progressStatus}`,
+      status: progressStatus,
+      sourceType: "recognition_action",
+      order: Number(learner.liveEvidenceOrder || getRecognitionEvidenceOrder(learner.source)),
+      recordedAt: new Date(progress.lastSeenAt).toISOString()
+    });
+  }
+  return candidates.sort(compareRecognitionEvidence).at(-1) || null;
+}
+
+function compareRecognitionEvidence(a, b) {
+  const orderDifference = Number(a.order || 0) - Number(b.order || 0);
+  if (orderDifference) return orderDifference;
+  const timeDifference = recognitionEvidenceTime(a) - recognitionEvidenceTime(b);
+  if (timeDifference) return timeDifference;
+  return recognitionStatusPriority(a.status) - recognitionStatusPriority(b.status);
+}
+
+function recognitionEvidenceTime(evidence) {
+  const value = Date.parse(evidence?.recordedAt || "");
+  return Number.isFinite(value) ? value : 0;
+}
+
+function isRecognitionEvidenceNewer(live, history, profile) {
+  if (!live || !history) return Boolean(live);
+  const liveOrder = Number(live.order || 0);
+  const historyOrder = Number(history.historyOrder || 0);
+  if (liveOrder && liveOrder !== historyOrder) return liveOrder > historyOrder;
+  const profileUpdatedAt = Date.parse(profile.updatedAt || "");
+  const liveAt = recognitionEvidenceTime(live);
+  if (liveOrder && liveOrder === historyOrder) {
+    return liveAt > 0 && (!Number.isFinite(profileUpdatedAt) || liveAt > profileUpdatedAt);
+  }
+  return liveAt > 0 && (!Number.isFinite(profileUpdatedAt) || liveAt > profileUpdatedAt);
+}
+
+function mergeHistoricalRecognitionSources(existing, source) {
+  const sources = Array.isArray(existing) ? [...existing] : [];
+  const key = `${source.dayId}:${source.status}`;
+  if (!sources.some((item) => `${item.dayId}:${item.status}` === key)) sources.push(source);
+  return sources.sort((a, b) => Number(a.historyOrder || 0) - Number(b.historyOrder || 0));
+}
+
+function mergeLiveRecognitionEvidence(existing, source) {
+  const sources = Array.isArray(existing) ? [...existing] : [];
+  const evidenceId = source.evidenceId || `${source.sourceType}:${source.recordedAt}:${source.status}`;
+  if (!sources.some((item) => item.evidenceId === evidenceId)) sources.push({ ...source, evidenceId });
+  return sources.sort(compareRecognitionEvidence).slice(-40);
+}
+
+function getCharacterPracticeLibrary() {
+  const currentPackChars = new Set((getLatestLearningPack()?.chinese?.characters || [])
+    .filter((item) => normalizePackStatus(item.status) !== "mastered")
+    .map((item) => item.text));
+  return getCharacterLibrary().filter((item) => {
+    const learner = state.learnerChars?.[item.char] || {};
+    const progress = getChineseProgress(item.char);
+    const hasLiveDifficulty = progress.lastResult === "unknown"
+      || progress.lastResult === "unsure"
+      || ["unknown", "unstable", "confused"].includes(learner.status);
+    if (hasLiveDifficulty || currentPackChars.has(item.char)) return true;
+    if (progress.masteryCount >= 2 || learner.status === "mastered") return false;
+    return learner.inCharacterPractice === true;
+  }).sort((a, b) => {
+    const priorityDifference = getCharacterPracticePriority(b.char) - getCharacterPracticePriority(a.char);
+    if (priorityDifference) return priorityDifference;
+    const aScore = getChineseItemWeight(a, getChineseProgress(a.char), state.chineseRecognition?.recentlyShownIds || []);
+    const bScore = getChineseItemWeight(b, getChineseProgress(b.char), state.chineseRecognition?.recentlyShownIds || []);
+    return bScore - aScore || a.char.localeCompare(b.char, "zh-Hans");
+  });
+}
+
+function getCharacterPracticePriority(char) {
+  const learner = state.learnerChars?.[char] || {};
+  const progress = getChineseProgress(char);
+  const difficultyCount = Number(learner.historicalFoundCount || 0)
+    + Number(progress.unknownCount || 0) * 2
+    + Number(progress.unsureCount || 0)
+    + Number(learner.foundCount || 0);
+  const recencyOrder = Math.max(Number(learner.latestDifficultyOrder || 0), Number(learner.historyOrder || 0));
+  const liveSeverity = progress.lastResult === "unknown" || learner.status === "unknown"
+    ? 30
+    : progress.lastResult === "unsure" || ["unstable", "confused"].includes(learner.status)
+      ? 18
+      : 0;
+  const recentAt = Date.parse(learner.latestFoundAt || "") || Number(progress.lastSeenAt || 0);
+  const recentDay = recentAt ? Math.floor(recentAt / 86400000) : 0;
+  return difficultyCount * 1000 + recencyOrder * 40 + liveSeverity + recentDay / 100000;
+}
+
 function getCharacterLibrary() {
   const byChar = new Map();
   const addItem = (item, source) => {
@@ -12356,14 +14059,18 @@ function getChineseProgress(char) {
 
 function getChineseItemWeight(item, progress, recentlyShownIds) {
   const id = `char:${item.char}`;
+  const learner = state.learnerChars?.[item.char] || {};
   const sourceBoost = Math.max(1, sourcePriority(item.source) / 40);
   const learnerBoost = ["learner", "latest"].includes(item.source) ? 2.5 : 1;
   const unseenBoost = progress.seenCount === 0 ? 3 : 1;
   const masteryFactor = Math.max(0.08, Math.pow(0.55, progress.masteryCount || getMasteryLevel(item.char)));
   const difficultyFactor = 1 + progress.unknownCount * 0.9 + progress.unsureCount * 0.35;
   const recentMistakeBoost = progress.lastResult === "unknown" ? 1.7 : progress.lastResult === "unsure" ? 1.25 : 1;
+  const historyFrequencyBoost = 1 + Math.min(4, Number(learner.historicalFoundCount || learner.foundCount || 0)) * 0.45;
+  const liveStatusBoost = learner.status === "unknown" ? 2.1 : learner.status === "confused" ? 1.9 : learner.status === "unstable" ? 1.45 : 1;
+  const recencyBoost = 1 + Math.min(14, Number(learner.historyOrder || 0)) * 0.035;
   const recentPenalty = recentlyShownIds.includes(id) ? 0.03 : 1;
-  return Math.max(0.001, sourceBoost * learnerBoost * unseenBoost * masteryFactor * difficultyFactor * recentMistakeBoost * recentPenalty);
+  return Math.max(0.001, sourceBoost * learnerBoost * unseenBoost * masteryFactor * difficultyFactor * recentMistakeBoost * historyFrequencyBoost * liveStatusBoost * recencyBoost * recentPenalty);
 }
 
 function sourcePriority(source) {
@@ -12666,7 +14373,7 @@ function approvePractice() {
   state.answerPanelsHidden = true;
   saveState();
   applyAnswerPanelVisibility();
-  $("#practiceRunner").hidden = false;
+  keepLegacyHomePanelsHidden();
   renderQuestion();
 }
 
@@ -12691,7 +14398,7 @@ function syncAnswerPanelButtons() {
 
 function syncPanelButton(panelSelector, buttonSelector) {
   const hidden = $(panelSelector).classList.contains("answer-hidden");
-  $(buttonSelector).innerHTML = hidden ? "展示<br><span>Show</span>" : "隐藏<br><span>Hide</span>";
+  $(buttonSelector).textContent = hidden ? "展示" : "隐藏";
 }
 
 function renderQuestion() {
@@ -12718,8 +14425,8 @@ function renderQuestion() {
       <div class="question-character-wrap">
         <button class="star question-star" data-star="${escapeHtml(revealTarget)}" type="button" aria-label="加入或移出生字本">${inWordbook ? "★" : "☆"}</button>
         ${mainDisplay}
-        <button class="button secondary meaning-under-char" data-detail="${escapeHtml(revealTarget)}" type="button">查看释义<br><span>Meaning</span></button>
-        <button class="button ghost meaning-under-char" data-words="${escapeHtml(revealTarget)}" type="button">组词<br><span>Words</span></button>
+        <button class="button secondary meaning-under-char" data-detail="${escapeHtml(revealTarget)}" type="button">查看释义</button>
+        <button class="button ghost meaning-under-char" data-words="${escapeHtml(revealTarget)}" type="button">组词</button>
       </div>
       <button class="arrow-button" data-question-next="true" type="button" aria-label="下一个">›</button>
     </div>
@@ -12904,7 +14611,7 @@ function speak(text) {
 }
 
 function renderCharacters() {
-  const library = getCharacterLibrary();
+  const library = getCharacterPracticeLibrary();
   const pageSize = getCharacterPageSize();
   const totalPages = Math.max(1, Math.ceil(library.length / pageSize));
   if (characterPage >= totalPages) characterPage = 0;
@@ -12912,7 +14619,9 @@ function renderCharacters() {
   const items = library.slice(start, start + pageSize);
   $("#characterSetTitle").textContent = `第 ${characterPage + 1} 组`;
   $("#characterSetMeta").textContent = `共 ${library.length} 字`;
-  $("#characterGrid").innerHTML = items.map(renderCharacterCard).join("");
+  $("#characterGrid").innerHTML = items.length
+    ? items.map(renderCharacterCard).join("")
+    : `<article class="surface empty-card">暂无复习字</article>`;
 }
 
 function renderCharacterCard(item) {
@@ -12926,8 +14635,8 @@ function renderCharacterCard(item) {
         <button class="char-main char-reveal" data-reveal="${item.char}" type="button">${item.char}</button>
         <button class="pinyin" data-pinyin-for="${item.char}" data-pinyin-speak="${item.char}" hidden type="button">${item.pinyin}</button>
       </div>
-      <button class="button secondary meaning-under-char" data-detail="${item.char}" type="button">查看释义<br><span>Meaning</span></button>
-      <button class="button ghost meaning-under-char" data-words="${item.char}" type="button">组词<br><span>Words</span></button>
+      <button class="button secondary meaning-under-char" data-detail="${item.char}" type="button">查看释义</button>
+      <button class="button ghost meaning-under-char" data-words="${item.char}" type="button">组词</button>
       <div class="meaning" data-meaning-for="${item.char}" hidden>
         ${renderMeaningContent({ ...item, meaning: item.meaning || resolveChineseMeaning(item.char) || makeGenericChineseMeaning(item.char) })}
       </div>
@@ -12935,10 +14644,10 @@ function renderCharacterCard(item) {
         ${renderWordsContent(item)}
       </div>
       <div class="mini-actions">
-        <button class="button warning" data-chinese-char="${item.char}" data-chinese-result="unknown" type="button">不认识<br><span>Unknown</span></button>
-        <button class="button secondary" data-chinese-char="${item.char}" data-chinese-result="unsure" type="button">有点熟<br><span>Unsure</span></button>
-        <button class="button success" data-master-char="${item.char}" type="button">已掌握<br><span>${progress.masteryCount || masteryLevel}</span></button>
-        <button class="button ghost" data-chinese-char="${item.char}" data-chinese-result="skipped" type="button">跳过<br><span>Skip</span></button>
+        <button class="button warning" data-chinese-char="${item.char}" data-chinese-result="unknown" type="button">不认识</button>
+        <button class="button secondary" data-chinese-char="${item.char}" data-chinese-result="unsure" type="button">有点熟</button>
+        <button class="button success" data-master-char="${item.char}" type="button">已掌握</button>
+        <button class="button ghost" data-chinese-char="${item.char}" data-chinese-result="skipped" type="button">跳过</button>
       </div>
     </article>
   `;
@@ -12949,6 +14658,14 @@ function markCharacterMastered(char) {
   state.mastery[char].level = Math.min(4, state.mastery[char].level + 1);
   state.mastery[char].updatedAt = new Date().toISOString();
   updateChineseRecognitionResult(char, "mastered", false);
+  const progress = getChineseProgress(char);
+  state.learnerChars ||= {};
+  state.learnerChars[char] ||= { char };
+  if (progress.masteryCount >= 2) {
+    state.learnerChars[char].status = "mastered";
+    state.learnerChars[char].inCharacterPractice = false;
+    state.learnerChars[char].masteredAt = new Date().toISOString();
+  }
   saveState();
   renderCharacters();
 }
@@ -12956,9 +14673,44 @@ function markCharacterMastered(char) {
 function updateChineseRecognitionResult(char, result, rerender = true) {
   if (!isSingleChineseChar(char)) return;
   const id = `char:${char}`;
+  const now = new Date();
+  const pack = getLatestLearningPack();
   state.chineseRecognition ||= { version: 2, items: {}, recentlyShownIds: [] };
   updateRecognitionProgress(state.chineseRecognition.items, id, result);
   state.chineseRecognition.recentlyShownIds = pushRecent(state.chineseRecognition.recentlyShownIds, id);
+  state.learnerChars ||= {};
+  state.learnerChars[char] ||= { char };
+  if (result === "unknown" || result === "unsure") {
+    state.learnerChars[char].status = result === "unknown" ? "unknown" : "unstable";
+    state.learnerChars[char].inCharacterPractice = true;
+    state.learnerChars[char].latestStatus = result;
+    state.learnerChars[char].latestFoundAt = now.toISOString();
+    state.learnerChars[char].latestDifficultyOrder = Math.max(
+      Number(state.learnerChars[char].latestDifficultyOrder || 0),
+      getRecognitionEvidenceOrder(pack?.chinese?.lesson?.title || pack?.packId || pack?.date)
+    );
+    state.learnerChars[char].passiveRecognitionDays = [];
+    state.learnerChars[char].recognitionEvidence = mergeLiveRecognitionEvidence(state.learnerChars[char].recognitionEvidence, {
+      evidenceId: `recognition_action:${now.getTime()}:${result}`,
+      status: result,
+      sourceType: "recognition_action",
+      order: state.learnerChars[char].latestDifficultyOrder,
+      recordedAt: now.toISOString()
+    });
+  } else if (result === "mastered") {
+    state.learnerChars[char].status = "mastered";
+    state.learnerChars[char].latestStatus = "mastered";
+    state.learnerChars[char].inCharacterPractice = false;
+    state.learnerChars[char].masteredAt = now.toISOString();
+    state.learnerChars[char].passiveRecognitionDays = [];
+    state.learnerChars[char].recognitionEvidence = mergeLiveRecognitionEvidence(state.learnerChars[char].recognitionEvidence, {
+      evidenceId: `recognition_action:${now.getTime()}:mastered`,
+      status: "mastered",
+      sourceType: "recognition_action",
+      order: getRecognitionEvidenceOrder(pack?.chinese?.lesson?.title || pack?.packId || pack?.date),
+      recordedAt: now.toISOString()
+    });
+  }
   if (result === "unknown") addToWordbook(char);
   if (rerender) {
     saveState();
@@ -13016,7 +14768,7 @@ function renderWordbook() {
           ${statusLine}
           ${sourceLine}
           <div class="mini-actions">
-            <button class="button success" data-mastered="${escapeHtml(key)}">已掌握<br><span>Mastered</span></button>
+            <button class="button success" data-mastered="${escapeHtml(key)}">已掌握</button>
           </div>
         </article>
       `;
@@ -13035,9 +14787,9 @@ function renderWordbook() {
           ${renderWordsContent(item)}
         </div>
         <div class="mini-actions">
-          <button class="button secondary" data-detail="${text}">查看释义<br><span>Meaning</span></button>
-          <button class="button ghost" data-words="${text}">组词<br><span>Words</span></button>
-          <button class="button success" data-mastered="${escapeHtml(key)}">已掌握<br><span>Mastered</span></button>
+          <button class="button secondary" data-detail="${text}">查看释义</button>
+          <button class="button ghost" data-words="${text}">组词</button>
+          <button class="button success" data-mastered="${escapeHtml(key)}">已掌握</button>
         </div>
       </article>
     `;

@@ -4,25 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>学习星球 Learning Planet</title>
-    <link rel="stylesheet" href="./styles.css?v=3.5.5" />
+    <link rel="stylesheet" href="./styles.css?v=v3.7.0" />
   </head>
   <body>
     <div class="ambient" aria-hidden="true"></div>
 
     <header class="topbar">
       <a class="brand" href="#daily" aria-label="学习星球 Learning Planet">
-        <img class="brand-mark" src="./assets/brand/learning-planet-star-page.svg?v=3.5.5" alt="" width="44" height="44" />
+        <img class="brand-mark" src="./assets/brand/learning-planet-star-page.svg?v=v3.7.0" alt="" width="44" height="44" />
         <span>
           <strong>学习星球</strong>
-          <em>Learning Planet · beta v3.5.5</em>
+          <em>Learning Planet</em>
         </span>
       </a>
-      <nav class="nav" aria-label="主要导航 Primary Navigation">
-        <a href="#daily" data-view="daily" class="active">星球首页 <span>Home</span></a>
-        <a href="#today-chinese" data-view="today-chinese">中文星球 <span>Chinese</span></a>
-        <a href="#english-planet" data-view="english-planet">字母星球 <span>Letters</span></a>
-        <a href="#art-planet" data-view="art-planet">颜色星球 <span>Colors</span></a>
-        <a href="#parent" data-view="parent">家长观察站 <span>Observatory</span></a>
+      <nav class="nav" aria-label="主要导航">
+        <a href="#daily" data-view="daily" class="active">星球首页</a>
+        <a href="#chinese-planet" data-view="chinese-planet">中文星球</a>
+        <a href="#english-planet" data-view="english-planet">字母星球</a>
+        <a href="#art-planet" data-view="art-planet">颜色星球</a>
+        <a href="#parent" data-view="parent">家长观察站</a>
       </nav>
     </header>
 
@@ -30,132 +30,16 @@
       <section id="daily" class="view active">
         <div class="hero-shell">
           <div class="hero-copy">
-            <p class="eyebrow">beta v3.5.5 · Helen 每日学习 / Helen Daily Study</p>
-            <h1 class="hero-title">
-              学习星球
-              <span>Learning Planet</span>
-            </h1>
-            <p class="lede">今天想先探索哪颗星球</p>
-          </div>
-
-          <div class="link-panel surface learning-pack-panel simple-pack-panel">
-            <p class="eyebrow">今日课程 / Today's Pack</p>
-            <h2>今日课程已准备好</h2>
-            <p class="pack-help">课程会由站点内置课包自动准备；家长只需要选择今天先去哪个星球。</p>
-            <div class="actions">
-              <button class="button primary" data-go-view="today-chinese" type="button">开始探索<br /><span>Start</span></button>
-              <button id="lastPracticeBtn" class="button ghost" type="button" hidden>查看上次课程<br /><span>Last Pack</span></button>
-            </div>
-            <p id="packStatus" class="status" role="status">正在检查今日课程</p>
+            <h1 class="hero-title">学习星球</h1>
           </div>
         </div>
 
         <section id="planetOverview" class="planet-grid" aria-label="星球总览"></section>
-
-        <section id="todayDashboardPanel" class="surface today-dashboard" hidden>
-          <div class="section-title">
-            <div>
-              <p>今日学习 / Today</p>
-              <h2 id="todayDashboardTitle">等待今日课程</h2>
-            </div>
-          </div>
-          <div id="todayDashboardSummary" class="today-dashboard-summary"></div>
-          <div class="actions pack-next-actions">
-            <button class="button primary" data-go-view="today-chinese" type="button">开始中文课<br /><span>Chinese</span></button>
-            <button class="button primary" data-go-view="today-english" type="button">开始英语课<br /><span>English</span></button>
-            <button class="button secondary" data-go-view="characters" type="button">今日字词<br /><span>Words</span></button>
-            <button class="button secondary" data-go-view="parent" type="button">生成当前反馈<br /><span>Feedback</span></button>
-          </div>
-        </section>
-
-        <section id="packPreviewPanel" class="surface pack-preview" hidden>
-          <div class="section-title">
-            <div>
-              <p>导入预览 / Import Preview</p>
-              <h2 id="packPreviewTitle">等待解析</h2>
-            </div>
-          </div>
-          <div id="packPreviewContent" class="pack-preview-content"></div>
-        </section>
-
-        <section id="packSuccessPanel" class="surface pack-success" hidden>
-          <div class="section-title">
-            <div>
-              <p>今天要学什么 / Today</p>
-              <h2 id="packSuccessTitle">已导入</h2>
-            </div>
-          </div>
-          <div id="packSuccessSummary" class="pack-success-summary"></div>
-          <div class="actions pack-next-actions">
-            <button class="button primary" data-go-view="today-chinese" type="button">开始中文课<br /><span>Chinese</span></button>
-            <button class="button primary" data-go-view="today-english" type="button">开始英语课<br /><span>English</span></button>
-            <button class="button secondary" data-go-view="characters" type="button">今日字词<br /><span>Words</span></button>
-            <button class="button secondary" data-go-view="parent" type="button">生成当前反馈<br /><span>Feedback</span></button>
-          </div>
-          <div class="actions pack-next-actions legacy-practice-actions">
-            <button class="button primary" data-go-view="characters" type="button">去中文练习<br /><span>Characters</span></button>
-            <button class="button primary" data-go-view="english" type="button">去英文认读<br /><span>Words</span></button>
-            <button class="button primary" data-go-view="english-blocks" type="button">去积木英语<br /><span>Blocks</span></button>
-            <button class="button secondary" data-start-daily-practice="true" type="button">开始今日练习<br /><span>Practice</span></button>
-          </div>
-        </section>
-
-        <section class="split-grid">
-          <article id="focusPanel" class="surface answer-panel">
-            <div class="section-title">
-              <div>
-                <p>今日重点 / Today's Focus</p>
-                <h2 id="focusTitle">待生成</h2>
-              </div>
-              <button id="toggleFocusBtn" class="button ghost compact-button" type="button">隐藏<br /><span>Hide</span></button>
-            </div>
-            <div class="answer-content">
-              <div class="focus-edit">
-                <textarea id="focusItemsInput" rows="8" placeholder="链接读取后生成重点字词，可直接修改"></textarea>
-                <button id="confirmFocusBtn" class="button primary" type="button">确认<br /><span>Confirm</span></button>
-              </div>
-              <div id="focusChips" class="chips">
-                <span>生成后显示今日重点</span>
-              </div>
-            </div>
-          </article>
-
-          <article id="reviewPanel" class="surface answer-panel">
-            <div class="section-title">
-              <div>
-                <p>家长审核 / Parent Review</p>
-                <h2>家长审核</h2>
-              </div>
-              <button id="toggleReviewBtn" class="button ghost compact-button" type="button">隐藏<br /><span>Hide</span></button>
-            </div>
-            <div class="answer-content">
-              <div id="reviewList" class="review-list empty">还没有生成题目 / No practice generated yet.</div>
-              <div class="actions compact">
-                <button id="approveBtn" class="button primary" type="button" disabled>开始<br /><span>Start</span></button>
-                <button id="regenerateBtn" class="button secondary" type="button" disabled>重建练习<br /><span>Rebuild</span></button>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section id="practiceRunner" class="surface practice-runner" hidden>
-          <div class="section-title">
-            <p>孩子练习 / Child Practice</p>
-            <h2>读一读</h2>
-          </div>
-          <div id="questionCard" class="question-card"></div>
-          <div class="actions">
-            <button id="correctBtn" class="button success" type="button">直接读对<br /><span>Correct</span></button>
-            <button id="hesitatedBtn" class="button secondary" type="button">卡顿或猜出<br /><span>Hesitated</span></button>
-            <button id="wrongBtn" class="button warning" type="button">不会或读错<br /><span>Wrong</span></button>
-          </div>
-        </section>
       </section>
 
       <section id="chinese-planet" class="view planet-view planet-chinese">
         <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回学习星系">←</button></div>
         <div class="page-heading">
-          <p>中文星球 / Chinese Planet</p>
           <h1>中文星球</h1>
         </div>
         <div id="chinesePlanetSummary" class="planet-module-grid"></div>
@@ -164,7 +48,6 @@
       <section id="english-planet" class="view planet-view planet-english">
         <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回学习星系">←</button></div>
         <div class="page-heading">
-          <p>字母星球 / Letter Planet</p>
           <h1>字母星球</h1>
         </div>
         <div id="englishPlanetSummary" class="planet-module-grid"></div>
@@ -173,18 +56,53 @@
       <section id="art-planet" class="view planet-view planet-art">
         <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回学习星系">←</button></div>
         <div class="page-heading">
-          <p>颜色星球 / Color Planet</p>
           <h1>颜色星球</h1>
         </div>
         <div id="artPlanetSummary" class="planet-module-grid"></div>
       </section>
 
+      <section id="learning-records" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回字母星球">←</button></div>
+        <div class="page-heading">
+          <h1>学习记录</h1>
+        </div>
+        <div id="englishLearningRecords" class="surface student-summary-panel"></div>
+      </section>
+
+      <section id="color-work-choice" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回颜色星球">←</button></div>
+        <div class="page-heading">
+          <h1>选择作品</h1>
+        </div>
+        <div id="colorWorkChoiceContent" class="student-summary-panel"></div>
+      </section>
+
+      <section id="color-foundation" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回颜色星球">←</button></div>
+        <div class="page-heading">
+          <h1>基础技能</h1>
+        </div>
+        <div id="colorFoundationContent" class="student-content-grid foundation-skill-grid"></div>
+      </section>
+
+      <section id="color-gallery" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回颜色星球">←</button></div>
+        <div class="page-heading">
+          <h1>作品画廊</h1>
+        </div>
+        <div id="colorGalleryContent" class="student-content-grid"></div>
+      </section>
+
+      <section id="color-materials" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回颜色星球">←</button></div>
+        <div class="page-heading">
+          <h1>材料准备</h1>
+        </div>
+        <div id="colorMaterialsContent" class="student-summary-panel"></div>
+      </section>
+
       <section id="today-chinese" class="view">
         <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回中文星球">←</button></div>
-        <div class="page-heading">
-          <p>每日中文 / Daily Chinese</p>
-          <h1>开始中文课</h1>
-        </div>
         <section class="surface course-shell">
           <div id="chineseLessonHeader" class="course-header"></div>
           <div id="chineseLessonSections" class="course-section-list"></div>
@@ -193,10 +111,6 @@
 
       <section id="today-english" class="view">
         <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回字母星球">←</button></div>
-        <div class="page-heading">
-          <p>每日英语 / Daily English</p>
-          <h1>开始英语课</h1>
-        </div>
         <section class="surface course-shell">
           <div id="englishLessonHeader" class="course-header"></div>
           <div id="englishListeningZone" class="course-listening-zone"></div>
@@ -205,11 +119,7 @@
       </section>
 
       <section id="today-art" class="view">
-        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回颜色星球">←</button></div>
-        <div class="page-heading">
-          <p>今日马克笔画 / Marker Drawing</p>
-          <h1>今日马克笔画</h1>
-        </div>
+        <div class="breadcrumb"><button class="route-back-button" data-route-back="color-work-choice" type="button" aria-label="返回选择作品">←</button></div>
         <section class="surface course-shell">
           <div id="artLessonHeader" class="course-header"></div>
           <div id="artLessonSections" class="course-section-list"></div>
@@ -217,33 +127,33 @@
       </section>
 
       <section id="characters" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回中文星球">←</button></div>
         <div class="page-heading">
-          <p>识字练习 / Character Practice</p>
           <h1>识字练习</h1>
         </div>
         <div class="surface character-toolbar">
           <div>
-            <strong id="characterSetTitle">今日字库</strong>
+            <strong id="characterSetTitle">识字内容</strong>
             <p id="characterSetMeta">最新内容 + 一年级字库</p>
           </div>
           <div class="character-nav-actions">
-            <button id="firstCharactersBtn" class="button secondary" type="button">第一组<br /><span>First</span></button>
-            <button id="prevCharactersBtn" class="button secondary" type="button">上一组<br /><span>Previous</span></button>
-            <button id="refreshCharactersBtn" class="button primary" type="button">下一组<br /><span>Next</span></button>
+            <button id="firstCharactersBtn" class="button secondary" type="button">第一组</button>
+            <button id="prevCharactersBtn" class="button secondary" type="button">上一组</button>
+            <button id="refreshCharactersBtn" class="button primary" type="button">下一组</button>
           </div>
         </div>
         <div id="characterGrid" class="character-grid"></div>
       </section>
 
       <section id="english" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回字母星球">←</button></div>
         <div class="page-heading">
-          <p>单词认读 / Word Recognition</p>
           <h1>单词认读</h1>
         </div>
 
         <div class="surface english-toolbar">
           <div id="englishStats" class="english-stats"></div>
-          <button id="englishSettingsBtn" class="button secondary parent-settings-button" type="button"><span class="parent-settings-button__zh">家长设置</span><span class="parent-settings-button__en">Settings</span></button>
+          <button id="englishSettingsBtn" class="button secondary parent-settings-button" type="button">家长设置</button>
         </div>
 
         <section class="surface english-recognition">
@@ -253,9 +163,9 @@
               <p id="englishSetMeta">每组 9 个词</p>
             </div>
             <div class="character-nav-actions">
-              <button id="firstEnglishBtn" class="button secondary" type="button">第一组<br /><span>First</span></button>
-              <button id="prevEnglishBtn" class="button secondary" type="button">上一组<br /><span>Previous</span></button>
-              <button id="nextEnglishBtn" class="button primary" type="button">下一组<br /><span>Next</span></button>
+              <button id="firstEnglishBtn" class="button secondary" type="button">第一组</button>
+              <button id="prevEnglishBtn" class="button secondary" type="button">上一组</button>
+              <button id="nextEnglishBtn" class="button primary" type="button">下一组</button>
             </div>
           </div>
           <div id="englishExamplePanel" class="english-example-panel shared-example-panel" hidden></div>
@@ -288,7 +198,7 @@
               <input id="englishShowChineseToggle" type="checkbox" />
               显示查看中文按钮 / Show Chinese Button
             </label>
-            <button id="englishResetBtn" class="button warning" type="button">重置英语记录<br /><span>Reset</span></button>
+            <button id="englishResetBtn" class="button warning" type="button">重置英语记录</button>
           </div>
           <div id="englishTextbookStatus" class="textbook-status"></div>
           <div id="englishReviewLists" class="english-review-lists"></div>
@@ -296,22 +206,22 @@
       </section>
 
       <section id="english-blocks" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回字母星球">←</button></div>
         <div class="page-heading">
-          <p>积木英语 / English Blocks</p>
           <h1>积木英语</h1>
         </div>
 
         <section class="surface blocks-runner">
           <div class="section-title">
             <div>
-              <p>句型 / Pattern</p>
+              <p>句型</p>
               <label class="blocks-pattern-picker">
                 <select id="blocksPatternSelect" aria-label="选择句型 Pattern"></select>
               </label>
               <p id="blocksPatternSubtitle" class="pattern-subtitle"></p>
             </div>
             <label class="blocks-source-filter">
-              来源 / Source
+              来源
               <select id="blocksSourceSelect"></select>
             </label>
           </div>
@@ -319,12 +229,12 @@
           <div id="blocksLocalExampleCard" class="pattern-example-card"></div>
           <div class="example-action-row">
             <div class="example-count-controls">
-              <strong>AI例句数量 / AI Example Count</strong>
+              <strong>AI例句数量</strong>
               <div id="blocksExampleCountChips" class="chip-group compact"></div>
             </div>
             <div class="actions blocks-actions">
-              <button id="samePatternBtn" class="button secondary" type="button">AI例句<br /><span>AI Example</span></button>
-              <button id="blocksShowSourceBtn" class="button secondary" type="button">原文例句<br /><span>Source</span></button>
+              <button id="samePatternBtn" class="button secondary" type="button">AI例句</button>
+              <button id="blocksShowSourceBtn" class="button secondary" type="button">原文例句</button>
             </div>
           </div>
         </section>
@@ -332,19 +242,19 @@
         <section class="surface blocks-runner ai-blocks-runner">
           <div class="section-title">
             <div>
-              <p>AI练习题 / AI Exercises</p>
+              <p>AI练习题</p>
             </div>
           </div>
           <div class="ai-control-grid exercise-controls">
             <div>
-              <strong>题量 / Count</strong>
+              <strong>题量</strong>
               <div id="blocksCountChips" class="chip-group compact question-count-options"></div>
             </div>
             <div class="exercise-generation-actions">
-              <button id="generateBlockExercisesBtn" class="button primary regenerate-all-button" type="button">AI出题<br /><span>AI Generate</span></button>
+              <button id="generateBlockExercisesBtn" class="button primary regenerate-all-button" type="button">AI出题</button>
             </div>
             <div class="exercise-tabs-wrap">
-              <strong>题型 / Exercise Types</strong>
+              <strong>题型</strong>
               <div id="blocksExerciseTypeChips" class="chip-group exercise-type-tabs"></div>
             </div>
           </div>
@@ -355,16 +265,16 @@
       </section>
 
       <section id="wordbook" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回中文星球">←</button></div>
         <div class="page-heading">
-          <p>生字本 / Wordbook</p>
           <h1>生字本</h1>
         </div>
         <div id="wordbookList" class="wordbook-list"></div>
       </section>
 
       <section id="dictionary" class="view">
+        <div class="breadcrumb"><button class="route-back-button" data-route-back type="button" aria-label="返回中文星球">←</button></div>
         <div class="page-heading">
-          <p>字典 / Dictionary</p>
           <h1>字典</h1>
         </div>
         <div class="surface dictionary-search">
@@ -387,9 +297,9 @@
           <article class="surface">
             <h2>当前反馈 / Current Feedback</h2>
             <p class="muted">随时都可以生成，会自动汇总三颗星球的当前进度。</p>
-            <button id="generateReportBtn" class="button primary" type="button">生成当前反馈<br /><span>Generate Current Feedback</span></button>
-            <button id="copyFeedbackBtn" class="button secondary" type="button" hidden>复制反馈<br /><span>Copy</span></button>
-            <button id="downloadFeedbackBtn" class="button secondary" type="button" hidden>下载完整反馈<br /><span>Download</span></button>
+            <button id="generateReportBtn" class="button primary" type="button">生成当前反馈</button>
+            <button id="copyFeedbackBtn" class="button secondary" type="button" hidden>复制反馈</button>
+            <button id="downloadFeedbackBtn" class="button secondary" type="button" hidden>下载完整反馈</button>
             <div id="reportPanel" class="report-panel">还没有生成反馈快照</div>
           </article>
           <article class="surface">
@@ -409,17 +319,28 @@
               <summary>开发应急导入</summary>
               <p class="muted">仅用于调试或资源包应急导入。日常课程由站点内置课包准备。</p>
               <textarea id="learningPackInput" class="pack-input compact-pack-input" rows="4" placeholder="粘贴应急学习包"></textarea>
-              <button id="parsePackBtn" class="button secondary" type="button">检查并导入<br /><span>Check & Import</span></button>
-              <button id="confirmPackBtn" class="button success" type="button" disabled hidden>确认导入<br /><span>Import</span></button>
+              <button id="parsePackBtn" class="button secondary" type="button">检查并导入</button>
+              <button id="confirmPackBtn" class="button success" type="button" disabled hidden>确认导入</button>
               <input id="learningPackFile" class="file-input" type="file" accept=".txt,.json,.zip,.hspack,text/plain,application/json,application/zip" />
             </details>
+            <div id="legacyHomePanels" hidden aria-hidden="true">
+              <p id="packStatus"></p>
+              <button id="lastPracticeBtn" type="button"></button>
+              <section id="todayDashboardPanel"><h2 id="todayDashboardTitle"></h2><div id="todayDashboardSummary"></div></section>
+              <section id="packPreviewPanel"><h2 id="packPreviewTitle"></h2><div id="packPreviewContent"></div></section>
+              <section id="packSuccessPanel"><h2 id="packSuccessTitle"></h2><div id="packSuccessSummary"></div></section>
+              <section id="focusPanel"><h2 id="focusTitle"></h2><textarea id="focusItemsInput"></textarea><button id="confirmFocusBtn" type="button"></button><button id="toggleFocusBtn" type="button"></button><div id="focusChips"></div></section>
+              <section id="reviewPanel"><button id="toggleReviewBtn" type="button"></button><div id="reviewList"></div><button id="approveBtn" type="button"></button><button id="regenerateBtn" type="button"></button></section>
+              <section id="practiceRunner"><div id="questionCard"></div><button id="correctBtn" type="button"></button><button id="hesitatedBtn" type="button"></button><button id="wrongBtn" type="button"></button></section>
+            </div>
           </article>
         </div>
       </section>
     </main>
 
-    <script src="./data/learning-packs/builtin-learning-packs.js?v=3.5.5"></script>
-    <script src="./data/english-libraries/hello-school-32-lesson-library.js?v=3.5.5"></script>
-    <script src="./app.js?v=3.5.5"></script>
+    <script src="./data/learning-history/helen-recognition-history-v1.js?v=v3.7.0"></script>
+    <script src="./data/learning-packs/builtin-learning-packs.js?v=v3.7.0"></script>
+    <script src="./data/english-libraries/hello-school-32-lesson-library.js?v=v3.7.0"></script>
+    <script src="./app.js?v=v3.7.0"></script>
   </body>
 </html>

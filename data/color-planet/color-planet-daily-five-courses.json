@@ -1,0 +1,3096 @@
+{
+  "schemaVersion": "helen-color-planet-daily-choice/2-revision-b",
+  "contentAuthority": "Allen course design",
+  "contentRevision": "Revision B",
+  "contentReady": true,
+  "productionReady": false,
+  "productionBlockerZh": "上线前需按 70 条 diagramRequirement 制作并验收步骤图。",
+  "metadataPolicy": {
+    "internalOnlyFields": [
+      "plannedMinutes"
+    ],
+    "studentDisplayRuleZh": "plannedMinutes 只用于内部排课与校验，不生成学生端说明。"
+  },
+  "learnerProfile": {
+    "name": "Helen",
+    "age": 7,
+    "placementZh": "基础进阶阶段｜动漫插画与软头丙烯马克笔工艺入门",
+    "toolZh": "掌握 120 色直液式软头丙烯马克笔"
+  },
+  "commonMaterials": [
+    {
+      "id": "pencil",
+      "nameZh": "HB 或 2B 铅笔"
+    },
+    {
+      "id": "eraser",
+      "nameZh": "软橡皮"
+    },
+    {
+      "id": "markers",
+      "nameZh": "掌握 120 色直液式软头丙烯马克笔",
+      "usageZh": "笔尖用于细线、闭合轮廓和窄边；笔腹用于同向平涂。"
+    },
+    {
+      "id": "art_paper",
+      "nameZh": "160—250 克 A4 绘画纸"
+    },
+    {
+      "id": "swatch_paper",
+      "nameZh": "与作品纸相同或接近的试色纸"
+    },
+    {
+      "id": "desk_pad",
+      "nameZh": "桌面垫板"
+    },
+    {
+      "id": "tissue",
+      "nameZh": "纸巾"
+    },
+    {
+      "id": "reference",
+      "nameZh": "课程完成图与步骤图"
+    }
+  ],
+  "dailyChoicePolicy": {
+    "candidateCount": 5,
+    "selectionLimitPerDay": 1,
+    "unselectedCourseState": "available",
+    "neverDeleteUnselected": true,
+    "sameStageRuleZh": "首轮五个题材属于同一能力课次；完成任意一个只推进一次，其余题材保留为同阶段备用。",
+    "nextSetComposition": {
+      "oldestCarryOver": 2,
+      "nextRoadmapCourses": 2,
+      "adaptiveCourse": 1
+    }
+  },
+  "sections": {
+    "foundationSkills": {
+      "titleZh": "基础技能",
+      "entryBehavior": "open_skill_library",
+      "opensOwnSection": true,
+      "modules": [
+        {
+          "id": "soft_tip_control",
+          "titleZh": "软头控笔",
+          "contentZh": "笔尖细线、笔腹宽线、转纸和出墨检查",
+          "microPractice": {
+            "id": "micro-soft-tip-two-widths",
+            "plannedMinutes": 6,
+            "materials": [
+              "markers",
+              "swatch_paper"
+            ],
+            "palette": [
+              {
+                "code": "B688",
+                "nameZh": "藏青色",
+                "roleZh": "笔尖细线"
+              },
+              {
+                "code": "B148",
+                "nameZh": "牛奶蓝",
+                "roleZh": "笔腹宽色带"
+              }
+            ],
+            "steps": [
+              {
+                "id": "micro-soft-tip-two-widths-step-1",
+                "order": 1,
+                "instructionZh": "写下 B688 和 B148 色号，各画一条试色线。"
+              },
+              {
+                "id": "micro-soft-tip-two-widths-step-2",
+                "order": 2,
+                "instructionZh": "用 B688 软头马克笔笔尖画五条 3 厘米细线。"
+              },
+              {
+                "id": "micro-soft-tip-two-widths-step-3",
+                "order": 3,
+                "instructionZh": "用 B148 笔腹同向铺五条 1 厘米宽色带。"
+              },
+              {
+                "id": "micro-soft-tip-two-widths-step-4",
+                "order": 4,
+                "instructionZh": "转动纸张再重复一组，比较两组边缘。"
+              }
+            ],
+            "completionStandard": "五条细线不断裂，五条宽色带方向一致，纸面没有湿磨。",
+            "selfCheck": "细线和宽色带是否一眼可区分？",
+            "evidence": {
+              "type": "photo",
+              "count": 1,
+              "requirementZh": "拍摄写有 B688、B148 色号的完整控笔卡。"
+            }
+          }
+        },
+        {
+          "id": "draft_and_composition",
+          "titleZh": "草稿与构图",
+          "contentZh": "边界、中心、比例、留白、形状骨架和草稿修改",
+          "microPractice": {
+            "id": "micro-draft-three-shapes",
+            "plannedMinutes": 8,
+            "materials": [
+              "pencil",
+              "eraser",
+              "markers",
+              "art_paper"
+            ],
+            "palette": [
+              {
+                "code": "B148",
+                "nameZh": "牛奶蓝",
+                "roleZh": "标记最终边界"
+              }
+            ],
+            "steps": [
+              {
+                "id": "micro-draft-three-shapes-step-1",
+                "order": 1,
+                "instructionZh": "用铅笔轻画一个 10×10 厘米边界。"
+              },
+              {
+                "id": "micro-draft-three-shapes-step-2",
+                "order": 2,
+                "instructionZh": "在边界内放入一个大圆、一个中椭圆和一个小方形。"
+              },
+              {
+                "id": "micro-draft-three-shapes-step-3",
+                "order": 3,
+                "instructionZh": "移动其中一个形状，让四周留白更均衡。"
+              },
+              {
+                "id": "micro-draft-three-shapes-step-4",
+                "order": 4,
+                "instructionZh": "用 B148 笔尖只标记最终边界，保留修改痕迹。"
+              }
+            ],
+            "completionStandard": "三个形状大小有区别，全部位于边界内，并保留一次可见修改。",
+            "selfCheck": "第一眼能否先看到大形，再看到中形和小形？",
+            "evidence": {
+              "type": "photo",
+              "count": 1,
+              "requirementZh": "拍摄能同时看到原位置、修改位置和最终边界的草稿。"
+            }
+          }
+        },
+        {
+          "id": "clean_lineart",
+          "titleZh": "线稿",
+          "contentZh": "软头笔尖分段勾线、接线、闭合区域和单一遮挡",
+          "microPractice": {
+            "id": "micro-closed-lineart",
+            "plannedMinutes": 7,
+            "materials": [
+              "pencil",
+              "eraser",
+              "markers",
+              "swatch_paper"
+            ],
+            "palette": [
+              {
+                "code": "B688",
+                "nameZh": "藏青色",
+                "roleZh": "软头马克笔笔尖线稿"
+              }
+            ],
+            "steps": [
+              {
+                "id": "micro-closed-lineart-step-1",
+                "order": 1,
+                "instructionZh": "用铅笔轻画一个圆、一个椭圆和一个重叠小方形。"
+              },
+              {
+                "id": "micro-closed-lineart-step-2",
+                "order": 2,
+                "instructionZh": "擦掉被小方形挡住的一段椭圆线。"
+              },
+              {
+                "id": "micro-closed-lineart-step-3",
+                "order": 3,
+                "instructionZh": "用 B688 软头马克笔笔尖分段勾线，转纸完成曲线。"
+              },
+              {
+                "id": "micro-closed-lineart-step-4",
+                "order": 4,
+                "instructionZh": "检查三个色区的断口，只补断口，不反复描粗。"
+              }
+            ],
+            "completionStandard": "遮挡线已删除，三个区域闭合，接线自然。",
+            "selfCheck": "准备填色的区域是否都没有断口？",
+            "evidence": {
+              "type": "photo",
+              "count": 1,
+              "requirementZh": "拍摄闭合线稿卡，画面中保留 B688 色号。"
+            }
+          }
+        },
+        {
+          "id": "flat_fill_and_edges",
+          "titleZh": "平涂与边缘",
+          "contentZh": "笔尖围边、笔腹同向铺色、干后补白和停止条件",
+          "microPractice": {
+            "id": "micro-flat-fill-two-boxes",
+            "plannedMinutes": 8,
+            "materials": [
+              "pencil",
+              "markers",
+              "swatch_paper"
+            ],
+            "palette": [
+              {
+                "code": "B148",
+                "nameZh": "牛奶蓝",
+                "roleZh": "第一平涂格"
+              },
+              {
+                "code": "G147",
+                "nameZh": "薄荷绿",
+                "roleZh": "第二平涂格"
+              }
+            ],
+            "steps": [
+              {
+                "id": "micro-flat-fill-two-boxes-step-1",
+                "order": 1,
+                "instructionZh": "用铅笔画两个 4×4 厘米方格。"
+              },
+              {
+                "id": "micro-flat-fill-two-boxes-step-2",
+                "order": 2,
+                "instructionZh": "用 B148 笔尖围第一格边缘，再用笔腹从左向右铺色。"
+              },
+              {
+                "id": "micro-flat-fill-two-boxes-step-3",
+                "order": 3,
+                "instructionZh": "转纸，用 G147 笔尖围第二格边缘，再用笔腹从上向下铺色。"
+              },
+              {
+                "id": "micro-flat-fill-two-boxes-step-4",
+                "order": 4,
+                "instructionZh": "完全干后各检查一次，最多补一处漏白。"
+              }
+            ],
+            "completionStandard": "两格边缘受控，格内笔触方向一致，每格修补不超过一处。",
+            "selfCheck": "是否先围边、再铺色、干后才修补？",
+            "evidence": {
+              "type": "photo",
+              "count": 1,
+              "requirementZh": "拍摄两格干后平涂卡和 B148、G147 色号。"
+            }
+          }
+        },
+        {
+          "id": "color_and_layering",
+          "titleZh": "配色与叠色",
+          "contentZh": "色号、画面职责、干后试色和一层局部叠色",
+          "microPractice": {
+            "id": "micro-one-layer-overlap",
+            "plannedMinutes": 7,
+            "materials": [
+              "markers",
+              "swatch_paper"
+            ],
+            "palette": [
+              {
+                "code": "R704",
+                "nameZh": "淡粉",
+                "roleZh": "第一层主色"
+              },
+              {
+                "code": "R691",
+                "nameZh": "珊瑚粉",
+                "roleZh": "一层局部叠色"
+              }
+            ],
+            "steps": [
+              {
+                "id": "micro-one-layer-overlap-step-1",
+                "order": 1,
+                "instructionZh": "写下 R704 和 R691 色号，各画一块独立试色。"
+              },
+              {
+                "id": "micro-one-layer-overlap-step-2",
+                "order": 2,
+                "instructionZh": "用 R704 笔腹铺一个 5×3 厘米色块。"
+              },
+              {
+                "id": "micro-one-layer-overlap-step-3",
+                "order": 3,
+                "instructionZh": "等待色块完全干燥。"
+              },
+              {
+                "id": "micro-one-layer-overlap-step-4",
+                "order": 4,
+                "instructionZh": "用 R691 在色块右侧叠一层，不重复覆盖第二次。"
+              }
+            ],
+            "completionStandard": "第一层已干，叠色只出现一层，左右区域界线清楚。",
+            "selfCheck": "叠色前是否确认第一层已经干透？",
+            "evidence": {
+              "type": "photo",
+              "count": 1,
+              "requirementZh": "拍摄标有两色色号与叠色方向箭头的干后样本。"
+            }
+          }
+        },
+        {
+          "id": "anime_expression",
+          "titleZh": "动漫表达",
+          "contentZh": "角色比例、表情方向和道具接触",
+          "microPractice": {
+            "id": "micro-two-expressions",
+            "plannedMinutes": 8,
+            "materials": [
+              "pencil",
+              "eraser",
+              "markers",
+              "art_paper"
+            ],
+            "palette": [
+              {
+                "code": "B688",
+                "nameZh": "藏青色",
+                "roleZh": "表情线"
+              },
+              {
+                "code": "R787",
+                "nameZh": "薄红",
+                "roleZh": "脸颊小色块"
+              }
+            ],
+            "steps": [
+              {
+                "id": "micro-two-expressions-step-1",
+                "order": 1,
+                "instructionZh": "用铅笔并排画两个相同大小的圆形头像。"
+              },
+              {
+                "id": "micro-two-expressions-step-2",
+                "order": 2,
+                "instructionZh": "左边用上弯眼和上弯嘴表现开心，右边用斜向眼和小圆嘴表现好奇。"
+              },
+              {
+                "id": "micro-two-expressions-step-3",
+                "order": 3,
+                "instructionZh": "用 B688 软头马克笔笔尖勾表情线。"
+              },
+              {
+                "id": "micro-two-expressions-step-4",
+                "order": 4,
+                "instructionZh": "用 R787 各加两块同样大小的脸颊色，比较表情差异。"
+              }
+            ],
+            "completionStandard": "两个头像大小接近，不用文字也能区分开心与好奇。",
+            "selfCheck": "遮住脸颊色后，两种表情仍能区分吗？",
+            "evidence": {
+              "type": "photo",
+              "count": 1,
+              "requirementZh": "拍摄两个完整头像与 B688、R787 色号。"
+            }
+          }
+        }
+      ]
+    },
+    "gallery": {
+      "titleZh": "作品画廊",
+      "entryBehavior": "open_gallery",
+      "opensOwnSection": true,
+      "contentStructure": [
+        "作品照片",
+        "草稿、线稿、第一层和成品",
+        "课程、色号与讲评",
+        "教师反馈与下一课建议"
+      ],
+      "metadataFields": [
+        "courseId",
+        "courseTitle",
+        "paletteCodes",
+        "processEvidence",
+        "selfReview",
+        "teacherFeedback"
+      ],
+      "emptyStateZh": "还没有作品"
+    },
+    "materialsAndPreparation": {
+      "titleZh": "材料准备",
+      "entryBehavior": "open_material_registry",
+      "opensOwnSection": true,
+      "registryAsset": {
+        "path": "color-card-register-120.json",
+        "registryId": "zhangwo-120-soft-tip-acrylic",
+        "expectedColorCount": 120
+      },
+      "contentStructure": [
+        "120 色登记",
+        "本课六色色组与画面职责",
+        "缺失、出墨异常与替代色",
+        "纸张、铅笔、橡皮、软头马克笔、垫板和纸巾",
+        "试色、盖帽、清洁、收纳与安全"
+      ]
+    }
+  },
+  "rubrics": [
+    {
+      "rubricId": "rubric-single-animal-entry-v1",
+      "titleZh": "单角色基础诊断量表",
+      "scale": {
+        "0": "需要示范",
+        "1": "提示后完成",
+        "2": "独立完成"
+      },
+      "items": [
+        {
+          "skillTargetId": "shape_skeleton",
+          "criterionZh": "先用头、身、肢体形状建立可读姿势。"
+        },
+        {
+          "skillTargetId": "light_draft",
+          "criterionZh": "保持轻线并主动完成一处有理由的修改。"
+        },
+        {
+          "skillTargetId": "single_overlap",
+          "criterionZh": "判断唯一前后关系并删除被挡线。"
+        },
+        {
+          "skillTargetId": "closed_lineart",
+          "criterionZh": "分段勾线、接线自然、主要色区闭合。"
+        },
+        {
+          "skillTargetId": "soft_tip_flat_fill",
+          "criterionZh": "先试色，笔尖控边，笔腹同向铺色。"
+        },
+        {
+          "skillTargetId": "one_local_shadow",
+          "criterionZh": "第一层干后只加一层局部暗部。"
+        }
+      ]
+    }
+  ],
+  "candidateSet": {
+    "setId": "color-daily-choice-cp-s01-revision-b",
+    "titleZh": "选择作品",
+    "selectionPromptZh": "",
+    "studentNavigation": {
+      "persistentCourseTabsEnabled": false,
+      "persistentCourseTabs": []
+    },
+    "roadmapStageId": "cp-s01-single-animal-diagnostic",
+    "skillTargetIds": [
+      "shape_skeleton",
+      "light_draft",
+      "single_overlap",
+      "closed_lineart",
+      "soft_tip_flat_fill",
+      "one_local_shadow"
+    ],
+    "rubricId": "rubric-single-animal-entry-v1",
+    "evidenceRequirements": [
+      {
+        "id": "draft_before_after",
+        "type": "photo_pair",
+        "count": 2,
+        "requirementZh": "保存修改前与修改后的草稿照片。"
+      },
+      {
+        "id": "closed_lineart",
+        "type": "photo",
+        "count": 1,
+        "requirementZh": "保存主要色区闭合的线稿照片。"
+      },
+      {
+        "id": "dry_first_layer",
+        "type": "photo",
+        "count": 1,
+        "requirementZh": "第一层完全干后保存照片。"
+      },
+      {
+        "id": "finished_work",
+        "type": "photo",
+        "count": 1,
+        "requirementZh": "保存完整成品照片。"
+      },
+      {
+        "id": "self_review",
+        "type": "audio",
+        "count": 1,
+        "durationSeconds": 60,
+        "requirementZh": "录制 60 秒讲评：指出一处成功、一处修改和下一次要保持的动作。"
+      }
+    ],
+    "promotionRule": {
+      "ruleId": "promotion-cp-s01-v1",
+      "minimumIndependentRubricItems": 4,
+      "rubricItemCount": 6,
+      "remainingItemsMinimumScore": 1,
+      "requiredProcessChecks": [
+        "先试色",
+        "第一层干后再加局部暗部",
+        "不湿磨"
+      ],
+      "stageProgressCount": 1,
+      "reserveDisposition": "same_stage_reserve",
+      "ruleZh": "六项中至少四项独立完成，其余两项不得为需要示范；三项工艺检查全部通过。完成任一题材只推进一次本能力课次，其余题材进入同阶段备用。"
+    },
+    "equivalenceMatrix": {
+      "requiredExactMatchFields": [
+        "characterCount",
+        "propCount",
+        "mainShapeCount",
+        "requiredOverlapCount",
+        "colorBlockCount",
+        "paletteColorCount",
+        "shadowLayerCount",
+        "sceneLayerCount",
+        "stepCount"
+      ],
+      "maximumDurationDifferencePercent": 10,
+      "actualDurationDifferencePercent": 0,
+      "rows": [
+        {
+          "courseId": "color-choice-001-squatting-puppy",
+          "titleZh": "蹲蹲小狗",
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14,
+          "plannedMinutes": 56
+        },
+        {
+          "courseId": "color-choice-002-picnic-rabbit",
+          "titleZh": "野餐小兔",
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14,
+          "plannedMinutes": 56
+        },
+        {
+          "courseId": "color-choice-003-reading-cat",
+          "titleZh": "阅读小猫",
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14,
+          "plannedMinutes": 56
+        },
+        {
+          "courseId": "color-choice-004-watering-bear",
+          "titleZh": "浇花小熊",
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14,
+          "plannedMinutes": 56
+        },
+        {
+          "courseId": "color-choice-005-kite-duck",
+          "titleZh": "风筝小鸭",
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14,
+          "plannedMinutes": 56
+        }
+      ]
+    },
+    "courses": [
+      {
+        "courseId": "color-choice-001-squatting-puppy",
+        "titleZh": "蹲蹲小狗",
+        "displayTitle": "蹲蹲小狗",
+        "roadmapStageId": "cp-s01-single-animal-diagnostic",
+        "skillTargetIds": [
+          "shape_skeleton",
+          "light_draft",
+          "single_overlap",
+          "closed_lineart",
+          "soft_tip_flat_fill",
+          "one_local_shadow"
+        ],
+        "rubricId": "rubric-single-animal-entry-v1",
+        "evidenceRequirements": [
+          {
+            "id": "draft_before_after",
+            "type": "photo_pair",
+            "count": 2,
+            "requirementZh": "保存修改前与修改后的草稿照片。"
+          },
+          {
+            "id": "closed_lineart",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存主要色区闭合的线稿照片。"
+          },
+          {
+            "id": "dry_first_layer",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "第一层完全干后保存照片。"
+          },
+          {
+            "id": "finished_work",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存完整成品照片。"
+          },
+          {
+            "id": "self_review",
+            "type": "audio",
+            "count": 1,
+            "durationSeconds": 60,
+            "requirementZh": "录制 60 秒讲评：指出一处成功、一处修改和下一次要保持的动作。"
+          }
+        ],
+        "promotionRule": {
+          "ruleId": "promotion-cp-s01-v1",
+          "minimumIndependentRubricItems": 4,
+          "rubricItemCount": 6,
+          "remainingItemsMinimumScore": 1,
+          "requiredProcessChecks": [
+            "先试色",
+            "第一层干后再加局部暗部",
+            "不湿磨"
+          ],
+          "stageProgressCount": 1,
+          "reserveDisposition": "same_stage_reserve",
+          "ruleZh": "六项中至少四项独立完成，其余两项不得为需要示范；三项工艺检查全部通过。完成任一题材只推进一次本能力课次，其余题材进入同阶段备用。"
+        },
+        "plannedMinutes": 56,
+        "formatZh": "单角色基础诊断插画",
+        "choiceCardZh": "一只蹲着的小狗、一个黄色小球、一个浅绿色椭圆地面。",
+        "compositionBudget": {
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14
+        },
+        "subjectDefinition": {
+          "characterZh": "一只蹲着的小狗",
+          "propZh": "一个黄色小球",
+          "simpleGroundOrBackgroundShapeZh": "一个浅绿色椭圆地面",
+          "requiredOverlapZh": "一只前爪挡住小球的一小段轮廓"
+        },
+        "palette": [
+          {
+            "code": "B688",
+            "nameZh": "藏青色",
+            "roleZh": "笔尖勾线与最深接触点"
+          },
+          {
+            "code": "R761",
+            "nameZh": "自然色",
+            "roleZh": "小狗主色"
+          },
+          {
+            "code": "R766",
+            "nameZh": "奶茶棕",
+            "roleZh": "耳朵与一层局部暗部"
+          },
+          {
+            "code": "Y128",
+            "nameZh": "亮黄",
+            "roleZh": "小球"
+          },
+          {
+            "code": "G147",
+            "nameZh": "薄荷绿",
+            "roleZh": "椭圆地面"
+          },
+          {
+            "code": "R787",
+            "nameZh": "薄红",
+            "roleZh": "耳内与脸颊小色块"
+          }
+        ],
+        "materials": [
+          "pencil",
+          "eraser",
+          "markers",
+          "art_paper",
+          "swatch_paper",
+          "desk_pad",
+          "tissue",
+          "reference"
+        ],
+        "steps": [
+          {
+            "id": "observe",
+            "order": 1,
+            "titleZh": "看大形",
+            "plannedMinutes": 2,
+            "studentVoiceZh": "观察完成图，指出一只蹲着的小狗、一个黄色小球和一个浅绿色椭圆地面，先看角色大形，再看一处遮挡。",
+            "materialRefs": [
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "用手指沿一只蹲着的小狗的外轮廓走一圈",
+              "指出一个黄色小球和一个浅绿色椭圆地面",
+              "找到一只前爪挡住小球的一小段轮廓"
+            ],
+            "completionStandardZh": "能准确指出一个角色、一个道具、一个简单地面形和一只前爪挡住小球的一小段轮廓。",
+            "selfCheckZh": "暂时遮住五官，姿势仍然看得懂吗？",
+            "teacherAudioZh": "先看大形、道具和地面形，再找唯一需要处理的遮挡。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step01",
+              "briefZh": "显示“蹲蹲小狗”第 1 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prepare",
+            "order": 2,
+            "titleZh": "摆好六色",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "按完成图摆出六支笔，在试色纸写下色号；逐支试色，确认R761是角色主色、B688只用笔尖完成线与最深接触点。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper",
+              "reference"
+            ],
+            "colorRefs": [
+              "B688",
+              "R761",
+              "R766",
+              "Y128",
+              "G147",
+              "R787"
+            ],
+            "actionsZh": [
+              "逐支核对笔帽色号",
+              "每色画一条细线和一块宽色带",
+              "等待试色干燥后再确认"
+            ],
+            "completionStandardZh": "六个色号与课程色组一致，每支笔都能说出画面职责。",
+            "selfCheckZh": "六支笔是否都已试色并写下色号？",
+            "teacherAudioZh": "先核对六色职责。B688 使用软头马克笔笔尖，不另取勾线工具。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step02",
+              "briefZh": "显示“蹲蹲小狗”第 2 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "tip_belly",
+            "order": 3,
+            "titleZh": "试笔尖笔腹",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "用 B688 软头马克笔的笔尖画三条短细线，再用 R761 的笔尖围边、笔腹同向铺一块小色带。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "B688",
+              "R761"
+            ],
+            "actionsZh": [
+              "笔杆稍立，用笔尖轻画细线",
+              "笔杆放低，用笔腹同向铺色",
+              "转动试色纸，不扭手腕"
+            ],
+            "completionStandardZh": "细线不断裂，色带方向一致，边缘没有来回湿磨。",
+            "selfCheckZh": "细线和宽色带是否明显不同？",
+            "teacherAudioZh": "笔尖负责细线与边缘，笔腹负责宽面；先在试色纸完成动作。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step03",
+              "briefZh": "显示“蹲蹲小狗”第 3 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "thumbnail",
+            "order": 4,
+            "titleZh": "定位置",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "在纸上轻画边界，用三个浅形放入一只蹲着的小狗、一个黄色小球和一个浅绿色椭圆地面，保留四周空白。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "轻画画面边界",
+              "用浅形确定角色中心",
+              "检查道具和地面形没有贴边"
+            ],
+            "completionStandardZh": "角色是第一视觉重点，道具和地面形完整，四周留白稳定。",
+            "selfCheckZh": "角色是否最先被看到？",
+            "teacherAudioZh": "这里只确定位置和大小，不画五官与装饰。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step04",
+              "briefZh": "显示“蹲蹲小狗”第 4 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "skeleton",
+            "order": 5,
+            "titleZh": "搭形状骨架",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "用圆、椭圆和豆形搭出一只蹲着的小狗的头、身体和肢体，保持轻线，暂不画细节。",
+            "materialRefs": [
+              "pencil",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先画头和身体",
+              "再加成组肢体方向",
+              "用一条动作轴检查姿势"
+            ],
+            "completionStandardZh": "形状骨架清楚，角色姿势在没有五官时仍可辨认。",
+            "selfCheckZh": "头、身体和支撑位置是否连得起来？",
+            "teacherAudioZh": "先用简单形状搭角色，轻线允许调整。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step05",
+              "briefZh": "显示“蹲蹲小狗”第 5 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prop_overlap",
+            "order": 6,
+            "titleZh": "放道具与遮挡",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "加入一个黄色小球，明确一只前爪挡住小球的一小段轮廓；擦掉被挡住的那一小段线。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先完整想象一个黄色小球的形状",
+              "保留一只前爪挡住小球的一小段轮廓",
+              "擦掉唯一一段被挡线"
+            ],
+            "completionStandardZh": "一个黄色小球接触角色、不漂浮，且只有一处必须处理的遮挡。",
+            "selfCheckZh": "被挡住的线是否已经擦掉？",
+            "teacherAudioZh": "只处理一个前后关系，让道具与角色真正接触。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step06",
+              "briefZh": "显示“蹲蹲小狗”第 6 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "light_draft",
+            "order": 7,
+            "titleZh": "补全轻草稿",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "补上一只蹲着的小狗的五官和必要细节，再画一个浅绿色椭圆地面；所有线保持能擦改的浅度。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先补五官方向",
+              "再补不超过三组的小细节",
+              "最后加入一个简单地面形"
+            ],
+            "completionStandardZh": "草稿信息完整，没有新增角色、道具或第二层环境。",
+            "selfCheckZh": "删掉任何装饰后，主体关系是否仍然完整？",
+            "teacherAudioZh": "只补必要信息，地面或背景保持一个简单形。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step07",
+              "briefZh": "显示“蹲蹲小狗”第 7 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "revise",
+            "order": 8,
+            "titleZh": "主动修改一次",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "对照完成图，从比例、位置或遮挡中选一处有理由地修改；拍下修改前后草稿。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "指出要修改的位置",
+              "先擦浅再重画",
+              "保存修改前后两张照片"
+            ],
+            "completionStandardZh": "完成一处能说出理由的修改，修改后结构更清楚。",
+            "selfCheckZh": "这次修改解决了什么问题？",
+            "teacherAudioZh": "主动修改是本课证据。只改最有价值的一处。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step08",
+              "briefZh": "显示“蹲蹲小狗”第 8 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "closed_lineart",
+            "order": 9,
+            "titleZh": "闭合线稿",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认草稿后，用 B688 软头马克笔的笔尖分段勾线；转纸完成曲线，接线后检查主要色区是否闭合。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "B688"
+            ],
+            "actionsZh": [
+              "用软头笔尖从不易蹭到的一侧开始",
+              "短线分段并转纸",
+              "补齐断口后保存线稿照片"
+            ],
+            "completionStandardZh": "主要色区闭合，接线自然，不反复描粗。",
+            "selfCheckZh": "每个准备平涂的区域都闭合了吗？",
+            "teacherAudioZh": "本步骤只使用 B688 软头马克笔笔尖完成线稿。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step09",
+              "briefZh": "显示“蹲蹲小狗”第 9 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_character",
+            "order": 10,
+            "titleZh": "平涂角色",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "先用 R761 的笔尖围角色边缘，再用笔腹同向铺主色；用 R766 完成第二色区，不在湿色上来回磨。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R761",
+              "R766"
+            ],
+            "actionsZh": [
+              "笔尖先围窄边",
+              "笔腹从同一方向铺色",
+              "留出相邻湿区并转纸"
+            ],
+            "completionStandardZh": "角色主色块均匀，边缘受控，没有湿磨起纸。",
+            "selfCheckZh": "笔触方向是否一致，边缘是否干净？",
+            "teacherAudioZh": "先边缘后内部；同一区域保持一个铺色方向。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step10",
+              "briefZh": "显示“蹲蹲小狗”第 10 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_prop_setting",
+            "order": 11,
+            "titleZh": "平涂道具与地面",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "用 Y128 完成一个黄色小球，用 G147 完成一个浅绿色椭圆地面，最后以 R787 加必要的小色块。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "Y128",
+              "G147",
+              "R787"
+            ],
+            "actionsZh": [
+              "先涂道具",
+              "再涂单一地面形",
+              "小色块最后完成"
+            ],
+            "completionStandardZh": "道具、地面形和小色块职责清楚，没有扩展成多层场景。",
+            "selfCheckZh": "画面是否仍只有一个角色、一个道具和一个地面形？",
+            "teacherAudioZh": "保持单层环境，色块完成后停笔等待干燥。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step11",
+              "briefZh": "显示“蹲蹲小狗”第 11 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "local_shadow",
+            "order": 12,
+            "titleZh": "加一层局部暗部",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认第一层完全干燥，再用 R766 在角色背光侧加一层局部暗部；用 B688 笔尖点出唯一接触点，不扩大暗部。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R766",
+              "B688"
+            ],
+            "actionsZh": [
+              "手背轻触确认表面已干",
+              "只在背光侧加一层暗部",
+              "接触点只点一次最深色"
+            ],
+            "completionStandardZh": "暗部只有一层，范围小于角色主色区的四分之一，接触点明确。",
+            "selfCheckZh": "暗部是否只在局部，并且第一层已经干透？",
+            "teacherAudioZh": "只加一层局部暗部。若第一层未干，继续等待。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step12",
+              "briefZh": "显示“蹲蹲小狗”第 12 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "dry_repair",
+            "order": 13,
+            "titleZh": "干后修三处以内",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "等画面干后，只检查 R761、Y128、G147 三类色块；最多修三处针尖大小的漏白或越界。",
+            "materialRefs": [
+              "markers",
+              "art_paper",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "R761",
+              "Y128",
+              "G147"
+            ],
+            "actionsZh": [
+              "先圈出真正需要修的位置",
+              "在试色纸确认出墨",
+              "修满三处或已干净时立即停笔"
+            ],
+            "completionStandardZh": "修补不超过三处，没有为了更满而反复覆盖。",
+            "selfCheckZh": "现在停笔是否比继续覆盖更好？",
+            "teacherAudioZh": "修补只处理必要位置，最多三处。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step13",
+              "briefZh": "显示“蹲蹲小狗”第 13 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "finish_evidence",
+            "order": 14,
+            "titleZh": "保存证据与讲评",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "拍摄干后第一层与完整成品，核对五项证据；录制 60 秒讲评，说出一处成功、一处修改和下一次要保持的动作。",
+            "materialRefs": [
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "在均匀光线下拍摄成品",
+              "核对草稿、线稿、第一层与成品照片",
+              "录制 60 秒讲评"
+            ],
+            "completionStandardZh": "五项证据齐全，讲评包含成功位置、修改位置和下一次动作。",
+            "selfCheckZh": "证据是否能看出从草稿到成品的过程？",
+            "teacherAudioZh": "最后保存过程证据，用具体位置和动作完成讲评。",
+            "diagramRequirement": {
+              "assetId": "squatting_puppy_step14",
+              "briefZh": "显示“蹲蹲小狗”第 14 步的正确动作、材料和完成状态。"
+            }
+          }
+        ]
+      },
+      {
+        "courseId": "color-choice-002-picnic-rabbit",
+        "titleZh": "野餐小兔",
+        "displayTitle": "野餐小兔",
+        "roadmapStageId": "cp-s01-single-animal-diagnostic",
+        "skillTargetIds": [
+          "shape_skeleton",
+          "light_draft",
+          "single_overlap",
+          "closed_lineart",
+          "soft_tip_flat_fill",
+          "one_local_shadow"
+        ],
+        "rubricId": "rubric-single-animal-entry-v1",
+        "evidenceRequirements": [
+          {
+            "id": "draft_before_after",
+            "type": "photo_pair",
+            "count": 2,
+            "requirementZh": "保存修改前与修改后的草稿照片。"
+          },
+          {
+            "id": "closed_lineart",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存主要色区闭合的线稿照片。"
+          },
+          {
+            "id": "dry_first_layer",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "第一层完全干后保存照片。"
+          },
+          {
+            "id": "finished_work",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存完整成品照片。"
+          },
+          {
+            "id": "self_review",
+            "type": "audio",
+            "count": 1,
+            "durationSeconds": 60,
+            "requirementZh": "录制 60 秒讲评：指出一处成功、一处修改和下一次要保持的动作。"
+          }
+        ],
+        "promotionRule": {
+          "ruleId": "promotion-cp-s01-v1",
+          "minimumIndependentRubricItems": 4,
+          "rubricItemCount": 6,
+          "remainingItemsMinimumScore": 1,
+          "requiredProcessChecks": [
+            "先试色",
+            "第一层干后再加局部暗部",
+            "不湿磨"
+          ],
+          "stageProgressCount": 1,
+          "reserveDisposition": "same_stage_reserve",
+          "ruleZh": "六项中至少四项独立完成，其余两项不得为需要示范；三项工艺检查全部通过。完成任一题材只推进一次本能力课次，其余题材进入同阶段备用。"
+        },
+        "plannedMinutes": 56,
+        "formatZh": "单角色基础诊断插画",
+        "choiceCardZh": "一只坐着的小兔、一个野餐篮、一个浅绿色椭圆草地。",
+        "compositionBudget": {
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14
+        },
+        "subjectDefinition": {
+          "characterZh": "一只坐着的小兔",
+          "propZh": "一个野餐篮",
+          "simpleGroundOrBackgroundShapeZh": "一个浅绿色椭圆草地",
+          "requiredOverlapZh": "一只前爪挡住篮柄的一小段轮廓"
+        },
+        "palette": [
+          {
+            "code": "B688",
+            "nameZh": "藏青色",
+            "roleZh": "笔尖勾线与最深接触点"
+          },
+          {
+            "code": "NG768",
+            "nameZh": "灰白",
+            "roleZh": "小兔主色"
+          },
+          {
+            "code": "R704",
+            "nameZh": "淡粉",
+            "roleZh": "耳内与脸颊"
+          },
+          {
+            "code": "Y145",
+            "nameZh": "肉桂橙",
+            "roleZh": "野餐篮"
+          },
+          {
+            "code": "G279",
+            "nameZh": "浅春绿",
+            "roleZh": "椭圆草地"
+          },
+          {
+            "code": "NG767",
+            "nameZh": "浅灰",
+            "roleZh": "一层局部暗部"
+          }
+        ],
+        "materials": [
+          "pencil",
+          "eraser",
+          "markers",
+          "art_paper",
+          "swatch_paper",
+          "desk_pad",
+          "tissue",
+          "reference"
+        ],
+        "steps": [
+          {
+            "id": "observe",
+            "order": 1,
+            "titleZh": "看大形",
+            "plannedMinutes": 2,
+            "studentVoiceZh": "观察完成图，指出一只坐着的小兔、一个野餐篮和一个浅绿色椭圆草地，先看角色大形，再看一处遮挡。",
+            "materialRefs": [
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "用手指沿一只坐着的小兔的外轮廓走一圈",
+              "指出一个野餐篮和一个浅绿色椭圆草地",
+              "找到一只前爪挡住篮柄的一小段轮廓"
+            ],
+            "completionStandardZh": "能准确指出一个角色、一个道具、一个简单地面形和一只前爪挡住篮柄的一小段轮廓。",
+            "selfCheckZh": "暂时遮住五官，姿势仍然看得懂吗？",
+            "teacherAudioZh": "先看大形、道具和地面形，再找唯一需要处理的遮挡。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step01",
+              "briefZh": "显示“野餐小兔”第 1 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prepare",
+            "order": 2,
+            "titleZh": "摆好六色",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "按完成图摆出六支笔，在试色纸写下色号；逐支试色，确认NG768是角色主色、B688只用笔尖完成线与最深接触点。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper",
+              "reference"
+            ],
+            "colorRefs": [
+              "B688",
+              "NG768",
+              "R704",
+              "Y145",
+              "G279",
+              "NG767"
+            ],
+            "actionsZh": [
+              "逐支核对笔帽色号",
+              "每色画一条细线和一块宽色带",
+              "等待试色干燥后再确认"
+            ],
+            "completionStandardZh": "六个色号与课程色组一致，每支笔都能说出画面职责。",
+            "selfCheckZh": "六支笔是否都已试色并写下色号？",
+            "teacherAudioZh": "先核对六色职责。B688 使用软头马克笔笔尖，不另取勾线工具。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step02",
+              "briefZh": "显示“野餐小兔”第 2 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "tip_belly",
+            "order": 3,
+            "titleZh": "试笔尖笔腹",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "用 B688 软头马克笔的笔尖画三条短细线，再用 NG768 的笔尖围边、笔腹同向铺一块小色带。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "B688",
+              "NG768"
+            ],
+            "actionsZh": [
+              "笔杆稍立，用笔尖轻画细线",
+              "笔杆放低，用笔腹同向铺色",
+              "转动试色纸，不扭手腕"
+            ],
+            "completionStandardZh": "细线不断裂，色带方向一致，边缘没有来回湿磨。",
+            "selfCheckZh": "细线和宽色带是否明显不同？",
+            "teacherAudioZh": "笔尖负责细线与边缘，笔腹负责宽面；先在试色纸完成动作。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step03",
+              "briefZh": "显示“野餐小兔”第 3 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "thumbnail",
+            "order": 4,
+            "titleZh": "定位置",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "在纸上轻画边界，用三个浅形放入一只坐着的小兔、一个野餐篮和一个浅绿色椭圆草地，保留四周空白。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "轻画画面边界",
+              "用浅形确定角色中心",
+              "检查道具和地面形没有贴边"
+            ],
+            "completionStandardZh": "角色是第一视觉重点，道具和地面形完整，四周留白稳定。",
+            "selfCheckZh": "角色是否最先被看到？",
+            "teacherAudioZh": "这里只确定位置和大小，不画五官与装饰。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step04",
+              "briefZh": "显示“野餐小兔”第 4 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "skeleton",
+            "order": 5,
+            "titleZh": "搭形状骨架",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "用圆、椭圆和豆形搭出一只坐着的小兔的头、身体和肢体，保持轻线，暂不画细节。",
+            "materialRefs": [
+              "pencil",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先画头和身体",
+              "再加成组肢体方向",
+              "用一条动作轴检查姿势"
+            ],
+            "completionStandardZh": "形状骨架清楚，角色姿势在没有五官时仍可辨认。",
+            "selfCheckZh": "头、身体和支撑位置是否连得起来？",
+            "teacherAudioZh": "先用简单形状搭角色，轻线允许调整。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step05",
+              "briefZh": "显示“野餐小兔”第 5 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prop_overlap",
+            "order": 6,
+            "titleZh": "放道具与遮挡",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "加入一个野餐篮，明确一只前爪挡住篮柄的一小段轮廓；擦掉被挡住的那一小段线。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先完整想象一个野餐篮的形状",
+              "保留一只前爪挡住篮柄的一小段轮廓",
+              "擦掉唯一一段被挡线"
+            ],
+            "completionStandardZh": "一个野餐篮接触角色、不漂浮，且只有一处必须处理的遮挡。",
+            "selfCheckZh": "被挡住的线是否已经擦掉？",
+            "teacherAudioZh": "只处理一个前后关系，让道具与角色真正接触。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step06",
+              "briefZh": "显示“野餐小兔”第 6 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "light_draft",
+            "order": 7,
+            "titleZh": "补全轻草稿",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "补上一只坐着的小兔的五官和必要细节，再画一个浅绿色椭圆草地；所有线保持能擦改的浅度。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先补五官方向",
+              "再补不超过三组的小细节",
+              "最后加入一个简单地面形"
+            ],
+            "completionStandardZh": "草稿信息完整，没有新增角色、道具或第二层环境。",
+            "selfCheckZh": "删掉任何装饰后，主体关系是否仍然完整？",
+            "teacherAudioZh": "只补必要信息，地面或背景保持一个简单形。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step07",
+              "briefZh": "显示“野餐小兔”第 7 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "revise",
+            "order": 8,
+            "titleZh": "主动修改一次",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "对照完成图，从比例、位置或遮挡中选一处有理由地修改；拍下修改前后草稿。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "指出要修改的位置",
+              "先擦浅再重画",
+              "保存修改前后两张照片"
+            ],
+            "completionStandardZh": "完成一处能说出理由的修改，修改后结构更清楚。",
+            "selfCheckZh": "这次修改解决了什么问题？",
+            "teacherAudioZh": "主动修改是本课证据。只改最有价值的一处。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step08",
+              "briefZh": "显示“野餐小兔”第 8 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "closed_lineart",
+            "order": 9,
+            "titleZh": "闭合线稿",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认草稿后，用 B688 软头马克笔的笔尖分段勾线；转纸完成曲线，接线后检查主要色区是否闭合。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "B688"
+            ],
+            "actionsZh": [
+              "用软头笔尖从不易蹭到的一侧开始",
+              "短线分段并转纸",
+              "补齐断口后保存线稿照片"
+            ],
+            "completionStandardZh": "主要色区闭合，接线自然，不反复描粗。",
+            "selfCheckZh": "每个准备平涂的区域都闭合了吗？",
+            "teacherAudioZh": "本步骤只使用 B688 软头马克笔笔尖完成线稿。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step09",
+              "briefZh": "显示“野餐小兔”第 9 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_character",
+            "order": 10,
+            "titleZh": "平涂角色",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "先用 NG768 的笔尖围角色边缘，再用笔腹同向铺主色；用 R704 完成第二色区，不在湿色上来回磨。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "NG768",
+              "R704"
+            ],
+            "actionsZh": [
+              "笔尖先围窄边",
+              "笔腹从同一方向铺色",
+              "留出相邻湿区并转纸"
+            ],
+            "completionStandardZh": "角色主色块均匀，边缘受控，没有湿磨起纸。",
+            "selfCheckZh": "笔触方向是否一致，边缘是否干净？",
+            "teacherAudioZh": "先边缘后内部；同一区域保持一个铺色方向。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step10",
+              "briefZh": "显示“野餐小兔”第 10 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_prop_setting",
+            "order": 11,
+            "titleZh": "平涂道具与地面",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "用 Y145 完成一个野餐篮，用 G279 完成一个浅绿色椭圆草地，最后以 NG767 加必要的小色块。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "Y145",
+              "G279",
+              "NG767"
+            ],
+            "actionsZh": [
+              "先涂道具",
+              "再涂单一地面形",
+              "小色块最后完成"
+            ],
+            "completionStandardZh": "道具、地面形和小色块职责清楚，没有扩展成多层场景。",
+            "selfCheckZh": "画面是否仍只有一个角色、一个道具和一个地面形？",
+            "teacherAudioZh": "保持单层环境，色块完成后停笔等待干燥。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step11",
+              "briefZh": "显示“野餐小兔”第 11 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "local_shadow",
+            "order": 12,
+            "titleZh": "加一层局部暗部",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认第一层完全干燥，再用 NG767 在角色背光侧加一层局部暗部；用 B688 笔尖点出唯一接触点，不扩大暗部。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "NG767",
+              "B688"
+            ],
+            "actionsZh": [
+              "手背轻触确认表面已干",
+              "只在背光侧加一层暗部",
+              "接触点只点一次最深色"
+            ],
+            "completionStandardZh": "暗部只有一层，范围小于角色主色区的四分之一，接触点明确。",
+            "selfCheckZh": "暗部是否只在局部，并且第一层已经干透？",
+            "teacherAudioZh": "只加一层局部暗部。若第一层未干，继续等待。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step12",
+              "briefZh": "显示“野餐小兔”第 12 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "dry_repair",
+            "order": 13,
+            "titleZh": "干后修三处以内",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "等画面干后，只检查 NG768、Y145、G279 三类色块；最多修三处针尖大小的漏白或越界。",
+            "materialRefs": [
+              "markers",
+              "art_paper",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "NG768",
+              "Y145",
+              "G279"
+            ],
+            "actionsZh": [
+              "先圈出真正需要修的位置",
+              "在试色纸确认出墨",
+              "修满三处或已干净时立即停笔"
+            ],
+            "completionStandardZh": "修补不超过三处，没有为了更满而反复覆盖。",
+            "selfCheckZh": "现在停笔是否比继续覆盖更好？",
+            "teacherAudioZh": "修补只处理必要位置，最多三处。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step13",
+              "briefZh": "显示“野餐小兔”第 13 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "finish_evidence",
+            "order": 14,
+            "titleZh": "保存证据与讲评",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "拍摄干后第一层与完整成品，核对五项证据；录制 60 秒讲评，说出一处成功、一处修改和下一次要保持的动作。",
+            "materialRefs": [
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "在均匀光线下拍摄成品",
+              "核对草稿、线稿、第一层与成品照片",
+              "录制 60 秒讲评"
+            ],
+            "completionStandardZh": "五项证据齐全，讲评包含成功位置、修改位置和下一次动作。",
+            "selfCheckZh": "证据是否能看出从草稿到成品的过程？",
+            "teacherAudioZh": "最后保存过程证据，用具体位置和动作完成讲评。",
+            "diagramRequirement": {
+              "assetId": "picnic_rabbit_step14",
+              "briefZh": "显示“野餐小兔”第 14 步的正确动作、材料和完成状态。"
+            }
+          }
+        ]
+      },
+      {
+        "courseId": "color-choice-003-reading-cat",
+        "titleZh": "阅读小猫",
+        "displayTitle": "阅读小猫",
+        "roadmapStageId": "cp-s01-single-animal-diagnostic",
+        "skillTargetIds": [
+          "shape_skeleton",
+          "light_draft",
+          "single_overlap",
+          "closed_lineart",
+          "soft_tip_flat_fill",
+          "one_local_shadow"
+        ],
+        "rubricId": "rubric-single-animal-entry-v1",
+        "evidenceRequirements": [
+          {
+            "id": "draft_before_after",
+            "type": "photo_pair",
+            "count": 2,
+            "requirementZh": "保存修改前与修改后的草稿照片。"
+          },
+          {
+            "id": "closed_lineart",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存主要色区闭合的线稿照片。"
+          },
+          {
+            "id": "dry_first_layer",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "第一层完全干后保存照片。"
+          },
+          {
+            "id": "finished_work",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存完整成品照片。"
+          },
+          {
+            "id": "self_review",
+            "type": "audio",
+            "count": 1,
+            "durationSeconds": 60,
+            "requirementZh": "录制 60 秒讲评：指出一处成功、一处修改和下一次要保持的动作。"
+          }
+        ],
+        "promotionRule": {
+          "ruleId": "promotion-cp-s01-v1",
+          "minimumIndependentRubricItems": 4,
+          "rubricItemCount": 6,
+          "remainingItemsMinimumScore": 1,
+          "requiredProcessChecks": [
+            "先试色",
+            "第一层干后再加局部暗部",
+            "不湿磨"
+          ],
+          "stageProgressCount": 1,
+          "reserveDisposition": "same_stage_reserve",
+          "ruleZh": "六项中至少四项独立完成，其余两项不得为需要示范；三项工艺检查全部通过。完成任一题材只推进一次本能力课次，其余题材进入同阶段备用。"
+        },
+        "plannedMinutes": 56,
+        "formatZh": "单角色基础诊断插画",
+        "choiceCardZh": "一只坐着的小猫、一本打开的书、一个牛奶蓝圆角地垫。",
+        "compositionBudget": {
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14
+        },
+        "subjectDefinition": {
+          "characterZh": "一只坐着的小猫",
+          "propZh": "一本打开的书",
+          "simpleGroundOrBackgroundShapeZh": "一个牛奶蓝圆角地垫",
+          "requiredOverlapZh": "两只前爪作为一组挡住书页上边的一小段轮廓"
+        },
+        "palette": [
+          {
+            "code": "B688",
+            "nameZh": "藏青色",
+            "roleZh": "笔尖勾线与最深接触点"
+          },
+          {
+            "code": "Y210",
+            "nameZh": "中古黄",
+            "roleZh": "小猫主色"
+          },
+          {
+            "code": "R766",
+            "nameZh": "奶茶棕",
+            "roleZh": "花纹与一层局部暗部"
+          },
+          {
+            "code": "R149",
+            "nameZh": "芋泥紫",
+            "roleZh": "书封"
+          },
+          {
+            "code": "B148",
+            "nameZh": "牛奶蓝",
+            "roleZh": "圆角地垫"
+          },
+          {
+            "code": "R605",
+            "nameZh": "粉红",
+            "roleZh": "耳内与书签小色块"
+          }
+        ],
+        "materials": [
+          "pencil",
+          "eraser",
+          "markers",
+          "art_paper",
+          "swatch_paper",
+          "desk_pad",
+          "tissue",
+          "reference"
+        ],
+        "steps": [
+          {
+            "id": "observe",
+            "order": 1,
+            "titleZh": "看大形",
+            "plannedMinutes": 2,
+            "studentVoiceZh": "观察完成图，指出一只坐着的小猫、一本打开的书和一个牛奶蓝圆角地垫，先看角色大形，再看一处遮挡。",
+            "materialRefs": [
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "用手指沿一只坐着的小猫的外轮廓走一圈",
+              "指出一本打开的书和一个牛奶蓝圆角地垫",
+              "找到两只前爪作为一组挡住书页上边的一小段轮廓"
+            ],
+            "completionStandardZh": "能准确指出一个角色、一个道具、一个简单地面形和两只前爪作为一组挡住书页上边的一小段轮廓。",
+            "selfCheckZh": "暂时遮住五官，姿势仍然看得懂吗？",
+            "teacherAudioZh": "先看大形、道具和地面形，再找唯一需要处理的遮挡。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step01",
+              "briefZh": "显示“阅读小猫”第 1 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prepare",
+            "order": 2,
+            "titleZh": "摆好六色",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "按完成图摆出六支笔，在试色纸写下色号；逐支试色，确认Y210是角色主色、B688只用笔尖完成线与最深接触点。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper",
+              "reference"
+            ],
+            "colorRefs": [
+              "B688",
+              "Y210",
+              "R766",
+              "R149",
+              "B148",
+              "R605"
+            ],
+            "actionsZh": [
+              "逐支核对笔帽色号",
+              "每色画一条细线和一块宽色带",
+              "等待试色干燥后再确认"
+            ],
+            "completionStandardZh": "六个色号与课程色组一致，每支笔都能说出画面职责。",
+            "selfCheckZh": "六支笔是否都已试色并写下色号？",
+            "teacherAudioZh": "先核对六色职责。B688 使用软头马克笔笔尖，不另取勾线工具。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step02",
+              "briefZh": "显示“阅读小猫”第 2 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "tip_belly",
+            "order": 3,
+            "titleZh": "试笔尖笔腹",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "用 B688 软头马克笔的笔尖画三条短细线，再用 Y210 的笔尖围边、笔腹同向铺一块小色带。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "B688",
+              "Y210"
+            ],
+            "actionsZh": [
+              "笔杆稍立，用笔尖轻画细线",
+              "笔杆放低，用笔腹同向铺色",
+              "转动试色纸，不扭手腕"
+            ],
+            "completionStandardZh": "细线不断裂，色带方向一致，边缘没有来回湿磨。",
+            "selfCheckZh": "细线和宽色带是否明显不同？",
+            "teacherAudioZh": "笔尖负责细线与边缘，笔腹负责宽面；先在试色纸完成动作。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step03",
+              "briefZh": "显示“阅读小猫”第 3 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "thumbnail",
+            "order": 4,
+            "titleZh": "定位置",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "在纸上轻画边界，用三个浅形放入一只坐着的小猫、一本打开的书和一个牛奶蓝圆角地垫，保留四周空白。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "轻画画面边界",
+              "用浅形确定角色中心",
+              "检查道具和地面形没有贴边"
+            ],
+            "completionStandardZh": "角色是第一视觉重点，道具和地面形完整，四周留白稳定。",
+            "selfCheckZh": "角色是否最先被看到？",
+            "teacherAudioZh": "这里只确定位置和大小，不画五官与装饰。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step04",
+              "briefZh": "显示“阅读小猫”第 4 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "skeleton",
+            "order": 5,
+            "titleZh": "搭形状骨架",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "用圆、椭圆和豆形搭出一只坐着的小猫的头、身体和肢体，保持轻线，暂不画细节。",
+            "materialRefs": [
+              "pencil",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先画头和身体",
+              "再加成组肢体方向",
+              "用一条动作轴检查姿势"
+            ],
+            "completionStandardZh": "形状骨架清楚，角色姿势在没有五官时仍可辨认。",
+            "selfCheckZh": "头、身体和支撑位置是否连得起来？",
+            "teacherAudioZh": "先用简单形状搭角色，轻线允许调整。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step05",
+              "briefZh": "显示“阅读小猫”第 5 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prop_overlap",
+            "order": 6,
+            "titleZh": "放道具与遮挡",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "加入一本打开的书，明确两只前爪作为一组挡住书页上边的一小段轮廓；擦掉被挡住的那一小段线。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先完整想象一本打开的书的形状",
+              "保留两只前爪作为一组挡住书页上边的一小段轮廓",
+              "擦掉唯一一段被挡线"
+            ],
+            "completionStandardZh": "一本打开的书接触角色、不漂浮，且只有一处必须处理的遮挡。",
+            "selfCheckZh": "被挡住的线是否已经擦掉？",
+            "teacherAudioZh": "只处理一个前后关系，让道具与角色真正接触。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step06",
+              "briefZh": "显示“阅读小猫”第 6 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "light_draft",
+            "order": 7,
+            "titleZh": "补全轻草稿",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "补上一只坐着的小猫的五官和必要细节，再画一个牛奶蓝圆角地垫；所有线保持能擦改的浅度。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先补五官方向",
+              "再补不超过三组的小细节",
+              "最后加入一个简单地面形"
+            ],
+            "completionStandardZh": "草稿信息完整，没有新增角色、道具或第二层环境。",
+            "selfCheckZh": "删掉任何装饰后，主体关系是否仍然完整？",
+            "teacherAudioZh": "只补必要信息，地面或背景保持一个简单形。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step07",
+              "briefZh": "显示“阅读小猫”第 7 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "revise",
+            "order": 8,
+            "titleZh": "主动修改一次",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "对照完成图，从比例、位置或遮挡中选一处有理由地修改；拍下修改前后草稿。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "指出要修改的位置",
+              "先擦浅再重画",
+              "保存修改前后两张照片"
+            ],
+            "completionStandardZh": "完成一处能说出理由的修改，修改后结构更清楚。",
+            "selfCheckZh": "这次修改解决了什么问题？",
+            "teacherAudioZh": "主动修改是本课证据。只改最有价值的一处。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step08",
+              "briefZh": "显示“阅读小猫”第 8 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "closed_lineart",
+            "order": 9,
+            "titleZh": "闭合线稿",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认草稿后，用 B688 软头马克笔的笔尖分段勾线；转纸完成曲线，接线后检查主要色区是否闭合。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "B688"
+            ],
+            "actionsZh": [
+              "用软头笔尖从不易蹭到的一侧开始",
+              "短线分段并转纸",
+              "补齐断口后保存线稿照片"
+            ],
+            "completionStandardZh": "主要色区闭合，接线自然，不反复描粗。",
+            "selfCheckZh": "每个准备平涂的区域都闭合了吗？",
+            "teacherAudioZh": "本步骤只使用 B688 软头马克笔笔尖完成线稿。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step09",
+              "briefZh": "显示“阅读小猫”第 9 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_character",
+            "order": 10,
+            "titleZh": "平涂角色",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "先用 Y210 的笔尖围角色边缘，再用笔腹同向铺主色；用 R766 完成第二色区，不在湿色上来回磨。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "Y210",
+              "R766"
+            ],
+            "actionsZh": [
+              "笔尖先围窄边",
+              "笔腹从同一方向铺色",
+              "留出相邻湿区并转纸"
+            ],
+            "completionStandardZh": "角色主色块均匀，边缘受控，没有湿磨起纸。",
+            "selfCheckZh": "笔触方向是否一致，边缘是否干净？",
+            "teacherAudioZh": "先边缘后内部；同一区域保持一个铺色方向。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step10",
+              "briefZh": "显示“阅读小猫”第 10 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_prop_setting",
+            "order": 11,
+            "titleZh": "平涂道具与地面",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "用 R149 完成一本打开的书，用 B148 完成一个牛奶蓝圆角地垫，最后以 R605 加必要的小色块。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R149",
+              "B148",
+              "R605"
+            ],
+            "actionsZh": [
+              "先涂道具",
+              "再涂单一地面形",
+              "小色块最后完成"
+            ],
+            "completionStandardZh": "道具、地面形和小色块职责清楚，没有扩展成多层场景。",
+            "selfCheckZh": "画面是否仍只有一个角色、一个道具和一个地面形？",
+            "teacherAudioZh": "保持单层环境，色块完成后停笔等待干燥。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step11",
+              "briefZh": "显示“阅读小猫”第 11 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "local_shadow",
+            "order": 12,
+            "titleZh": "加一层局部暗部",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认第一层完全干燥，再用 R766 在角色背光侧加一层局部暗部；用 B688 笔尖点出唯一接触点，不扩大暗部。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R766",
+              "B688"
+            ],
+            "actionsZh": [
+              "手背轻触确认表面已干",
+              "只在背光侧加一层暗部",
+              "接触点只点一次最深色"
+            ],
+            "completionStandardZh": "暗部只有一层，范围小于角色主色区的四分之一，接触点明确。",
+            "selfCheckZh": "暗部是否只在局部，并且第一层已经干透？",
+            "teacherAudioZh": "只加一层局部暗部。若第一层未干，继续等待。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step12",
+              "briefZh": "显示“阅读小猫”第 12 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "dry_repair",
+            "order": 13,
+            "titleZh": "干后修三处以内",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "等画面干后，只检查 Y210、R149、B148 三类色块；最多修三处针尖大小的漏白或越界。",
+            "materialRefs": [
+              "markers",
+              "art_paper",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "Y210",
+              "R149",
+              "B148"
+            ],
+            "actionsZh": [
+              "先圈出真正需要修的位置",
+              "在试色纸确认出墨",
+              "修满三处或已干净时立即停笔"
+            ],
+            "completionStandardZh": "修补不超过三处，没有为了更满而反复覆盖。",
+            "selfCheckZh": "现在停笔是否比继续覆盖更好？",
+            "teacherAudioZh": "修补只处理必要位置，最多三处。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step13",
+              "briefZh": "显示“阅读小猫”第 13 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "finish_evidence",
+            "order": 14,
+            "titleZh": "保存证据与讲评",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "拍摄干后第一层与完整成品，核对五项证据；录制 60 秒讲评，说出一处成功、一处修改和下一次要保持的动作。",
+            "materialRefs": [
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "在均匀光线下拍摄成品",
+              "核对草稿、线稿、第一层与成品照片",
+              "录制 60 秒讲评"
+            ],
+            "completionStandardZh": "五项证据齐全，讲评包含成功位置、修改位置和下一次动作。",
+            "selfCheckZh": "证据是否能看出从草稿到成品的过程？",
+            "teacherAudioZh": "最后保存过程证据，用具体位置和动作完成讲评。",
+            "diagramRequirement": {
+              "assetId": "reading_cat_step14",
+              "briefZh": "显示“阅读小猫”第 14 步的正确动作、材料和完成状态。"
+            }
+          }
+        ]
+      },
+      {
+        "courseId": "color-choice-004-watering-bear",
+        "titleZh": "浇花小熊",
+        "displayTitle": "浇花小熊",
+        "roadmapStageId": "cp-s01-single-animal-diagnostic",
+        "skillTargetIds": [
+          "shape_skeleton",
+          "light_draft",
+          "single_overlap",
+          "closed_lineart",
+          "soft_tip_flat_fill",
+          "one_local_shadow"
+        ],
+        "rubricId": "rubric-single-animal-entry-v1",
+        "evidenceRequirements": [
+          {
+            "id": "draft_before_after",
+            "type": "photo_pair",
+            "count": 2,
+            "requirementZh": "保存修改前与修改后的草稿照片。"
+          },
+          {
+            "id": "closed_lineart",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存主要色区闭合的线稿照片。"
+          },
+          {
+            "id": "dry_first_layer",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "第一层完全干后保存照片。"
+          },
+          {
+            "id": "finished_work",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存完整成品照片。"
+          },
+          {
+            "id": "self_review",
+            "type": "audio",
+            "count": 1,
+            "durationSeconds": 60,
+            "requirementZh": "录制 60 秒讲评：指出一处成功、一处修改和下一次要保持的动作。"
+          }
+        ],
+        "promotionRule": {
+          "ruleId": "promotion-cp-s01-v1",
+          "minimumIndependentRubricItems": 4,
+          "rubricItemCount": 6,
+          "remainingItemsMinimumScore": 1,
+          "requiredProcessChecks": [
+            "先试色",
+            "第一层干后再加局部暗部",
+            "不湿磨"
+          ],
+          "stageProgressCount": 1,
+          "reserveDisposition": "same_stage_reserve",
+          "ruleZh": "六项中至少四项独立完成，其余两项不得为需要示范；三项工艺检查全部通过。完成任一题材只推进一次本能力课次，其余题材进入同阶段备用。"
+        },
+        "plannedMinutes": 56,
+        "formatZh": "单角色基础诊断插画",
+        "choiceCardZh": "一只站着的小熊、一个黄色浇水壶、一个薄荷绿半圆花圃形。",
+        "compositionBudget": {
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14
+        },
+        "subjectDefinition": {
+          "characterZh": "一只站着的小熊",
+          "propZh": "一个黄色浇水壶",
+          "simpleGroundOrBackgroundShapeZh": "一个薄荷绿半圆花圃形",
+          "requiredOverlapZh": "一只前爪挡住壶把的一小段轮廓"
+        },
+        "palette": [
+          {
+            "code": "B688",
+            "nameZh": "藏青色",
+            "roleZh": "笔尖勾线与最深接触点"
+          },
+          {
+            "code": "R766",
+            "nameZh": "奶茶棕",
+            "roleZh": "小熊主色"
+          },
+          {
+            "code": "R128",
+            "nameZh": "可可棕",
+            "roleZh": "耳朵与一层局部暗部"
+          },
+          {
+            "code": "Y128",
+            "nameZh": "亮黄",
+            "roleZh": "浇水壶"
+          },
+          {
+            "code": "G147",
+            "nameZh": "薄荷绿",
+            "roleZh": "半圆花圃形"
+          },
+          {
+            "code": "B793",
+            "nameZh": "清水蓝",
+            "roleZh": "短水线小色块"
+          }
+        ],
+        "materials": [
+          "pencil",
+          "eraser",
+          "markers",
+          "art_paper",
+          "swatch_paper",
+          "desk_pad",
+          "tissue",
+          "reference"
+        ],
+        "steps": [
+          {
+            "id": "observe",
+            "order": 1,
+            "titleZh": "看大形",
+            "plannedMinutes": 2,
+            "studentVoiceZh": "观察完成图，指出一只站着的小熊、一个黄色浇水壶和一个薄荷绿半圆花圃形，先看角色大形，再看一处遮挡。",
+            "materialRefs": [
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "用手指沿一只站着的小熊的外轮廓走一圈",
+              "指出一个黄色浇水壶和一个薄荷绿半圆花圃形",
+              "找到一只前爪挡住壶把的一小段轮廓"
+            ],
+            "completionStandardZh": "能准确指出一个角色、一个道具、一个简单地面形和一只前爪挡住壶把的一小段轮廓。",
+            "selfCheckZh": "暂时遮住五官，姿势仍然看得懂吗？",
+            "teacherAudioZh": "先看大形、道具和地面形，再找唯一需要处理的遮挡。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step01",
+              "briefZh": "显示“浇花小熊”第 1 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prepare",
+            "order": 2,
+            "titleZh": "摆好六色",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "按完成图摆出六支笔，在试色纸写下色号；逐支试色，确认R766是角色主色、B688只用笔尖完成线与最深接触点。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper",
+              "reference"
+            ],
+            "colorRefs": [
+              "B688",
+              "R766",
+              "R128",
+              "Y128",
+              "G147",
+              "B793"
+            ],
+            "actionsZh": [
+              "逐支核对笔帽色号",
+              "每色画一条细线和一块宽色带",
+              "等待试色干燥后再确认"
+            ],
+            "completionStandardZh": "六个色号与课程色组一致，每支笔都能说出画面职责。",
+            "selfCheckZh": "六支笔是否都已试色并写下色号？",
+            "teacherAudioZh": "先核对六色职责。B688 使用软头马克笔笔尖，不另取勾线工具。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step02",
+              "briefZh": "显示“浇花小熊”第 2 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "tip_belly",
+            "order": 3,
+            "titleZh": "试笔尖笔腹",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "用 B688 软头马克笔的笔尖画三条短细线，再用 R766 的笔尖围边、笔腹同向铺一块小色带。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "B688",
+              "R766"
+            ],
+            "actionsZh": [
+              "笔杆稍立，用笔尖轻画细线",
+              "笔杆放低，用笔腹同向铺色",
+              "转动试色纸，不扭手腕"
+            ],
+            "completionStandardZh": "细线不断裂，色带方向一致，边缘没有来回湿磨。",
+            "selfCheckZh": "细线和宽色带是否明显不同？",
+            "teacherAudioZh": "笔尖负责细线与边缘，笔腹负责宽面；先在试色纸完成动作。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step03",
+              "briefZh": "显示“浇花小熊”第 3 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "thumbnail",
+            "order": 4,
+            "titleZh": "定位置",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "在纸上轻画边界，用三个浅形放入一只站着的小熊、一个黄色浇水壶和一个薄荷绿半圆花圃形，保留四周空白。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "轻画画面边界",
+              "用浅形确定角色中心",
+              "检查道具和地面形没有贴边"
+            ],
+            "completionStandardZh": "角色是第一视觉重点，道具和地面形完整，四周留白稳定。",
+            "selfCheckZh": "角色是否最先被看到？",
+            "teacherAudioZh": "这里只确定位置和大小，不画五官与装饰。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step04",
+              "briefZh": "显示“浇花小熊”第 4 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "skeleton",
+            "order": 5,
+            "titleZh": "搭形状骨架",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "用圆、椭圆和豆形搭出一只站着的小熊的头、身体和肢体，保持轻线，暂不画细节。",
+            "materialRefs": [
+              "pencil",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先画头和身体",
+              "再加成组肢体方向",
+              "用一条动作轴检查姿势"
+            ],
+            "completionStandardZh": "形状骨架清楚，角色姿势在没有五官时仍可辨认。",
+            "selfCheckZh": "头、身体和支撑位置是否连得起来？",
+            "teacherAudioZh": "先用简单形状搭角色，轻线允许调整。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step05",
+              "briefZh": "显示“浇花小熊”第 5 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prop_overlap",
+            "order": 6,
+            "titleZh": "放道具与遮挡",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "加入一个黄色浇水壶，明确一只前爪挡住壶把的一小段轮廓；擦掉被挡住的那一小段线。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先完整想象一个黄色浇水壶的形状",
+              "保留一只前爪挡住壶把的一小段轮廓",
+              "擦掉唯一一段被挡线"
+            ],
+            "completionStandardZh": "一个黄色浇水壶接触角色、不漂浮，且只有一处必须处理的遮挡。",
+            "selfCheckZh": "被挡住的线是否已经擦掉？",
+            "teacherAudioZh": "只处理一个前后关系，让道具与角色真正接触。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step06",
+              "briefZh": "显示“浇花小熊”第 6 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "light_draft",
+            "order": 7,
+            "titleZh": "补全轻草稿",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "补上一只站着的小熊的五官和必要细节，再画一个薄荷绿半圆花圃形；所有线保持能擦改的浅度。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先补五官方向",
+              "再补不超过三组的小细节",
+              "最后加入一个简单地面形"
+            ],
+            "completionStandardZh": "草稿信息完整，没有新增角色、道具或第二层环境。",
+            "selfCheckZh": "删掉任何装饰后，主体关系是否仍然完整？",
+            "teacherAudioZh": "只补必要信息，地面或背景保持一个简单形。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step07",
+              "briefZh": "显示“浇花小熊”第 7 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "revise",
+            "order": 8,
+            "titleZh": "主动修改一次",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "对照完成图，从比例、位置或遮挡中选一处有理由地修改；拍下修改前后草稿。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "指出要修改的位置",
+              "先擦浅再重画",
+              "保存修改前后两张照片"
+            ],
+            "completionStandardZh": "完成一处能说出理由的修改，修改后结构更清楚。",
+            "selfCheckZh": "这次修改解决了什么问题？",
+            "teacherAudioZh": "主动修改是本课证据。只改最有价值的一处。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step08",
+              "briefZh": "显示“浇花小熊”第 8 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "closed_lineart",
+            "order": 9,
+            "titleZh": "闭合线稿",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认草稿后，用 B688 软头马克笔的笔尖分段勾线；转纸完成曲线，接线后检查主要色区是否闭合。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "B688"
+            ],
+            "actionsZh": [
+              "用软头笔尖从不易蹭到的一侧开始",
+              "短线分段并转纸",
+              "补齐断口后保存线稿照片"
+            ],
+            "completionStandardZh": "主要色区闭合，接线自然，不反复描粗。",
+            "selfCheckZh": "每个准备平涂的区域都闭合了吗？",
+            "teacherAudioZh": "本步骤只使用 B688 软头马克笔笔尖完成线稿。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step09",
+              "briefZh": "显示“浇花小熊”第 9 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_character",
+            "order": 10,
+            "titleZh": "平涂角色",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "先用 R766 的笔尖围角色边缘，再用笔腹同向铺主色；用 R128 完成第二色区，不在湿色上来回磨。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R766",
+              "R128"
+            ],
+            "actionsZh": [
+              "笔尖先围窄边",
+              "笔腹从同一方向铺色",
+              "留出相邻湿区并转纸"
+            ],
+            "completionStandardZh": "角色主色块均匀，边缘受控，没有湿磨起纸。",
+            "selfCheckZh": "笔触方向是否一致，边缘是否干净？",
+            "teacherAudioZh": "先边缘后内部；同一区域保持一个铺色方向。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step10",
+              "briefZh": "显示“浇花小熊”第 10 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_prop_setting",
+            "order": 11,
+            "titleZh": "平涂道具与地面",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "用 Y128 完成一个黄色浇水壶，用 G147 完成一个薄荷绿半圆花圃形，最后以 B793 加必要的小色块。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "Y128",
+              "G147",
+              "B793"
+            ],
+            "actionsZh": [
+              "先涂道具",
+              "再涂单一地面形",
+              "小色块最后完成"
+            ],
+            "completionStandardZh": "道具、地面形和小色块职责清楚，没有扩展成多层场景。",
+            "selfCheckZh": "画面是否仍只有一个角色、一个道具和一个地面形？",
+            "teacherAudioZh": "保持单层环境，色块完成后停笔等待干燥。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step11",
+              "briefZh": "显示“浇花小熊”第 11 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "local_shadow",
+            "order": 12,
+            "titleZh": "加一层局部暗部",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认第一层完全干燥，再用 R128 在角色背光侧加一层局部暗部；用 B688 笔尖点出唯一接触点，不扩大暗部。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R128",
+              "B688"
+            ],
+            "actionsZh": [
+              "手背轻触确认表面已干",
+              "只在背光侧加一层暗部",
+              "接触点只点一次最深色"
+            ],
+            "completionStandardZh": "暗部只有一层，范围小于角色主色区的四分之一，接触点明确。",
+            "selfCheckZh": "暗部是否只在局部，并且第一层已经干透？",
+            "teacherAudioZh": "只加一层局部暗部。若第一层未干，继续等待。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step12",
+              "briefZh": "显示“浇花小熊”第 12 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "dry_repair",
+            "order": 13,
+            "titleZh": "干后修三处以内",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "等画面干后，只检查 R766、Y128、G147 三类色块；最多修三处针尖大小的漏白或越界。",
+            "materialRefs": [
+              "markers",
+              "art_paper",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "R766",
+              "Y128",
+              "G147"
+            ],
+            "actionsZh": [
+              "先圈出真正需要修的位置",
+              "在试色纸确认出墨",
+              "修满三处或已干净时立即停笔"
+            ],
+            "completionStandardZh": "修补不超过三处，没有为了更满而反复覆盖。",
+            "selfCheckZh": "现在停笔是否比继续覆盖更好？",
+            "teacherAudioZh": "修补只处理必要位置，最多三处。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step13",
+              "briefZh": "显示“浇花小熊”第 13 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "finish_evidence",
+            "order": 14,
+            "titleZh": "保存证据与讲评",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "拍摄干后第一层与完整成品，核对五项证据；录制 60 秒讲评，说出一处成功、一处修改和下一次要保持的动作。",
+            "materialRefs": [
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "在均匀光线下拍摄成品",
+              "核对草稿、线稿、第一层与成品照片",
+              "录制 60 秒讲评"
+            ],
+            "completionStandardZh": "五项证据齐全，讲评包含成功位置、修改位置和下一次动作。",
+            "selfCheckZh": "证据是否能看出从草稿到成品的过程？",
+            "teacherAudioZh": "最后保存过程证据，用具体位置和动作完成讲评。",
+            "diagramRequirement": {
+              "assetId": "watering_bear_step14",
+              "briefZh": "显示“浇花小熊”第 14 步的正确动作、材料和完成状态。"
+            }
+          }
+        ]
+      },
+      {
+        "courseId": "color-choice-005-kite-duck",
+        "titleZh": "风筝小鸭",
+        "displayTitle": "风筝小鸭",
+        "roadmapStageId": "cp-s01-single-animal-diagnostic",
+        "skillTargetIds": [
+          "shape_skeleton",
+          "light_draft",
+          "single_overlap",
+          "closed_lineart",
+          "soft_tip_flat_fill",
+          "one_local_shadow"
+        ],
+        "rubricId": "rubric-single-animal-entry-v1",
+        "evidenceRequirements": [
+          {
+            "id": "draft_before_after",
+            "type": "photo_pair",
+            "count": 2,
+            "requirementZh": "保存修改前与修改后的草稿照片。"
+          },
+          {
+            "id": "closed_lineart",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存主要色区闭合的线稿照片。"
+          },
+          {
+            "id": "dry_first_layer",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "第一层完全干后保存照片。"
+          },
+          {
+            "id": "finished_work",
+            "type": "photo",
+            "count": 1,
+            "requirementZh": "保存完整成品照片。"
+          },
+          {
+            "id": "self_review",
+            "type": "audio",
+            "count": 1,
+            "durationSeconds": 60,
+            "requirementZh": "录制 60 秒讲评：指出一处成功、一处修改和下一次要保持的动作。"
+          }
+        ],
+        "promotionRule": {
+          "ruleId": "promotion-cp-s01-v1",
+          "minimumIndependentRubricItems": 4,
+          "rubricItemCount": 6,
+          "remainingItemsMinimumScore": 1,
+          "requiredProcessChecks": [
+            "先试色",
+            "第一层干后再加局部暗部",
+            "不湿磨"
+          ],
+          "stageProgressCount": 1,
+          "reserveDisposition": "same_stage_reserve",
+          "ruleZh": "六项中至少四项独立完成，其余两项不得为需要示范；三项工艺检查全部通过。完成任一题材只推进一次本能力课次，其余题材进入同阶段备用。"
+        },
+        "plannedMinutes": 56,
+        "formatZh": "单角色基础诊断插画",
+        "choiceCardZh": "一只侧身站立的小鸭、一个粉红风筝、一个浅春绿椭圆地面。",
+        "compositionBudget": {
+          "characterCount": 1,
+          "propCount": 1,
+          "mainShapeCount": 10,
+          "requiredOverlapCount": 1,
+          "colorBlockCount": 6,
+          "paletteColorCount": 6,
+          "shadowLayerCount": 1,
+          "sceneLayerCount": 1,
+          "stepCount": 14
+        },
+        "subjectDefinition": {
+          "characterZh": "一只侧身站立的小鸭",
+          "propZh": "一个粉红风筝",
+          "simpleGroundOrBackgroundShapeZh": "一个浅春绿椭圆地面",
+          "requiredOverlapZh": "一只翅膀挡住风筝线的一小段"
+        },
+        "palette": [
+          {
+            "code": "B688",
+            "nameZh": "藏青色",
+            "roleZh": "笔尖勾线与最深接触点"
+          },
+          {
+            "code": "Y128",
+            "nameZh": "亮黄",
+            "roleZh": "小鸭主色"
+          },
+          {
+            "code": "Y792",
+            "nameZh": "暖黄色",
+            "roleZh": "翅膀与一层局部暗部"
+          },
+          {
+            "code": "R605",
+            "nameZh": "粉红",
+            "roleZh": "风筝"
+          },
+          {
+            "code": "G279",
+            "nameZh": "浅春绿",
+            "roleZh": "椭圆地面"
+          },
+          {
+            "code": "Y906",
+            "nameZh": "橙色",
+            "roleZh": "嘴和脚的小色块"
+          }
+        ],
+        "materials": [
+          "pencil",
+          "eraser",
+          "markers",
+          "art_paper",
+          "swatch_paper",
+          "desk_pad",
+          "tissue",
+          "reference"
+        ],
+        "steps": [
+          {
+            "id": "observe",
+            "order": 1,
+            "titleZh": "看大形",
+            "plannedMinutes": 2,
+            "studentVoiceZh": "观察完成图，指出一只侧身站立的小鸭、一个粉红风筝和一个浅春绿椭圆地面，先看角色大形，再看一处遮挡。",
+            "materialRefs": [
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "用手指沿一只侧身站立的小鸭的外轮廓走一圈",
+              "指出一个粉红风筝和一个浅春绿椭圆地面",
+              "找到一只翅膀挡住风筝线的一小段"
+            ],
+            "completionStandardZh": "能准确指出一个角色、一个道具、一个简单地面形和一只翅膀挡住风筝线的一小段。",
+            "selfCheckZh": "暂时遮住五官，姿势仍然看得懂吗？",
+            "teacherAudioZh": "先看大形、道具和地面形，再找唯一需要处理的遮挡。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step01",
+              "briefZh": "显示“风筝小鸭”第 1 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prepare",
+            "order": 2,
+            "titleZh": "摆好六色",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "按完成图摆出六支笔，在试色纸写下色号；逐支试色，确认Y128是角色主色、B688只用笔尖完成线与最深接触点。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper",
+              "reference"
+            ],
+            "colorRefs": [
+              "B688",
+              "Y128",
+              "Y792",
+              "R605",
+              "G279",
+              "Y906"
+            ],
+            "actionsZh": [
+              "逐支核对笔帽色号",
+              "每色画一条细线和一块宽色带",
+              "等待试色干燥后再确认"
+            ],
+            "completionStandardZh": "六个色号与课程色组一致，每支笔都能说出画面职责。",
+            "selfCheckZh": "六支笔是否都已试色并写下色号？",
+            "teacherAudioZh": "先核对六色职责。B688 使用软头马克笔笔尖，不另取勾线工具。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step02",
+              "briefZh": "显示“风筝小鸭”第 2 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "tip_belly",
+            "order": 3,
+            "titleZh": "试笔尖笔腹",
+            "plannedMinutes": 3,
+            "studentVoiceZh": "用 B688 软头马克笔的笔尖画三条短细线，再用 Y128 的笔尖围边、笔腹同向铺一块小色带。",
+            "materialRefs": [
+              "markers",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "B688",
+              "Y128"
+            ],
+            "actionsZh": [
+              "笔杆稍立，用笔尖轻画细线",
+              "笔杆放低，用笔腹同向铺色",
+              "转动试色纸，不扭手腕"
+            ],
+            "completionStandardZh": "细线不断裂，色带方向一致，边缘没有来回湿磨。",
+            "selfCheckZh": "细线和宽色带是否明显不同？",
+            "teacherAudioZh": "笔尖负责细线与边缘，笔腹负责宽面；先在试色纸完成动作。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step03",
+              "briefZh": "显示“风筝小鸭”第 3 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "thumbnail",
+            "order": 4,
+            "titleZh": "定位置",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "在纸上轻画边界，用三个浅形放入一只侧身站立的小鸭、一个粉红风筝和一个浅春绿椭圆地面，保留四周空白。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "轻画画面边界",
+              "用浅形确定角色中心",
+              "检查道具和地面形没有贴边"
+            ],
+            "completionStandardZh": "角色是第一视觉重点，道具和地面形完整，四周留白稳定。",
+            "selfCheckZh": "角色是否最先被看到？",
+            "teacherAudioZh": "这里只确定位置和大小，不画五官与装饰。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step04",
+              "briefZh": "显示“风筝小鸭”第 4 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "skeleton",
+            "order": 5,
+            "titleZh": "搭形状骨架",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "用圆、椭圆和豆形搭出一只侧身站立的小鸭的头、身体和肢体，保持轻线，暂不画细节。",
+            "materialRefs": [
+              "pencil",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先画头和身体",
+              "再加成组肢体方向",
+              "用一条动作轴检查姿势"
+            ],
+            "completionStandardZh": "形状骨架清楚，角色姿势在没有五官时仍可辨认。",
+            "selfCheckZh": "头、身体和支撑位置是否连得起来？",
+            "teacherAudioZh": "先用简单形状搭角色，轻线允许调整。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step05",
+              "briefZh": "显示“风筝小鸭”第 5 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "prop_overlap",
+            "order": 6,
+            "titleZh": "放道具与遮挡",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "加入一个粉红风筝，明确一只翅膀挡住风筝线的一小段；擦掉被挡住的那一小段线。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先完整想象一个粉红风筝的形状",
+              "保留一只翅膀挡住风筝线的一小段",
+              "擦掉唯一一段被挡线"
+            ],
+            "completionStandardZh": "一个粉红风筝接触角色、不漂浮，且只有一处必须处理的遮挡。",
+            "selfCheckZh": "被挡住的线是否已经擦掉？",
+            "teacherAudioZh": "只处理一个前后关系，让道具与角色真正接触。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step06",
+              "briefZh": "显示“风筝小鸭”第 6 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "light_draft",
+            "order": 7,
+            "titleZh": "补全轻草稿",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "补上一只侧身站立的小鸭的五官和必要细节，再画一个浅春绿椭圆地面；所有线保持能擦改的浅度。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "先补五官方向",
+              "再补不超过三组的小细节",
+              "最后加入一个简单地面形"
+            ],
+            "completionStandardZh": "草稿信息完整，没有新增角色、道具或第二层环境。",
+            "selfCheckZh": "删掉任何装饰后，主体关系是否仍然完整？",
+            "teacherAudioZh": "只补必要信息，地面或背景保持一个简单形。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step07",
+              "briefZh": "显示“风筝小鸭”第 7 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "revise",
+            "order": 8,
+            "titleZh": "主动修改一次",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "对照完成图，从比例、位置或遮挡中选一处有理由地修改；拍下修改前后草稿。",
+            "materialRefs": [
+              "pencil",
+              "eraser",
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "指出要修改的位置",
+              "先擦浅再重画",
+              "保存修改前后两张照片"
+            ],
+            "completionStandardZh": "完成一处能说出理由的修改，修改后结构更清楚。",
+            "selfCheckZh": "这次修改解决了什么问题？",
+            "teacherAudioZh": "主动修改是本课证据。只改最有价值的一处。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step08",
+              "briefZh": "显示“风筝小鸭”第 8 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "closed_lineart",
+            "order": 9,
+            "titleZh": "闭合线稿",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认草稿后，用 B688 软头马克笔的笔尖分段勾线；转纸完成曲线，接线后检查主要色区是否闭合。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "B688"
+            ],
+            "actionsZh": [
+              "用软头笔尖从不易蹭到的一侧开始",
+              "短线分段并转纸",
+              "补齐断口后保存线稿照片"
+            ],
+            "completionStandardZh": "主要色区闭合，接线自然，不反复描粗。",
+            "selfCheckZh": "每个准备平涂的区域都闭合了吗？",
+            "teacherAudioZh": "本步骤只使用 B688 软头马克笔笔尖完成线稿。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step09",
+              "briefZh": "显示“风筝小鸭”第 9 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_character",
+            "order": 10,
+            "titleZh": "平涂角色",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "先用 Y128 的笔尖围角色边缘，再用笔腹同向铺主色；用 Y792 完成第二色区，不在湿色上来回磨。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "Y128",
+              "Y792"
+            ],
+            "actionsZh": [
+              "笔尖先围窄边",
+              "笔腹从同一方向铺色",
+              "留出相邻湿区并转纸"
+            ],
+            "completionStandardZh": "角色主色块均匀，边缘受控，没有湿磨起纸。",
+            "selfCheckZh": "笔触方向是否一致，边缘是否干净？",
+            "teacherAudioZh": "先边缘后内部；同一区域保持一个铺色方向。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step10",
+              "briefZh": "显示“风筝小鸭”第 10 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "flat_prop_setting",
+            "order": 11,
+            "titleZh": "平涂道具与地面",
+            "plannedMinutes": 5,
+            "studentVoiceZh": "用 R605 完成一个粉红风筝，用 G279 完成一个浅春绿椭圆地面，最后以 Y906 加必要的小色块。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "R605",
+              "G279",
+              "Y906"
+            ],
+            "actionsZh": [
+              "先涂道具",
+              "再涂单一地面形",
+              "小色块最后完成"
+            ],
+            "completionStandardZh": "道具、地面形和小色块职责清楚，没有扩展成多层场景。",
+            "selfCheckZh": "画面是否仍只有一个角色、一个道具和一个地面形？",
+            "teacherAudioZh": "保持单层环境，色块完成后停笔等待干燥。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step11",
+              "briefZh": "显示“风筝小鸭”第 11 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "local_shadow",
+            "order": 12,
+            "titleZh": "加一层局部暗部",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "确认第一层完全干燥，再用 Y792 在角色背光侧加一层局部暗部；用 B688 笔尖点出唯一接触点，不扩大暗部。",
+            "materialRefs": [
+              "markers",
+              "art_paper"
+            ],
+            "colorRefs": [
+              "Y792",
+              "B688"
+            ],
+            "actionsZh": [
+              "手背轻触确认表面已干",
+              "只在背光侧加一层暗部",
+              "接触点只点一次最深色"
+            ],
+            "completionStandardZh": "暗部只有一层，范围小于角色主色区的四分之一，接触点明确。",
+            "selfCheckZh": "暗部是否只在局部，并且第一层已经干透？",
+            "teacherAudioZh": "只加一层局部暗部。若第一层未干，继续等待。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step12",
+              "briefZh": "显示“风筝小鸭”第 12 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "dry_repair",
+            "order": 13,
+            "titleZh": "干后修三处以内",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "等画面干后，只检查 Y128、R605、G279 三类色块；最多修三处针尖大小的漏白或越界。",
+            "materialRefs": [
+              "markers",
+              "art_paper",
+              "swatch_paper"
+            ],
+            "colorRefs": [
+              "Y128",
+              "R605",
+              "G279"
+            ],
+            "actionsZh": [
+              "先圈出真正需要修的位置",
+              "在试色纸确认出墨",
+              "修满三处或已干净时立即停笔"
+            ],
+            "completionStandardZh": "修补不超过三处，没有为了更满而反复覆盖。",
+            "selfCheckZh": "现在停笔是否比继续覆盖更好？",
+            "teacherAudioZh": "修补只处理必要位置，最多三处。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step13",
+              "briefZh": "显示“风筝小鸭”第 13 步的正确动作、材料和完成状态。"
+            }
+          },
+          {
+            "id": "finish_evidence",
+            "order": 14,
+            "titleZh": "保存证据与讲评",
+            "plannedMinutes": 4,
+            "studentVoiceZh": "拍摄干后第一层与完整成品，核对五项证据；录制 60 秒讲评，说出一处成功、一处修改和下一次要保持的动作。",
+            "materialRefs": [
+              "art_paper",
+              "reference"
+            ],
+            "colorRefs": [],
+            "actionsZh": [
+              "在均匀光线下拍摄成品",
+              "核对草稿、线稿、第一层与成品照片",
+              "录制 60 秒讲评"
+            ],
+            "completionStandardZh": "五项证据齐全，讲评包含成功位置、修改位置和下一次动作。",
+            "selfCheckZh": "证据是否能看出从草稿到成品的过程？",
+            "teacherAudioZh": "最后保存过程证据，用具体位置和动作完成讲评。",
+            "diagramRequirement": {
+              "assetId": "kite_duck_step14",
+              "briefZh": "显示“风筝小鸭”第 14 步的正确动作、材料和完成状态。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
