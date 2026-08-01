@@ -2224,6 +2224,365 @@ textarea:focus {
   align-items: center;
 }
 
+#colorWorkChoiceContent,
+.color-reference-history,
+.color-reference-library {
+  display: grid;
+  gap: 18px;
+}
+
+.color-reference-history > h2,
+.color-reference-library > h2 {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 24px;
+}
+
+.color-reference-uploader {
+  min-width: 0;
+  min-height: 220px;
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  padding: clamp(20px, 4vw, 34px);
+  border-radius: 24px;
+}
+
+.color-reference-pick {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(86, 72, 111, 0.34);
+  border-radius: 18px;
+  background: rgba(169, 139, 234, 0.055);
+  font-weight: var(--weight-emphasis);
+  cursor: pointer;
+}
+
+.color-reference-pick input,
+.color-reference-actions input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.color-reference-uploader > small {
+  justify-self: center;
+  color: var(--muted);
+}
+
+.color-reference-preview {
+  position: relative;
+  width: min(100%, 720px);
+  max-height: 56vh;
+  justify-self: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(36, 49, 59, 0.035);
+}
+
+.color-reference-preview img {
+  width: 100%;
+  max-height: 56vh;
+  display: block;
+  object-fit: contain;
+}
+
+.color-reference-clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(36, 49, 59, 0.14);
+  border-radius: 50%;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.color-reference-model-settings,
+.color-reference-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: end;
+}
+
+.color-reference-model-settings label {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: var(--weight-emphasis);
+}
+
+.color-reference-actions > label {
+  margin: 0;
+}
+
+.color-reference-model-settings select {
+  min-width: 144px;
+  height: 44px;
+  padding: 0 34px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--text);
+  background: #fff;
+  font: inherit;
+}
+
+.color-reference-error {
+  margin: 0;
+  color: #8a3f35;
+  text-align: center;
+}
+
+.color-reference-course-grid .color-choice-card {
+  min-height: 0;
+}
+
+.color-reference-course-grid .color-choice-card h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.color-reference-figure {
+  position: relative;
+  width: min(100%, calc(56vh * var(--reference-ratio)));
+  max-height: 56vh;
+  justify-self: start;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: var(--reference-ratio);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(36, 49, 59, 0.035);
+}
+
+.color-reference-figure > img,
+.color-reference-overlay,
+.color-reference-image-loading {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.color-reference-figure > img {
+  display: block;
+  object-fit: fill;
+}
+
+.color-reference-image-loading {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.color-reference-overlay {
+  pointer-events: none;
+}
+
+.color-reference-overlay g {
+  fill: color-mix(in srgb, var(--overlay-color) 18%, transparent);
+  stroke: var(--overlay-color);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.color-reference-overlay.is-skeleton g,
+.color-reference-overlay.is-lineart g,
+.color-reference-overlay.is-position g {
+  fill: none;
+}
+
+.color-reference-overlay text {
+  fill: var(--overlay-color);
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 5px;
+  paint-order: stroke;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.color-overlay-toggle {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(36, 49, 59, 0.16);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.92);
+  font: inherit;
+  font-size: 13px;
+  font-weight: var(--weight-emphasis);
+  cursor: pointer;
+}
+
+.color-overlay-toggle.is-active {
+  border-color: rgba(111, 82, 154, 0.46);
+}
+
+.color-reference-step-index {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+}
+
+.color-reference-step-index button {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  scroll-snap-align: center;
+}
+
+.color-reference-step-index button.is-current {
+  flex-basis: min(190px, calc(100vw - 72px));
+  width: auto;
+}
+
+.color-reference-step-card {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.color-reference-palette,
+.color-paper-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.color-reference-palette-target {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.color-reference-palette-heading {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.color-reference-palette-heading h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.color-reference-target-swatch {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 1px solid rgba(36, 49, 59, 0.15);
+  border-radius: 50%;
+  background: var(--target-color);
+}
+
+.color-reference-candidates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.color-reference-candidates button,
+.color-paper-choices button {
+  min-width: 0;
+  min-height: 48px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.82);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.color-reference-candidates button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 6px;
+}
+
+.color-candidate-name {
+  grid-column: 1;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.color-candidate-check {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.color-reference-candidates button.is-selected,
+.color-paper-choices button.is-selected {
+  border-color: rgba(111, 82, 154, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(111, 82, 154, 0.36);
+}
+
+.color-paper-choices button strong,
+.color-paper-choices button span {
+  display: block;
+}
+
+.color-paper-choices button span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.color-step-selected-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-step-selected-colors span,
+.color-reference-check {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(169, 139, 234, 0.08);
+}
+
+.color-step-selected-colors strong {
+  margin-right: 6px;
+}
+
+.color-reference-check {
+  margin: 0;
+  color: var(--muted);
+}
+
+.color-reference-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, max-content));
+}
+
 .color-step-completed-status {
   display: inline-flex;
   gap: 5px;
@@ -2761,6 +3120,36 @@ textarea:focus {
   .color-choice-grid,
   .color-material-sections {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .color-reference-uploader {
+    padding: 18px;
+  }
+
+  .color-reference-model-settings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .color-reference-model-settings label,
+  .color-reference-model-settings select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .color-reference-palette,
+  .color-paper-choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .color-reference-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .color-reference-nav .button {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 8px;
   }
 
   .color-register-section {

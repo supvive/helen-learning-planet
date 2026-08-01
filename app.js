@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.8.1",
-  buildId: "2026-08-01T11:20:16+08:00",
+  version: "v3.9.0",
+  buildId: "2026-08-01T14:32:02+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -90,6 +90,16 @@ const COLOR_COURSE_BOARD_URLS = Object.freeze({
 const COLOR_BOARD_POSITIONS = Object.freeze([0, 33.333, 66.667, 100]);
 const COLOR_PLANET_CATALOG_SCHEMA = "helen-color-planet-daily-choice/2-revision-b";
 const COLOR_PLANET_REGISTER_SCHEMA = "helen-color-card-registry/1";
+const COLOR_REFERENCE_REQUEST_SCHEMA = "helen-color-reference-request/1";
+const COLOR_REFERENCE_ANALYSIS_SCHEMA = "helen-color-reference-analysis/1";
+const COLOR_REFERENCE_DB_NAME = "helen-color-reference-images-v1";
+const COLOR_REFERENCE_DB_VERSION = 1;
+const COLOR_REFERENCE_MAX_FILE_BYTES = 10 * 1024 * 1024;
+const COLOR_REFERENCE_MAX_EDGE = 1600;
+const COLOR_REFERENCE_STEP_TITLES = Object.freeze([
+  "选画笔", "定画面", "定位置", "形状骨架", "前后遮挡", "完整草稿", "主动修改",
+  "闭合线稿", "主体平涂", "配件与背景", "局部暗部", "干后修补", "讲评"
+]);
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
 const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
 const WITHDRAWN_BUILTIN_PACK_IDS = new Set([
@@ -2455,6 +2465,10 @@ let englishLessonLibraryLoad = null;
 let colorPlanetCatalog = null;
 let colorCardRegister = null;
 let colorPlanetDataLoad = { status: "idle", ok: false };
+let colorReferenceDraft = { status: "idle", previewUrl: "", blob: null, mimeType: "", width: 0, height: 0, imageHash: "", error: "" };
+let colorReferenceDbPromise = null;
+const colorReferenceObjectUrls = new Map();
+const colorReferenceLoadPending = new Set();
 let englishLibrary = buildEnglishWordLibrary();
 let currentEnglishWord = null;
 let englishActionLocked = false;
@@ -2499,9 +2513,10 @@ let blockExamplesCollapsed = false;
 let blockExampleGenerating = false;
 let blockExampleTranslationVisible = false;
 let blockExampleError = "";
-const CURRENT_APP_ORIGIN = typeof window !== "undefined" && window.location ? window.location.origin : "";
+const CONFIGURED_AI_ORIGIN = typeof document !== "undefined"
+  ? String(document.querySelector('meta[name="helen-api-origin"]')?.content || "").trim().replace(/\/$/, "")
+  : "";
 const LOCAL_API_ORIGINS = [
-  CURRENT_APP_ORIGIN,
   "http://127.0.0.1:4173",
   "http://localhost:4173"
 ].filter(Boolean);
@@ -2509,7 +2524,8 @@ const APP_ACCESS_CODE_STORAGE_KEY = "hanzi_app_access_code";
 const AI_TIMEOUTS = {
   dailyPractice: 90000,
   englishBlocks: 90000,
-  examples: 60000
+  examples: 60000,
+  colorReference: 90000
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -3086,7 +3102,7 @@ function getRouteBackTarget(button, activeView) {
 function updateRouteBackButtons(activeView) {
   $$("[data-route-back]").forEach((button) => {
     if (button.dataset.routeBack === "color-work-choice") {
-      button.setAttribute("aria-label", "返回选择作品");
+      button.setAttribute("aria-label", "返回参考图课程");
       return;
     }
     const section = button.closest(".view");
@@ -3167,7 +3183,7 @@ function bindDailyPractice() {
 
 function bindDailyCoursePages() {
   document.addEventListener("click", (event) => {
-    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step]");
+    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle]");
     if (!target) return;
     if (target.dataset.courseSessionStart) startCourseSession(target.dataset.courseSessionStart);
     if (target.dataset.courseSessionReset) resetCourseSession(target.dataset.courseSessionReset);
@@ -3202,6 +3218,8 @@ function bindDailyCoursePages() {
     if (target.dataset.courseSubmitBlocks) submitCourseBlocks(target.dataset.courseSubmitBlocks);
     if (target.dataset.copyFeedback || target.dataset.feedbackCopy) copyFeedbackPackage();
     if (target.dataset.colorDataRetry) loadColorPlanetData();
+    if (target.hasAttribute("data-color-reference-clear")) resetColorReferenceDraft();
+    if (target.hasAttribute("data-color-reference-generate")) generateColorReferenceCourse();
     if (target.dataset.colorCourseSelect) selectColorCourse(target.dataset.colorCourseSelect);
     if (target.dataset.colorCourseReselect) reselectColorCourse();
     if (target.dataset.colorCourseStart) startColorCourse(target.dataset.colorCourseStart);
@@ -3214,6 +3232,9 @@ function bindDailyCoursePages() {
     if (target.dataset.colorCourseComplete) completeColorCourse(target.dataset.colorCourseComplete);
     if (target.dataset.colorFoundationToggle) toggleColorFoundation(target.dataset.colorFoundationToggle);
     if (target.dataset.colorFoundationStep) completeColorFoundationStep(target.dataset.colorFoundationStep, target.dataset.colorFoundationStepId);
+    if (target.dataset.colorSizePreset) selectGeneratedColorSize(target.dataset.colorCourseId, target.dataset.colorSizePreset);
+    if (target.dataset.colorPaletteChoice) selectGeneratedColorPalette(target.dataset.colorCourseId, target.dataset.colorPaletteTarget, target.dataset.colorPaletteChoice);
+    if (target.hasAttribute("data-color-overlay-toggle")) toggleGeneratedColorOverlay(target.dataset.colorCourseId);
   });
   document.addEventListener("load", handleArtImageLoad, true);
   document.addEventListener("error", handleArtImageError, true);
@@ -3237,6 +3258,14 @@ function bindDailyCoursePages() {
   });
   document.addEventListener("change", (event) => {
     const target = event.target;
+    if (target.matches?.("[data-color-reference-input]")) {
+      const file = target.files?.[0];
+      if (file) selectColorReferenceFile(file);
+      target.value = "";
+    }
+    if (target.matches?.("[data-color-reference-setting]")) {
+      setColorReferenceSetting(target.dataset.colorReferenceSetting, target.value);
+    }
     if (target.matches?.("[data-course-ease], [data-course-hardest], [data-course-audio], [data-course-note]")) {
       updateCourseFeedbackField(target);
     }
@@ -6487,16 +6516,25 @@ function getColorPlanetState() {
     stageCompletedCourseId: "",
     courseUi: {},
     foundationProgress: {},
+    generatedCourses: [],
     expandedSkillId: "",
     materialSearch: ""
   };
   state.colorPlanet.courseUi ||= {};
   state.colorPlanet.foundationProgress ||= {};
+  state.colorPlanet.generatedCourses = Array.isArray(state.colorPlanet.generatedCourses) ? state.colorPlanet.generatedCourses : [];
+  state.colorPlanet.referenceSettings ||= { modelTier: "luna", reasoningEffort: "medium" };
   return state.colorPlanet;
 }
 
 function getColorCourses() {
-  return colorPlanetCatalog?.candidateSet?.courses || [];
+  const generated = getColorPlanetState().generatedCourses || [];
+  const catalog = colorPlanetCatalog?.candidateSet?.courses || [];
+  return [...generated, ...catalog];
+}
+
+function getGeneratedColorCourses() {
+  return getColorPlanetState().generatedCourses || [];
 }
 
 function getColorCourseById(courseId) {
@@ -6517,9 +6555,9 @@ function getInProgressColorCourse() {
 
 function getActiveColorCourse() {
   const colorState = getColorPlanetState();
-  return getInProgressColorCourse() ||
+  return getColorCourseById(colorState.activeCourseId) ||
+    getInProgressColorCourse() ||
     getColorCourseById(colorState.selectedCourseId) ||
-    getColorCourseById(colorState.activeCourseId) ||
     null;
 }
 
@@ -6541,6 +6579,12 @@ function buildColorCoursePack(course) {
         colorCount: colorCardRegister?.colorCount || 120
       },
       palette: structuredCloneSafe(course.palette),
+      paletteTargets: structuredCloneSafe(course.paletteTargets || []),
+      referenceImageId: safeOptionalId(course.referenceImageId || ""),
+      referenceAnalysis: structuredCloneSafe(course.referenceAnalysis || null),
+      paperPlan: structuredCloneSafe(course.paperPlan || null),
+      sourceImage: structuredCloneSafe(course.sourceImage || null),
+      generatedFromReference: course.generatedFromReference === true,
       materials: (course.materials || []).map((id) => ({
         id,
         nameZh: materialsById.get(id)?.nameZh || id,
@@ -8365,7 +8409,7 @@ function renderPlanetPages() {
     planetModule("学习记录", "learning-records", `${englishRecords.completed}/${englishRecords.total}`)
   ]);
   renderPlanetModules("#artPlanetSummary", [
-    planetModule("选择作品", "color-work-choice", ""),
+    planetModule("参考图课程", "color-work-choice", ""),
     planetModule("基础技能", "color-foundation", ""),
     planetModule("作品画廊", "color-gallery", ""),
     planetModule("材料准备", "color-materials", "")
@@ -8665,48 +8709,402 @@ function handleColorBoardProbeError(probe) {
   return setColorBoardFrameReady(probe, false);
 }
 
+function openColorReferenceDb() {
+  if (colorReferenceDbPromise) return colorReferenceDbPromise;
+  colorReferenceDbPromise = new Promise((resolve, reject) => {
+    if (typeof indexedDB === "undefined") {
+      reject(new Error("浏览器无法保存参考图。"));
+      return;
+    }
+    const request = indexedDB.open(COLOR_REFERENCE_DB_NAME, COLOR_REFERENCE_DB_VERSION);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains("images")) db.createObjectStore("images", { keyPath: "id" });
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error("浏览器无法保存参考图。"));
+  });
+  return colorReferenceDbPromise;
+}
+
+async function saveColorReferenceImage(id, blob) {
+  const db = await openColorReferenceDb();
+  await new Promise((resolve, reject) => {
+    const transaction = db.transaction("images", "readwrite");
+    transaction.objectStore("images").put({ id, blob, savedAt: Date.now() });
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error || new Error("参考图保存失败。"));
+    transaction.onabort = () => reject(transaction.error || new Error("参考图保存失败。"));
+  });
+}
+
+async function loadColorReferenceImage(id) {
+  const db = await openColorReferenceDb();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction("images", "readonly").objectStore("images").get(id);
+    request.onsuccess = () => resolve(request.result?.blob || null);
+    request.onerror = () => reject(request.error || new Error("参考图读取失败。"));
+  });
+}
+
+function getColorReferenceImageUrl(id) {
+  if (!id) return "";
+  if (colorReferenceObjectUrls.has(id)) return colorReferenceObjectUrls.get(id);
+  if (!colorReferenceLoadPending.has(id)) {
+    colorReferenceLoadPending.add(id);
+    loadColorReferenceImage(id).then((blob) => {
+      if (blob) colorReferenceObjectUrls.set(id, URL.createObjectURL(blob));
+    }).catch(() => {}).finally(() => {
+      colorReferenceLoadPending.delete(id);
+      renderColorWorkChoice();
+      renderArtLesson();
+    });
+  }
+  return "";
+}
+
+function resetColorReferenceDraft({ keepError = false } = {}) {
+  if (colorReferenceDraft.previewUrl) URL.revokeObjectURL(colorReferenceDraft.previewUrl);
+  const error = keepError ? colorReferenceDraft.error : "";
+  colorReferenceDraft = { status: "idle", previewUrl: "", blob: null, mimeType: "", width: 0, height: 0, imageHash: "", error };
+  renderColorWorkChoice();
+}
+
+async function decodeImageBlob(blob) {
+  if (typeof createImageBitmap === "function") {
+    const bitmap = await createImageBitmap(blob);
+    return { source: bitmap, width: bitmap.width, height: bitmap.height, close: () => bitmap.close?.() };
+  }
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+    image.onload = () => resolve({ source: image, width: image.naturalWidth, height: image.naturalHeight, close: () => URL.revokeObjectURL(url) });
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("图片无法读取。"));
+    };
+    image.src = url;
+  });
+}
+
+function canvasToJpegBlob(canvas) {
+  return new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("图片压缩失败。")), "image/jpeg", 0.82));
+}
+
+async function compressColorReferenceFile(file) {
+  if (!file || file.size > COLOR_REFERENCE_MAX_FILE_BYTES) throw new Error("图片不能超过10 MB。" );
+  const accepted = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]);
+  if (!accepted.has(String(file.type || "").toLowerCase())) throw new Error("请选择JPG、PNG、WebP或HEIC图片。" );
+  let decoded;
+  try {
+    decoded = await decodeImageBlob(file);
+  } catch (error) {
+    if (/hei[cf]/i.test(file.type || file.name || "")) throw new Error("请将HEIC转为JPG，或使用截图。" );
+    throw error;
+  }
+  try {
+    const scale = Math.min(1, COLOR_REFERENCE_MAX_EDGE / Math.max(decoded.width, decoded.height));
+    const width = Math.max(1, Math.round(decoded.width * scale));
+    const height = Math.max(1, Math.round(decoded.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { alpha: false });
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(decoded.source, 0, 0, width, height);
+    const blob = await canvasToJpegBlob(canvas);
+    const digest = await crypto.subtle.digest("SHA-256", await blob.arrayBuffer());
+    const imageHash = [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+    return { blob, mimeType: "image/jpeg", width, height, imageHash };
+  } finally {
+    decoded.close?.();
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || "").split(",")[1] || "");
+    reader.onerror = () => reject(reader.error || new Error("图片读取失败。"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function getGeneratedColorCourseByHash(imageHash) {
+  return getGeneratedColorCourses().find((course) => course.imageHash === imageHash) || null;
+}
+
+async function selectColorReferenceFile(file) {
+  colorReferenceDraft.status = "preparing";
+  colorReferenceDraft.error = "";
+  renderColorWorkChoice();
+  try {
+    const prepared = await compressColorReferenceFile(file);
+    const existing = getGeneratedColorCourseByHash(prepared.imageHash);
+    if (existing) {
+      resetColorReferenceDraft();
+      startColorCourse(existing.courseId);
+      return true;
+    }
+    if (colorReferenceDraft.previewUrl) URL.revokeObjectURL(colorReferenceDraft.previewUrl);
+    colorReferenceDraft = {
+      status: "ready",
+      previewUrl: URL.createObjectURL(prepared.blob),
+      error: "",
+      ...prepared
+    };
+    renderColorWorkChoice();
+    return true;
+  } catch (error) {
+    colorReferenceDraft = { status: "error", previewUrl: "", blob: null, mimeType: "", width: 0, height: 0, imageHash: "", error: error?.message || "图片无法读取。" };
+    renderColorWorkChoice();
+    return false;
+  }
+}
+
+function calculateA4PaperPlan(aspectRatio) {
+  const ratio = Math.max(0.1, Math.min(10, Number(aspectRatio || 2 / 3)));
+  const rawWidth = Math.sqrt(181.5 * ratio);
+  const rawHeight = Math.sqrt(181.5 / ratio);
+  const baseScale = Math.min(1, 17 / rawWidth, 25.7 / rawHeight);
+  const makeVariant = (id, label, multiplier) => {
+    const scale = Math.min(baseScale * multiplier, 17 / rawWidth, 25.7 / rawHeight);
+    const widthCm = Math.round(rawWidth * scale * 10) / 10;
+    const heightCm = Math.round(rawHeight * scale * 10) / 10;
+    return {
+      id,
+      label,
+      widthCm,
+      heightCm,
+      marginHorizontalCm: Math.round(((21 - widthCm) / 2) * 10) / 10,
+      marginVerticalCm: Math.round(((29.7 - heightCm) / 2) * 10) / 10
+    };
+  };
+  return {
+    paper: "A4",
+    widthCm: 21,
+    heightCm: 29.7,
+    targetAreaCm2: 181.5,
+    selectedPreset: "recommended",
+    variants: [
+      makeVariant("small", "小", 0.9),
+      makeVariant("recommended", "推荐", 1),
+      makeVariant("large", "大", 1.1)
+    ]
+  };
+}
+
+function buildGeneratedColorSteps(analysis) {
+  const objects = (analysis.objects || []).slice(0, 4);
+  const labels = objects.map((item) => item.labelZh).filter(Boolean);
+  const backToFront = [...objects].sort((a, b) => Number(a.depth || 0) - Number(b.depth || 0)).map((item) => item.labelZh);
+  const targetIds = (analysis.paletteTargets || []).map((item) => item.id);
+  const backgroundIds = (analysis.paletteTargets || []).filter((item) => /背景|地面|天空/.test(item.roleZh || "")).map((item) => item.id);
+  const shadowIds = (analysis.paletteTargets || []).filter((item) => /阴影|暗部|深色/.test(item.roleZh || "")).map((item) => item.id);
+  const mainIds = targetIds.filter((id) => !backgroundIds.includes(id) && !shadowIds.includes(id));
+  const definitions = [
+    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: targetIds },
+    { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], overlay: "position" },
+    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position" },
+    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "只画轻线，暂不补细节。"], overlay: "skeleton" },
+    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}的顺序确认遮挡。`, "擦掉被挡住的结构线。"], overlay: "occlusion" },
+    { actions: ["连接基本形，补全主要轮廓。", "五官和小配件最后加入。"], overlay: "lineart" },
+    { actions: ["对照原图检查比例、方向和留白。", "只修改最明显的一处偏差。"], overlay: "lineart" },
+    { actions: ["确认草稿后沿外轮廓分段勾线。", "每个待填色区域都要闭合。"], overlay: "lineart" },
+    { actions: ["先完成主体的大色块。", "同一区域保持同一铺色方向。"], overlay: "colorRegions", colors: mainIds.length ? mainIds : targetIds },
+    { actions: ["完成配件、背景和地面色块。", "先大面积，后小面积。"], overlay: "colorRegions", colors: backgroundIds.length ? backgroundIds : targetIds },
+    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充局部暗部。`, "暗部面积小于主色面积。"], overlay: "colorRegions", colors: shadowIds.length ? shadowIds : targetIds },
+    { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"] },
+    { actions: ["把作品与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"] }
+  ];
+  return COLOR_REFERENCE_STEP_TITLES.map((titleZh, index) => ({
+    id: `reference_step_${String(index + 1).padStart(2, "0")}`,
+    order: index + 1,
+    titleZh,
+    studentVoiceZh: definitions[index].actions[0],
+    actionsZh: definitions[index].actions,
+    colorTargetIds: definitions[index].colors || [],
+    overlayLayer: definitions[index].overlay || "",
+    completionStandardZh: index === 7 ? "线稿闭合，遮挡线已经擦除。" : ""
+  }));
+}
+
+function buildGeneratedColorCourse(analysis, draft) {
+  const courseId = `color-reference-${analysis.imageHash.slice(0, 16)}`;
+  const referenceImageId = `reference-${analysis.imageHash.slice(0, 24)}`;
+  return {
+    courseId,
+    generatedFromReference: true,
+    imageHash: analysis.imageHash,
+    referenceImageId,
+    titleZh: safePlainText(analysis.titleZh || "参考图课程", 24),
+    choiceCardZh: "参考图课程",
+    sourceImage: { width: draft.width, height: draft.height, mimeType: draft.mimeType },
+    paperPlan: calculateA4PaperPlan(analysis.aspectRatio),
+    referenceAnalysis: structuredCloneSafe(analysis),
+    paletteTargets: structuredCloneSafe(analysis.paletteTargets || []),
+    palette: (analysis.paletteTargets || []).map((target) => ({
+      code: target.candidates?.[0]?.code || "",
+      nameZh: target.candidates?.[0]?.nameZh || "",
+      roleZh: target.roleZh || target.targetColorZh || ""
+    })).filter((item) => item.code),
+    materials: ["pencil", "eraser", "markers", "art_paper", "reference"],
+    steps: buildGeneratedColorSteps(analysis),
+    createdAt: new Date().toISOString()
+  };
+}
+
+async function generateColorReferenceCourse() {
+  if (colorReferenceDraft.status !== "ready" || !colorReferenceDraft.blob) return false;
+  const existing = getGeneratedColorCourseByHash(colorReferenceDraft.imageHash);
+  if (existing) {
+    resetColorReferenceDraft();
+    return startColorCourse(existing.courseId);
+  }
+  colorReferenceDraft.status = "analyzing";
+  colorReferenceDraft.error = "";
+  renderColorWorkChoice();
+  try {
+    const settings = getColorPlanetState().referenceSettings;
+    const body = JSON.stringify({
+      schemaVersion: COLOR_REFERENCE_REQUEST_SCHEMA,
+      analysisProfile: {
+        modelTier: settings.modelTier,
+        reasoningEffort: settings.reasoningEffort
+      },
+      image: {
+        mimeType: colorReferenceDraft.mimeType,
+        dataBase64: await blobToBase64(colorReferenceDraft.blob)
+      }
+    });
+    let responseData = null;
+    let lastError = null;
+    for (const endpoint of getAIEndpoints("/api/color-course/analyze")) {
+      try {
+        const response = await fetchWithTimeout(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body
+        }, AI_TIMEOUTS.colorReference);
+        const data = await response.json().catch(() => null);
+        if (!response.ok || !data?.ok) {
+          lastError = data || new Error(`参考图分析服务返回 ${response.status}`);
+          break;
+        }
+        responseData = data;
+        break;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    if (!responseData?.analysis || responseData.analysis.schemaVersion !== COLOR_REFERENCE_ANALYSIS_SCHEMA) {
+      throw new Error(typeof lastError?.error === "string" ? lastError.error : lastError?.message || "参考图分析失败，请重试。" );
+    }
+    if (responseData.analysis.imageHash !== colorReferenceDraft.imageHash) throw new Error("参考图校验失败，请重新选择图片。" );
+    const course = buildGeneratedColorCourse(responseData.analysis, colorReferenceDraft);
+    course.analysisProfile = {
+      modelTier: responseData.meta?.modelTier || settings.modelTier,
+      reasoningEffort: responseData.meta?.reasoningEffort || settings.reasoningEffort
+    };
+    await saveColorReferenceImage(course.referenceImageId, colorReferenceDraft.blob);
+    colorReferenceObjectUrls.set(course.referenceImageId, URL.createObjectURL(colorReferenceDraft.blob));
+    const colorState = getColorPlanetState();
+    colorState.generatedCourses.unshift(course);
+    colorState.selectedCourseId = course.courseId;
+    colorState.activeCourseId = course.courseId;
+    colorState.courseUi[course.courseId] = { currentStepIndex: 0, overlayVisible: true };
+    saveState();
+    resetColorReferenceDraft();
+    startColorCourse(course.courseId);
+    return true;
+  } catch (error) {
+    colorReferenceDraft.status = "ready";
+    colorReferenceDraft.error = error?.message || "生成失败，原课程未改变。";
+    renderColorWorkChoice();
+    return false;
+  }
+}
+
+function setColorReferenceSetting(key, value) {
+  const allowed = key === "modelTier" ? ["luna", "terra"] : ["low", "medium", "high"];
+  if (!allowed.includes(value)) return;
+  getColorPlanetState().referenceSettings[key] = value;
+  saveState();
+  renderColorWorkChoice();
+}
+
+function renderColorReferenceUpload() {
+  const draft = colorReferenceDraft;
+  const busy = draft.status === "preparing" || draft.status === "analyzing";
+  const settings = getColorPlanetState().referenceSettings;
+  return `
+    <article class="surface color-reference-uploader ${draft.previewUrl ? "has-preview" : ""}" aria-busy="${busy ? "true" : "false"}">
+      ${draft.previewUrl ? `
+        <div class="color-reference-preview">
+          <img src="${escapeHtml(draft.previewUrl)}" alt="待生成课程的参考图" />
+          <button class="color-reference-clear" data-color-reference-clear type="button" aria-label="删除参考图">×</button>
+        </div>
+      ` : `
+        <label class="color-reference-pick">
+          <input data-color-reference-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" ${busy ? "disabled" : ""} />
+          <span>${draft.status === "preparing" ? "正在读取" : "选择参考图"}</span>
+        </label>
+        <small>JPG、PNG、WebP、HEIC｜不超过10 MB</small>
+      `}
+      ${draft.previewUrl ? `
+        <div class="color-reference-model-settings">
+          <label>模型
+            <select data-color-reference-setting="modelTier" ${busy ? "disabled" : ""}>
+              <option value="luna" ${settings.modelTier === "luna" ? "selected" : ""}>Luna · 经济</option>
+              <option value="terra" ${settings.modelTier === "terra" ? "selected" : ""}>Terra · 增强</option>
+            </select>
+          </label>
+          <label>推理
+            <select data-color-reference-setting="reasoningEffort" ${busy ? "disabled" : ""}>
+              <option value="low" ${settings.reasoningEffort === "low" ? "selected" : ""}>低</option>
+              <option value="medium" ${settings.reasoningEffort === "medium" ? "selected" : ""}>中</option>
+              <option value="high" ${settings.reasoningEffort === "high" ? "selected" : ""}>高</option>
+            </select>
+          </label>
+        </div>
+        <div class="color-reference-actions">
+          <label class="button secondary compact-button">
+            换图
+            <input data-color-reference-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" ${busy ? "disabled" : ""} />
+          </label>
+          <button class="button primary" data-color-reference-generate type="button" ${busy ? "disabled" : ""}>${draft.status === "analyzing" ? "分析中" : "生成课程"}</button>
+        </div>
+      ` : ""}
+      ${draft.error ? `<p class="color-reference-error" role="alert">${escapeHtml(draft.error)}</p>` : ""}
+    </article>
+  `;
+}
+
 function renderColorWorkChoice() {
   const container = $("#colorWorkChoiceContent");
   if (!container) return;
-  if (!renderColorDataGate(container, "choice")) return;
-  const colorState = getColorPlanetState();
-  const courses = getColorCourses();
-  const inProgress = getInProgressColorCourse();
-  const selected = getColorCourseById(inProgress?.courseId || colorState.selectedCourseId);
-  const selectedProgress = selected ? getColorCourseProgress(selected.courseId)?.art : null;
+  container.setAttribute?.("aria-busy", "false");
+  const generatedCourses = getGeneratedColorCourses();
   container.innerHTML = `
-    <div class="color-choice-grid">
-      ${courses.map((course) => {
-        const status = getColorCourseCardStatus(course);
-        const canSelect = !inProgress && colorState.selectedCourseId !== course.courseId;
-        return `
-          <article class="surface color-choice-card ${colorState.selectedCourseId === course.courseId || inProgress?.courseId === course.courseId ? "is-selected" : ""}">
-            ${status ? `<span class="color-choice-status">${escapeHtml(status)}</span>` : ""}
-            ${renderColorImageFrame({
-              kind: "choice",
-              courseId: course.courseId,
-              assetId: course.choiceImageAssetId || `${course.courseId}_choice`,
-              url: course.choiceImageUrl || "",
-              altZh: course.titleZh
-            })}
-            <h2>${escapeHtml(course.titleZh)}</h2>
-            <p>${escapeHtml(course.choiceCardZh)}</p>
-            <div class="color-choice-action-slot">
-              ${canSelect ? `<button class="button secondary" data-color-course-select="${escapeHtml(course.courseId)}" type="button">选择</button>` : ""}
-            </div>
-          </article>
-        `;
-      }).join("")}
-    </div>
-    ${selected && !selectedProgress?.finishedAt ? `
-      <article class="surface color-choice-confirmation">
-        <span>${selectedProgress?.startedAt && !selectedProgress?.finishedAt ? "进行中" : "已选择"}</span>
-        <h2>${escapeHtml(selected.titleZh)}</h2>
-        <div class="actions compact">
-          <button class="button primary" data-color-course-start="${escapeHtml(selected.courseId)}" type="button">${selectedProgress?.startedAt && !selectedProgress?.finishedAt ? "继续课程" : "开始课程"}</button>
-          ${selectedProgress?.startedAt ? "" : `<button class="button secondary" data-color-course-reselect="true" type="button">重新选择</button>`}
+    ${renderColorReferenceUpload()}
+    ${generatedCourses.length ? `
+      <section class="color-reference-history">
+        <h2>已生成课程</h2>
+        <div class="color-choice-grid color-reference-course-grid">
+          ${generatedCourses.map((course) => {
+            const imageUrl = getColorReferenceImageUrl(course.referenceImageId);
+            const progress = getColorCourseProgress(course.courseId)?.art;
+            return `
+              <article class="surface color-choice-card">
+                ${imageUrl ? `<div class="color-image-frame color-image-frame-choice has-real-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(course.titleZh)}" /></div>` : `<div class="color-image-frame color-image-frame-choice is-empty" aria-hidden="true">${renderColorNeutralImageFallback(false)}</div>`}
+                <h3>${escapeHtml(course.titleZh)}</h3>
+                <button class="button secondary" data-color-course-start="${escapeHtml(course.courseId)}" type="button">${progress?.startedAt && !progress?.finishedAt ? "继续课程" : progress?.finishedAt ? "查看课程" : "开始课程"}</button>
+              </article>
+            `;
+          }).join("")}
         </div>
-      </article>
+      </section>
     ` : ""}
   `;
 }
@@ -8843,7 +9241,7 @@ function renderColorGallery() {
   `).join("") : `
     <article class="surface empty-student-page">
       <h2>还没有作品</h2>
-      <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择作品</a>
+      <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">创建课程</a>
     </article>
   `;
 }
@@ -8865,7 +9263,7 @@ function renderColorMaterials() {
         <h2>本课六色</h2>
         ${course ? `<div class="color-palette-grid">${course.palette.map((item) => `
           <div><strong>${escapeHtml(item.code)}</strong><span>${escapeHtml(item.nameZh)}</span><small>${escapeHtml(item.roleZh)}</small></div>
-        `).join("")}</div>` : `<a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择作品</a>`}
+        `).join("")}</div>` : `<a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">创建课程</a>`}
       </section>
       <section class="surface materials-summary-card">
         <h2>其他材料</h2>
@@ -8916,7 +9314,7 @@ function startColorCourse(courseId) {
   const course = getColorCourseById(courseId);
   if (!course) return false;
   const inProgress = getInProgressColorCourse();
-  if (inProgress && inProgress.courseId !== course.courseId) return false;
+  if (inProgress && inProgress.courseId !== course.courseId && !course.generatedFromReference) return false;
   const colorState = getColorPlanetState();
   const pack = buildColorCoursePack(course);
   const progress = initializeCourseProgress(pack);
@@ -8983,6 +9381,10 @@ function completeColorCourseStep(courseId, stepId) {
   if (!course || stepIndex < 0) return false;
   const pack = buildColorCoursePack(course);
   const progress = initializeCourseProgress(pack);
+  if (course.generatedFromReference && stepIndex === 0) {
+    progress.art.paletteSelections ||= {};
+    if ((course.paletteTargets || []).some((target) => !progress.art.paletteSelections[target.id])) return false;
+  }
   const key = `art:${stepId}`;
   progress.art.startedAt ||= new Date().toISOString();
   progress.art.sessionStatus = "in_progress";
@@ -8993,7 +9395,13 @@ function completeColorCourseStep(courseId, stepId) {
     result: "independent"
   };
   const ui = getColorCourseUi(courseId);
-  if (stepIndex < course.steps.length - 1) ui.currentStepIndex = stepIndex + 1;
+  if (!course.generatedFromReference && stepIndex < course.steps.length - 1) ui.currentStepIndex = stepIndex + 1;
+  if (course.generatedFromReference && course.steps.every((step) => progress.art.steps?.[`art:${step.id}`]?.finishedAt)) {
+    progress.art.finishedAt ||= new Date().toISOString();
+    progress.art.sessionStatus = "completed";
+    progress.art.isRunning = false;
+    progress.art.runningSince = null;
+  }
   saveState();
   renderArtLesson();
   renderColorWorkChoice();
@@ -9282,6 +9690,192 @@ function renderArtParentOnly(parentOnly) {
   `;
 }
 
+function getGeneratedArtProgress(course) {
+  const pack = buildColorCoursePack(course);
+  const progress = initializeCourseProgress(pack);
+  progress.art.paletteSelections ||= {};
+  progress.art.paperPreset ||= course.paperPlan?.selectedPreset || "recommended";
+  return progress;
+}
+
+function selectGeneratedColorSize(courseId, preset) {
+  const course = getColorCourseById(courseId);
+  if (!course?.generatedFromReference || !course.paperPlan?.variants?.some((item) => item.id === preset)) return false;
+  const progress = getGeneratedArtProgress(course);
+  progress.art.paperPreset = preset;
+  saveState();
+  renderArtLesson();
+  return true;
+}
+
+function selectGeneratedColorPalette(courseId, targetId, code) {
+  const course = getColorCourseById(courseId);
+  const target = course?.paletteTargets?.find((item) => item.id === targetId);
+  if (!course?.generatedFromReference || !target?.candidates?.some((item) => item.code === code)) return false;
+  const progress = getGeneratedArtProgress(course);
+  progress.art.paletteSelections[targetId] = code;
+  saveState();
+  renderArtLesson();
+  return true;
+}
+
+function toggleGeneratedColorOverlay(courseId) {
+  const course = getColorCourseById(courseId);
+  if (!course?.generatedFromReference) return false;
+  const ui = getColorCourseUi(courseId);
+  ui.overlayVisible = ui.overlayVisible === false;
+  saveState();
+  renderArtLesson();
+  return true;
+}
+
+function getGeneratedPaperVariant(course, progress) {
+  const variants = course.paperPlan?.variants || [];
+  return variants.find((item) => item.id === progress.art.paperPreset) || variants.find((item) => item.id === "recommended") || variants[0] || null;
+}
+
+function renderGeneratedPaperChoices(course, progress) {
+  const selected = progress.art.paperPreset || "recommended";
+  return `
+    <div class="color-paper-choices" role="group" aria-label="A4画面大小">
+      ${(course.paperPlan?.variants || []).map((item) => `
+        <button class="${selected === item.id ? "is-selected" : ""}" data-color-size-preset="${escapeHtml(item.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${selected === item.id ? "true" : "false"}">
+          <span>${escapeHtml(item.label)}</span>
+          <strong>${item.widthCm}×${item.heightCm} cm</strong>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderGeneratedPaletteChoices(course, progress) {
+  const selections = progress.art.paletteSelections || {};
+  return `
+    <div class="color-reference-palette">
+      ${(course.paletteTargets || []).map((target) => `
+        <section class="color-reference-palette-target">
+          <div class="color-reference-palette-heading">
+            ${target.targetHex ? `<span class="color-reference-target-swatch" style="--target-color:${escapeHtml(target.targetHex)}" aria-hidden="true"></span>` : ""}
+            <strong>${escapeHtml(target.roleZh || target.targetColorZh)}</strong>
+          </div>
+          <div class="color-reference-candidates" role="group" aria-label="${escapeHtml(target.roleZh || target.targetColorZh)}">
+            ${(target.candidates || []).map((candidate) => {
+              const chosen = selections[target.id] === candidate.code;
+              return `
+                <button class="${chosen ? "is-selected" : ""}" data-color-palette-choice="${escapeHtml(candidate.code)}" data-color-palette-target="${escapeHtml(target.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${chosen ? "true" : "false"}">
+                  <strong>${escapeHtml(candidate.code)}</strong>
+                  <span class="color-candidate-name">${escapeHtml(candidate.nameZh)}</span>
+                  ${chosen ? `<span class="color-candidate-check" aria-hidden="true">✓</span>` : ""}
+                </button>
+              `;
+            }).join("")}
+          </div>
+        </section>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderGeneratedSelectedColors(course, step, progress) {
+  const ids = step.colorTargetIds || [];
+  if (!ids.length) return "";
+  const selections = progress.art.paletteSelections || {};
+  const rows = ids.map((id) => {
+    const target = course.paletteTargets?.find((item) => item.id === id);
+    if (!target) return null;
+    const chosen = target.candidates?.find((item) => item.code === selections[id]);
+    return { target, chosen };
+  }).filter(Boolean);
+  if (!rows.length) return "";
+  return `<div class="color-step-selected-colors">${rows.map(({ target, chosen }) => `<span><strong>${escapeHtml(chosen?.code || "待选")}</strong>${escapeHtml(target.roleZh || target.targetColorZh)}</span>`).join("")}</div>`;
+}
+
+function safeOverlayNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.max(0, Math.min(1000, number)) : 0;
+}
+
+function renderGeneratedOverlayPrimitive(item, course, layer) {
+  const type = item?.type;
+  if (!["rect", "ellipse", "line", "polyline", "polygon"].includes(type)) return "";
+  const target = course.paletteTargets?.find((entry) => entry.id === item.targetId);
+  const color = /^#[0-9A-F]{6}$/i.test(target?.targetHex || "") ? target.targetHex : "#466c82";
+  const style = `--overlay-color:${escapeHtml(color)}`;
+  const label = item.labelZh ? `<text x="${safeOverlayNumber(item.x ?? item.cx ?? item.x1)}" y="${Math.max(18, safeOverlayNumber(item.y ?? item.cy ?? item.y1) - 12)}">${escapeHtml(item.labelZh)}</text>` : "";
+  if (type === "rect") return `<g style="${style}"><rect x="${safeOverlayNumber(item.x)}" y="${safeOverlayNumber(item.y)}" width="${safeOverlayNumber(item.width)}" height="${safeOverlayNumber(item.height)}" />${label}</g>`;
+  if (type === "ellipse") return `<g style="${style}"><ellipse cx="${safeOverlayNumber(item.cx)}" cy="${safeOverlayNumber(item.cy)}" rx="${safeOverlayNumber(item.rx)}" ry="${safeOverlayNumber(item.ry)}" />${label}</g>`;
+  if (type === "line") return `<g style="${style}"><line x1="${safeOverlayNumber(item.x1)}" y1="${safeOverlayNumber(item.y1)}" x2="${safeOverlayNumber(item.x2)}" y2="${safeOverlayNumber(item.y2)}" />${label}</g>`;
+  const points = (item.points || []).slice(0, 30).map((pair) => `${safeOverlayNumber(pair?.[0])},${safeOverlayNumber(pair?.[1])}`).join(" ");
+  if (!points) return "";
+  return `<g style="${style}"><${type} points="${points}" />${label}</g>`;
+}
+
+function renderGeneratedReferenceFigure(course, step) {
+  const url = getColorReferenceImageUrl(course.referenceImageId);
+  const ui = getColorCourseUi(course.courseId);
+  const layer = step.overlayLayer || "";
+  const primitives = layer ? course.referenceAnalysis?.overlays?.[layer] || [] : [];
+  const visible = ui.overlayVisible !== false && primitives.length;
+  const ratio = Math.max(0.1, Number(course.sourceImage?.width || 1) / Math.max(1, Number(course.sourceImage?.height || 1)));
+  return `
+    <figure class="color-reference-figure" style="--reference-ratio:${ratio}">
+      ${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(course.titleZh)}参考图" />` : `<div class="color-reference-image-loading">图片正在加载</div>`}
+      ${visible ? `<svg class="color-reference-overlay is-${escapeHtml(layer)}" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">${primitives.map((item) => renderGeneratedOverlayPrimitive(item, course, layer)).join("")}</svg>` : ""}
+      ${primitives.length ? `<button class="color-overlay-toggle ${ui.overlayVisible === false ? "" : "is-active"}" data-color-overlay-toggle data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${ui.overlayVisible === false ? "false" : "true"}">辅助线</button>` : ""}
+    </figure>
+  `;
+}
+
+function renderGeneratedColorCourseLesson(course) {
+  const header = $("#artLessonHeader");
+  const sections = $("#artLessonSections");
+  const pack = buildColorCoursePack(course);
+  const progress = getGeneratedArtProgress(course);
+  const ui = getColorCourseUi(course.courseId);
+  const stepIndex = Math.max(0, Math.min(course.steps.length - 1, Number(ui.currentStepIndex || 0)));
+  const step = course.steps[stepIndex];
+  const stepProgress = progress.art.steps?.[`art:${step.id}`] || {};
+  const completedCount = course.steps.filter((item) => progress.art.steps?.[`art:${item.id}`]?.finishedAt).length;
+  const selectedPaper = getGeneratedPaperVariant(course, progress);
+  const actions = stepIndex === 1 && selectedPaper
+    ? [`在A4纸上轻轻画出 ${selectedPaper.widthCm}×${selectedPaper.heightCm} cm边界。`, `左右各留 ${selectedPaper.marginHorizontalCm} cm，上下各留 ${selectedPaper.marginVerticalCm} cm。`]
+    : step.actionsZh || [];
+  const allColorsSelected = (course.paletteTargets || []).every((target) => progress.art.paletteSelections?.[target.id]);
+  const canComplete = stepIndex !== 0 || allColorsSelected;
+  header.innerHTML = `
+    <div class="course-topline color-course-heading">
+      <div><h1>${escapeHtml(course.titleZh)}</h1></div>
+      <span class="color-reference-progress">${completedCount} / ${course.steps.length}</span>
+    </div>
+    ${renderCourseStartSettings("art", progress.art, course.steps)}
+  `;
+  sections.innerHTML = `
+    <nav class="color-step-index color-reference-step-index" aria-label="步骤">
+      ${course.steps.map((item, index) => {
+        const complete = Boolean(progress.art.steps?.[`art:${item.id}`]?.finishedAt);
+        const current = index === stepIndex;
+        return `<button class="${current ? "is-current" : ""} ${complete ? "is-complete" : ""}" data-color-step-jump="${index}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${current ? 'aria-current="step"' : ""}><span>${complete ? "✓" : index + 1}</span>${current ? `<strong>${escapeHtml(item.titleZh)}</strong>` : ""}</button>`;
+      }).join("")}
+    </nav>
+    <article class="course-card color-reference-step-card">
+      <div class="color-current-step-heading"><span>${stepIndex + 1} / ${course.steps.length}</span><h2>${escapeHtml(step.titleZh)}</h2></div>
+      ${renderGeneratedReferenceFigure(course, step)}
+      ${stepIndex === 0 ? renderGeneratedPaletteChoices(course, progress) : ""}
+      ${stepIndex === 1 ? renderGeneratedPaperChoices(course, progress) : ""}
+      <ol class="color-step-actions">${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
+      ${renderGeneratedSelectedColors(course, step, progress)}
+      ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
+      <div class="color-course-nav color-reference-nav">
+        <button class="button secondary" data-color-step-nav="-1" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${stepIndex === 0 ? "disabled" : ""}>上一步</button>
+        <button class="button primary" data-color-step-complete="${escapeHtml(step.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${stepProgress.finishedAt || !canComplete ? "disabled" : ""}>${stepProgress.finishedAt ? "已完成" : "完成本步"}</button>
+        <button class="button secondary" data-color-step-nav="1" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${!stepProgress.finishedAt || stepIndex === course.steps.length - 1 ? "disabled" : ""}>下一步</button>
+      </div>
+    </article>
+  `;
+  scrollCurrentColorStepIntoView(sections);
+  return pack;
+}
+
 function renderColorChoiceLesson() {
   const header = $("#artLessonHeader");
   const sections = $("#artLessonSections");
@@ -9290,12 +9884,15 @@ function renderColorChoiceLesson() {
   if (!course) {
     header.innerHTML = `
       <div class="color-course-empty">
-        <p class="eyebrow">颜色星球 / 选择作品</p>
-        <h1>选择作品</h1>
-        <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择作品</a>
+        <h1>参考图课程</h1>
+        <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">选择参考图</a>
       </div>
     `;
     sections.innerHTML = "";
+    return;
+  }
+  if (course.generatedFromReference) {
+    renderGeneratedColorCourseLesson(course);
     return;
   }
   const pack = buildColorCoursePack(course);
@@ -12109,7 +12706,11 @@ function buildFeedbackPackage(course = "snapshot") {
     const englishPack = getActiveEnglishPack() || pack;
     return buildSingleCourseFeedback(englishPack, getCourseProgress(englishPack.packId), course);
   }
-  if (["chinese", "art"].includes(course)) return buildSingleCourseFeedback(pack, progress, course);
+  if (course === "art") {
+    const artPack = getActiveColorCoursePack() || pack;
+    return buildSingleCourseFeedback(artPack, getCourseProgress(artPack.packId), course);
+  }
+  if (course === "chinese") return buildSingleCourseFeedback(pack, progress, course);
   return buildCurrentFeedbackSnapshot(pack, progress);
 }
 
@@ -12118,10 +12719,12 @@ function buildCurrentFeedbackSnapshot(pack, progress) {
   const generatedAt = new Date().toISOString();
   const englishPack = getActiveEnglishPack() || pack;
   const englishProgressState = getCourseProgress(englishPack.packId);
+  const artPack = getActiveColorCoursePack() || pack;
+  const artProgressState = getCourseProgress(artPack.packId);
   const planets = {
     chinese: buildPlanetSnapshot(pack, progress, "chinese"),
     english: buildPlanetSnapshot(englishPack, englishProgressState, "english"),
-    art: buildPlanetSnapshot(pack, progress, "art")
+    art: buildPlanetSnapshot(artPack, artProgressState, "art")
   };
   const plannedPlanetCount = Object.values(planets).filter((planet) => planet.status !== "not_scheduled").length;
   const startedPlanetCount = Object.values(planets).filter((planet) => !["not_scheduled", "not_started"].includes(planet.status)).length;
@@ -12143,7 +12746,7 @@ function buildCurrentFeedbackSnapshot(pack, progress) {
       activePackIdsByPlanet: {
         chinese: planets.chinese.status === "not_scheduled" ? [] : [pack.packId],
         english: planets.english.status === "not_scheduled" ? [] : [englishPack.packId],
-        art: planets.art.status === "not_scheduled" ? [] : [pack.packId]
+        art: planets.art.status === "not_scheduled" ? [] : [artPack.packId]
       }
     },
     overall: {
@@ -12458,7 +13061,9 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       artworkPhotoExpected: Boolean(progress.art.artworkPhotoExpected),
       artworkFileName: progress.art.artworkFileName || "",
       favoritePart: progress.art.favoritePart || "",
-      difficultPart: progress.art.hardest || ""
+      difficultPart: progress.art.hardest || "",
+      paperPreset: progress.art.paperPreset || "",
+      paletteSelections: structuredCloneSafe(progress.art.paletteSelections || {})
     };
   }
   const human = [
@@ -13408,8 +14013,8 @@ function mergeLearnerCharacterData(plan) {
 }
 
 function getAIEndpoints(path) {
-  if (location.origin === LOCAL_API_ORIGINS[0] || location.origin === LOCAL_API_ORIGINS[1]) return [path];
-  return LOCAL_API_ORIGINS.map((origin) => `${origin}${path}`);
+  if (CONFIGURED_AI_ORIGIN) return [`${CONFIGURED_AI_ORIGIN}${path}`];
+  return unique([path, ...LOCAL_API_ORIGINS.map((origin) => `${origin}${path}`)]);
 }
 
 function getStoredAppAccessCode() {
