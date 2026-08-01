@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.8.0",
-  buildId: "2026-08-01T10:22:45+08:00",
+  version: "v3.8.1",
+  buildId: "2026-08-01T11:20:16+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -5097,6 +5097,18 @@ function normalizeEnglishWord(input) {
   return token || normalizeEnglishText(input);
 }
 
+function normalizeEnglishFocusWord(input) {
+  const text = typeof input === "string" ? input : input?.text;
+  if (typeof text !== "string" || text === "[object Object]") return null;
+  const id = normalizeEnglishWord(text);
+  if (!id || id === "object") return null;
+  return {
+    id,
+    text: text.trim(),
+    meaningZh: typeof input === "object" ? input.meaningZh || input.chinese || "" : ""
+  };
+}
+
 function tokenizeEnglishSentence(sentence) {
   return normalizeEnglishText(sentence).match(/[a-z]+(?:'[a-z]+)?/g) || [];
 }
@@ -6043,10 +6055,11 @@ function getEnglishSourceLabel(word) {
     beijing_grade1_semester_1: "北京版一年级上册",
     grade_one_core: "一年级扩展"
   };
-  return word.sources.map((source) => {
+  return unique(word.sources.map((source) => {
     if (source.startsWith("daily_pack:")) return "本课内容";
+    if (source.startsWith("english_library:")) return "Hello, School!";
     return labels[source] || getTextbookSourceLabel(source) || source;
-  }).join(" · ");
+  })).join(" · ");
 }
 
 function getTextbookSourceLabel(source) {
@@ -6627,9 +6640,8 @@ function buildEnglishLessonPackFromLibraryLesson(library, lessonRecord) {
     items: step.items?.length ? step.items : step.childVisible?.items || [],
     blocks: step.blocks?.length ? step.blocks : step.childVisible?.blocks || []
   }));
-  const words = (lessonRecord.wordFocus || []).map((word) => ({
-    id: normalizeEnglishWord(word),
-    text: word,
+  const words = (lessonRecord.wordFocus || []).map(normalizeEnglishFocusWord).filter(Boolean).map((word) => ({
+    ...word,
     source: library.libraryId,
     status: "story3_lesson_focus"
   }));
@@ -8011,15 +8023,18 @@ function getDynamicEnglishWordsFromPacks() {
       translationZh: pack.english?.translationZh || ""
     }));
   });
-  const libraryWords = (getEnglishLessonLibrary()?.lessons || []).flatMap((lesson) => (lesson.wordFocus || []).map((word) => ({
-    id: normalizeEnglishWord(word),
-    text: word,
-    source: `english_library:${lesson.lessonId}`,
-    packId: getEnglishLessonPackId(getEnglishLessonLibrary(), lesson),
-    packDate: "english-story3",
-    anchorSentence: lesson.anchorSentence || "",
-    translationZh: lesson.translationZh || ""
-  })));
+  const library = getEnglishLessonLibrary();
+  const libraryWords = (library?.lessons || []).flatMap((lesson) => (lesson.wordFocus || [])
+    .map(normalizeEnglishFocusWord)
+    .filter(Boolean)
+    .map((word) => ({
+      ...word,
+      source: `english_library:${lesson.lessonId}`,
+      packId: getEnglishLessonPackId(library, lesson),
+      packDate: "english-story3",
+      anchorSentence: lesson.anchorSentence || "",
+      translationZh: lesson.translationZh || ""
+    })));
   return [...dailyWords, ...libraryWords];
 }
 
