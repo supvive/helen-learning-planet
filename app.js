@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.7.1",
-  buildId: "2026-07-28T03:10:04+08:00",
+  version: "v3.8.0",
+  buildId: "2026-08-01T10:22:45+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -2979,6 +2979,11 @@ function bindNavigation() {
     const kind = target.dataset.courseKind || getActiveCourseKind() || "chinese";
     if (target.dataset.coursePack) selectLearningCoursePack(target.dataset.coursePack, true, kind);
     if (target.dataset.courseSequenceNav) selectRelativeLearningCourse(target.dataset.courseSequenceNav, kind);
+  });
+  document.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!target.matches?.("[data-course-pack-select]")) return;
+    selectLearningCoursePack(target.value, true, target.dataset.courseKind || "chinese");
   });
 }
 
@@ -6767,8 +6772,11 @@ function confirmLearningPackImport(options = {}) {
   generatePracticeFromLearningPack(pendingLearningPackPreview.pack, result);
   renderLearningPackSuccess(pendingLearningPackPreview.pack, result);
   renderTodayDashboard();
+  renderPlanetOverview();
+  renderPlanetPages();
   renderChineseLesson();
   renderEnglishLesson();
+  renderArtLesson();
   renderCharacters();
   renderWordbook();
   renderDictionary();
@@ -6783,14 +6791,9 @@ function confirmLearningPackImport(options = {}) {
   $("#packStatus").textContent = `已导入：新增 ${result.added}，更新 ${result.updated}，保持 ${result.unchanged} / Imported`;
   if (options.autoNavigate) {
     $("#packPreviewPanel").hidden = true;
-    const nextView = getFirstLearningPackCourseView(pendingLearningPackPreview.pack);
-    showView(nextView, true, { skipRouteDateSelection: true });
-    document.querySelector(`#${getDomViewId(nextView)}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    showView("daily", true, { skipRouteDateSelection: true });
+    document.querySelector("#daily")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-}
-
-function getFirstLearningPackCourseView(pack) {
-  return { chinese: "chinese-course", english: "letter-course", art: "color-course" }[getPackAvailableSubjects(pack)[0]] || "daily";
 }
 
 function parseLearningPackInput(raw) {
@@ -6961,7 +6964,12 @@ function validateChineseWordTarget(item, index, errors) {
 }
 
 function validateEnglishWordTarget(item, index, errors) {
-  const display = safePlainText(item?.text || item?.word || "", 40);
+  const rawDisplay = item?.text ?? item?.word;
+  if (typeof rawDisplay !== "string") {
+    errors.push(`英文单词第 ${index + 1} 项必须使用普通文字。`);
+    return null;
+  }
+  const display = safePlainText(rawDisplay, 40);
   const id = normalizeEnglishWord(display);
   if (!id || !/^[a-z]+(?:['-][a-z]+)?$/i.test(id)) {
     errors.push(`英文单词第 ${index + 1} 项格式不合理。`);
@@ -7991,7 +7999,10 @@ function getDynamicEnglishWordsFromPacks() {
   const dailyWords = Object.values(state.learningPacks || {}).flatMap((record) => {
     const pack = record.data || record;
     const source = `daily_pack:${pack.packId}`;
-    return (pack.english?.words || []).map((item) => ({
+    return (pack.english?.words || []).filter((item) => {
+      const text = typeof item === "string" ? item : item?.text;
+      return typeof text === "string" && text !== "[object Object]";
+    }).map((item) => ({
       ...item,
       source,
       packId: pack.packId,
@@ -8136,7 +8147,7 @@ function renderTodayDashboard() {
   }
   initializeCourseProgress(pack);
   const progress = getCourseProgress(pack.packId);
-  const chineseDone = countCompletedCourseItems(progress.chinese.sections);
+  const chineseDone = countCompletedChineseSections(pack, progress.chinese.sections);
   const chineseTotal = getChineseLessonSections(pack).length;
   const englishPack = getActiveEnglishPack() || pack;
   const englishProgressState = getCourseProgress(englishPack.packId);
@@ -8211,14 +8222,12 @@ function getSequencedPlanetHomeState(kind) {
       title: getStudentCourseTitle(entry.pack, kind),
       route: kind === "chinese" ? "chinese-course" : "color-course",
       courseId: entry.packId,
-      progress: getHomeCourseProgress(side, items, total)
+      progress: getHomeCourseProgress(side, items, total, kind === "chinese" ? getChineseLessonSections(entry.pack).map((section) => `chinese:${section.id}`) : null)
     };
   });
-  const inProgress = courses.find((course) => course.progress.started && !course.progress.completed);
-  if (inProgress) return activePlanetHomeState(inProgress, "继续课程", "继续课程");
-  const next = courses.find((course) => !course.progress.completed);
-  if (next) return activePlanetHomeState(next, "下一课", "开始课程", false);
   const latest = courses.at(-1);
+  if (latest.progress.started && !latest.progress.completed) return activePlanetHomeState(latest, "继续课程", "继续课程");
+  if (!latest.progress.completed) return activePlanetHomeState(latest, "下一课", "开始课程", false);
   return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
 }
 
@@ -8259,9 +8268,9 @@ function getEnglishPlanetHomeState() {
   return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
 }
 
-function getHomeCourseProgress(side, items, total) {
+function getHomeCourseProgress(side, items, total, expectedKeys = null) {
   const records = Object.values(items || {});
-  const done = countCompletedCourseItems(items);
+  const done = countCompletedCourseItems(items, expectedKeys);
   const started = Boolean(
     side?.startedAt ||
     side?.finishedAt ||
@@ -8306,7 +8315,7 @@ function getPlanetStatus(kind, pack) {
   const progress = getCourseProgress(pack.packId);
   if (kind === "chinese") {
     const total = getChineseLessonSections(pack).length;
-    const done = countCompletedCourseItems(progress.chinese.sections);
+    const done = countCompletedChineseSections(pack, progress.chinese.sections);
     return { hasCourse: Boolean(pack.chinese?.lesson || pack.chinese?.characters?.length || pack.chinese?.words?.length), minutes: getPlannedChineseMinutes(pack), progress: `${done}/${total}` };
   }
   if (kind === "english") {
@@ -9044,12 +9053,12 @@ function renderCourseSequenceSwitcher(kind = "chinese") {
       <button class="button ghost compact-button" data-course-sequence-nav="prev" data-course-kind="${kind}" ${canPrev ? "" : "disabled"} type="button">← 上一课</button>
       <button class="button secondary compact-button" data-course-sequence-nav="latest" data-course-kind="${kind}" type="button">最新课程</button>
       <button class="button ghost compact-button" data-course-sequence-nav="next" data-course-kind="${kind}" ${canNext ? "" : "disabled"} type="button">下一课 →</button>
-      <details class="date-menu">
-        <summary>课程列表</summary>
-        <div class="date-menu-list">
-          ${sequence.map((item) => `<button class="button ${item.courseKey === currentKey ? "primary" : "secondary"} compact-button" data-course-pack="${escapeHtml(item.packId)}" data-course-kind="${kind}" type="button">${escapeHtml(item.title)}</button>`).join("")}
-        </div>
-      </details>
+      <label class="course-pack-select-label">
+        <span>课程列表</span>
+        <select data-course-pack-select data-course-kind="${kind}" aria-label="课程列表">
+          ${sequence.map((item) => `<option value="${escapeHtml(item.packId)}" ${item.courseKey === currentKey ? "selected" : ""}>${escapeHtml(item.title)}</option>`).join("")}
+        </select>
+      </label>
     </div>
   `;
 }
@@ -9079,7 +9088,7 @@ function renderChineseLesson() {
     ${renderCourseSequenceSwitcher("chinese")}
     <div class="course-topline">
       <div>
-        <h1>${escapeHtml(getStudentCourseTitle(pack, "chinese"))}</h1>
+        <h1>${renderAnnotatableChineseText(getStudentCourseTitle(pack, "chinese"), "lesson_title", "title")}</h1>
       </div>
     </div>
     ${renderCourseStartSettings("chinese", progress.chinese, sections)}
@@ -9852,12 +9861,26 @@ function renderChineseSection(pack, section, index, progress) {
   return `
     <article class="course-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
-        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${escapeHtml(childInstruction)}</p>` : ""}</div>
+        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${renderAnnotatableChineseText(childInstruction, section.id, "instruction")}</p>` : ""}</div>
       </div>
       ${renderChineseSectionBody(pack, section, itemProgress)}
-      ${renderCourseItemControls(key, itemProgress)}
+      ${shouldRenderChineseSectionControls(section) ? renderCourseItemControls(key, itemProgress) : ""}
     </article>
   `;
+}
+
+function shouldRenderChineseSectionControls(section) {
+  const childKeys = getChineseSectionChildKeys(section);
+  return !childKeys.length || getChineseObjectiveQuestions(section).length > 0;
+}
+
+function getChineseSectionChildKeys(section) {
+  if (section.prompts?.length) return section.prompts.map((_, index) => `chinese:${section.id}:grid:${index}`);
+  return (section.questions || []).flatMap((question, index) => {
+    const options = Array.isArray(question.options) ? question.options.filter(Boolean) : [];
+    const spoken = question.answerMode === "spoken" || (!options.length && (question.recording || question.referenceAnswer || question.answer));
+    return spoken ? [`chinese:${section.id}_${index}`] : [];
+  });
 }
 
 function getChineseSectionChildInstruction(section) {
@@ -9872,18 +9895,22 @@ function renderChineseSectionBody(pack, section, itemProgress = {}) {
   const actionItems = getChineseActionItems(section);
   if (section.questions?.length) {
     return `
-      ${termItems.length ? renderChineseTermList(termItems) : ""}
-      ${actionItems.length ? renderChineseActionItems(actionItems) : ""}
+      ${termItems.length ? renderChineseTermList(termItems, section.id) : ""}
+      ${actionItems.length ? renderChineseActionItems(actionItems, section.id) : ""}
       <div class="course-question-list">${section.questions.map((question, index) => renderCourseQuestion(question, `${section.id}_${index}`, itemProgress, index)).join("")}</div>
     `;
   }
   if (section.prompts?.length) {
-    return `<div class="four-grid">${section.prompts.map((prompt, index) => `<div class="four-grid-item"><strong>${index + 1}</strong><span>${escapeHtml(prompt)}</span><button class="button secondary compact-button four-grid-action" data-course-result="chinese:${escapeHtml(section.id)}:grid:${index}" data-result-value="independent" type="button">完成</button></div>`).join("")}</div>`;
+    return `<div class="four-grid">${section.prompts.map((prompt, index) => {
+      const childKey = `chinese:${section.id}:grid:${index}`;
+      const done = getCourseProgress()?.chinese?.sections?.[childKey]?.finishedAt;
+      return `<div class="four-grid-item"><strong>${index + 1}</strong><span>${renderAnnotatableChineseText(prompt, section.id, `prompt_${index}`)}</span><button class="button secondary compact-button four-grid-action" data-course-complete="${escapeHtml(childKey)}" type="button">${done ? "已确认" : "确认"}</button></div>`;
+    }).join("")}</div>`;
   }
-  if (actionItems.length) return renderChineseActionItems(actionItems);
-  if (termItems.length) return renderChineseTermList(termItems);
-  if (section.prompt) return `<p class="course-prompt">${escapeHtml(section.prompt)}</p>`;
-  return `<p class="pack-muted">按家长提示完成这一部分。</p>`;
+  if (actionItems.length) return renderChineseActionItems(actionItems, section.id);
+  if (termItems.length) return renderChineseTermList(termItems, section.id);
+  if (section.prompt) return `<p class="course-prompt">${renderAnnotatableChineseText(section.prompt, section.id, "prompt")}</p>`;
+  return `<p class="pack-muted">按要求完成这一部分。</p>`;
 }
 
 function getChineseSectionTermItems(pack, section) {
@@ -9902,16 +9929,16 @@ function isChineseActionItem(item) {
   return Boolean(item?.stepsZh?.length || item?.responseMode);
 }
 
-function renderChineseActionItems(items = []) {
+function renderChineseActionItems(items = [], sectionId = "task") {
   return `
     <div class="chinese-action-list">
       ${items.map((item, index) => `
         <article class="chinese-action-item">
-          <strong>${index + 1} ${escapeHtml(item.text || item.id || "任务")}</strong>
-          ${item.setupZh ? `<p>${escapeHtml(item.setupZh)}</p>` : ""}
-          ${item.prompt ? `<p>${escapeHtml(item.prompt)}</p>` : ""}
-          ${item.stepsZh?.length ? `<ol>${item.stepsZh.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>` : ""}
-          ${(item.referenceAnswerZh || item.answer) ? `<small>完成标准：${escapeHtml(item.referenceAnswerZh || item.answer)}</small>` : ""}
+          <strong>${index + 1} ${renderAnnotatableChineseText(item.text || item.id || "任务", sectionId, `action_${index}_title`)}</strong>
+          ${item.setupZh ? `<p>${renderAnnotatableChineseText(item.setupZh, sectionId, `action_${index}_setup`)}</p>` : ""}
+          ${item.prompt ? `<p>${renderAnnotatableChineseText(item.prompt, sectionId, `action_${index}_prompt`)}</p>` : ""}
+          ${item.stepsZh?.length ? `<ol>${item.stepsZh.map((step, stepIndex) => `<li>${renderAnnotatableChineseText(step, sectionId, `action_${index}_step_${stepIndex}`)}</li>`).join("")}</ol>` : ""}
+          ${(item.referenceAnswerZh || item.answer) ? `<small>完成标准：${renderAnnotatableChineseText(item.referenceAnswerZh || item.answer, sectionId, `action_${index}_answer`)}</small>` : ""}
         </article>
       `).join("")}
     </div>
@@ -9925,10 +9952,10 @@ function formatChineseCharacterTerm(pack, value) {
   return target?.pinyin ? `${text}（${target.pinyin}）` : text;
 }
 
-function renderChineseTermList(items = []) {
+function renderChineseTermList(items = [], sectionId = "terms") {
   return `
     <ol class="chinese-term-list">
-      ${items.map((item, index) => `<li><span class="term-index">${index + 1}</span><span class="term-text">${escapeHtml(item)}</span></li>`).join("")}
+      ${items.map((item, index) => `<li><span class="term-index">${index + 1}</span><span class="term-text">${renderAnnotatableChineseText(item, sectionId, `term_${index}`)}</span></li>`).join("")}
     </ol>
   `;
 }
@@ -9943,19 +9970,24 @@ function renderInteractiveReadingText(section) {
       <strong>不认识 ${stats.unknown} 字｜不熟悉 ${stats.unsure} 字</strong>
     </div>
     <div class="reading-text interactive-reading-text" data-reading-section="${escapeHtml(section.id)}">
-      ${section.textTitle ? `<h4>${escapeHtml(section.textTitle)}</h4>` : ""}
+      ${section.textTitle ? `<h4>${renderAnnotatableChineseText(section.textTitle, section.id, "article_title")}</h4>` : ""}
       ${(section.paragraphs || []).map((paragraph, paragraphIndex) => `<p>${renderReadingParagraph(section.id, paragraph, paragraphIndex, annotation)}</p>`).join("")}
     </div>
   `;
 }
 
 function renderReadingParagraph(sectionId, paragraph, paragraphIndex, annotation) {
-  return [...String(paragraph || "")].map((char, charIndex) => {
+  return renderAnnotatableChineseText(paragraph, sectionId, `paragraph_${paragraphIndex}`, annotation);
+}
+
+function renderAnnotatableChineseText(text, sectionId, sourceIndex = "text", existingAnnotation = null) {
+  const annotation = existingAnnotation || getReadingAnnotationSection(getCourseProgress(), sectionId);
+  return [...String(text || "")].map((char, charIndex) => {
     if (!isHanCharacter(char)) return escapeHtml(char);
     const state = annotation.characters?.[char]?.status || "";
     const stateLabel = state === "unknown" ? "不认识" : state === "unsure" ? "不熟悉" : "未标记";
     const classes = ["reading-char", state ? `is-${state}` : ""].filter(Boolean).join(" ");
-    return `<button class="${classes}" data-reading-char="${escapeHtml(char)}" data-reading-section="${escapeHtml(sectionId)}" data-reading-paragraph="${paragraphIndex}" data-reading-index="${charIndex}" type="button" aria-label="${escapeHtml(`${char}，${stateLabel}`)}">${escapeHtml(char)}</button>`;
+    return `<button class="${classes}" data-reading-char="${escapeHtml(char)}" data-reading-section="${escapeHtml(sectionId)}" data-reading-source="${escapeHtml(sourceIndex)}" data-reading-index="${charIndex}" type="button" aria-label="${escapeHtml(`${char}，${stateLabel}`)}">${escapeHtml(char)}</button>`;
   }).join("");
 }
 
@@ -9994,13 +10026,15 @@ function toggleReadingCharacter(button) {
   if (!nextStatus) {
     delete annotation.characters[char];
   } else {
-    const paragraphIndex = Number(button.dataset.readingParagraph || 0);
+    const sourceIndex = button.dataset.readingSource || button.dataset.readingParagraph || "text";
     const charIndex = Number(button.dataset.readingIndex || 0);
+    const nextPosition = { sourceIndex, charIndex };
+    const positions = current.positions || [];
     annotation.characters[char] = {
       ...current,
       status: nextStatus,
-      paragraphIndexes: [...new Set([...(current.paragraphIndexes || []), paragraphIndex])],
-      positions: [...(current.positions || []), { paragraphIndex, charIndex }],
+      paragraphIndexes: [...new Set([...(current.paragraphIndexes || []), sourceIndex])],
+      positions: positions.some((item) => item.sourceIndex === sourceIndex && item.charIndex === charIndex) ? positions : [...positions, nextPosition],
       firstMarkedAt: current.firstMarkedAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -10011,38 +10045,58 @@ function toggleReadingCharacter(button) {
 }
 
 function syncReadingAnnotationEvidence(char, status, sectionId) {
-  if (!status || !isSingleChineseChar(char)) return;
+  if (!isSingleChineseChar(char)) return;
   const pack = getLatestLearningPack();
   const now = new Date().toISOString();
   state.learnerChars ||= {};
   const existing = state.learnerChars[char] || {};
-  const source = {
+  const evidenceId = `${pack?.packId || "current"}:${sectionId}:${char}`;
+  const sourceBase = {
+    evidenceId,
+    packId: pack?.packId || "",
     dayId: pack?.chinese?.lesson?.title || pack?.date || "每日中文",
     status,
     sectionId,
     recordedAt: now
   };
   const liveSources = Array.isArray(existing.liveSources) ? [...existing.liveSources] : [];
-  if (!liveSources.some((item) => item.dayId === source.dayId && item.status === source.status && item.sectionId === sectionId)) {
-    liveSources.push(source);
-  }
-  const liveStatus = status === "unknown" ? "unknown" : "unstable";
+  const isCurrentEvidence = (item) => item.evidenceId === evidenceId || (
+    item.packId === sourceBase.packId && item.sectionId === sectionId && item.dayId === sourceBase.dayId
+  );
+  const previousEvidence = liveSources.find(isCurrentEvidence);
+  const source = {
+    ...sourceBase,
+    firstRecordedAt: previousEvidence?.firstRecordedAt || previousEvidence?.recordedAt || now,
+    priorLearnerStatus: previousEvidence?.priorLearnerStatus ?? existing.status ?? "",
+    priorLatestStatus: previousEvidence?.priorLatestStatus ?? existing.latestStatus ?? "",
+    priorSelectionReason: previousEvidence?.priorSelectionReason ?? existing.selectionReason ?? "",
+    priorInCharacterPractice: previousEvidence?.priorInCharacterPractice ?? Boolean(existing.inCharacterPractice)
+  };
+  const nextLiveSources = liveSources.filter((item) => !isCurrentEvidence(item));
+  if (status) nextLiveSources.push(source);
+  const historicalCount = Number(existing.historicalFoundCount || 0);
+  const foundCount = Math.max(historicalCount, Number(existing.foundCount || 0) + (!previousEvidence && status ? 1 : previousEvidence && !status ? -1 : 0));
+  const latestRemaining = nextLiveSources.at(-1);
+  const latestStatus = status || latestRemaining?.status || previousEvidence?.priorLatestStatus || "";
+  const liveStatus = latestStatus === "unknown" ? "unknown" : latestStatus === "unsure" ? "unstable" : previousEvidence?.priorLearnerStatus || existing.status;
   state.learnerChars[char] = {
     ...existing,
     char,
     status: liveStatus,
-    latestStatus: status,
-    latestFoundAt: now,
-    foundCount: Math.max(Number(existing.foundCount || 0), Number(existing.historicalFoundCount || 0)) + 1,
-    liveSources,
+    latestStatus,
+    latestFoundAt: status ? now : existing.latestFoundAt || "",
+    foundCount,
+    liveSources: nextLiveSources,
     source: pack?.date || existing.source || "每日中文阅读",
-    selectionReason: "每日阅读真实标记",
-    inCharacterPractice: true,
+    selectionReason: status || latestRemaining ? "每日阅读真实标记" : previousEvidence?.priorSelectionReason || existing.selectionReason,
+    inCharacterPractice: status || latestRemaining ? true : previousEvidence?.priorInCharacterPractice ?? existing.inCharacterPractice,
     inWordbook: true,
     passiveRecognitionDays: []
   };
   const wordbook = state.wordbook?.[char] || {};
   state.wordbook ||= {};
+  const wordbookSources = (wordbook.sources || []).filter((item) => typeof item !== "object" || !isCurrentEvidence(item));
+  if (status) wordbookSources.push(source);
   state.wordbook[char] = {
     ...wordbook,
     char,
@@ -10051,12 +10105,11 @@ function syncReadingAnnotationEvidence(char, status, sectionId) {
     autoAdded: true,
     mastered: false,
     addedAt: wordbook.addedAt || now,
-    latestStatus: status,
-    latestFoundAt: now,
-    count: Math.max(Number(wordbook.count || 0), state.learnerChars[char].foundCount),
-    sources: [...(wordbook.sources || []), source]
+    latestStatus,
+    latestFoundAt: status ? now : wordbook.latestFoundAt || "",
+    count: foundCount,
+    sources: wordbookSources
   };
-  updateChineseRecognitionResult(char, status, false);
 }
 
 function recordPassiveRecognitionEvidence(char, readingId, recordedAt = new Date().toISOString()) {
@@ -10108,6 +10161,7 @@ function recordPassiveRecognitionFromCompletedReading(sectionKey) {
 }
 
 function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 0) {
+  const annotationSectionId = parseChineseQuestionKey(key)?.sectionId || key;
   const options = getChineseQuestionOptionOrder(question, key, itemProgress);
   const isSpokenOpen = question.answerMode === "spoken" || (!options.length && (question.recording || question.referenceAnswer || question.answer));
   const fallbackSpokenText = isSpokenOpen ? (question.instructionZh || "请先自己读，再用自己的话说一说。") : (question.prompt || "请回答");
@@ -10120,27 +10174,27 @@ function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 
   const oralResult = itemProgress.oralAssessmentResults?.[key] || null;
   return `
     <div class="course-question">
-      ${renderQuestionDisplayCards(question)}
-      ${renderPromptRow(`<strong>${questionIndex + 1}. ${escapeHtml(question.prompt || "请回答")}</strong>`, renderReadAloudButton(`chinese:${key}`, readAloud, { assessment: isSpokenOpen, targetText: question.prompt || question.answer || "" }))}
+      ${renderQuestionDisplayCards(question, annotationSectionId, questionIndex)}
+      ${renderPromptRow(`<strong>${questionIndex + 1}. ${question.prompt ? renderAnnotatableChineseText(question.prompt, annotationSectionId, `question_${questionIndex}_prompt`) : "请回答"}</strong>`, renderReadAloudButton(`chinese:${key}`, readAloud, { assessment: isSpokenOpen, targetText: question.prompt || question.answer || "" }))}
       ${options.length ? `<div class="course-options">${options.map((option, optionIndex) => {
         const selectedClass = normalizeSentenceAnswer(option) === normalizeSentenceAnswer(selected) ? "selected" : "";
-        return `<button class="button secondary compact-button course-choice-button ${selectedClass}" data-course-choice="${escapeHtml(key)}" data-choice-value="${escapeHtml(option)}" data-choice-answer="${escapeHtml(question.answer || "")}" data-choice-index="${optionIndex}" type="button"><span class="choice-letter">${choiceLetter(optionIndex)}</span><span class="choice-text">${escapeHtml(option)}</span></button>`;
+        return `<div class="course-choice-button ${selectedClass}"><button class="choice-letter" data-course-choice="${escapeHtml(key)}" data-choice-value="${escapeHtml(option)}" data-choice-answer="${escapeHtml(question.answer || "")}" data-choice-index="${optionIndex}" type="button" aria-label="选择 ${choiceLetter(optionIndex)}"><span aria-hidden="true">${choiceLetter(optionIndex)}</span></button><span class="choice-text">${renderAnnotatableChineseText(option, annotationSectionId, `question_${questionIndex}_option_${optionIndex}`)}</span></div>`;
       }).join("")}</div>` : ""}
       ${renderQuestionOralAssessment(question, key, oralResult)}
       ${showFeedback ? `<p class="answer-feedback ${result.correct ? "correct" : "needs-help"}"><strong>${result.correct ? "正确" : "再想想"}</strong><span>${escapeHtml(`你选了 ${result.selectedLetter || ""}`)}</span></p>` : ""}
-      ${!options.length && !isSpokenOpen && (question.referenceAnswer || question.answer) ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(key)}" type="button">查看参考</button><p class="course-answer" data-course-answer="${escapeHtml(key)}" hidden>${escapeHtml(question.referenceAnswer || question.answer)}</p>` : ""}
+      ${!options.length && !isSpokenOpen && (question.referenceAnswer || question.answer) ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(key)}" type="button">查看参考</button><p class="course-answer" data-course-answer="${escapeHtml(key)}" hidden>${renderAnnotatableChineseText(question.referenceAnswer || question.answer, annotationSectionId, `question_${questionIndex}_answer`)}</p>` : ""}
       ${isSpokenOpen ? renderCourseItemControls(`chinese:${key}`, getCourseProgress()?.chinese?.sections?.[`chinese:${key}`] || {}) : ""}
     </div>
   `;
 }
 
-function renderQuestionDisplayCards(question) {
+function renderQuestionDisplayCards(question, sectionId = "question", questionIndex = 0) {
   const cards = question.displayCards;
   if (!cards?.artworkCard && !cards?.labelCards?.length) return "";
   return `
     <div class="question-display-cards">
-      ${cards.artworkCard ? `<div><strong>作品卡</strong><span>${escapeHtml(cards.artworkCard)}</span></div>` : ""}
-      ${cards.labelCards?.length ? `<ol>${cards.labelCards.map((card) => `<li><strong>${escapeHtml(card.id)}</strong><span>${escapeHtml(card.text)}</span></li>`).join("")}</ol>` : ""}
+      ${cards.artworkCard ? `<div><strong>作品卡</strong><span>${renderAnnotatableChineseText(cards.artworkCard, sectionId, `question_${questionIndex}_artwork`)}</span></div>` : ""}
+      ${cards.labelCards?.length ? `<ol>${cards.labelCards.map((card, cardIndex) => `<li><strong>${escapeHtml(card.id)}</strong><span>${renderAnnotatableChineseText(card.text, sectionId, `question_${questionIndex}_label_${cardIndex}`)}</span></li>`).join("")}</ol>` : ""}
     </div>
   `;
 }
@@ -10715,11 +10769,41 @@ function completeCourseItem(key) {
   bucket[key] = nextItem;
   if (key.startsWith("chinese:")) {
     recordPassiveRecognitionFromCompletedReading(key);
-    progress.chinese.finishedAt = maybeAllDone(progress.chinese.sections) ? new Date().toISOString() : progress.chinese.finishedAt;
+    maybeCompleteChineseParentSection(key, progress);
+    const pack = getLatestLearningPack();
+    progress.chinese.finishedAt = areChineseSectionsComplete(pack, progress.chinese.sections) ? new Date().toISOString() : progress.chinese.finishedAt;
   }
   if (key.startsWith("english:")) progress.english.finishedAt = maybeAllDone(progress.english.steps) ? new Date().toISOString() : progress.english.finishedAt;
   saveState();
   rerenderCourseViews();
+}
+
+function maybeCompleteChineseParentSection(childKey, progress) {
+  const pack = getLatestLearningPack();
+  const section = getChineseLessonSections(pack).find((item) => getChineseSectionChildKeys(item).includes(childKey));
+  if (!section || getChineseObjectiveQuestions(section).length) return false;
+  const childKeys = getChineseSectionChildKeys(section);
+  if (!childKeys.length || !childKeys.every((key) => progress.chinese.sections[key]?.finishedAt)) return false;
+  const parentKey = `chinese:${section.id}`;
+  const parent = progress.chinese.sections[parentKey] || {};
+  progress.chinese.sections[parentKey] = {
+    ...parent,
+    startedAt: parent.startedAt || progress.chinese.sections[childKeys[0]]?.startedAt || new Date().toISOString(),
+    finishedAt: parent.finishedAt || new Date().toISOString(),
+    result: parent.result || "independent",
+    completedFromChildren: true
+  };
+  return true;
+}
+
+function countCompletedChineseSections(pack, map) {
+  const keys = getChineseLessonSections(pack).map((section) => `chinese:${section.id}`);
+  return countCompletedCourseItems(map, keys);
+}
+
+function areChineseSectionsComplete(pack, map) {
+  const sections = getChineseLessonSections(pack);
+  return sections.length > 0 && countCompletedChineseSections(pack, map) === sections.length;
 }
 
 function appendEnglishStepAttempt(item, key, progress, completedAt) {
@@ -11692,7 +11776,8 @@ function renderAppPath(pack) {
   return [locator.appName || "每日英语听力", locator.folder, locator.article, locator.targetSentence || pack.english?.anchorSentence].filter(Boolean).join(" · ");
 }
 
-function countCompletedCourseItems(map) {
+function countCompletedCourseItems(map, expectedKeys = null) {
+  if (Array.isArray(expectedKeys)) return expectedKeys.filter((key) => map?.[key]?.finishedAt).length;
   return Object.values(map || {}).filter((item) => item.finishedAt).length;
 }
 
