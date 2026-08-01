@@ -2248,6 +2248,17 @@ textarea:focus {
   border-radius: 24px;
 }
 
+.color-reference-uploader.is-dragging {
+  outline: 3px solid rgba(0, 113, 227, 0.72);
+  outline-offset: -3px;
+  background: rgba(0, 113, 227, 0.045);
+}
+
+.color-reference-uploader.is-dragging .color-reference-pick {
+  border-color: rgba(0, 113, 227, 0.72);
+  background: rgba(0, 113, 227, 0.08);
+}
+
 .color-reference-pick {
   min-height: 150px;
   display: grid;

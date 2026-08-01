@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.2",
+  version: "v3.9.3",
   buildId: "2026-08-01T17:56:13+08:00",
   product: "学习星球"
 };
@@ -3272,6 +3272,24 @@ function bindDailyCoursePages() {
     if (target.matches?.("[data-english-library-select]")) {
       selectEnglishLibraryLesson(target.value);
     }
+  });
+  document.addEventListener("dragover", (event) => {
+    const dropzone = event.target.closest?.("[data-color-reference-dropzone]");
+    if (!dropzone || colorReferenceDraft.status === "preparing" || colorReferenceDraft.status === "analyzing") return;
+    event.preventDefault();
+    dropzone.classList.add("is-dragging");
+  });
+  document.addEventListener("dragleave", (event) => {
+    const dropzone = event.target.closest?.("[data-color-reference-dropzone]");
+    if (dropzone && !dropzone.contains(event.relatedTarget)) dropzone.classList.remove("is-dragging");
+  });
+  document.addEventListener("drop", (event) => {
+    const dropzone = event.target.closest?.("[data-color-reference-dropzone]");
+    if (!dropzone || colorReferenceDraft.status === "preparing" || colorReferenceDraft.status === "analyzing") return;
+    event.preventDefault();
+    dropzone.classList.remove("is-dragging");
+    const file = event.dataTransfer?.files?.[0];
+    if (file) selectColorReferenceFile(file);
   });
   document.addEventListener("input", (event) => {
     const target = event.target;
@@ -9027,7 +9045,7 @@ async function generateColorReferenceCourse() {
 }
 
 function setColorReferenceSetting(key, value) {
-  const allowed = key === "modelTier" ? ["luna", "terra"] : ["low", "medium", "high"];
+  const allowed = key === "modelTier" ? ["luna", "terra"] : ["low", "medium", "high", "max"];
   if (!allowed.includes(value)) return;
   getColorPlanetState().referenceSettings[key] = value;
   saveState();
@@ -9039,7 +9057,7 @@ function renderColorReferenceUpload() {
   const busy = draft.status === "preparing" || draft.status === "analyzing";
   const settings = getColorPlanetState().referenceSettings;
   return `
-    <article class="surface color-reference-uploader ${draft.previewUrl ? "has-preview" : ""}" aria-busy="${busy ? "true" : "false"}">
+    <article class="surface color-reference-uploader ${draft.previewUrl ? "has-preview" : ""}" data-color-reference-dropzone aria-busy="${busy ? "true" : "false"}">
       ${draft.previewUrl ? `
         <div class="color-reference-preview">
           <img src="${escapeHtml(draft.previewUrl)}" alt="待生成课程的参考图" />
@@ -9048,7 +9066,7 @@ function renderColorReferenceUpload() {
       ` : `
         <label class="color-reference-pick">
           <input data-color-reference-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" ${busy ? "disabled" : ""} />
-          <span>${draft.status === "preparing" ? "正在读取" : "选择参考图"}</span>
+          <span>${draft.status === "preparing" ? "正在读取" : "拖入图片或点击选择"}</span>
         </label>
         <small>JPG、PNG、WebP、HEIC｜不超过10 MB</small>
       `}
@@ -9065,6 +9083,7 @@ function renderColorReferenceUpload() {
               <option value="low" ${settings.reasoningEffort === "low" ? "selected" : ""}>低</option>
               <option value="medium" ${settings.reasoningEffort === "medium" ? "selected" : ""}>中</option>
               <option value="high" ${settings.reasoningEffort === "high" ? "selected" : ""}>高</option>
+              <option value="max" ${settings.reasoningEffort === "max" ? "selected" : ""}>极高（Max）</option>
             </select>
           </label>
         </div>
