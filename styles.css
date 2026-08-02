@@ -4005,15 +4005,10 @@ textarea:focus {
   gap: 8px;
 }
 
-.course-result-group .course-result-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .course-result-group .course-result-row .button {
-  width: 100%;
-  min-width: 0;
-  white-space: nowrap;
+  width: auto;
+  min-width: fit-content;
+  white-space: normal;
 }
 
 .course-timing-row {
@@ -4045,21 +4040,9 @@ textarea:focus {
 }
 
 .break-card {
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(36, 49, 59, 0.12);
+  background: rgba(234, 245, 226, 0.72);
 }
 
-.break-card .course-card-head {
-  margin-bottom: 10px;
-}
-
-.break-card .course-card-head > div {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 4px;
-}
-
-.break-state-label,
 .course-result-heading {
   color: var(--muted);
   font-size: var(--type-support);
@@ -4067,36 +4050,21 @@ textarea:focus {
   line-height: 1.4;
 }
 
-.break-card .course-card-head > div > .break-state-label {
-  width: auto;
-  height: auto;
-  display: block;
-  border-radius: 0;
-  background: transparent;
-  color: var(--muted);
-}
-
-.break-card .course-card-head p {
-  margin: 0;
-  color: var(--muted);
-  font-size: var(--type-support);
-  line-height: 1.4;
-}
-
 .break-countdown {
-  width: auto;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
+  width: min(260px, 100%);
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.76);
   color: var(--text);
-  font-size: 18px;
+  font-size: clamp(40px, 8vw, 72px);
   font-weight: var(--weight-strong);
-  text-align: left;
+  text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
 .break-countdown.is-active {
   color: #2f6f4e;
+  box-shadow: inset 0 0 0 2px rgba(47, 111, 78, 0.18);
 }
 
 .break-countdown.is-expired {
@@ -4110,7 +4078,7 @@ textarea:focus {
 }
 
 .break-actions {
-  margin-top: 12px;
+  margin-top: 22px;
 }
 
 .reading-annotation-bar {
@@ -6136,13 +6104,10 @@ button:focus-visible,
     flex: 1 1 calc(50% - 8px);
   }
 
-  .course-result-group .course-result-row {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .course-result-group .course-result-row .button {
-    min-width: 0;
-    width: 100%;
+    flex: 0 1 auto;
+    width: auto;
+    min-width: fit-content;
+    white-space: normal;
   }
 }

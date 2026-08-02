@@ -11813,15 +11813,17 @@ function renderBreakCard(key, title, minutes = 5, itemProgress = {}, instruction
   const status = active
     ? `计时已暂停 · ${recordingPaused ? "录音已暂停" : "录音未启动"}`
     : finished ? "已结束" : "准备休息";
+  const description = [instruction || "喝水、看远处，放松一下", status].filter(Boolean).join(" · ");
   return `
     <article class="course-card break-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
-        <div><span class="break-state-label">${active ? "休息中" : finished ? "休息已结束" : "休息"}</span><p>${escapeHtml(status)}</p></div>
+        <div><span>休</span><h3>${escapeHtml(title || "休息一下")}</h3><p>${escapeHtml(description)}</p></div>
       </div>
       <div class="break-countdown ${active ? "is-active" : ""} ${expired ? "is-expired" : ""}" aria-live="polite">${formatClock(remainingMs)}</div>
       ${expired ? `<p class="break-expired" role="status">休息时间到</p>` : ""}
       <div class="actions compact break-actions">
-        ${active ? `<button class="button primary compact-button" data-break-end="${escapeHtml(key)}" type="button">结束休息</button>` : finished ? "" : `<button class="button primary compact-button" data-break-start="${escapeHtml(key)}" data-break-minutes="${Number(minutes || 5)}" type="button">开始休息</button>`}
+        <button class="button secondary compact-button" data-break-start="${escapeHtml(key)}" data-break-minutes="${Number(minutes || 5)}" ${active || finished ? "disabled" : ""} type="button">开始</button>
+        <button class="button primary compact-button" data-break-end="${escapeHtml(key)}" ${active ? "" : "disabled"} type="button">结束</button>
       </div>
     </article>
   `;
