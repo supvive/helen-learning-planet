@@ -1,0 +1,753 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "packId": "2026-07-29-allen-chinese-repair-book-box-01",
+  "date": "2026-07-29",
+  "revision": "allen-revision-a",
+  "loadMode": "light",
+  "title": "下一课初稿｜先看清，再放好",
+  "workflowStatus": "approved_by_allen_pending_george_schedule",
+  "sourceLearningReference": [
+    "references/2026-08-02-complete-feedback-1.hfeedback.zip",
+    "references/helen-next-learning-pack-2026-07-28.json",
+    "profiles/helen-chinese-profile.md",
+    "docs/learning-pack-schema-v1.md"
+  ],
+  "sourceMaterialIds": [
+    "2026-07-28-helen-next-lesson-book-box-01",
+    "2026-07-28-helen-next-lesson-book-box-01-snapshot-msb8cx6p",
+    "cn-profile-day14",
+    "cn-history-day13-day15"
+  ],
+  "evidenceTargetIds": [
+    "cn.reading.excerpt_independence",
+    "cn.word.露出.supported_to_independent",
+    "cn.sequence.explicit_two_actions",
+    "cn.retell.concrete_four_steps",
+    "cn.transfer.marker_to_destination",
+    "cn.recognition.标盖往推真露"
+  ],
+  "sharedPlan": {
+    "plannedChineseMinutes": 20,
+    "plannedBreakMinutes": 5,
+    "defaultEnglishMode": "light",
+    "plannedEnglishMinutes": 12,
+    "sequenceNoteZh": "本初稿只处理中文证据；英语当日未开始，颜色当日未完成，暂不生成两科下一课。",
+    "fallbackRules": {
+      "chineseOverMinutes": 32,
+      "easeBelow": 7,
+      "recoveryEaseBelow": 6
+    }
+  },
+  "chinese": {
+    "characters": [
+      {
+        "text": "标",
+        "pinyin": "biāo",
+        "meaning": "表示名称、位置或类别的记号。",
+        "words": [
+          "标签",
+          "标记",
+          "标准"
+        ],
+        "example": "先看清书箱上的标签。",
+        "status": "unstable",
+        "priority": 5,
+        "source": "上一课未形成新的独立逐项读证据"
+      },
+      {
+        "text": "盖",
+        "pinyin": "gài",
+        "meaning": "遮在上面，或把开口封住。",
+        "words": [
+          "杯盖",
+          "盖住",
+          "盖好"
+        ],
+        "example": "画纸盖住了标签。",
+        "status": "unknown",
+        "priority": 4,
+        "source": "上一课后测没有逐项导出"
+      },
+      {
+        "text": "往",
+        "pinyin": "wǎng",
+        "meaning": "朝着某个方向。",
+        "words": [
+          "往上",
+          "往前",
+          "往旁边"
+        ],
+        "example": "把画纸往上推。",
+        "status": "unknown",
+        "priority": 4,
+        "source": "上一课后测没有逐项导出"
+      },
+      {
+        "text": "推",
+        "pinyin": "tuī",
+        "meaning": "用手向外用力，让东西移动。",
+        "words": [
+          "推开",
+          "推动",
+          "往上推"
+        ],
+        "example": "把画纸轻轻推开。",
+        "status": "confused",
+        "priority": 5,
+        "source": "曾与相近字混淆；本课选择题答对不等于独立认读"
+      },
+      {
+        "text": "真",
+        "pinyin": "zhēn",
+        "meaning": "确实，不是假装或看起来像。",
+        "words": [
+          "真正",
+          "认真",
+          "真好"
+        ],
+        "example": "这是真正的办法。",
+        "status": "unstable",
+        "priority": 4,
+        "source": "上一课词义解释经过成人引导"
+      },
+      {
+        "text": "露",
+        "pinyin": "lù",
+        "meaning": "原来被挡住的部分现在能看见了。",
+        "words": [
+          "露出",
+          "露面",
+          "露水"
+        ],
+        "example": "画纸移开后，标签露出来了。",
+        "status": "unstable",
+        "priority": 4,
+        "source": "上一课“露出”词义题在具体举例支架后完成"
+      }
+    ],
+    "words": [
+      {
+        "text": "标签",
+        "meaning": "写着名称或类别信息的小纸片。",
+        "status": "unstable",
+        "source": "连续课程中仍需观察独立认读"
+      },
+      {
+        "text": "杯盖",
+        "meaning": "杯子上用来遮住杯口的盖子。",
+        "status": "unknown",
+        "source": "上一课词语复习后测没有逐项独立读证据"
+      },
+      {
+        "text": "真正",
+        "meaning": "确实是这样，不只是看起来有用。",
+        "status": "unstable",
+        "source": "上一课词义解释经过改说和句子扩展"
+      },
+      {
+        "text": "露出",
+        "meaning": "原来被挡住，现在能看见。",
+        "status": "unstable",
+        "source": "上一课词义题需要具体遮挡例子"
+      }
+    ],
+    "confusedPairs": [
+      [
+        "推",
+        "堆"
+      ]
+    ],
+    "lesson": {
+      "lessonId": "next-chinese-repair-book-box-01",
+      "title": "先看清，再放好",
+      "sectionOrder": [
+        "review_words",
+        "fill_blanks",
+        "reading_excerpts",
+        "word_understanding",
+        "four_grid_retell",
+        "comprehension",
+        "fixed_break",
+        "transfer_scenario",
+        "post_check"
+      ],
+      "sections": [
+        {
+          "id": "review_words",
+          "type": "word_review",
+          "title": "词语复习",
+          "plannedMinutes": 3,
+          "childInstructionZh": "读一读下面的词语。每个词语选择一种回答：说说意思，或者用它说一句完整的话。",
+          "items": [
+            {
+              "id": "r1",
+              "number": 1,
+              "text": "标签"
+            },
+            {
+              "id": "r2",
+              "number": 2,
+              "text": "真正"
+            },
+            {
+              "id": "r3",
+              "number": 3,
+              "text": "杯盖"
+            }
+          ],
+          "answerMode": "spoken",
+          "learningGoalZh": "间隔复现仍不稳定的词语，并分开观察读音和词义。",
+          "parentInstructionZh": "每项先等约3秒。不会读时只报当前词的读音；读出后仍不会回答，最多提醒“说意思或说一句话”。不解释词义，不给完整句。",
+          "stopRuleZh": "三项都尝试，或3分钟到时，完成当前词后停止。",
+          "parentOnly": {
+            "scoringZh": "正确读出后能说清意思或说出完整句，才记为词义独立；只跟读或只报音记为sound_only。",
+            "promptLevelsZh": [
+              "等待3秒",
+              "只报读音",
+              "重读回答方式"
+            ],
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "pronunciationSupport",
+              "answerSupport",
+              "unfamiliarInstructionCharacters"
+            ],
+            "nextActionZh": "若仍需答案支架，不在本课追加同类题。"
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "读一读下面的词语。每个词语选择一种回答：说说意思，或者用它说一句完整的话。"
+          }
+        },
+        {
+          "id": "fill_blanks",
+          "type": "comprehension_choice",
+          "title": "选字填空",
+          "plannedMinutes": 2,
+          "childInstructionZh": "读句子，选字填空。",
+          "questions": [
+            {
+              "id": "f1",
+              "prompt": "安安把画纸往上____。",
+              "options": [
+                "堆",
+                "推",
+                "腿"
+              ],
+              "answer": "推",
+              "answerPosition": "B",
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "安安把画纸往上____。A，堆。B，推。C，腿",
+                "optionSpokenTexts": [
+                  "A，堆",
+                  "B，推",
+                  "C，腿"
+                ]
+              },
+              "distractorRationaleZh": "三个选项形近且容易混淆，只有“推”能和“往上”组成自然动作。"
+            },
+            {
+              "id": "f2",
+              "prompt": "大家把书____回书箱。",
+              "options": [
+                "放",
+                "方",
+                "房"
+              ],
+              "answer": "放",
+              "answerPosition": "A",
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "大家把书____回书箱。A，放。B，方。C，房",
+                "optionSpokenTexts": [
+                  "A，放",
+                  "B，方",
+                  "C，房"
+                ]
+              },
+              "distractorRationaleZh": "三个选项字形相近、读音相近，只有“放”符合动作和句意。"
+            }
+          ],
+          "answerMode": "choice",
+          "learningGoalZh": "用两道短题复测推与形近字，并控制题面操作成本。",
+          "parentInstructionZh": "先让Helen读题和选项。若不认识，只报当前字音；不要把正确选项读出来。选好后读完整句，完成两题即停。",
+          "stopRuleZh": "完成两题，或2分钟到时，完成当前题后停止。",
+          "parentOnly": {
+            "answers": {
+              "f1": "B｜推",
+              "f2": "A｜放"
+            },
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "pronunciationSupport",
+              "answerSupport",
+              "unfamiliarInstructionCharacters"
+            ],
+            "answerPositionCheck": "本小节答案为B、A；只含两题，不作追加练习。"
+          }
+        },
+        {
+          "id": "reading_excerpts",
+          "type": "reading_text",
+          "title": "短句阅读",
+          "plannedMinutes": 3,
+          "childInstructionZh": "认真读下面的短文，读准字音，读通句子。",
+          "textTitle": "书箱前的一件事",
+          "paragraphs": [
+            "最左边的标签被一张画纸盖住了。几个同学拿起一本书，就在三个书箱前来回找。",
+            "安安把画纸轻轻往上推，露出了标签。",
+            "她请大家先把书分成三组，再把每组书放进标签相同的书箱。",
+            "不到两分钟，书都放好了。"
+          ],
+          "answerMode": "spoken",
+          "learningGoalZh": "不重读整篇旧文，只观察短摘录中的独立解码和句意保持。",
+          "parentInstructionZh": "只读这四句话，不重读完整旧文。每处卡顿先等约3秒，只报当前字音；一句中连续三处需要报音时，读完当前句就停并记录。",
+          "stopRuleZh": "3分钟到时，读完当前句即停；不为读完整句追加时间。",
+          "parentOnly": {
+            "sourceReasonZh": "当前课的问题设计和抽象题目词造成支架过重，本次用同一故事的短摘录做修复，任务已更换。",
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "pronunciationSupport",
+              "answerSupport",
+              "unknownCharacters",
+              "unfamiliarInstructionCharacters"
+            ],
+            "doNotDoZh": [
+              "不全文重读",
+              "不把报音后的句子读对记为独立认读",
+              "不解释正文代替阅读"
+            ]
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "认真读下面的短文，读准字音，读通句子。"
+          }
+        },
+        {
+          "id": "word_understanding",
+          "type": "comprehension",
+          "title": "词语理解",
+          "plannedMinutes": 2,
+          "childInstructionZh": "用自己的话说一说这个词在句子里的意思。",
+          "questions": [
+            {
+              "id": "w1",
+              "prompt": "在“露出了标签”里，“露出”表示什么？",
+              "answer": "原来被挡住，现在能看见了。",
+              "referenceAnswer": "原来被挡住，现在能看见了。",
+              "responseMode": "spoken",
+              "readAloud": {
+                "policy": "instruction_only",
+                "spokenTextZh": "用自己的话说一说这个词在句子里的意思。"
+              }
+            }
+          ],
+          "answerMode": "spoken",
+          "learningGoalZh": "复测“露出”的语境意义，分开记录成人解释和Helen自己的表述。",
+          "parentInstructionZh": "题面不写“加点词”，也不依赖视觉下划线。先等5秒；无回应时只重读问题；仍不明白时最多给一个具体对比提示“刚才看不见，现在能看见”，随后结束。",
+          "stopRuleZh": "完成一次回答，或2分钟到时停止；不追加第二个抽象词。",
+          "parentOnly": {
+            "acceptedAnswersZh": [
+              "原来被挡住，现在能看见了",
+              "原来看不见，现在看见了",
+              "把挡住的东西移开，看见里面的东西"
+            ],
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "pronunciationSupport",
+              "answerSupport",
+              "conceptSupport"
+            ],
+            "supportBoundaryZh": "具体提示后答对记为supported，不升级为independent。"
+          }
+        },
+        {
+          "id": "four_grid_retell",
+          "type": "four_grid_retell",
+          "title": "四步复述",
+          "plannedMinutes": 3,
+          "childInstructionZh": "看四步提示，用自己的话讲一讲。每步说一句话。",
+          "prompts": [
+            "遇到问题：同学们一开始怎样放书？",
+            "看见原因：哪一张标签被什么挡住了？",
+            "想出办法：安安先做什么？",
+            "放好书：大家后来怎样做？"
+          ],
+          "answerMode": "spoken",
+          "sectionResultOptions": [
+            "independent",
+            "prompted"
+          ],
+          "learningGoalZh": "保留四步组织能力，但把抽象的“现象/有效”改成可观察的动作和结果。",
+          "parentInstructionZh": "逐格完成，每格先等约7秒。无回应时只重读当前格；仍无回应时给一个关键词，如“画纸”或“分组”。不解释“现象”，不要求扩成长篇。",
+          "stopRuleZh": "每格最多约25秒；3分钟到时完成当前句后停止，不为压缩成完美句继续追问。",
+          "recording": {
+            "mode": "optional_response",
+            "maxSeconds": 90,
+            "promptZh": "请按四步各说一句话。",
+            "startCueZh": "准备好后点麦克风。",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "retell"
+          },
+          "parentOnly": {
+            "referenceAnswersZh": [
+              "同学们拿着书在三个书箱前来回找，放得很慢。",
+              "最左边的标签被一张画纸挡住了。",
+              "安安把画纸往上推，让标签能看见。",
+              "大家把书分组，再放进标签相同的书箱。"
+            ],
+            "resultOptionsZh": [
+              "独立完成",
+              "少量提醒"
+            ],
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "promptRepeat",
+              "keywordSupport",
+              "recordingRef"
+            ],
+            "qualityRuleZh": "每格核心意思正确即可；有成人重读或关键词提示时，内容可记为supported，不记为独立掌握。"
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "看四步提示，用自己的话讲一讲。每步说一句话。"
+          }
+        },
+        {
+          "id": "comprehension",
+          "type": "comprehension",
+          "title": "阅读理解",
+          "plannedMinutes": 3,
+          "childInstructionZh": "读句子，回答问题。",
+          "questions": [
+            {
+              "id": "c1",
+              "prompt": "同学们为什么一直在书箱前来回找？",
+              "answer": "最左边的标签被画纸盖住，看不清书箱的类别。",
+              "referenceAnswer": "最左边的标签被画纸盖住，看不清书箱的类别。",
+              "responseMode": "spoken",
+              "readAloud": {
+                "policy": "instruction_only",
+                "spokenTextZh": "同学们为什么一直在书箱前来回找？"
+              }
+            },
+            {
+              "id": "c2",
+              "prompt": "安安请大家先把书分成几组？",
+              "answer": "三组。",
+              "referenceAnswer": "三组。",
+              "responseMode": "spoken",
+              "readAloud": {
+                "policy": "instruction_only",
+                "spokenTextZh": "安安请大家先把书分成几组？"
+              }
+            },
+            {
+              "id": "c3",
+              "prompt": "哪一句话说明书很快放好了？",
+              "options": [
+                "大家拿起一本书。",
+                "安安把画纸往上推。",
+                "不到两分钟，书都放好了。"
+              ],
+              "answer": "不到两分钟，书都放好了。",
+              "answerPosition": "C",
+              "preserveOptionOrder": true,
+              "responseMode": "select",
+              "readAloud": {
+                "policy": "prompt_and_options",
+                "spokenTextZh": "哪一句话说明书很快放好了？A，大家拿起一本书。B，安安把画纸往上推。C，不到两分钟，书都放好了。",
+                "optionSpokenTexts": [
+                  "A，大家拿起一本书",
+                  "B，安安把画纸往上推",
+                  "C，不到两分钟，书都放好了"
+                ]
+              }
+            }
+          ],
+          "answerMode": "spoken_and_choice",
+          "learningGoalZh": "把原因、关键细节和结果证据分开检测，不要求凑两个原因。",
+          "parentInstructionZh": "c1和c2先等7秒；需要时只重读当前题，不给答案。c2只听是否回答“三组”；c3只核对结果句。",
+          "stopRuleZh": "三题完成，或3分钟到时，完成当前回答后停止。",
+          "parentOnly": {
+            "answers": {
+              "c1": "标签被画纸盖住，看不清类别",
+              "c2": "三组",
+              "c3": "C"
+            },
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "pronunciationSupport",
+              "answerSupport",
+              "evidenceLocation"
+            ],
+            "designRepairZh": "c1只问一个明确原因；c2改为短文中的明确数量细节；四步复述另行承担先后动作的口头组织，不重复检测。"
+          }
+        },
+        {
+          "id": "fixed_break",
+          "type": "break",
+          "isQuestion": false,
+          "title": "休息一下",
+          "plannedMinutes": 5,
+          "childInstructionZh": "休息5分钟：喝水、走动、看看远处。",
+          "prompt": "休息5分钟：喝水、走动、看看远处。",
+          "answerMode": "none",
+          "parentInstructionZh": "完成第六个学习任务后立即休息5分钟；休息中不讲字、不核对答案、不预告后题。",
+          "stopRuleZh": "计时5分钟后再继续。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds"
+            ],
+            "positionRuleZh": "固定放在第六个学习任务之后、生活迁移之前；不占题号，不进入最困难环节多选。",
+            "pauseBehavior": {
+              "pauseCourseTimer": true,
+              "pauseActiveRecording": true,
+              "resumeOn": "manual_end",
+              "recordBreakSeparately": true
+            }
+          },
+          "readAloud": {
+            "policy": "instruction_only",
+            "spokenTextZh": "休息5分钟：喝水、走动、看看远处。"
+          }
+        },
+        {
+          "id": "transfer_scenario",
+          "type": "school_scenario",
+          "title": "放到对应位置",
+          "plannedMinutes": 2,
+          "childInstructionZh": "想一想，你会怎么做？",
+          "prompt": "三本书要放回三个格子，每个格子上有不同的字。你拿着一本书，会先看什么，再把书放到哪里？请说清楚。",
+          "answerMode": "spoken",
+          "learningGoalZh": "把“先看标记，再放到对应位置”的办法迁移到短的新题面。",
+          "parentInstructionZh": "先等10秒。无回应时只重复“每个格子上有不同的字”；仍无回应时只问“你先看哪里”，不提供完整答案。",
+          "stopRuleZh": "完成一次回答，或2分钟到时完成当前回答后停止。",
+          "recording": {
+            "mode": "optional_response",
+            "maxSeconds": 60,
+            "promptZh": "请说清楚先看什么，再把书放到哪里。",
+            "startCueZh": "准备好后点麦克风。",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "oral_answer"
+          },
+          "parentOnly": {
+            "acceptableAnswersZh": [
+              "先看书和格子上的字，再把书放进字相同的格子",
+              "先看清标记，再放到对应的位置"
+            ],
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "promptRepeat",
+              "answerSupport",
+              "recordingRef"
+            ],
+            "transferDistance": "近迁移：保留书和位置标记，改变容器形式与题目语言。"
+          },
+          "readAloud": {
+            "policy": "full",
+            "spokenTextZh": "三本书要放回三个格子，每个格子上有不同的字。你拿着一本书，会先看什么，再把书放到哪里？请说清楚。"
+          }
+        },
+        {
+          "id": "post_check",
+          "type": "post_check",
+          "title": "字词认读",
+          "plannedMinutes": 2,
+          "childInstructionZh": "读一读这些字和词语。",
+          "characters": [
+            "标",
+            "盖",
+            "往",
+            "推",
+            "真",
+            "露"
+          ],
+          "words": [
+            "标签",
+            "真正",
+            "露出"
+          ],
+          "answerMode": "spoken",
+          "learningGoalZh": "逐项观察当前目标字词的首次反应，不把跟读后的正确写成独立。",
+          "parentInstructionZh": "屏幕不显示拼音。每项先等约3秒；不会读时只报读音并立即进入下一项，不解释、不造句、不追加同类题。",
+          "stopRuleZh": "九项各测一次，或2分钟到时立即停止。",
+          "parentOnly": {
+            "resultValues": [
+              "independent",
+              "sound_only",
+              "wrong",
+              "no_response"
+            ],
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "firstResponse",
+              "independence",
+              "pronunciationSupport",
+              "errorTags"
+            ],
+            "promotionRuleZh": "本次一次读对不升级为稳定；需在后续间隔复现中再次独立读出。"
+          },
+          "readAloud": {
+            "policy": "disabled_during_assessment",
+            "spokenTextZh": ""
+          }
+        }
+      ],
+      "answerKey": {
+        "fill_blanks": {
+          "f1": "B｜推",
+          "f2": "A｜放"
+        },
+        "word_understanding": {
+          "w1": "原来被挡住，现在能看见了"
+        },
+        "comprehension": {
+          "c1": "标签被画纸盖住，看不清类别",
+          "c2": "三组",
+          "c3": "C"
+        },
+        "four_grid_retell": [
+          "同学们拿着书在三个书箱前来回找，放得很慢。",
+          "最左边的标签被一张画纸挡住了。",
+          "安安把画纸往上推，让标签能看见。",
+          "大家把书分组，再放进标签相同的书箱。"
+        ],
+        "transfer_scenario": "先看书和格子上的字，再把书放进字相同的格子。",
+        "post_check": {
+          "characters": [
+            "标",
+            "盖",
+            "往",
+            "推",
+            "真",
+            "露"
+          ],
+          "words": [
+            "标签",
+            "真正",
+            "露出"
+          ]
+        }
+      }
+    }
+  },
+  "english": {},
+  "art": null,
+  "practice": {},
+  "feedbackMapping": {
+    "review_words": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "pronunciationSupport",
+      "answerSupport"
+    ],
+    "fill_blanks": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "pronunciationSupport",
+      "answerSupport",
+      "unfamiliarInstructionCharacters"
+    ],
+    "reading_excerpts": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "pronunciationSupport",
+      "unknownCharacters",
+      "sentenceMeaningHeld"
+    ],
+    "word_understanding": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "answerSupport",
+      "conceptSupport"
+    ],
+    "comprehension": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "answerSupport",
+      "evidenceLocation"
+    ],
+    "four_grid_retell": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "promptRepeat",
+      "keywordSupport",
+      "recordingRef"
+    ],
+    "fixed_break": [
+      "completion",
+      "actualSeconds"
+    ],
+    "transfer_scenario": [
+      "completion",
+      "actualSeconds",
+      "independence",
+      "promptRepeat",
+      "answerSupport",
+      "transferDistance",
+      "recordingRef"
+    ],
+    "post_check": [
+      "completion",
+      "actualSeconds",
+      "firstResponse",
+      "independence",
+      "pronunciationSupport",
+      "errorTags"
+    ]
+  },
+  "selfReviewNotes": {
+    "loadDecision": "20分钟有效活动+5分钟固定休息；每环节有停止规则；超过32分钟或疲劳加重立即停。",
+    "designRepair": [
+      "不重读全文",
+      "不使用未显示的加点词",
+      "不要求凑两个原因",
+      "不使用现象/有效等抽象题目词",
+      "保留口头生成和四步复述"
+    ],
+    "historyReason": "短摘录复现当前故事有题目歧义与支架过重的证据；任务改为原因、动作、结果定位，不是机械复制。",
+    "unresolved": [
+      "日期按activeDate顺延一日，待Allen确认",
+      "英语和颜色没有本次可用课堂证据",
+      "仍需生产解析与childVisible/parentOnly扫描"
+    ],
+    "boundary": "Nick初稿，未经Allen批准不得视为完成；未联系Elon/Jony，未导入，未发布。"
+  }
+}

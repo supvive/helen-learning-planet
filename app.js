@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.7",
+  version: "v3.9.8",
   buildId: "2026-08-02T12:55:00+08:00",
   product: "学习星球"
 };
@@ -9369,10 +9369,13 @@ function formatColorReferenceError(error) {
   const rawRequestId = typeof error === "object" ? String(error.requestId || error.traceId || "") : "";
   const requestId = /^[A-Za-z0-9_-]{1,80}$/.test(rawRequestId) ? ` 错误编号：${rawRequestId}` : "";
   const message = typeof error === "string" ? error : String(error?.error || error?.message || "");
+  const modelUnavailableMessage = /区域|region|available in your region|available in this region/i.test(message)
+    ? "当前模型在 OpenRouter 所在区域不可用，请在 OpenRouter 选择可用的模型路由后重试。"
+    : "当前模型不支持最高推理，请选择其他模型或降低推理强度后重试。";
   const stageMessages = {
     auth: "参考图分析授权不可用，请检查访问码或服务配置。",
     quota_or_permission: "参考图分析额度或权限受限，请稍后重试或联系管理员。",
-    model_unavailable: "当前模型不支持最高推理，请选择其他模型或降低推理强度后重试。",
+    model_unavailable: modelUnavailableMessage,
     provider_call: "参考图分析服务暂时不可用，请稍后重试。",
     network: "参考图分析服务连接失败，请检查网络后重试。",
     timeout: "参考图分析超时，请重试。",
