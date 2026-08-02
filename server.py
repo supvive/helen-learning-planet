@@ -20,23 +20,24 @@ from glob import glob
 
 SSL_CONTEXT = ssl._create_unverified_context()
 APP_DIR = os.path.dirname(__file__)
-API_KEY_FILE = os.path.join(os.path.dirname(__file__), ".deepseek_api_key")
-OPENAI_API_KEY_FILE = os.path.join(os.path.dirname(__file__), ".openai_api_key")
 ENV_FILE = os.path.join(APP_DIR, ".env")
 DEEPSEEK_BASE_URL = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com/chat/completions")
 DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-pro")
 DEEPSEEK_TIMEOUT_MS = int(os.environ.get("DEEPSEEK_TIMEOUT_MS", "90000"))
 DEEPSEEK_TEMPERATURE = float(os.environ.get("DEEPSEEK_TEMPERATURE", "0.25"))
 APP_ACCESS_CODE = os.environ.get("APP_ACCESS_CODE", "").strip()
-API_VERSION = "v3.9.8"
+API_VERSION = "v3.9.12"
 OPENAI_RESPONSES_URL = os.environ.get("OPENAI_RESPONSES_URL", "https://openrouter.ai/api/v1/responses")
 OPENAI_VISION_MODELS = {
     "luna": os.environ.get("OPENAI_VISION_LUNA_MODEL", "openai/gpt-5.6-luna"),
     "terra": os.environ.get("OPENAI_VISION_TERRA_MODEL", "openai/gpt-5.6-terra"),
 }
 OPENAI_VISION_PRO_MODELS = {
-    "luna": os.environ.get("OPENAI_VISION_LUNA_PRO_MODEL", "openai/gpt-5.6-luna-pro"),
-    "terra": os.environ.get("OPENAI_VISION_TERRA_PRO_MODEL", "openai/gpt-5.6-terra-pro"),
+    # Keep the legacy environment variables readable for existing deployments,
+    # but do not route Max to a separate *-pro slug by default. OpenRouter's
+    # canonical Luna/Terra models accept the Responses reasoning effort field.
+    "luna": os.environ.get("OPENAI_VISION_LUNA_PRO_MODEL", OPENAI_VISION_MODELS["luna"]),
+    "terra": os.environ.get("OPENAI_VISION_TERRA_PRO_MODEL", OPENAI_VISION_MODELS["terra"]),
 }
 OPENAI_VISION_EFFORTS = {"low", "medium", "high", "max"}
 # Keep the server-side wait below Vercel's 300s function limit. Max reasoning
@@ -366,9 +367,6 @@ class Handler(SimpleHTTPRequestHandler):
         if request_path == "/api/color-course/analyze":
             self.analyze_color_course()
             return
-        if request_path == "/api/save-key":
-            self.save_key()
-            return
         self.send_json({"ok": False, "error": "Unknown endpoint."}, 404)
 
     def do_GET(self):
@@ -510,18 +508,6 @@ class Handler(SimpleHTTPRequestHandler):
         }, 401)
         return False
 
-    def save_key(self):
-        try:
-            payload = self.read_json_body()
-            api_key = payload.get("apiKey", "").strip()
-            if not is_valid_api_key(api_key):
-                self.send_json({"ok": False, "error": "Invalid API key format."}, 400)
-                return
-            save_api_key(api_key)
-            self.send_json({"ok": True, "configured": bool(get_api_key())})
-        except Exception as exc:
-            self.send_json({"ok": False, "error": f"Save key failed: {exc}"}, 500)
-
     def save_learning_pack_api(self):
         if not APP_ACCESS_CODE:
             self.send_json({"ok": False, "error": "Learning pack API write is disabled until APP_ACCESS_CODE is configured."}, 403)
@@ -599,9 +585,6 @@ class Handler(SimpleHTTPRequestHandler):
         log_ai_start("daily_practice", request_id)
         try:
             payload = self.read_json_body()
-            incoming_key = payload.get("apiKey", "").strip()
-            if incoming_key:
-                save_api_key(incoming_key)
             api_key = get_api_key()
             source_text = payload.get("sourceText", "").strip()
             if not api_key:
@@ -898,28 +881,7 @@ def get_api_key():
     env_key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
     if env_key:
         return env_key
-    env_file_key = read_env_key()
-    if env_file_key:
-        return env_file_key
-    try:
-        with open(API_KEY_FILE, "r", encoding="utf-8") as handle:
-            return handle.read().strip()
-    except OSError:
-        return ""
-
-
-def save_api_key(api_key):
-    if not is_valid_api_key(api_key):
-        return
-    try:
-        with open(API_KEY_FILE, "w", encoding="utf-8") as handle:
-            handle.write(api_key)
-    except OSError:
-        pass
-
-
-def is_valid_api_key(api_key):
-    return api_key.startswith(("sk-", "sess-")) and len(api_key) >= 20
+    return read_env_key()
 
 
 SERVER_BLOCK_PATTERNS = {
@@ -1087,13 +1049,7 @@ def resolve_api_path(raw_path):
 def get_openai_api_key():
     key = os.environ.get("OPENROUTER_API_KEY", "").strip() or read_env_value("OPENROUTER_API_KEY")
     key = key or os.environ.get("OPENAI_API_KEY", "").strip() or read_env_value("OPENAI_API_KEY")
-    if key:
-        return key
-    try:
-        with open(OPENAI_API_KEY_FILE, "r", encoding="utf-8") as handle:
-            return handle.read().strip()
-    except OSError:
-        return ""
+    return key
 
 
 def load_color_register():
@@ -1198,16 +1154,10 @@ titleZh不超过12个汉字。所有学生可见文字使用专业、直接的�
 def resolve_color_reference_route(model_tier, reasoning_effort):
     tier = str(model_tier or "").strip().lower()
     effort = str(reasoning_effort or "").strip().lower()
-    if tier not in OPENAI_VISION_MODELS or tier not in OPENAI_VISION_PRO_MODELS:
+    if tier not in OPENAI_VISION_MODELS:
         raise ValueError("不支持所选视觉模型。")
     if effort not in OPENAI_VISION_EFFORTS:
         raise ValueError("不支持所选推理强度。")
-    if effort == "max":
-        return {
-            "model": OPENAI_VISION_PRO_MODELS[tier],
-            "reasoning": {"mode": "pro"},
-            "route": "pro",
-        }
     return {
         "model": OPENAI_VISION_MODELS[tier],
         "reasoning": {"effort": effort},
@@ -1224,7 +1174,7 @@ def call_openai_color_reference_model(api_key, image, register, *, request_id, m
     )
     body = {
         "model": model,
-        "reasoning": reasoning_config or ({"mode": "pro"} if reasoning_effort == "max" else {"effort": reasoning_effort}),
+        "reasoning": reasoning_config or {"effort": reasoning_effort},
         "input": [{
             "role": "user",
             "content": [
@@ -1313,9 +1263,11 @@ def collect_responses_output_text(data):
         return direct.strip()
     chunks = []
     for item in data.get("output", []) if isinstance(data, dict) else []:
-        for content in item.get("content", []) if isinstance(item, dict) else []:
-            if isinstance(content, dict) and content.get("type") == "output_text" and isinstance(content.get("text"), str):
-                chunks.append(content["text"])
+        if not isinstance(item, dict):
+            continue
+        text = collect_message_content_text(item.get("content") if "content" in item else item.get("text"))
+        if text:
+            chunks.append(text)
     if chunks:
         return "".join(chunks).strip()
     for choice in data.get("choices", []) if isinstance(data, dict) else []:
@@ -1369,7 +1321,18 @@ def classify_color_reference_provider_stage(status_code, detail=""):
     # OpenRouter reports region/model routing restrictions as 401/403 too.
     # Classify the provider's actionable reason before treating the response
     # as an invalid application credential.
-    if any(token in message for token in ("not available in your region", "not available in this region", "model is not available", "model unavailable", "unsupported model")):
+    if any(token in message for token in (
+        "not available in your region",
+        "not available in this region",
+        "model is not available",
+        "model unavailable",
+        "unsupported model",
+        "no endpoints found",
+        "no endpoints available",
+        "no providers found",
+        "model not found",
+        "unknown model",
+    )):
         return "model_unavailable"
     if status_code in {401, 403}:
         return "auth"

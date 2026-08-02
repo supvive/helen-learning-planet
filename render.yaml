@@ -9,12 +9,12 @@ services:
     envVars:
       - key: HOST
         value: 0.0.0.0
-      - key: OPENAI_API_KEY
+      - key: OPENROUTER_API_KEY
         sync: false
       - key: OPENAI_VISION_LUNA_MODEL
-        value: gpt-5.6-luna
+        value: openai/gpt-5.6-luna
       - key: OPENAI_VISION_TERRA_MODEL
-        value: gpt-5.6-terra
+        value: openai/gpt-5.6-terra
       - key: OPENAI_VISION_TIMEOUT_MS
         value: 120000
       - key: ALLOWED_ORIGINS

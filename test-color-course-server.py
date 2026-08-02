@@ -44,12 +44,16 @@ def valid_analysis():
 
 class ColorCourseServerTests(unittest.TestCase):
     def test_api_version_matches_gate_release(self):
-        self.assertEqual(server.API_VERSION, "v3.9.8")
+        self.assertEqual(server.API_VERSION, "v3.9.12")
 
-    def test_max_maps_ui_tier_to_pro_reasoning_mode(self):
+    def test_max_keeps_canonical_model_and_reasoning_effort(self):
         self.assertEqual(
             server.resolve_color_reference_route("luna", "max"),
-            {"model": "openai/gpt-5.6-luna-pro", "reasoning": {"mode": "pro"}, "route": "pro"},
+            {"model": "openai/gpt-5.6-luna", "reasoning": {"effort": "max"}, "route": "standard"},
+        )
+        self.assertEqual(
+            server.resolve_color_reference_route("terra", "max"),
+            {"model": "openai/gpt-5.6-terra", "reasoning": {"effort": "max"}, "route": "standard"},
         )
         self.assertEqual(
             server.resolve_color_reference_route("terra", "medium"),
@@ -58,6 +62,16 @@ class ColorCourseServerTests(unittest.TestCase):
 
     def test_cors_allows_client_trace_header(self):
         self.assertIn("X-Client-Trace-Id", inspect.getsource(server.Handler.end_headers))
+
+    def test_public_key_setup_endpoint_is_removed(self):
+        source = inspect.getsource(server.Handler)
+        self.assertNotIn("/api/save-key", source)
+        self.assertNotIn("def save_key", source)
+        self.assertNotIn("OPENAI_API_KEY_FILE", inspect.getsource(server))
+
+    def test_color_provider_reads_server_environment_key(self):
+        with mock.patch.dict(os.environ, {"OPENROUTER_API_KEY": "router-test-key", "OPENAI_API_KEY": "legacy-key"}, clear=True), mock.patch.object(server, "read_env_value", return_value=""):
+            self.assertEqual(server.get_openai_api_key(), "router-test-key")
 
     def test_vercel_rewrite_preserves_original_api_path(self):
         self.assertEqual(
@@ -106,12 +120,17 @@ class ColorCourseServerTests(unittest.TestCase):
             "{}",
         )
         self.assertEqual(
+            server.collect_responses_output_text({"output": [{"type": "message", "content": [{"type": "text", "text": "{"}, {"type": "output_text", "text": "}"}]}]}),
+            "{}",
+        )
+        self.assertEqual(
             server.collect_responses_output_text({"choices": [{"message": {"reasoning_content": "hidden", "content": ""}}]}),
             "",
         )
         self.assertTrue(server.is_provider_response_truncated({"choices": [{"finish_reason": "length"}]}))
         self.assertEqual(server.classify_color_reference_provider_stage(400, "reasoning effort max unsupported"), "model_unavailable")
         self.assertEqual(server.classify_color_reference_provider_stage(403, "This model is not available in your region."), "model_unavailable")
+        self.assertEqual(server.classify_color_reference_provider_stage(400, "No endpoints found for this model"), "model_unavailable")
         self.assertEqual(server.classify_color_reference_provider_stage(401, "invalid API key"), "auth")
         self.assertEqual(
             server.color_reference_provider_message("model_unavailable", "This model is not available in your region.", "max"),
@@ -275,7 +294,7 @@ class ColorCourseServerTests(unittest.TestCase):
         self.assertEqual(caught.exception.status, 422)
         self.assertIn("多个", caught.exception.user_message)
 
-    def test_openrouter_request_uses_pro_model_and_reasoning_mode(self):
+    def test_openrouter_max_request_uses_canonical_model_reasoning_and_metadata(self):
         captured = {}
 
         class Response:
@@ -304,8 +323,9 @@ class ColorCourseServerTests(unittest.TestCase):
                 "test-key", image, REGISTER, request_id="test", model=route["model"], reasoning_effort="max", reasoning_config=route["reasoning"]
             )
         self.assertTrue(parsed["usable"])
-        self.assertEqual(captured["model"], "openai/gpt-5.6-luna-pro")
-        self.assertEqual(captured["reasoning"], {"mode": "pro"})
+        self.assertEqual(captured["model"], "openai/gpt-5.6-luna")
+        self.assertEqual(captured["reasoning"], {"effort": "max"})
+        self.assertEqual(route["reasoning"].get("mode", "effort"), "effort")
         self.assertEqual(captured["max_output_tokens"], 24000)
         self.assertEqual(captured["headers"]["Http-referer"], "https://supvive.github.io/helen-learning-planet/")
 

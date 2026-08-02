@@ -15476,7 +15476,6 @@ function mergeFeedbackFocusIntoPlan(plan) {
 
 async function generateWithAI(sourceText) {
   const body = JSON.stringify({
-    apiKey: state.settings.apiKey || "",
     model: "deepseek-v4-pro",
     reasoning: "high",
     sourceText,

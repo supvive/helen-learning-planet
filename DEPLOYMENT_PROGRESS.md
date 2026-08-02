@@ -49,9 +49,9 @@ Last updated: 2026-08-01
    - Blueprint/config file: `render.yaml`
 5. Environment variables required:
    - `DEEPSEEK_API_KEY`: use the user's DeepSeek key. Do not print or expose it in chat.
-   - `OPENAI_API_KEY`: use an OpenAI API project key with available API balance.
-   - `OPENAI_VISION_LUNA_MODEL=gpt-5.6-luna`
-   - `OPENAI_VISION_TERRA_MODEL=gpt-5.6-terra`
+   - `OPENROUTER_API_KEY`: use an OpenRouter API key with available credits; keep it server-side.
+   - `OPENAI_VISION_LUNA_MODEL=openai/gpt-5.6-luna`
+   - `OPENAI_VISION_TERRA_MODEL=openai/gpt-5.6-terra`
    - `APP_ACCESS_CODE`: a family access code chosen by the user.
    - `ALLOWED_ORIGINS=https://supvive.github.io`
 6. After backend deployment, verify:

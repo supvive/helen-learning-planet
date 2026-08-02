@@ -13,10 +13,10 @@
 2. Framework Preset 选择 `Other`，Root Directory 留空。
 3. 在 Environment Variables 中设置：
 
-   - `OPENAI_API_KEY`
-   - `APP_ACCESS_CODE`
-   - `OPENAI_VISION_LUNA_MODEL=gpt-5.6-luna`
-   - `OPENAI_VISION_TERRA_MODEL=gpt-5.6-terra`
+   - `OPENROUTER_API_KEY`（仅保存在服务端环境变量，不在网页中输入）
+   - `APP_ACCESS_CODE`（仅服务端环境变量）
+   - `OPENAI_VISION_LUNA_MODEL=openai/gpt-5.6-luna`
+   - `OPENAI_VISION_TERRA_MODEL=openai/gpt-5.6-terra`
    - `OPENAI_VISION_TIMEOUT_MS=120000`
    - `ALLOWED_ORIGINS=https://supvive.github.io`
 
