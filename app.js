@@ -10426,7 +10426,15 @@ function renderColorChoiceLesson() {
   const header = $("#artLessonHeader");
   const sections = $("#artLessonSections");
   if (!header || !sections) return;
-  const course = getActiveColorCourse();
+  // The legacy five-course catalog remains available to the data layer, but
+  // it is no longer a primary student route. A stale hash or older local
+  // activeCourseId must not render the withdrawn puppy lesson before the
+  // route normalizer sends the student to the reference-image workspace.
+  const generatedCourses = getGeneratedColorCourses();
+  const colorState = getColorPlanetState();
+  const course = generatedCourses.find((item) => item.courseId === colorState.activeCourseId) ||
+    generatedCourses.find((item) => item.courseId === colorState.selectedCourseId) ||
+    null;
   if (!course) {
     header.innerHTML = `
       <div class="color-course-empty">
