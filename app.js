@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.3",
-  buildId: "2026-08-01T17:56:13+08:00",
+  version: "v3.9.4",
+  buildId: "2026-08-02T04:00:23+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -8756,6 +8756,18 @@ async function saveColorReferenceImage(id, blob) {
   });
 }
 
+async function deleteColorReferenceImage(id) {
+  if (!id) return;
+  const db = await openColorReferenceDb();
+  await new Promise((resolve, reject) => {
+    const transaction = db.transaction("images", "readwrite");
+    transaction.objectStore("images").delete(id);
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error || new Error("参考图清理失败。"));
+    transaction.onabort = () => reject(transaction.error || new Error("参考图清理失败。"));
+  });
+}
+
 async function loadColorReferenceImage(id) {
   const db = await openColorReferenceDb();
   return new Promise((resolve, reject) => {
@@ -8973,6 +8985,28 @@ function buildGeneratedColorCourse(analysis, draft) {
   };
 }
 
+function formatColorReferenceError(error) {
+  const stage = typeof error === "object" ? String(error.stage || "") : "";
+  const rawRequestId = typeof error === "object" ? String(error.requestId || error.traceId || "") : "";
+  const requestId = /^[A-Za-z0-9_-]{1,80}$/.test(rawRequestId) ? ` 错误编号：${rawRequestId}` : "";
+  const message = typeof error === "string" ? error : String(error?.error || error?.message || "");
+  const stageMessages = {
+    auth: "参考图分析授权不可用，请检查访问码或服务配置。",
+    quota_or_permission: "参考图分析额度或权限受限，请稍后重试或联系管理员。",
+    model_unavailable: "当前模型不支持最高推理，请选择其他模型或降低推理强度后重试。",
+    provider_call: "参考图分析服务暂时不可用，请稍后重试。",
+    network: "参考图分析服务连接失败，请检查网络后重试。",
+    timeout: "参考图分析超时，请重试。",
+    response_empty: "模型没有返回分析内容，请重试。",
+    response_truncated: "参考图分析被模型截断，请重试。",
+    json_parse: "参考图分析结果格式异常，请重试。",
+    schema_validate: message || "参考图分析结果不完整，请重试。",
+    course_write: "课程保存失败，参考图仍保留，请重试。",
+    input: message || "参考图请求格式不正确，请重新选择图片。"
+  };
+  return `${stageMessages[stage] || message || "参考图分析失败，请重试。"}${requestId}`;
+}
+
 async function generateColorReferenceCourse() {
   if (colorReferenceDraft.status !== "ready" || !colorReferenceDraft.blob) return false;
   const existing = getGeneratedColorCourseByHash(colorReferenceDraft.imageHash);
@@ -8980,6 +9014,18 @@ async function generateColorReferenceCourse() {
     resetColorReferenceDraft();
     return startColorCourse(existing.courseId);
   }
+  const clientTraceId = `color-client-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const colorState = getColorPlanetState();
+  const previousColorState = {
+    generatedCourses: colorState.generatedCourses.slice(),
+    selectedCourseId: colorState.selectedCourseId,
+    activeCourseId: colorState.activeCourseId,
+    courseUi: structuredCloneSafe(colorState.courseUi)
+  };
+  let persistedImageId = "";
+  let objectUrl = "";
+  let courseWriteStarted = false;
+  let committed = false;
   colorReferenceDraft.status = "analyzing";
   colorReferenceDraft.error = "";
   renderColorWorkChoice();
@@ -9002,7 +9048,7 @@ async function generateColorReferenceCourse() {
       try {
         const response = await fetchWithTimeout(endpoint, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "X-Client-Trace-Id": clientTraceId },
           body
         }, AI_TIMEOUTS.colorReference);
         const data = await response.json().catch(() => null);
@@ -9017,7 +9063,10 @@ async function generateColorReferenceCourse() {
       }
     }
     if (!responseData?.analysis || responseData.analysis.schemaVersion !== COLOR_REFERENCE_ANALYSIS_SCHEMA) {
-      throw new Error(typeof lastError?.error === "string" ? lastError.error : lastError?.message || "参考图分析失败，请重试。" );
+      const error = new Error(typeof lastError?.error === "string" ? lastError.error : lastError?.message || "参考图分析失败，请重试。" );
+      if (lastError && typeof lastError === "object") Object.assign(error, lastError);
+      error.requestId ||= clientTraceId;
+      throw error;
     }
     if (responseData.analysis.imageHash !== colorReferenceDraft.imageHash) throw new Error("参考图校验失败，请重新选择图片。" );
     const course = buildGeneratedColorCourse(responseData.analysis, colorReferenceDraft);
@@ -9025,20 +9074,41 @@ async function generateColorReferenceCourse() {
       modelTier: responseData.meta?.modelTier || settings.modelTier,
       reasoningEffort: responseData.meta?.reasoningEffort || settings.reasoningEffort
     };
+    courseWriteStarted = true;
     await saveColorReferenceImage(course.referenceImageId, colorReferenceDraft.blob);
-    colorReferenceObjectUrls.set(course.referenceImageId, URL.createObjectURL(colorReferenceDraft.blob));
-    const colorState = getColorPlanetState();
+    persistedImageId = course.referenceImageId;
+    objectUrl = URL.createObjectURL(colorReferenceDraft.blob);
+    colorReferenceObjectUrls.set(course.referenceImageId, objectUrl);
     colorState.generatedCourses.unshift(course);
     colorState.selectedCourseId = course.courseId;
     colorState.activeCourseId = course.courseId;
     colorState.courseUi[course.courseId] = { currentStepIndex: 0, overlayVisible: true };
     saveState();
+    committed = true;
     resetColorReferenceDraft();
     startColorCourse(course.courseId);
     return true;
   } catch (error) {
+    if (!error?.stage && courseWriteStarted) {
+      const wrapped = new Error(error?.message || "课程保存失败。" );
+      Object.assign(wrapped, error);
+      wrapped.stage = "course_write";
+      error = wrapped;
+    }
+    if (!committed) {
+      colorState.generatedCourses = previousColorState.generatedCourses;
+      colorState.selectedCourseId = previousColorState.selectedCourseId;
+      colorState.activeCourseId = previousColorState.activeCourseId;
+      colorState.courseUi = previousColorState.courseUi;
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        colorReferenceObjectUrls.delete(persistedImageId);
+      }
+      if (persistedImageId) await deleteColorReferenceImage(persistedImageId).catch(() => {});
+      try { saveState(); } catch {}
+    }
     colorReferenceDraft.status = "ready";
-    colorReferenceDraft.error = error?.message || "生成失败，原课程未改变。";
+    colorReferenceDraft.error = formatColorReferenceError(error);
     renderColorWorkChoice();
     return false;
   }
@@ -9083,7 +9153,7 @@ function renderColorReferenceUpload() {
               <option value="low" ${settings.reasoningEffort === "low" ? "selected" : ""}>低</option>
               <option value="medium" ${settings.reasoningEffort === "medium" ? "selected" : ""}>中</option>
               <option value="high" ${settings.reasoningEffort === "high" ? "selected" : ""}>高</option>
-              <option value="max" ${settings.reasoningEffort === "max" ? "selected" : ""}>极高（Max）</option>
+              <option value="max" ${settings.reasoningEffort === "max" ? "selected" : ""}>最高（Max）</option>
             </select>
           </label>
         </div>
@@ -9092,7 +9162,7 @@ function renderColorReferenceUpload() {
             换图
             <input data-color-reference-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" ${busy ? "disabled" : ""} />
           </label>
-          <button class="button primary" data-color-reference-generate type="button" ${busy ? "disabled" : ""}>${draft.status === "analyzing" ? "分析中" : "生成课程"}</button>
+        <button class="button primary" data-color-reference-generate type="button" ${busy ? "disabled" : ""}>${draft.status === "analyzing" ? "分析中" : draft.error ? "重新生成" : "生成课程"}</button>
         </div>
       ` : ""}
       ${draft.error ? `<p class="color-reference-error" role="alert">${escapeHtml(draft.error)}</p>` : ""}
