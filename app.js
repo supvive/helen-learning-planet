@@ -80,6 +80,154 @@ const ADAPTIVE_ENGLISH_ACTIVITY_TYPES = new Set([
   "select", "multi_select", "match", "classify", "order", "blocks",
   "listen", "read", "speak", "dialogue", "guided_write", "reflect"
 ]);
+const LETTER_DIAGNOSTIC_TITLES = Object.freeze([
+  "听对整句", "听懂用途", "盲听抓词", "听后找关键部分", "换场景说一句", "完成一轮回应"
+]);
+const LETTER_DIAGNOSTIC_ROLES = Object.freeze([
+  "sentence_listen", "meaning_function", "blind_word", "key_component", "surface_transfer", "response_transfer"
+]);
+const LETTER_DIAGNOSTIC_SPECS = Object.freeze({
+  D01: {
+    sourceSentenceId: "story_primary_school:03", lessonIndex: 1,
+    sentence: "Good morning! Today is my first day at primary school.",
+    q1: ["Good morning! Today is my first day at primary school.", "Our teacher says, \"Open your books. Let’s read together.\"", "At the end of the day, we say, \"Goodbye, Miss Wang! See you tomorrow!\""],
+    q2: ["早上问候并说明今天第一次上小学", "早上请大家打开书一起读", "放学告别并说明明天再见"],
+    q3: ["morning", "afternoon", "tomorrow"],
+    q4: { category: "时间", options: ["morning", "afternoon", "tomorrow"] },
+    q5: { scene: "第一次走进教室，早上向老师打招呼，并说明今天是上小学第一天。", answer: "Good morning! Today is my first day at primary school." },
+    q6: { first: "老师问：今天有什么特别？", answer: "Good morning! Today is my first day at primary school." }
+  },
+  D02: {
+    sourceSentenceId: "story_primary_school:14", lessonIndex: 14,
+    sentence: "Miss Wang says, \"Show me your school things, please.\"",
+    q1: ["Miss Wang says, \"Show me your school things, please.\"", "Our teacher says, \"Open your books. Let’s read together.\"", "Good afternoon, children!"] ,
+    q2: ["礼貌地请学生展示学校用品", "礼貌地请学生打开书一起读", "邀请大家课间一起玩"],
+    q3: ["show", "open", "play"],
+    q4: { category: "动作", options: ["show", "open", "read"] },
+    q5: { scene: "老师指着你的书包，礼貌地请你展示学习用品。", answer: "Show me your school things, please." },
+    q6: { first: "老师说：Show me your school things, please.", answer: "Here is my schoolbag." }
+  },
+  D03: {
+    sourceSentenceId: "story_primary_school:11", lessonIndex: 9,
+    sentence: "Hello! I’m Amy. What’s your name?",
+    q1: ["Hello! I’m Amy. What’s your name?", "Good morning! I’m Miss Wang.", "Here is my book, and here is my pencil box."],
+    q2: ["打招呼并询问对方名字", "介绍自己的老师", "请对方展示学校用品"],
+    q3: ["name", "friend", "teacher"],
+    q4: { category: "对方身份", options: ["your", "my", "our"] },
+    q5: { scene: "第一次见到一位新同学，用已学问句问名字；名字可在 Amy/Helen 之间替换。", answer: "Hello! I’m Amy. What’s your name?", accepted: ["Hello! I’m Helen. What’s your name?"] },
+    q6: { first: "对方说：Hello! I’m Amy. What’s your name?", answer: "My name is Helen. Nice to meet you!" }
+  },
+  D04: {
+    sourceSentenceId: "story_primary_school:07", lessonIndex: 7,
+    sentence: "Miss Wang points to a desk and says, \"This is your seat.\"",
+    q1: ["Miss Wang points to a desk and says, \"This is your seat.\"", "Miss Wang says, \"Show me your school things, please.\"", "I put my schoolbag on the desk and say, \"Here is my schoolbag.\""],
+    q2: ["指着座位告诉对方这是他的座位", "指着铅笔询问它是什么", "请对方拿出尺子"],
+    q3: ["seat", "pencil", "ruler"],
+    q4: { category: "所属", options: ["your", "my", "our"] },
+    q5: { scene: "指着同学的座位，告诉他这是他的座位。", answer: "This is your seat." },
+    q6: { first: "老师说：This is your seat.", answer: "Here is my schoolbag." }
+  },
+  D05: {
+    sourceSentenceId: "story_primary_school:15", lessonIndex: 15,
+    sentence: "I put my schoolbag on the desk and say, \"Here is my schoolbag.\"",
+    q1: ["I put my schoolbag on the desk and say, \"Here is my schoolbag.\"", "I open it and put my school things on the desk.", "Our teacher says, \"Open your books. Let’s read together.\""],
+    q2: ["把书包放到桌上并介绍它", "把书拿出来一起读", "在操场上跑跳"],
+    q3: ["put", "open", "read"],
+    q4: { category: "物品", options: ["schoolbag", "pencil", "eraser"] },
+    q5: { scene: "把书包放到另一张桌子上时，说出刚才的已学句。", answer: "Here is my schoolbag." },
+    q6: { first: "老师说：Show me your school things, please.", answer: "Here is my schoolbag." }
+  },
+  D06: {
+    sourceSentenceId: "story_primary_school:32", lessonIndex: 30,
+    sentence: "In the afternoon, Miss Wang says, \"Good afternoon, children!\"",
+    q1: ["In the afternoon, Miss Wang says, \"Good afternoon, children!\"", "Good morning! Today is my first day at primary school.", "At the end of the day, we say, \"Goodbye, Miss Wang! See you tomorrow!\""],
+    q2: ["下午问候学生", "早上介绍自己", "放学告别并说明明天再见"],
+    q3: ["afternoon", "morning", "tomorrow"],
+    q4: { category: "时间", options: ["afternoon", "morning", "tomorrow"] },
+    q5: { scene: "午饭后再次见到老师或同学，使用已学的下午问候。", answer: "Good afternoon!", accepted: ["Good afternoon, Miss Wang!"] },
+    q6: { first: "老师说：Good afternoon, children!", answer: "Good afternoon!", accepted: ["Good afternoon, Miss Wang!"] }
+  },
+  D07: {
+    sourceSentenceId: "story_primary_school:04", lessonIndex: 2,
+    sentence: "My teacher stands at the classroom door with a big smile.",
+    q1: ["My teacher stands at the classroom door with a big smile.", "Miss Wang points to a desk and says, \"This is your seat.\"", "Our teacher says, \"Open your books. Let’s read together.\""],
+    q2: ["描述老师站在教室门口并带着笑容", "描述老师指着自己的座位", "邀请同学到操场玩"],
+    q3: ["teacher", "classroom", "playground"],
+    q4: { category: "位置", options: ["door", "desk", "playground"] },
+    q5: { scene: "在教室门口看到老师，用已学完整句描述。", answer: "My teacher stands at the classroom door with a big smile." },
+    q6: { first: "老师问：谁站在门口？", answer: "My teacher stands at the classroom door with a big smile." }
+  },
+  D08: {
+    sourceSentenceId: "story_primary_school:16", lessonIndex: 16,
+    sentence: "I open it and put my school things on the desk.",
+    q1: ["I open it and put my school things on the desk.", "I put my schoolbag on the desk and say, \"Here is my schoolbag.\"", "Our teacher says, \"Open your books. Let’s read together.\""],
+    q2: ["打开书包并把学习用品放到桌上", "指着物品请别人看", "请大家打开书一起读"],
+    q3: ["open", "put", "play"],
+    q4: { category: "第一步动作", options: ["open", "show", "read"] },
+    q5: { scene: "老师说 Show me your school things；你打开书包并把用品放到桌上。", answer: "I open it and put my school things on the desk." },
+    q6: { first: "老师说：请按先后说两步。", answer: "I open it and put my school things on the desk.", accepted: ["I open it. I put my school things on the desk."] }
+  },
+  D09: {
+    sourceSentenceId: "story_primary_school:20", lessonIndex: 20,
+    sentence: "It’s my pencil.",
+    q1: ["It’s my pencil.", "It’s my eraser.", "Here is my schoolbag."],
+    q2: ["回答这是什么，并说明是自己的铅笔", "回答自己叫什么名字", "邀请朋友一起玩"],
+    q3: ["pencil", "eraser", "ruler"],
+    q4: { category: "物品", options: ["pencil", "eraser", "book"] },
+    q5: { scene: "老师指着铅笔问 What’s this？你回答。", answer: "It’s my pencil." },
+    q6: { first: "老师把物品换成已学橡皮并问：What’s that?", answer: "It’s my eraser." }
+  },
+  D10: {
+    sourceSentenceId: "story_primary_school:15", lessonIndex: 15,
+    sentence: "Here is my schoolbag.",
+    q1: ["Here is my schoolbag.", "Here is my book, and here is my pencil box.", "Good afternoon, children!"],
+    q2: ["把书包递给或指给别人看", "询问对方名字", "说下午好"],
+    q3: ["Here", "Goodbye", "Hello"],
+    q4: { category: "物品槽位", options: ["schoolbag", "book", "ruler"] },
+    q5: { scene: "给老师看书包，说出 Here is 句型。", answer: "Here is my schoolbag." },
+    q6: { first: "请把物品换成已学尺子，仍用同一句型。", answer: "Here is my ruler." }
+  },
+  D11: {
+    sourceSentenceId: "story_primary_school:19", lessonIndex: 17,
+    sentence: "Here is my book, and here is my pencil box.",
+    q1: ["Here is my book, and here is my pencil box.", "Here is my schoolbag.", "I open it and put my school things on the desk."],
+    q2: ["按顺序展示书和铅笔盒", "只指出一个物品属于自己", "邀请大家一起玩"],
+    q3: ["book", "pencil box", "ruler"],
+    q4: { category: "第一个物品", options: ["book", "pencil box", "pencil"] },
+    q5: { scene: "先拿书，再拿铅笔盒，按顺序说完整句。", answer: "Here is my book, and here is my pencil box." },
+    q6: { first: "请把第二件换成已学尺子，仍先展示书。", answer: "Here is my book, and here is my ruler." }
+  },
+  D12: {
+    sourceSentenceId: "story_primary_school:13", lessonIndex: 11,
+    sentence: "Do you want to be my friend?",
+    q1: ["Do you want to be my friend?", "What’s your name?", "Show me your school things, please."],
+    q2: ["询问对方想不想成为朋友", "介绍自己的老师", "询问一个物品是什么"],
+    q3: ["friend", "teacher", "seat"],
+    q4: { category: "关系", options: ["friend", "teacher", "children"] },
+    q5: { scene: "第一次认识同学，询问他是否愿意做朋友。", answer: "Do you want to be my friend?" },
+    q6: { first: "对方说：Do you want to be my friend?", answer: "Yes, I do!" }
+  },
+  D13: {
+    sourceSentenceId: "story_primary_school:28", lessonIndex: 26,
+    sentence: "Our teacher says, \"Open your books. Let’s read together.\"",
+    q1: ["Our teacher says, \"Open your books. Let’s read together.\"", "Miss Wang says, \"Show me your school things, please.\"", "At the end of the day, we say, \"Goodbye, Miss Wang! See you tomorrow!\""],
+    q2: ["老师请大家打开书一起读", "老师向学生说下午好", "同学邀请去操场跑跳"],
+    q3: ["books", "playground", "morning"],
+    q4: { category: "动作", options: ["open", "read", "play"] },
+    q5: { scene: "老师开始上课并发出指令，复述这句已学课堂话。", answer: "Open your books. Let’s read together." },
+    q6: { first: "老师只说：Open your books.", answer: "Let’s read together.", accepted: ["Open your books. Let’s read together."] }
+  },
+  D14: {
+    sourceSentenceId: "story_primary_school:33", lessonIndex: 31,
+    sentence: "At the end of the day, we say, \"Goodbye, Miss Wang! See you tomorrow!\"",
+    q1: ["At the end of the day, we say, \"Goodbye, Miss Wang! See you tomorrow!\"", "Good morning! Today is my first day at primary school.", "Miss Wang says, \"Show me your school things, please.\""],
+    q2: ["一天学习结束告别并说明明天再见", "早上介绍自己", "请同学展示学校用品"],
+    q3: ["Goodbye", "tomorrow", "morning"],
+    q4: { category: "时间关系", options: ["tomorrow", "today", "morning"] },
+    q5: { scene: "一天学习结束，向老师告别。", answer: "Goodbye, Miss Wang! See you tomorrow!" },
+    q6: { first: "老师说：Goodbye, Miss Wang!", answer: "See you tomorrow!", accepted: ["Goodbye, Miss Wang! See you tomorrow!"] }
+  }
+});
 const LEARNING_PACK_STORAGE_KEY = "helen-learning-packs-v1";
 const LEARNING_PACK_MAX_BYTES = 160 * 1024;
 const BUILTIN_LEARNING_PACK_MANIFEST = "./data/learning-packs/manifest.json";
@@ -2613,7 +2761,8 @@ function parseRouteHash() {
   const params = new URLSearchParams(queryPart);
   const view = normalizeStudentRoute(viewPart);
   const date = params.get("date") || "";
-  return { view, date, rawView: viewPart, legacy: view !== viewPart || Boolean(date) };
+  const course = params.get("course") || "";
+  return { view, date, course, rawView: viewPart, legacy: view !== viewPart || Boolean(date) || Boolean(course) };
 }
 
 function normalizeStudentRoute(view) {
@@ -2661,6 +2810,7 @@ function loadState() {
     lastAutoSelectedBuiltinPackId: "",
     selectedEnglishLibraryId: "",
     selectedEnglishLessonId: "",
+    selectedEnglishDiagnosticPackId: "",
     englishCourseSource: "",
     lastAutoSelectedEnglishLessonId: "",
     builtinLearningPackLoad: null,
@@ -2677,6 +2827,10 @@ function loadState() {
     const standalonePacks = loadStandaloneLearningPacks();
     loaded.latestLearningPackId ||= standalonePacks.latestPackId || "";
     loaded.selectedLearningPackId ||= standalonePacks.selectedPackId || loaded.latestLearningPackId || "";
+    loaded.selectedEnglishDiagnosticPackId ||= "";
+    if (!loaded.selectedEnglishDiagnosticPackId && loaded.learningPacks?.[loaded.selectedLearningPackId]?.data?.english?.diagnostic?.routeDay) {
+      loaded.selectedEnglishDiagnosticPackId = loaded.selectedLearningPackId;
+    }
     loaded.learningPackSelectionSource ||= standalonePacks.selectionSource || inferLearningPackSelectionSource(loaded);
     loaded.lastAutoSelectedBuiltinPackId ||= standalonePacks.lastAutoSelectedBuiltinPackId || (loaded.learningPackSelectionSource === "auto" ? loaded.selectedLearningPackId || "" : "");
     loaded.learningPackArchive = migrateLearningPackArchive(loaded);
@@ -3044,9 +3198,11 @@ function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
 }
 
 function ensureAdaptiveEnglishPrimaryCourse() {
-  const latest = getLearningCourseSequence("english").at(-1);
+  const sequence = getLearningCourseSequence("english");
+  const legacyEntry = sequence.find((entry) => entry.packId === state.selectedLearningPackId);
+  const selected = sequence.find((entry) => entry.packId === state.selectedEnglishDiagnosticPackId) || legacyEntry || sequence[0];
   let changed = false;
-  if (!latest || !isAdaptiveEnglishPack(latest.pack)) {
+  if (!selected || !isAdaptiveEnglishPack(selected.pack)) {
     // A clean browser may not yet have today's adaptive pack. Keep the
     // approved adaptive shell visible instead of silently reopening Story 3;
     // the historical library remains available through its explicit switch.
@@ -3055,8 +3211,8 @@ function ensureAdaptiveEnglishPrimaryCourse() {
       changed = true;
     }
   } else {
-    if (state.selectedLearningPackId !== latest.packId) {
-      state.selectedLearningPackId = latest.packId;
+    if (state.selectedEnglishDiagnosticPackId !== selected.packId) {
+      state.selectedEnglishDiagnosticPackId = selected.packId;
       changed = true;
     }
     if (state.learningPackSelectionSource !== "auto") {
@@ -3067,13 +3223,13 @@ function ensureAdaptiveEnglishPrimaryCourse() {
       state.englishCourseSource = "adaptive";
       changed = true;
     }
-    if (state.lastAutoSelectedBuiltinPackId !== latest.packId) {
-      state.lastAutoSelectedBuiltinPackId = latest.packId;
+    if (state.lastAutoSelectedEnglishLessonId !== selected.packId) {
+      state.lastAutoSelectedEnglishLessonId = selected.packId;
       changed = true;
     }
   }
   if (changed) saveState();
-  return Boolean(latest && isAdaptiveEnglishPack(latest.pack));
+  return Boolean(selected && isAdaptiveEnglishPack(selected.pack));
 }
 
 function openPlanetHomeCourse(kind, courseId, view) {
@@ -3084,7 +3240,7 @@ function openPlanetHomeCourse(kind, courseId, view) {
       state.selectedEnglishLessonId = courseId;
       initializeCourseProgress(getActiveEnglishPack());
     } else if (courseId && isAdaptiveEnglishPack(state.learningPacks?.[courseId]?.data)) {
-      state.selectedLearningPackId = courseId;
+      state.selectedEnglishDiagnosticPackId = courseId;
       state.learningPackSelectionSource = "manual";
       state.englishCourseSource = "adaptive";
       initializeCourseProgress(state.learningPacks[courseId].data);
@@ -3131,6 +3287,7 @@ function showView(view, updateHash = true, options = {}) {
   const target = $(`#${domView}`) ? domView : "daily";
   const historyMode = typeof updateHash === "string" ? updateHash : updateHash ? "push" : "none";
   if (!options.skipRouteDateSelection) applyRouteDateSelection();
+  if (!options.skipRouteDateSelection) applyRouteCourseSelection();
   stopReadAloud();
   if (target !== "english" && "speechSynthesis" in window) speechSynthesis.cancel();
   if (!["english", "english-blocks"].includes(target)) resetExampleDisplayState();
@@ -3159,7 +3316,9 @@ function showView(view, updateHash = true, options = {}) {
   if (historyMode !== "none") updateBrowserRoute(target, historyMode);
   else {
     const route = parseRouteHash();
-    if (route.legacy && getDomViewId(route.view) === target) updateBrowserRoute(target, "replace");
+    if ((route.legacy && !(visibleRoute === "letter-course" && route.course)) || (visibleRoute === "letter-course" && !route.course && state.selectedEnglishDiagnosticPackId)) {
+      if (getDomViewId(route.view) === target) updateBrowserRoute(target, "replace");
+    }
   }
 }
 
@@ -3220,7 +3379,11 @@ function updateRouteBackButtons(activeView) {
 }
 
 function updateBrowserRoute(target, historyMode = "push") {
-  const hash = `#${getVisibleRouteForView(target)}`;
+  const visibleRoute = getVisibleRouteForView(target);
+  const query = visibleRoute === "letter-course" && state.selectedEnglishDiagnosticPackId
+    ? `?course=${encodeURIComponent(state.selectedEnglishDiagnosticPackId)}`
+    : "";
+  const hash = `#${visibleRoute}${query}`;
   if (location.hash === hash) return;
   const method = historyMode === "replace" ? "replaceState" : "pushState";
   history[method]({ view: target }, "", hash);
@@ -3232,6 +3395,20 @@ function applyRouteDateSelection() {
   const packId = getPackIdForDate(date);
   if (packId && packId !== state.selectedLearningPackId) {
     state.selectedLearningPackId = packId;
+    state.learningPackSelectionSource = "manual";
+    saveState();
+  }
+}
+
+function applyRouteCourseSelection() {
+  const { view, course } = parseRouteHash();
+  if (view !== "letter-course") return;
+  if (!course) return;
+  const entry = getLearningCourseSequence("english").find((item) => item.packId === course);
+  if (!entry) return;
+  if (state.selectedEnglishDiagnosticPackId !== entry.packId || state.englishCourseSource !== "adaptive") {
+    state.selectedEnglishDiagnosticPackId = entry.packId;
+    state.englishCourseSource = "adaptive";
     state.learningPackSelectionSource = "manual";
     saveState();
   }
@@ -3285,7 +3462,7 @@ function bindDailyPractice() {
 
 function bindDailyCoursePages() {
   document.addEventListener("click", (event) => {
-    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-english-adaptive-nav], [data-english-adaptive-option], [data-english-adaptive-next], [data-english-adaptive-hint], [data-english-history-library], [data-english-adaptive-home], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle]");
+    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-english-adaptive-nav], [data-english-adaptive-option], [data-english-adaptive-next], [data-english-adaptive-hint], [data-adaptive-audio-play], [data-english-history-library], [data-english-adaptive-home], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle]");
     if (!target) return;
     if (target.dataset.courseSessionStart) startCourseSession(target.dataset.courseSessionStart);
     if (target.dataset.courseSessionReset) resetCourseSession(target.dataset.courseSessionReset);
@@ -3307,6 +3484,7 @@ function bindDailyCoursePages() {
   if (target.dataset.englishAdaptiveNext) setAdaptiveEnglishActivity(Number(target.dataset.englishAdaptiveNext));
   if (target.dataset.englishAdaptiveOption) selectAdaptiveEnglishOption(target);
   if (target.dataset.englishAdaptiveHint) revealAdaptiveEnglishHint(target.dataset.englishAdaptiveHint);
+  if (target.dataset.adaptiveAudioPlay) playAdaptiveAudio(target.dataset.adaptiveAudioPlay);
   if (target.dataset.englishHistoryLibrary) openEnglishHistoryLibrary();
   if (target.dataset.englishAdaptiveHome) openEnglishAdaptiveHome();
   if (target.dataset.artAudio) playArtNarration(target);
@@ -6321,6 +6499,9 @@ function importBuiltinLearningPackSet(manifest, packSources, options = {}) {
     loadedPacks.push(parsed);
   }
   hideWithdrawnBuiltinArchiveEntries();
+  applyRouteCourseSelection();
+  if (!state.selectedEnglishDiagnosticPackId) ensureAdaptiveEnglishPrimaryCourse();
+  if (getActiveView() === "today-english" && !parseRouteHash().course) updateBrowserRoute("letter-course", "replace");
   const latestPackId = manifest.latestPackId || entries.find((entry) => entry.path === manifest.latest)?.packId || loadedPacks[0]?.packId || "";
   if (!latestPackId || !state.learningPacks?.[latestPackId]) throw new Error(`latest 不存在：${latestPackId || "空"}`);
   state.latestLearningPackId = latestPackId;
@@ -6779,8 +6960,16 @@ function getEnglishLessonPackId(library, lessonRecord) {
   return `english-library:${safeId(library?.libraryId || HELLO_SCHOOL_LIBRARY_ID)}:${safeId(lessonRecord?.lessonId || HELLO_SCHOOL_CURRENT_LESSON_ID)}`;
 }
 
+function getSelectedEnglishDiagnosticPack() {
+  const sequence = getLearningCourseSequence("english");
+  if (!sequence.length) return null;
+  const selectedId = state.selectedEnglishDiagnosticPackId || "";
+  const selected = sequence.find((entry) => entry.packId === selectedId);
+  return selected?.pack || sequence[0].pack;
+}
+
 function getActiveEnglishPack() {
-  const selectedPack = getSelectedLearningPack();
+  const selectedPack = getSelectedEnglishDiagnosticPack();
   if (isAdaptiveEnglishPack(selectedPack) && state.englishCourseSource !== "library") return selectedPack;
   const library = getEnglishLessonLibrary();
   const lessonRecord = getSelectedEnglishLibraryLesson();
@@ -7336,11 +7525,111 @@ function adaptiveStudentTextHasForbiddenContext(value) {
   return false;
 }
 
+function getLetterDiagnosticSpec(routeDay) {
+  const key = String(routeDay || "").trim().toUpperCase();
+  return /^D(?:0[1-9]|1[0-4])$/.test(key) ? LETTER_DIAGNOSTIC_SPECS[key] || null : null;
+}
+
+function buildLetterDiagnosticActivities(routeDay) {
+  const spec = getLetterDiagnosticSpec(routeDay);
+  if (!spec) return null;
+  const day = String(routeDay).toLowerCase();
+  const evidenceTargetIds = [`diagnostic_${day}`];
+  const baseInteraction = (playCount, hideEnglish, delivery = "daily_english_listening") => ({
+    delivery,
+    externalTool: delivery === "daily_english_listening" ? "每日英语听力" : "",
+    libraryId: "hello-school-story3-complete-32",
+    materialId: spec.sourceSentenceId,
+    materialIds: [spec.sourceSentenceId],
+    lessonIndex: spec.lessonIndex,
+    sourceSentenceId: spec.sourceSentenceId,
+    targetSentence: spec.sentence,
+    playCount,
+    hideEnglish,
+    hideChinese: false
+  });
+  const options = (values) => values.map((value, index) => ({
+    id: `option_${index + 1}`,
+    label: value,
+    value
+  }));
+  const supportBoundaryZh = "可重读目标句或给出中文提示；提示后完成记录为有提示完成。";
+  const hintPolicy = { levels: ["先听完整句。", "再只听本题要求的信息。"] };
+  const recording = (category, promptZh) => ({
+    mode: "required_response",
+    maxSeconds: 90,
+    promptZh,
+    startCueZh: "准备好后点开始录音",
+    stopAction: "done_button",
+    allowMultipleTakes: true,
+    includeInFeedback: true,
+    category
+  });
+  return [
+    {
+      activityId: `${day}_01`, activityType: "select", questionRole: LETTER_DIAGNOSTIC_ROLES[0], titleZh: LETTER_DIAGNOSTIC_TITLES[0],
+      plannedMinutesByMode: { recovery: 2, light: 3, standard: 3 },
+      childVisible: { instructionZh: "播放后，从三条完整英文句中选出你听到的原句。", options: options(spec.q1) },
+      interaction: baseInteraction(2, true), expectedAnswer: { value: spec.sentence }, acceptedAnswers: [spec.sentence],
+      hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+    },
+    {
+      activityId: `${day}_02`, activityType: "select", questionRole: LETTER_DIAGNOSTIC_ROLES[1], titleZh: LETTER_DIAGNOSTIC_TITLES[1],
+      plannedMinutesByMode: { recovery: 2, light: 3, standard: 3 },
+      childVisible: { instructionZh: "播放后，选出这句话在当前场景中的作用。", options: options(spec.q2) },
+      interaction: baseInteraction(1, true), expectedAnswer: { value: spec.q2[0] }, acceptedAnswers: [spec.q2[0]],
+      hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+    },
+    {
+      activityId: `${day}_03`, activityType: "select", questionRole: LETTER_DIAGNOSTIC_ROLES[2], titleZh: LETTER_DIAGNOSTIC_TITLES[2],
+      plannedMinutesByMode: { recovery: 2, light: 3, standard: 3 },
+      childVisible: { instructionZh: "先听两遍；英文暂时隐藏，再从三个同场景词中选出听到的词。", options: options(spec.q3) },
+      interaction: baseInteraction(2, true), expectedAnswer: { value: spec.q3[0] }, acceptedAnswers: [spec.q3[0]],
+      hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+    },
+    {
+      activityId: `${day}_04`, activityType: "select", questionRole: LETTER_DIAGNOSTIC_ROLES[3], titleZh: LETTER_DIAGNOSTIC_TITLES[3],
+      plannedMinutesByMode: { recovery: 2, light: 3, standard: 3 },
+      childVisible: { instructionZh: `这次只听：${spec.q4.category}。播放后，从三个同类选项中选出句中真实出现的部分。`, categoryZh: spec.q4.category, options: options(spec.q4.options) },
+      interaction: baseInteraction(1, true), expectedAnswer: { value: spec.q4.options[0], category: spec.q4.category }, acceptedAnswers: [spec.q4.options[0]],
+      hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+    },
+    {
+      activityId: `${day}_05`, activityType: "dialogue", questionRole: LETTER_DIAGNOSTIC_ROLES[4], titleZh: LETTER_DIAGNOSTIC_TITLES[4],
+      plannedMinutesByMode: { recovery: 3, light: 4, standard: 4 },
+      childVisible: {
+        instructionZh: "换一个新场景，用本课学过的句子说一句。",
+        sceneZh: spec.q5.scene,
+        firstSpeakerZh: "你自己",
+        childResponseZh: `请说：${spec.q5.answer}`,
+        answerBoundaryZh: "答案范围：目标句或允许的已学等值表达。"
+      },
+      interaction: baseInteraction(0, false, "website"), expectedAnswer: { value: spec.q5.answer }, acceptedAnswers: [spec.q5.answer, ...(spec.q5.accepted || [])],
+      recording: recording("english_retrieval", `请在新场景中说出：${spec.q5.answer}`), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+    },
+    {
+      activityId: `${day}_06`, activityType: "dialogue", questionRole: LETTER_DIAGNOSTIC_ROLES[5], titleZh: LETTER_DIAGNOSTIC_TITLES[5],
+      plannedMinutesByMode: { recovery: 3, light: 4, standard: 4 },
+      childVisible: {
+        instructionZh: "完成这一轮回应：先听对方说，再用另一句已学话回应。",
+        firstSpeakerZh: spec.q6.first,
+        childResponseZh: spec.q6.answer,
+        answerBoundaryZh: "答案范围：目标回应或允许的已学等值表达。"
+      },
+      interaction: baseInteraction(0, false, "website"), expectedAnswer: { value: spec.q6.answer }, acceptedAnswers: [spec.q6.answer, ...(spec.q6.accepted || [])],
+      recording: recording("dialogue", `请回应：${spec.q6.answer}`), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+    }
+  ];
+}
+
 function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, errors, warnings) {
   const architecture = ADAPTIVE_ENGLISH_ARCHITECTURE;
   const lessonId = safeId(source.lessonId || english.lessonId || "");
   if (!lessonId) errors.push("english.lessonId 是可变日课必填项。");
-  const activitiesSource = Array.isArray(source.activities) ? source.activities : Array.isArray(english.activities) ? english.activities : [];
+  const diagnosticSource = source.diagnostic || english.diagnostic || {};
+  const routeDay = sanitizeAdaptiveText(diagnosticSource.routeDay || "", 16).toUpperCase();
+  const diagnosticActivities = buildLetterDiagnosticActivities(routeDay);
+  const activitiesSource = diagnosticActivities || (Array.isArray(source.activities) ? source.activities : Array.isArray(english.activities) ? english.activities : []);
   if (!activitiesSource.length) errors.push("english.activities 至少需要一项。");
   const seen = new Set();
   const activities = activitiesSource.map((activity, index) => {
@@ -7367,6 +7656,7 @@ function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, er
       id: activityId,
       activityType,
       type: activityType,
+      questionRole: safeId(activity.questionRole || ""),
       titleZh: sanitizeAdaptiveText(activity.titleZh || activity.title || `活动 ${index + 1}`, 80),
       plannedMinutesByMode: {
         recovery: clampNumber(planned.recovery, 0, 30, 2),
@@ -7388,8 +7678,12 @@ function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, er
       readAloud: validateReadAloudConfig(activity.readAloud),
       recording: validateRecordingConfig(activity.recording),
       evidenceTargetIds: Array.isArray(activity.evidenceTargetIds) ? activity.evidenceTargetIds.map((item) => safeId(item)).filter(Boolean).slice(0, 24) : [],
+      supportBoundaryZh: sanitizeAdaptiveText(activity.supportBoundaryZh || activity.parentOnly?.supportBoundaryZh || "", 220),
       feedbackMapping: sanitizeAdaptiveObject(activity.feedbackMapping || {})
     };
+    ["sceneZh", "firstSpeakerZh", "childResponseZh", "answerBoundaryZh", "categoryZh"].forEach((field) => {
+      if (activity.childVisible?.[field]) normalized[field] = sanitizeAdaptiveText(activity.childVisible[field], 260);
+    });
     if (!normalized.titleZh) errors.push(`english.activities[${index}].titleZh 不能为空。`);
     return normalized;
   }).filter(Boolean).slice(0, 20);
@@ -7399,11 +7693,10 @@ function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, er
     primarySkill: safeId(dailyMissionSource.primarySkill || "listening"),
     secondarySkills: Array.isArray(dailyMissionSource.secondarySkills) ? dailyMissionSource.secondarySkills.map((item) => safeId(item)).filter(Boolean).slice(0, 8) : []
   };
-  const diagnosticSource = source.diagnostic || english.diagnostic || {};
   const diagnosticList = (value) => (Array.isArray(value) ? value : [])
     .map((item) => sanitizeAdaptiveText(item, 120)).filter(Boolean).slice(0, 16);
   const diagnostic = {
-    routeDay: sanitizeAdaptiveText(diagnosticSource.routeDay || "", 16),
+    routeDay,
     baselineOrRetest: ["baseline", "retest"].includes(diagnosticSource.baselineOrRetest) ? diagnosticSource.baselineOrRetest : "",
     strengths: diagnosticList(diagnosticSource.strengths),
     reviewQueue: diagnosticList(diagnosticSource.reviewQueue),
@@ -8336,7 +8629,11 @@ function selectLearningPackDate(date, push = true) {
 function selectLearningCoursePack(packId, push = true, kind = "chinese") {
   const entry = getLearningCourseSequence(kind).find((item) => item.packId === packId);
   if (!entry) return false;
-  state.selectedLearningPackId = entry.packId;
+  if (kind === "english" && isAdaptiveEnglishPack(entry.pack)) {
+    state.selectedEnglishDiagnosticPackId = entry.packId;
+  } else {
+    state.selectedLearningPackId = entry.packId;
+  }
   state.learningPackSelectionSource = "manual";
   // English has two deliberately separate sources: the historical 32-lesson
   // library and imported adaptive daily packs.  Keep that choice explicit so
@@ -8352,7 +8649,7 @@ function selectLearningCoursePack(packId, push = true, kind = "chinese") {
 function selectRelativeLearningCourse(direction, kind = "chinese") {
   const sequence = getLearningCourseSequence(kind);
   if (!sequence.length) return false;
-  const selectedPack = getSelectedLearningPack();
+  const selectedPack = kind === "english" ? getSelectedEnglishDiagnosticPack() : getSelectedLearningPack();
   const selectedKey = selectedPack ? getLearningCourseKey(selectedPack, kind) : "";
   let index = Math.max(0, sequence.findIndex((item) => item.courseKey === selectedKey));
   if (direction === "prev") index = Math.max(0, index - 1);
@@ -8714,11 +9011,12 @@ function getEnglishPlanetHomeState() {
         progress: getHomeCourseProgress(progress?.english || {}, progress?.english?.steps, steps.length, expectedKeys)
       };
     });
+    const selected = courses.find((course) => course.courseId === state.selectedEnglishDiagnosticPackId);
     const inProgress = courses.find((course) => course.progress.started && !course.progress.completed);
-    if (inProgress) return activePlanetHomeState(inProgress, "继续课程", "继续课程");
-    const latest = courses.at(-1);
-    if (!latest.progress.completed) return activePlanetHomeState(latest, "下一课", "开始课程", false);
-    return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
+    const active = selected || inProgress || courses[0];
+    if (active.progress.started && !active.progress.completed) return activePlanetHomeState(active, "继续课程", "继续课程");
+    if (!active.progress.completed) return activePlanetHomeState(active, "开始 D01", "开始课程", false);
+    return activePlanetHomeState(active, "已完成课程", "查看课程", false);
   }
   // Do not fall back to the historical Story 3 anchor on a clean browser.
   // The daily adaptive pack is imported separately; until it arrives, expose
@@ -10004,6 +10302,20 @@ function renderChineseLesson() {
   $("#chineseLessonSections").innerHTML = sections.map((section, index) => renderChineseSection(pack, section, index, progress)).join("") + renderCourseEndFeedback("chinese", progress.chinese, sections);
 }
 
+function renderAdaptiveProgressRail(steps, currentIndex, progress) {
+  return `
+    <nav class="adaptive-progress-rail" aria-label="六题进度">
+      ${steps.slice(0, 6).map((step, index) => {
+        const key = `english:${step.id}`;
+        const item = progress.english.steps[key] || {};
+        const done = Boolean(item.finishedAt);
+        const current = index === currentIndex;
+        return `<button class="adaptive-progress-node ${current ? "is-current" : ""} ${done ? "is-complete" : ""}" data-english-adaptive-nav="${index}" type="button" aria-label="第${index + 1}题 ${escapeHtml(step.titleZh)}">${done ? "✓" : index + 1}<span>${current ? escapeHtml(step.titleZh) : ""}</span></button>`;
+      }).join("")}
+    </nav>
+  `;
+}
+
 function renderEnglishLesson() {
   if (state.englishCourseSource === ADAPTIVE_ENGLISH_SHELL_SOURCE && !getLearningCourseSequence("english").length) {
     renderAdaptiveEnglishShellUnavailable();
@@ -10061,6 +10373,7 @@ function renderEnglishLesson() {
         <div><h1>${escapeHtml(title)}</h1>${skillText ? `<p class="pack-muted">${escapeHtml(skillText)}</p>` : ""}</div>
         <div class="mode-picker">${getAllowedEnglishModes(pack).filter((mode) => mode !== "recovery").map((mode) => `<button class="button ${mode === selectedMode ? "primary" : "secondary"} compact-button" data-english-mode="${escapeHtml(mode)}" type="button">${escapeHtml(englishModeLabel(mode))}</button>`).join("")}</div>
       </div>
+      ${renderAdaptiveProgressRail(steps, activityIndex, progress)}
       ${renderCourseStartSettings("english", progress.english, steps)}
     `;
     $("#englishListeningZone").innerHTML = "";
@@ -11563,6 +11876,70 @@ function adaptiveVisibleText(value) {
   return "";
 }
 
+function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
+  const interaction = activity.interaction || {};
+  if (activity.questionRole && !["sentence_listen", "meaning_function", "blind_word", "key_component"].includes(activity.questionRole)) return "";
+  const sentence = interaction.targetSentence || "";
+  const playCount = Math.max(1, Number(interaction.playCount || 1));
+  const played = Math.min(playCount, Number(itemProgress.audioPlayCount || 0));
+  const path = `${interaction.externalTool || "每日英语听力"} → 小学英语 · Hello, School! → Story 3 → Lesson ${interaction.lessonIndex || "—"}`;
+  const target = interaction.hideEnglish ? "英文暂时隐藏" : sentence;
+  return `
+    <aside class="adaptive-source-card" aria-label="每日英语听力来源">
+      <div class="adaptive-source-card-title"><strong>音频来源</strong><span>${escapeHtml(path)}</span></div>
+      <div class="adaptive-source-card-line"><strong>目标句</strong><span class="adaptive-source-sentence ${interaction.hideEnglish ? "is-hidden" : ""}">${escapeHtml(target)}</span></div>
+      <div class="adaptive-source-card-line"><strong>播放</strong><span>本题 ${played}/${playCount} 遍${interaction.hideEnglish ? " · 英文暂时隐藏" : ""}</span></div>
+      <div class="adaptive-source-card-actions">
+        <button class="button secondary compact-button" data-adaptive-audio-play="${escapeHtml(key)}" type="button">播放音频 ${played}/${playCount}</button>
+        <a class="button ghost compact-button" href="https://www.eudic.net/" target="_blank" rel="noreferrer">打开每日英语听力</a>
+      </div>
+    </aside>
+  `;
+}
+
+function renderAdaptivePromptCard(activity) {
+  const visible = activity.childVisible || {};
+  const fields = [
+    visible.sceneZh ? `<div><strong>新场景：</strong><span>${escapeHtml(visible.sceneZh)}</span></div>` : "",
+    visible.firstSpeakerZh ? `<div><strong>先说者：</strong><span>${escapeHtml(visible.firstSpeakerZh)}</span></div>` : "",
+    visible.childResponseZh ? `<div><strong>你的回应：</strong><span>${escapeHtml(visible.childResponseZh)}</span></div>` : "",
+    visible.answerBoundaryZh ? `<p class="adaptive-answer-boundary">${escapeHtml(visible.answerBoundaryZh)}</p>` : ""
+  ].filter(Boolean).join("");
+  return fields ? `<div class="adaptive-prompt-card">${fields}</div>` : "";
+}
+
+function renderAdaptiveRecordingCard(key, activity, itemProgress, pack) {
+  if (!activity.recording || activity.recording.mode === "none") return "";
+  const clips = getRecordingClipsForActivity(key, {
+    packId: pack?.packId || "",
+    sessionId: getCourseProgress(pack?.packId)?.english?.sessionId || ""
+  });
+  const active = activeRecording?.activityKey === key && activeRecording?.course === "english";
+  const status = itemProgress.recordingStatusText || (clips.length ? "录音已保存" : activity.recording.startCueZh || "准备好后点开始录音");
+  return `
+    <div class="adaptive-recording-card" aria-label="录音区">
+      <div class="adaptive-recording-heading"><strong>录音回应</strong><span>${escapeHtml(status)}</span></div>
+      <div class="adaptive-recording-actions">
+        ${active ? `<button class="button primary compact-button recording-stop-button" data-recording-action="stop" data-recording-key="${escapeHtml(key)}" data-recording-course="english" type="button">停止录音</button>` : `<button class="button primary compact-button recording-start-button" data-recording-action="start" data-recording-key="${escapeHtml(key)}" data-recording-course="english" type="button">开始录音</button>`}
+        ${clips.length && !active ? `<button class="button ghost compact-button" data-recording-action="retake" data-recording-key="${escapeHtml(key)}" data-recording-course="english" type="button">重录</button>` : ""}
+      </div>
+      ${clips.length ? `<p class="adaptive-recording-takes">已保存 ${clips.length} 段录音</p>` : ""}
+    </div>
+  `;
+}
+
+function renderAdaptiveActivityControls(key, itemProgress) {
+  const labels = { independent: "独立完成", supported: "有提示完成", not_attempted: "暂未完成" };
+  return `
+    <div class="course-controls adaptive-activity-controls">
+      <div class="course-timing-row">
+        <button class="button ${itemProgress.finishedAt ? "success" : "primary"} compact-button" data-course-complete="${escapeHtml(key)}" type="button">${itemProgress.finishedAt ? "✓ 已完成" : "完成本题"}</button>
+      </div>
+      ${renderCourseResultControls(key, itemProgress, labels, "完成情况")}
+    </div>
+  `;
+}
+
 function renderAdaptiveChildVisible(activity, key, progress) {
   const visible = activity.childVisible || {};
   const interaction = activity.interaction || {};
@@ -11573,6 +11950,10 @@ function renderAdaptiveChildVisible(activity, key, progress) {
   const type = activity.activityType;
   const intro = [instruction ? `<p class="adaptive-activity-instruction">${escapeHtml(instruction)}</p>` : "", bodyText ? `<p class="adaptive-activity-text">${escapeHtml(bodyText)}</p>` : ""].join("");
   if (["select", "multi_select", "match", "classify", "order", "blocks"].includes(type) && options.length) {
+    const itemProgress = progress.english.steps[key] || {};
+    if (activity.questionRole === "blind_word" && Number(itemProgress.audioPlayCount || 0) < Number(interaction.playCount || 2)) {
+      return `${intro}<p class="adaptive-audio-gate">播放两遍后，三个选项会显示在这里。</p>`;
+    }
     const selected = Array.isArray(saved) ? saved : saved == null ? [] : [saved];
     return `${intro}<div class="adaptive-option-list ${type}" role="group" aria-label="${escapeHtml(activity.titleZh)}">${options.map((option) => {
       const isSelected = selected.some((item) => String(item) === String(option.value) || String(item) === String(option.id));
@@ -11585,7 +11966,7 @@ function renderAdaptiveChildVisible(activity, key, progress) {
   }
   if (["speak", "dialogue"].includes(type)) {
     const dialogue = Array.isArray(visible.dialogue) ? visible.dialogue : Array.isArray(interaction.dialogue) ? interaction.dialogue : [];
-    return `${intro}${dialogue.length ? `<div class="adaptive-dialogue">${dialogue.map((line) => `<p><strong>${escapeHtml(line.speaker || "")}</strong> ${escapeHtml(line.text || line)}</p>`).join("")}</div>` : ""}`;
+    return `${intro}${renderAdaptivePromptCard(activity)}${dialogue.length ? `<div class="adaptive-dialogue">${dialogue.map((line) => `<p><strong>${escapeHtml(line.speaker || "")}</strong> ${escapeHtml(line.text || line)}</p>`).join("")}</div>` : ""}`;
   }
   const items = visible.items || interaction.items;
   if (Array.isArray(items) && items.length) return `${intro}<ul class="adaptive-activity-items">${items.map((item) => `<li>${escapeHtml(typeof item === "string" ? item : item.text || item.label || "")}</li>`).join("")}</ul>`;
@@ -11626,18 +12007,41 @@ function renderAdaptiveEnglishActivity(pack, activity, index, total, mode, progr
   const readText = [activity.titleZh, activity.childVisible?.instructionZh || activity.childVisible?.promptZh].filter(Boolean).join("。\n");
   const readAloud = normalizeReadAloudConfig(activity.readAloud, readText, "full");
   const isLast = index >= total - 1;
+  const category = activity.childVisible?.categoryZh || activity.categoryZh || "";
   return `
     <article class="course-card adaptive-english-activity" data-course-card="${escapeHtml(key)}">
-      <div class="course-card-head"><div><span>${index + 1} / ${total}</span>${renderPromptRow(`<h3>${escapeHtml(activity.titleZh)}</h3>`, renderReadAloudButton(key, readAloud, { targetText: readText }))}</div></div>
-      <div class="adaptive-english-student-zone">${renderAdaptiveChildVisible(activity, key, progress)}</div>
+      <div class="course-card-head"><div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(activity.titleZh)}</h3>`, renderReadAloudButton(key, readAloud, { targetText: readText }))}</div></div>
+      ${renderAdaptiveSourceCard(activity, key, itemProgress)}
+      <div class="adaptive-english-student-zone">${category ? `<span class="adaptive-category-tag">这次只听：${escapeHtml(category)}</span>` : ""}${renderAdaptiveChildVisible(activity, key, progress)}</div>
+      ${renderAdaptiveRecordingCard(key, activity, itemProgress, pack)}
       ${renderAdaptiveHints(activity, key, itemProgress)}
-      ${renderCourseItemControls(key, itemProgress)}
+      ${renderAdaptiveActivityControls(key, itemProgress)}
       <div class="adaptive-activity-nav">
         <button class="button ghost compact-button" data-english-adaptive-nav="${index - 1}" ${index > 0 ? "" : "disabled"} type="button">上一步</button>
         ${isLast ? `<button class="button primary compact-button" data-course-end="english" type="button">完成课程</button>` : `<button class="button secondary compact-button" data-english-adaptive-next="${index + 1}" type="button">下一步</button>`}
       </div>
     </article>
   `;
+}
+
+function playAdaptiveAudio(key) {
+  const pack = getActiveEnglishPack();
+  if (!isAdaptiveEnglishPack(pack) || !key) return false;
+  const progress = initializeCourseProgress(pack);
+  const activity = pack.english.lesson.activities.find((entry) => `english:${entry.activityId || entry.id}` === key);
+  if (!activity) return false;
+  const item = progress.english.steps[key] || {};
+  const playCount = Math.max(1, Number(activity.interaction?.playCount || 1));
+  const nextCount = Math.min(playCount, Number(item.audioPlayCount || 0) + 1);
+  progress.english.steps[key] = {
+    ...item,
+    audioPlayCount: nextCount,
+    audioCompletedAt: nextCount >= playCount ? item.audioCompletedAt || new Date().toISOString() : item.audioCompletedAt || "",
+    updatedAt: new Date().toISOString()
+  };
+  saveState();
+  renderEnglishLesson();
+  return true;
 }
 
 function revealAdaptiveEnglishHint(key) {
@@ -11651,7 +12055,7 @@ function revealAdaptiveEnglishHint(key) {
   progress.english.steps[key] = {
     ...item,
     hintLevelUsed: Math.min(total, Number(item.hintLevelUsed || 0) + 1),
-    result: item.result || "prompted",
+    result: item.result || "supported",
     updatedAt: new Date().toISOString()
   };
   saveState();
@@ -12807,7 +13211,15 @@ async function handleRecordingAction(button) {
   const action = button.dataset.recordingAction;
   const key = button.dataset.recordingKey;
   const course = button.dataset.recordingCourse || getCourseKindFromKey(key);
-  if (action === "start" || action === "retake") return startOrRetakeRecording(key, course, action === "retake");
+  if (action === "start" || action === "retake") {
+    if (!(course === "english" && /^english:d\d{2}_\d{2}$/i.test(String(key || "")))) {
+      return startOrRetakeRecording(key, course, action === "retake");
+    }
+    const progress = getActiveProgressForCourse(course);
+    if (progress?.[course]) progress[course].recordingConsent = true;
+    saveState();
+    return startOrRetakeRecording(key, course, action === "retake", { skipConsent: true });
+  }
   if (action === "stop") return stopActiveRecording("complete");
   return null;
 }
