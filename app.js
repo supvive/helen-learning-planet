@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.10",
+  version: "v3.9.11",
   buildId: "2026-08-02T12:55:00+08:00",
   product: "学习星球"
 };
@@ -7592,13 +7592,9 @@ function sanitizeArtPaletteItem(item, index) {
 }
 
 function sanitizeStudentFacingArtText(value, maxLength) {
-  return safePlainText(value, maxLength)
-    .replace(/孩子现在/g, "现在")
-    .replace(/让孩子/g, "请")
-    .replace(/请孩子/g, "请")
-    .replace(/孩子能/g, "你能")
-    .replace(/孩子可以/g, "你可以")
-    .replace(/孩子/g, "你");
+  return cleanStudentInstructionText(value)
+    .replace(/儿童(?=安全|可用|水性)/g, "")
+    .slice(0, maxLength);
 }
 
 function sanitizeArtTextList(value, maxItems = 8, maxLength = 100) {
@@ -10990,7 +10986,8 @@ function getArtLessonSteps(pack) {
 }
 
 function getArtSafetyNotes(pack) {
-  const notes = pack.art?.safetyNotesZh?.length ? pack.art.safetyNotesZh : ["优先使用无毒、儿童安全的水性马克笔", "保护桌面，保持通风", "成人在旁陪同"];
+  const notes = (pack.art?.safetyNotesZh?.length ? pack.art.safetyNotesZh : ["优先使用无毒的水性马克笔", "保护桌面，保持通风", "成人在旁陪同"])
+    .map((item) => sanitizeStudentFacingArtText(item, 160)).filter(Boolean);
   const materialText = (pack.art?.materials || []).map((item) => item.nameZh || item.name).join(" ");
   if (/酒精/.test(materialText) && !notes.some((item) => item.includes("通风"))) {
     return [...notes, "酒精马克笔需通风、保护桌面，并由成人陪同"];
@@ -11762,6 +11759,12 @@ function getEnglishStepInstructionText(step) {
 
 function cleanStudentInstructionText(value) {
   return String(value || "")
+    .replace(/请家长帮助|家长帮助/g, "")
+    .replace(/让孩子|请孩子/g, "请")
+    .replace(/孩子请|(?:小朋友|宝贝|宝宝|小孩)请/g, "请")
+    .replace(/孩子现在/g, "现在")
+    .replace(/孩子(?=先|后|再|可|能|说|回答|用|尝试|不看|自己|自主|分段|选定|明显|卡住)/g, "你")
+    .replace(/(?:小朋友|宝贝|宝宝|小孩)(?=[，、：:请要想先再说回答])/g, "你")
     .replace(/今天的原句/g, "本课原句")
     .replace(/今天的句子/g, "本课句子")
     .replace(/今天的积木/g, "本课积木")
