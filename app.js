@@ -272,9 +272,12 @@ const COURSE_RECORDING_MAX_SECONDS = 3 * 60 * 60;
 const COURSE_RESULT_LABELS = {
   independent: "独立完成",
   prompted: "少量提醒",
-  modeled: "播放/示范后完成",
+  modeled: "播放示范后完成",
   not_yet: "暂时不会"
 };
+const CHINESE_SECTION_DEFAULT_RESULT_OPTIONS = Object.freeze([
+  "independent", "prompted", "modeled", "not_yet"
+]);
 const FULL_COURSE_CONTENT_POLICY = {
   authority: "codex-course-designer",
   websiteMode: "render-only",
@@ -3192,6 +3195,12 @@ function navigateToView(view) {
 }
 
 function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
+  const latest = getLearningCourseSequence("english").at(-1);
+  if (latest) {
+    state.selectedEnglishDiagnosticPackId = latest.packId;
+    state.learningPackSelectionSource = "auto";
+    state.englishCourseSource = "adaptive";
+  }
   ensureAdaptiveEnglishPrimaryCourse();
   showView("letter-course", true, { skipRouteDateSelection: true });
   return true;
@@ -3199,10 +3208,22 @@ function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
 
 function ensureAdaptiveEnglishPrimaryCourse() {
   const sequence = getLearningCourseSequence("english");
-  const legacyEntry = sequence.find((entry) => entry.packId === state.selectedLearningPackId);
-  const selected = sequence.find((entry) => entry.packId === state.selectedEnglishDiagnosticPackId) || legacyEntry || sequence[0];
+  if (!sequence.length) {
+    if (state.englishCourseSource === "library") {
+      state.englishCourseSource = ADAPTIVE_ENGLISH_SHELL_SOURCE;
+      saveState();
+    }
+    return false;
+  }
+  if (state.englishCourseSource === "library" && state.selectedEnglishLessonId) return false;
+  const manualSelection = state.learningPackSelectionSource === "manual";
+  const selected = manualSelection
+    ? sequence.find((entry) => entry.packId === state.selectedEnglishDiagnosticPackId)
+    : sequence.at(-1);
+  const resolved = selected || sequence.at(-1);
+  const keepManualSelection = Boolean(manualSelection && selected);
   let changed = false;
-  if (!selected || !isAdaptiveEnglishPack(selected.pack)) {
+  if (!resolved || !isAdaptiveEnglishPack(resolved.pack)) {
     // A clean browser may not yet have today's adaptive pack. Keep the
     // approved adaptive shell visible instead of silently reopening Story 3;
     // the historical library remains available through its explicit switch.
@@ -3211,25 +3232,26 @@ function ensureAdaptiveEnglishPrimaryCourse() {
       changed = true;
     }
   } else {
-    if (state.selectedEnglishDiagnosticPackId !== selected.packId) {
-      state.selectedEnglishDiagnosticPackId = selected.packId;
+    if (state.selectedEnglishDiagnosticPackId !== resolved.packId) {
+      state.selectedEnglishDiagnosticPackId = resolved.packId;
       changed = true;
     }
-    if (state.learningPackSelectionSource !== "auto") {
-      state.learningPackSelectionSource = "auto";
+    const selectionSource = keepManualSelection ? "manual" : "auto";
+    if (state.learningPackSelectionSource !== selectionSource) {
+      state.learningPackSelectionSource = selectionSource;
       changed = true;
     }
     if (state.englishCourseSource !== "adaptive") {
       state.englishCourseSource = "adaptive";
       changed = true;
     }
-    if (state.lastAutoSelectedEnglishLessonId !== selected.packId) {
-      state.lastAutoSelectedEnglishLessonId = selected.packId;
+    if (!keepManualSelection && state.lastAutoSelectedEnglishLessonId !== resolved.packId) {
+      state.lastAutoSelectedEnglishLessonId = resolved.packId;
       changed = true;
     }
   }
   if (changed) saveState();
-  return Boolean(selected && isAdaptiveEnglishPack(selected.pack));
+  return Boolean(resolved && isAdaptiveEnglishPack(resolved.pack));
 }
 
 function openPlanetHomeCourse(kind, courseId, view) {
@@ -6966,7 +6988,7 @@ function getSelectedEnglishDiagnosticPack() {
   if (!sequence.length) return null;
   const selectedId = state.selectedEnglishDiagnosticPackId || "";
   const selected = sequence.find((entry) => entry.packId === selectedId);
-  return selected?.pack || sequence[0].pack;
+  return selected?.pack || sequence.at(-1).pack;
 }
 
 function getActiveEnglishPack() {
@@ -7577,7 +7599,7 @@ function buildLetterDiagnosticActivities(routeDay) {
     {
       activityId: `${day}_02`, activityType: "select", questionRole: LETTER_DIAGNOSTIC_ROLES[1], titleZh: LETTER_DIAGNOSTIC_TITLES[1],
       plannedMinutesByMode: { recovery: 2, light: 3, standard: 3 },
-      childVisible: { instructionZh: "播放后，选出这句话在当前场景中的作用。", options: options(spec.q2) },
+      childVisible: { instructionZh: "听完后，选出这句话在当前场景中的作用。", options: options(spec.q2) },
       interaction: baseInteraction(1, true), expectedAnswer: { value: spec.q2[0] }, acceptedAnswers: [spec.q2[0]],
       hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
     },
@@ -7599,26 +7621,26 @@ function buildLetterDiagnosticActivities(routeDay) {
       activityId: `${day}_05`, activityType: "dialogue", questionRole: LETTER_DIAGNOSTIC_ROLES[4], titleZh: LETTER_DIAGNOSTIC_TITLES[4],
       plannedMinutesByMode: { recovery: 3, light: 4, standard: 4 },
       childVisible: {
-        instructionZh: "换一个新场景，用本课学过的句子说一句。",
+        instructionZh: "换一个新场景，用本课学过的句子说一句；不增加新词。",
         sceneZh: spec.q5.scene,
         firstSpeakerZh: "你自己",
-        childResponseZh: `请说：${spec.q5.answer}`,
-        answerBoundaryZh: "答案范围：目标句或允许的已学等值表达。"
+        childResponseZh: `示例回应：${spec.q5.answer}`,
+        answerBoundaryZh: `判定范围：${spec.q5.accepted?.length ? "目标句或允许的已学等值表达" : "目标句"}；不增加未学词。`
       },
       interaction: baseInteraction(0, false, "website"), expectedAnswer: { value: spec.q5.answer }, acceptedAnswers: [spec.q5.answer, ...(spec.q5.accepted || [])],
-      recording: recording("english_retrieval", `请在新场景中说出：${spec.q5.answer}`), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+      recording: recording("english_retrieval", "请录下示例回应或允许的已学等值表达。"), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
     },
     {
       activityId: `${day}_06`, activityType: "dialogue", questionRole: LETTER_DIAGNOSTIC_ROLES[5], titleZh: LETTER_DIAGNOSTIC_TITLES[5],
       plannedMinutesByMode: { recovery: 3, light: 4, standard: 4 },
       childVisible: {
-        instructionZh: "完成这一轮回应：先听对方说，再用另一句已学话回应。",
+        instructionZh: "完成这一轮回应：先听对方说，再用另一句已学话回应；不增加新词。",
         firstSpeakerZh: spec.q6.first,
-        childResponseZh: spec.q6.answer,
-        answerBoundaryZh: "答案范围：目标回应或允许的已学等值表达。"
+        childResponseZh: `示例回应：${spec.q6.answer}`,
+        answerBoundaryZh: `判定范围：${spec.q6.accepted?.length ? "目标回应或允许的已学等值表达" : "目标回应"}；不增加未学词。`
       },
       interaction: baseInteraction(0, false, "website"), expectedAnswer: { value: spec.q6.answer }, acceptedAnswers: [spec.q6.answer, ...(spec.q6.accepted || [])],
-      recording: recording("dialogue", `请回应：${spec.q6.answer}`), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
+      recording: recording("dialogue", "请录下示例回应或允许的已学等值表达。"), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
     }
   ];
 }
@@ -9660,19 +9682,19 @@ function buildGeneratedColorSteps(analysis) {
     [{ id: "group-height", kind: "size", labelZh: keySize }]
   ];
   const definitions = [
-    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: allIds, boardMode: "reference" },
-    { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], boardMode: "frame", dimensions: stepDimensions[0] },
-    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position", boardMode: "position", dimensions: stepDimensions[1] },
-    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "只画轻线，暂不补细节。"], overlay: "skeleton", boardMode: "skeleton", dimensions: stepDimensions[2] },
-    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}的顺序确认遮挡。`, "擦掉被挡住的结构线。"], overlay: "occlusion", boardMode: "occlusion", dimensions: stepDimensions[3] },
-    { actions: ["连接基本形，补全主要轮廓。", "五官和小配件最后加入。"], overlay: "lineart", boardMode: "draft", dimensions: stepDimensions[4] },
-    { actions: ["先完成主体和配件的大色块。", "同一区域保持同一铺色方向，背景先留白。"], overlay: "colorRegions", colors: localIds, processColors: localIds, boardMode: "local-color" },
-    { actions: ["加入天空、水面等背景大色区。", "云朵和主体边缘保留纸白，不要盖住。"], overlay: "colorRegions", colors: backgroundIds, processColors: foregroundAndBackgroundIds, boardMode: "background" },
-    { actions: ["确认草稿后沿外轮廓分段勾线。", "每个待填色区域都要闭合。"], overlay: "lineart", colors: outlineIds, processColors: foregroundAndBackgroundIds, boardMode: "lineart" },
-    { actions: ["只保留能改变识别的内部线。", "眼、鼻、嘴、格纹和必要分隔线要清楚。"], overlay: "lineart", colors: detailIds, processColors: foregroundAndBackgroundIds, boardMode: "details" },
-    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充局部暗部和少量高光。`, "重点控制在2–4处，不能盖住轮廓。"], overlay: "colorRegions", colors: shadowIds, processColors: allIds, boardMode: "shading" },
-    { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"], processColors: allIds, boardMode: "repair" },
-    { actions: ["把完成过程板与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"], processColors: allIds, boardMode: "review" }
+    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: allIds, boardMode: "reference", stageMode: "paper" },
+    { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], boardMode: "frame", stageMode: "paper", dimensions: stepDimensions[0] },
+    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position", boardMode: "position", stageMode: "paper", dimensions: stepDimensions[1] },
+    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "只画轻线，暂不补细节。"], overlay: "skeleton", boardMode: "skeleton", stageMode: "skeleton", dimensions: stepDimensions[2] },
+    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}的顺序确认遮挡。`, "擦掉被挡住的结构线。"], overlay: "occlusion", boardMode: "occlusion", stageMode: "draft", dimensions: stepDimensions[3] },
+    { actions: ["连接基本形，补全主要轮廓。", "五官和小配件最后加入。"], overlay: "lineart", boardMode: "draft", stageMode: "draft", dimensions: stepDimensions[4] },
+    { actions: ["按标记调整主体比例和位置。", "仍用浅线，先不铺色。"], overlay: "lineart", boardMode: "draft", stageMode: "draft" },
+    { actions: ["沿外轮廓分段勾线并闭合缺口。", "擦掉被挡住的结构线，区域先留白。"], overlay: "lineart", colors: [], processColors: [], boardMode: "lineart", stageMode: "lineart" },
+    { actions: ["先完成主体大色块。", "同一区域保持同一铺色方向。"], overlay: "colorRegions", colors: localIds, processColors: localIds, boardMode: "flatColor", stageMode: "flatColor" },
+    { actions: ["再加入天空、水面和配件色区。", "已完成区域不重复覆盖。"], overlay: "colorRegions", colors: backgroundIds, processColors: foregroundAndBackgroundIds, boardMode: "flatColor", stageMode: "flatColor" },
+    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充局部暗部和少量高光。`, "重点控制在2–4处，不能盖住轮廓。"], overlay: "colorRegions", colors: shadowIds, processColors: allIds, boardMode: "details", stageMode: "details" },
+    { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"], processColors: allIds, boardMode: "repair", stageMode: "details" },
+    { actions: ["把完成过程板与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"], processColors: allIds, boardMode: "review", stageMode: "final" }
   ];
   return COLOR_REFERENCE_STEP_TITLES.map((titleZh, index) => ({
     id: `reference_step_${String(index + 1).padStart(2, "0")}`,
@@ -9684,6 +9706,7 @@ function buildGeneratedColorSteps(analysis) {
     requiredColorTargetIds: definitions[index].colors || [],
     processColorTargetIds: definitions[index].processColors || [],
     boardMode: definitions[index].boardMode || "",
+    stageMode: definitions[index].stageMode || "paper",
     processBoard: index >= 1,
     referenceVisible: index === 0 || index === 12,
     dimensionAnnotations: definitions[index].dimensions || [],
@@ -9739,7 +9762,7 @@ function formatColorReferenceError(error) {
     ? "当前模型在 OpenRouter 所在区域不可用，请在 OpenRouter 选择可用的模型路由后重试。"
     : "当前模型不支持最高推理，请选择其他模型或降低推理强度后重试。";
   const stageMessages = {
-    auth: "参考图分析授权不可用，请检查访问码或服务配置。",
+    auth: "参考图分析授权不可用，请稍后重试或联系管理员。",
     quota_or_permission: "参考图分析额度或权限受限，请稍后重试或联系管理员。",
     model_unavailable: modelUnavailableMessage,
     provider_call: "参考图分析服务暂时不可用，请稍后重试。",
@@ -9798,7 +9821,7 @@ async function generateColorReferenceCourse() {
           method: "POST",
           headers: { "Content-Type": "application/json", "X-Client-Trace-Id": clientTraceId },
           body
-        }, AI_TIMEOUTS.colorReference);
+        }, AI_TIMEOUTS.colorReference, { promptOnUnauthorized: false });
         const data = await response.json().catch(() => null);
         if (!response.ok || !data?.ok) {
           lastError = data || new Error(`参考图分析服务返回 ${response.status}`);
@@ -10885,6 +10908,19 @@ function renderGeneratedBoardObject(item, course, geometry, options = {}) {
   return renderGeneratedBoardPrimitive({ type: "rect", x, y, width, height }, course, geometry, base);
 }
 
+function getGeneratedStageMode(step) {
+  const explicit = String(step?.stageMode || "");
+  if (["paper", "skeleton", "draft", "lineart", "flatColor", "details", "final"].includes(explicit)) return explicit;
+  const order = Number(step?.order || 0);
+  if (order <= 3) return "paper";
+  if (order === 4) return "skeleton";
+  if (order <= 7) return "draft";
+  if (order === 8) return "lineart";
+  if (order <= 10) return "flatColor";
+  if (order <= 12) return "details";
+  return "final";
+}
+
 function renderGeneratedPositionLayer(course, geometry) {
   const objects = course.referenceAnalysis?.objects || [];
   const bboxes = objects.map((item) => item.bbox).filter((bbox) => Array.isArray(bbox) && bbox.length === 4);
@@ -10927,6 +10963,7 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
   const analysis = course.referenceAnalysis || {};
   const overlays = analysis.overlays || {};
   const mode = step.boardMode || "draft";
+  const stageMode = getGeneratedStageMode(step);
   const processIds = step.processColorTargetIds || [];
   const colorRegions = Array.isArray(overlays.colorRegions) ? overlays.colorRegions : [];
   const lineart = Array.isArray(overlays.lineart) ? overlays.lineart : [];
@@ -10945,12 +10982,23 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
   let content = "";
   if (mode === "position") {
     content = renderGeneratedPositionLayer(course, geometry);
-  } else if (mode === "skeleton") {
-    content = skeleton.length ? lineShapes(skeleton, { stroke: "#B9D9E4", strokeWidth: 4, className: "color-process-skeleton" }) : objectShapes({ stroke: "#B9D9E4", strokeWidth: 4, className: "color-process-skeleton" });
+  } else if (stageMode === "skeleton") {
+    content = skeleton.length ? lineShapes(skeleton, { stroke: "#63B8D1", strokeWidth: 4, className: "color-process-skeleton" }) : objectShapes({ stroke: "#63B8D1", strokeWidth: 4, className: "color-process-skeleton" });
   } else if (mode === "occlusion") {
     content = (skeleton.length ? lineShapes(skeleton, { stroke: "#B9D9E4", strokeWidth: 3, className: "color-process-skeleton" }) : objectShapes({ stroke: "#B9D9E4", strokeWidth: 3, className: "color-process-skeleton" })) + lineShapes(occlusion.slice(0, 2), { stroke: "#78AFC1", strokeWidth: 4, className: "color-process-occlusion" });
-  } else if (mode === "draft") {
-    content = (skeleton.length ? lineShapes(skeleton, { stroke: "#A3CBD9", strokeWidth: 2, className: "color-process-skeleton" }) : objectShapes({ stroke: "#A3CBD9", strokeWidth: 2, className: "color-process-skeleton" })) + (lineart.length ? lineShapes(lineart, { stroke: "#6F9EB4", strokeWidth: 3, className: "color-process-draft" }) : "");
+  } else if (stageMode === "draft") {
+    content = (skeleton.length ? lineShapes(skeleton, { stroke: "#63B8D1", strokeWidth: 2, className: "color-process-skeleton" }) : objectShapes({ stroke: "#63B8D1", strokeWidth: 2, className: "color-process-skeleton" })) + (lineart.length ? lineShapes(lineart, { stroke: "#63B8D1", strokeWidth: 2, className: "color-process-draft" }) : "");
+  } else if (stageMode === "lineart") {
+    content = lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" });
+  } else if (stageMode === "flatColor") {
+    content = regions(allRegions, 0.88) + (lineart.length ? lineShapes(lineart, { stroke: "#70858F", strokeWidth: 2, className: "color-process-draft" }) : objectShapes({ stroke: "#70858F", strokeWidth: 2, className: "color-process-draft" }));
+  } else if (stageMode === "details") {
+    content = regions(allRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+    if (mode === "shading") {
+      content += lineShapes(colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId)).slice(0, 4), { stroke: "#5B6570", fill: "#5B6570", opacity: 0.48, strokeWidth: 2, className: "color-process-shade" });
+    }
+  } else if (stageMode === "final") {
+    content = regions(colorRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
   } else if (mode === "local-color") {
     content = regions(allRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#91B4C2", strokeWidth: 2, className: "color-process-draft" }) : objectShapes({ stroke: "#91B4C2", strokeWidth: 2, className: "color-process-draft" }));
   } else if (mode === "background") {
@@ -10965,7 +11013,7 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
   }
   const dimensionVisible = options.dimensionsVisible === true;
   return `
-    <div class="color-process-board-shell" data-board-mode="${escapeHtml(mode)}">
+    <div class="color-process-board-shell" data-board-mode="${escapeHtml(mode)}" data-stage-mode="${escapeHtml(stageMode)}">
       <svg class="color-process-board" viewBox="0 0 1000 1414" preserveAspectRatio="xMidYMid meet" role="img" aria-label="第${step.order}步独立白纸过程板">
         <rect class="color-process-paper" x="0" y="0" width="1000" height="1414" fill="#FFFFFF" />
         <rect class="color-process-drawing-area" x="${geometry.x.toFixed(2)}" y="${geometry.y.toFixed(2)}" width="${geometry.drawWidth.toFixed(2)}" height="${geometry.drawHeight.toFixed(2)}" fill="#FFFFFF" stroke="#DEE6EA" stroke-width="2" />
@@ -11706,8 +11754,8 @@ function renderChineseSection(pack, section, index, progress) {
         <div><span>${displayIndex}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${renderAnnotatableChineseText(childInstruction, section.id, "instruction", null, { markedTerms: section.markedTerms })}</p>` : ""}</div>
       </div>
       ${renderChineseSectionBody(pack, section, itemProgress)}
-      ${shouldRenderChineseSectionControls(section) ? renderCourseItemControls(key, itemProgress) : ""}
-      ${renderChineseSectionFeedbackControls(section, itemProgress)}
+      ${shouldRenderChineseSectionControls(section) ? renderCourseItemControls(key, itemProgress, getChineseSectionResultLabels(section)) : ""}
+      ${shouldRenderChineseSectionControls(section) ? "" : renderChineseSectionFeedbackControls(section, itemProgress)}
     </article>
   `;
 }
@@ -11718,13 +11766,26 @@ function shouldRenderChineseSectionControls(section) {
 }
 
 function renderChineseSectionFeedbackControls(section, itemProgress = {}) {
-  if (section?.type !== "four_grid_retell" || !section.prompts?.length) return "";
-  return renderCourseResultControls(`chinese:${section.id}`, itemProgress, {
-    independent: "独立完成",
-    prompted: "少量提醒",
-    modeled: "示范后完成",
-    not_yet: "暂未完成"
-  }, "完成情况");
+  if (!section || section.type === "break" || section.id === "break") return "";
+  return renderCourseResultControls(`chinese:${section.id}`, itemProgress, getChineseSectionResultLabels(section), "完成情况");
+}
+
+function getChineseSectionResultLabels(section) {
+  const configured = Array.isArray(section?.sectionResultOptions) && section.sectionResultOptions.length
+    ? section.sectionResultOptions
+    : CHINESE_SECTION_DEFAULT_RESULT_OPTIONS;
+  // Older packs sometimes listed only a subset; incomplete configuration
+  // falls back to the complete four-state child-facing feedback set.
+  const options = configured.length < CHINESE_SECTION_DEFAULT_RESULT_OPTIONS.length
+    ? CHINESE_SECTION_DEFAULT_RESULT_OPTIONS
+    : configured;
+  const values = options.map((option) => {
+    if (typeof option === "string") return { value: option, label: COURSE_RESULT_LABELS[option] };
+    const value = String(option?.value || option?.id || "");
+    const label = safePlainText(option?.labelZh || option?.label || COURSE_RESULT_LABELS[value] || "", 40);
+    return { value, label };
+  }).filter((option) => option.value && option.label);
+  return Object.fromEntries(values.map((option) => [option.value, option.label]));
 }
 
 function getChineseSectionChildKeys(section) {
@@ -12213,6 +12274,11 @@ function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
   const sentence = interaction.targetSentence || "";
   const playCount = Math.max(1, Number(interaction.playCount || 1));
   const played = Math.min(playCount, Number(itemProgress.audioPlayCount || 0));
+  const playbackLabel = activity.questionRole === "sentence_listen"
+    ? "播放整句"
+    : activity.questionRole === "blind_word"
+      ? "播放两遍"
+      : "播放音频";
   const path = `${interaction.externalTool || "每日英语听力"} → 小学英语 · Hello, School! → Story 3 → Lesson ${interaction.lessonIndex || "—"}`;
   const target = interaction.hideEnglish ? "英文暂时隐藏" : sentence;
   return `
@@ -12221,7 +12287,7 @@ function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
       <div class="adaptive-source-card-line"><strong>目标句</strong><span class="adaptive-source-sentence ${interaction.hideEnglish ? "is-hidden" : ""}">${escapeHtml(target)}</span></div>
       <div class="adaptive-source-card-line"><strong>播放</strong><span>本题 ${played}/${playCount} 遍${interaction.hideEnglish ? " · 英文暂时隐藏" : ""}</span></div>
       <div class="adaptive-source-card-actions">
-        <button class="button secondary compact-button" data-adaptive-audio-play="${escapeHtml(key)}" type="button">播放音频 ${played}/${playCount}</button>
+        <button class="button secondary compact-button" data-adaptive-audio-play="${escapeHtml(key)}" type="button">${playbackLabel} ${played}/${playCount}</button>
         <a class="button ghost compact-button" href="https://www.eudic.net/" target="_blank" rel="noreferrer">打开每日英语听力</a>
       </div>
     </aside>
@@ -12509,7 +12575,7 @@ function cleanStudentInstructionText(value) {
     .trim();
 }
 
-function renderCourseItemControls(key, itemProgress) {
+function renderCourseItemControls(key, itemProgress, resultLabels = COURSE_RESULT_LABELS) {
   const isChinese = key.startsWith("chinese:");
   const completeLabel = isChinese ? "确认" : "完成";
   const completeClass = isChinese ? "primary chinese-confirm-button" : "success";
@@ -12519,7 +12585,7 @@ function renderCourseItemControls(key, itemProgress) {
         <button class="button ${completeClass} compact-button" data-course-complete="${escapeHtml(key)}" type="button">${escapeHtml(completeLabel)}</button>
       </div>
       ${isChinese && itemProgress.confirmationMessage ? `<p class="course-confirm-message" role="alert">${escapeHtml(itemProgress.confirmationMessage)}</p>` : ""}
-      ${renderCourseResultControls(key, itemProgress)}
+      ${renderCourseResultControls(key, itemProgress, resultLabels)}
     </div>
   `;
 }
@@ -14628,6 +14694,10 @@ function renderCurrentFeedbackSnapshot() {
 function buildSingleCourseFeedback(pack, progress, course, options = {}) {
   const side = progress[course] || {};
   const activityMap = side.sections || side.steps || {};
+  const hardestSections = unique([
+    ...(Array.isArray(side.hardestSections) ? side.hardestSections : []),
+    ...(side.hardest ? [side.hardest] : [])
+  ]).filter((id) => !isBreakProgressItem(`${course}:${id}`, {}));
   const pending = countPendingActivities(course, pack, progress);
   const scheduled = options.scheduled ?? isPlanetScheduled(pack, course);
   const startedAt = [side.startedAt, ...Object.values(activityMap).map((item) => item.startedAt)].filter(Boolean).sort()[0] || "";
@@ -14658,8 +14728,8 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       breakSeconds: Math.round(getBreakEvents(progress).reduce((sum, item) => sum + Number(item.elapsedMs || 0), 0) / 1000),
       childEase: side.childEase ?? null,
       parentEase: side.parentEase ?? null,
-      hardestActivityId: side.hardest || "",
-      hardestSections: side.hardestSections || (side.hardest ? [side.hardest] : [])
+      hardestActivityId: hardestSections.includes(side.hardest) ? side.hardest : "",
+      hardestSections
     },
     generatedAt: new Date().toISOString(),
     sessionEvents: getBreakEvents(progress).map((event) => structuredCloneSafe(event))
@@ -15720,12 +15790,12 @@ function requestAppAccessCode() {
   return clean;
 }
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = 90000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 90000, { promptOnUnauthorized = true } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     let response = await fetch(url, { ...withAppAccessHeaders(options), signal: controller.signal });
-    if (response.status === 401) {
+    if (response.status === 401 && promptOnUnauthorized) {
       const code = requestAppAccessCode();
       if (code) {
         response = await fetch(url, { ...withAppAccessHeaders(options, code), signal: controller.signal });
