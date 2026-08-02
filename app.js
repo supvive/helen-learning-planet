@@ -3105,12 +3105,28 @@ function openPlanetHomeCourse(kind, courseId, view) {
 }
 
 function showView(view, updateHash = true, options = {}) {
-  const visibleRoute = normalizeStudentRoute(view);
+  let visibleRoute = normalizeStudentRoute(view);
   // A direct #letter-course deep link must obey the same adaptive-first rule
   // as the home-card and top-navigation actions. Without this guard the
   // initial render can fall back to the historical Story 3 library before the
   // user has had a chance to choose an explicit history lesson.
   if (visibleRoute === "letter-course") ensureAdaptiveEnglishPrimaryCourse();
+  // A direct #color-course link can point at a withdrawn static lesson saved
+  // by an older build. Only a locally generated reference course may open the
+  // lesson view; otherwise normalize the link to the reference workspace.
+  if (visibleRoute === "color-course") {
+    const colorState = getColorPlanetState();
+    const generated = getGeneratedColorCourses();
+    const activeGenerated = generated.find((course) => course.courseId === colorState.activeCourseId) ||
+      generated.find((course) => course.courseId === colorState.selectedCourseId);
+    if (!activeGenerated) {
+      visibleRoute = "color-work-choice";
+    } else if (colorState.activeCourseId !== activeGenerated.courseId || colorState.selectedCourseId !== activeGenerated.courseId) {
+      colorState.activeCourseId = activeGenerated.courseId;
+      colorState.selectedCourseId = activeGenerated.courseId;
+      saveState();
+    }
+  }
   const domView = getDomViewId(visibleRoute);
   const target = $(`#${domView}`) ? domView : "daily";
   const historyMode = typeof updateHash === "string" ? updateHash : updateHash ? "push" : "none";
