@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.6",
+  version: "v3.9.7",
   buildId: "2026-08-02T12:55:00+08:00",
   product: "学习星球"
 };
@@ -8297,9 +8297,11 @@ function getStudentCourseTitle(pack, kind = "chinese") {
   );
 }
 
-function getStudentSectionTitle(value, fallback = "学习环节") {
+function getStudentSectionTitle(value, fallback = "学习环节", markedTerms = []) {
   const title = safePlainText(value || fallback, 80);
   if (title === "今日阅读") return "短文阅读";
+  if (/加点词/.test(title) && !getChineseMarkedTerms(markedTerms).length) return "说说词语在句中的意思";
+  if (title === "压缩复述") return "复述要点";
   return title
     .replace(/^今日/u, "")
     .replace(/^今天/u, "")
@@ -8427,9 +8429,74 @@ function getCourseProgress(packId = state.selectedLearningPackId || state.latest
     chinese: createDefaultCourseSide("chinese", packId),
     english: createDefaultCourseSide("english", packId),
     art: createDefaultCourseSide("art", packId),
-    breaks: []
+    // `breaks` is retained for old feedback readers. New rest records live in
+    // sessionEvents so a break cannot masquerade as a course activity.
+    breaks: [],
+    sessionEvents: []
   };
+  state.courseProgress[packId].sessionEvents ||= [];
   return state.courseProgress[packId];
+}
+
+function getSessionEvents(progress) {
+  if (!progress) return [];
+  progress.sessionEvents ||= [];
+  // One-way compatibility for packs saved before sessionEvents existed. Keep
+  // the old array untouched so older feedback exports remain readable.
+  if (!progress.sessionEvents.length && Array.isArray(progress.breaks) && progress.breaks.length) {
+    const toIso = (value) => {
+      if (!value) return "";
+      const date = new Date(Number(value) || value);
+      return Number.isNaN(date.getTime()) ? "" : date.toISOString();
+    };
+    progress.sessionEvents = progress.breaks.map((entry, index) => ({
+      eventId: entry.eventId || `legacy-break:${entry.activityId || "break"}:${entry.startedAt || index}`,
+      type: "break",
+      planetId: entry.planetId || getCourseKindFromKey(entry.activityId || "chinese:break"),
+      packId: progress.packId || "",
+      sessionId: entry.sessionId || "",
+      activityId: entry.activityId || "",
+      startedAt: toIso(entry.startedAt),
+      endedAt: toIso(entry.endedAt),
+      plannedDurationMs: Number(entry.plannedDurationMs || 0),
+      elapsedMs: Number(entry.elapsedMs || 0),
+      reason: entry.reason || "legacy",
+      autoEnded: entry.autoEnded === true || entry.reason === "timer_complete",
+      resumeCourseOnEnd: false,
+      resumeRecordingOnEnd: false,
+      recordingClipIds: []
+    }));
+  }
+  return progress.sessionEvents;
+}
+
+function isBreakProgressItem(key, item = {}) {
+  return Boolean(
+    item?.breakEventId ||
+    item?.breakStartedAt ||
+    item?.breakFinishedAt ||
+    /^((chinese|english|art):)?(?:fixed_)?break$/i.test(String(key || ""))
+  );
+}
+
+function getActiveBreakEvent(progress, key = "") {
+  return getSessionEvents(progress).find((event) => (
+    event?.type === "break" &&
+    (!key || event.activityId === key) &&
+    !event.endedAt
+  )) || null;
+}
+
+function getBreakEvents(progress) {
+  return getSessionEvents(progress).filter((event) => event?.type === "break");
+}
+
+function isActiveCourseRecording(kind) {
+  return Boolean(
+    activeRecording?.course === kind &&
+    activeRecording?.recorder?.state === "recording" &&
+    !activeRecording.paused
+  );
 }
 
 function createDefaultCourseSide(course, packId = state.selectedLearningPackId || state.latestLearningPackId) {
@@ -8516,7 +8583,7 @@ function renderTodayDashboard() {
   initializeCourseProgress(pack);
   const progress = getCourseProgress(pack.packId);
   const chineseDone = countCompletedChineseSections(pack, progress.chinese.sections);
-  const chineseTotal = getChineseLessonSections(pack).length;
+  const chineseTotal = getExpectedActivityIds(pack, "chinese").length;
   const englishPack = getActiveEnglishPack() || pack;
   const englishProgressState = getCourseProgress(englishPack.packId);
   const selectedMode = getSelectedEnglishMode(englishPack);
@@ -8603,12 +8670,12 @@ function getSequencedPlanetHomeState(kind) {
     const progress = state.courseProgress?.[entry.packId] || null;
     const side = progress?.[kind] || {};
     const items = kind === "chinese" ? side.sections : side.steps;
-    const total = kind === "chinese" ? getChineseLessonSections(entry.pack).length : getArtLessonSteps(entry.pack).length;
+    const total = kind === "chinese" ? getExpectedActivityIds(entry.pack, "chinese").length : getArtLessonSteps(entry.pack).length;
     return {
       title: getStudentCourseTitle(entry.pack, kind),
       route: kind === "chinese" ? "chinese-course" : "color-course",
       courseId: entry.packId,
-      progress: getHomeCourseProgress(side, items, total, kind === "chinese" ? getChineseLessonSections(entry.pack).map((section) => `chinese:${section.id}`) : null)
+      progress: getHomeCourseProgress(side, items, total, kind === "chinese" ? getExpectedActivityIds(entry.pack, "chinese").map((id) => `chinese:${id}`) : null)
     };
   });
   const latest = courses.at(-1);
@@ -8662,7 +8729,7 @@ function getHomeCourseProgress(side, items, total, expectedKeys = null) {
     side?.finishedAt ||
     side?.isRunning ||
     side?.sessionStatus === "in_progress" ||
-    records.some((item) => item.startedAt || item.finishedAt || item.completedAt || item.attempts || item.result || item.elapsedMs)
+    records.some((item) => !isBreakProgressItem("", item) && (item.startedAt || item.finishedAt || item.completedAt || item.attempts || item.result || item.elapsedMs))
   );
   const completed = total > 0 ? done >= total : Boolean(side?.finishedAt || side?.sessionStatus === "completed");
   return { done, total, started, completed };
@@ -8700,7 +8767,7 @@ function getPlanetStatus(kind, pack) {
   if (!pack) return { hasCourse: false, minutes: 0, progress: "等待学习包" };
   const progress = getCourseProgress(pack.packId);
   if (kind === "chinese") {
-    const total = getChineseLessonSections(pack).length;
+    const total = getExpectedActivityIds(pack, "chinese").length;
     const done = countCompletedChineseSections(pack, progress.chinese.sections);
     return { hasCourse: Boolean(pack.chinese?.lesson || pack.chinese?.characters?.length || pack.chinese?.words?.length), minutes: getPlannedChineseMinutes(pack), progress: `${done}/${total}` };
   }
@@ -9912,7 +9979,7 @@ function renderChineseLesson() {
     ${renderCourseSequenceSwitcher("chinese")}
     <div class="course-topline">
       <div>
-        <h1>${renderAnnotatableChineseText(getStudentCourseTitle(pack, "chinese"), "lesson_title", "title")}</h1>
+        <h1>${escapeHtml(getStudentCourseTitle(pack, "chinese"))}</h1>
       </div>
     </div>
     ${renderCourseStartSettings("chinese", progress.chinese, sections)}
@@ -10952,8 +11019,9 @@ function getEnglishLessonSteps(pack, mode = null) {
 function renderChineseSection(pack, section, index, progress) {
   const key = `chinese:${section.id}`;
   const itemProgress = progress.chinese.sections[key] || {};
-  const sectionTitle = getStudentSectionTitle(section.title);
+  const sectionTitle = getStudentSectionTitle(section.title, "学习环节", section.markedTerms);
   if (section.type === "break" || section.id === "break") return renderBreakCard(key, sectionTitle || "休息一下", section.plannedMinutes || 5, itemProgress, getChineseSectionChildInstruction(section));
+  const displayIndex = getChineseLessonSections(pack).slice(0, index).filter((item) => item.type !== "break" && item.id !== "break").length + 1;
   const assessment = ["post_check", "word_review"].includes(section.type);
   const childInstruction = getChineseSectionChildInstruction(section);
   const readText = assessment ? (childInstruction || "请按要求完成这一部分。") : [sectionTitle, childInstruction || section.prompt || ""].filter(Boolean).join("。");
@@ -10961,10 +11029,11 @@ function renderChineseSection(pack, section, index, progress) {
   return `
     <article class="course-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
-        <div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${renderAnnotatableChineseText(childInstruction, section.id, "instruction")}</p>` : ""}</div>
+        <div><span>${displayIndex}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${renderAnnotatableChineseText(childInstruction, section.id, "instruction", null, { markedTerms: section.markedTerms })}</p>` : ""}</div>
       </div>
       ${renderChineseSectionBody(pack, section, itemProgress)}
       ${shouldRenderChineseSectionControls(section) ? renderCourseItemControls(key, itemProgress) : ""}
+      ${renderChineseSectionFeedbackControls(section, itemProgress)}
     </article>
   `;
 }
@@ -10972,6 +11041,16 @@ function renderChineseSection(pack, section, index, progress) {
 function shouldRenderChineseSectionControls(section) {
   const childKeys = getChineseSectionChildKeys(section);
   return !childKeys.length || getChineseObjectiveQuestions(section).length > 0;
+}
+
+function renderChineseSectionFeedbackControls(section, itemProgress = {}) {
+  if (section?.type !== "four_grid_retell" || !section.prompts?.length) return "";
+  return renderCourseResultControls(`chinese:${section.id}`, itemProgress, {
+    independent: "独立完成",
+    prompted: "少量提醒",
+    modeled: "示范后完成",
+    not_yet: "暂未完成"
+  }, "完成情况");
 }
 
 function getChineseSectionChildKeys(section) {
@@ -10984,6 +11063,8 @@ function getChineseSectionChildKeys(section) {
 }
 
 function getChineseSectionChildInstruction(section) {
+  if (section?.type === "comprehension") return "读文后回答。";
+  if (section?.type === "four_grid_retell") return "按顺序说清要点。";
   return safePlainText(section?.childInstructionZh || section?.childVisible?.instructionZh || section?.prompt || "", 260);
 }
 
@@ -10995,21 +11076,21 @@ function renderChineseSectionBody(pack, section, itemProgress = {}) {
   const actionItems = getChineseActionItems(section);
   if (section.questions?.length) {
     return `
-      ${termItems.length ? renderChineseTermList(termItems, section.id) : ""}
-      ${actionItems.length ? renderChineseActionItems(actionItems, section.id) : ""}
-      <div class="course-question-list">${section.questions.map((question, index) => renderCourseQuestion(question, `${section.id}_${index}`, itemProgress, index)).join("")}</div>
+      ${termItems.length ? renderChineseTermList(termItems, section.id, section.markedTerms) : ""}
+      ${actionItems.length ? renderChineseActionItems(actionItems, section.id, section.markedTerms) : ""}
+      <div class="course-question-list">${section.questions.map((question, index) => renderCourseQuestion(question, `${section.id}_${index}`, itemProgress, index, section.markedTerms)).join("")}</div>
     `;
   }
   if (section.prompts?.length) {
     return `<div class="four-grid">${section.prompts.map((prompt, index) => {
       const childKey = `chinese:${section.id}:grid:${index}`;
       const done = getCourseProgress()?.chinese?.sections?.[childKey]?.finishedAt;
-      return `<div class="four-grid-item"><strong>${index + 1}</strong><span>${renderAnnotatableChineseText(prompt, section.id, `prompt_${index}`)}</span><button class="button secondary compact-button four-grid-action" data-course-complete="${escapeHtml(childKey)}" type="button">${done ? "已确认" : "确认"}</button></div>`;
+      return `<div class="four-grid-item"><strong>${index + 1}</strong><span>${renderAnnotatableChineseText(prompt, section.id, `prompt_${index}`, null, { markedTerms: section.markedTerms })}</span><button class="button secondary compact-button four-grid-action" data-course-complete="${escapeHtml(childKey)}" type="button">${done ? "已确认" : "确认"}</button></div>`;
     }).join("")}</div>`;
   }
-  if (actionItems.length) return renderChineseActionItems(actionItems, section.id);
-  if (termItems.length) return renderChineseTermList(termItems, section.id);
-  if (section.prompt) return `<p class="course-prompt">${renderAnnotatableChineseText(section.prompt, section.id, "prompt")}</p>`;
+  if (actionItems.length) return renderChineseActionItems(actionItems, section.id, section.markedTerms);
+  if (termItems.length) return renderChineseTermList(termItems, section.id, section.markedTerms);
+  if (section.prompt) return `<p class="course-prompt">${renderAnnotatableChineseText(section.prompt, section.id, "prompt", null, { markedTerms: section.markedTerms })}</p>`;
   return `<p class="pack-muted">按要求完成这一部分。</p>`;
 }
 
@@ -11029,16 +11110,16 @@ function isChineseActionItem(item) {
   return Boolean(item?.stepsZh?.length || item?.responseMode);
 }
 
-function renderChineseActionItems(items = [], sectionId = "task") {
+function renderChineseActionItems(items = [], sectionId = "task", markedTerms = []) {
   return `
     <div class="chinese-action-list">
       ${items.map((item, index) => `
         <article class="chinese-action-item">
-          <strong>${index + 1} ${renderAnnotatableChineseText(item.text || item.id || "任务", sectionId, `action_${index}_title`)}</strong>
-          ${item.setupZh ? `<p>${renderAnnotatableChineseText(item.setupZh, sectionId, `action_${index}_setup`)}</p>` : ""}
-          ${item.prompt ? `<p>${renderAnnotatableChineseText(item.prompt, sectionId, `action_${index}_prompt`)}</p>` : ""}
-          ${item.stepsZh?.length ? `<ol>${item.stepsZh.map((step, stepIndex) => `<li>${renderAnnotatableChineseText(step, sectionId, `action_${index}_step_${stepIndex}`)}</li>`).join("")}</ol>` : ""}
-          ${(item.referenceAnswerZh || item.answer) ? `<small>完成标准：${renderAnnotatableChineseText(item.referenceAnswerZh || item.answer, sectionId, `action_${index}_answer`)}</small>` : ""}
+          <strong>${index + 1} ${renderAnnotatableChineseText(item.text || item.id || "任务", sectionId, `action_${index}_title`, null, { markedTerms })}</strong>
+          ${item.setupZh ? `<p>${renderAnnotatableChineseText(item.setupZh, sectionId, `action_${index}_setup`, null, { markedTerms })}</p>` : ""}
+          ${item.prompt ? `<p>${renderAnnotatableChineseText(item.prompt, sectionId, `action_${index}_prompt`, null, { markedTerms })}</p>` : ""}
+          ${item.stepsZh?.length ? `<ol>${item.stepsZh.map((step, stepIndex) => `<li>${renderAnnotatableChineseText(step, sectionId, `action_${index}_step_${stepIndex}`, null, { markedTerms })}</li>`).join("")}</ol>` : ""}
+          ${(item.referenceAnswerZh || item.answer) ? `<small>完成标准：${renderAnnotatableChineseText(item.referenceAnswerZh || item.answer, sectionId, `action_${index}_answer`, null, { markedTerms })}</small>` : ""}
         </article>
       `).join("")}
     </div>
@@ -11052,10 +11133,10 @@ function formatChineseCharacterTerm(pack, value) {
   return target?.pinyin ? `${text}（${target.pinyin}）` : text;
 }
 
-function renderChineseTermList(items = [], sectionId = "terms") {
+function renderChineseTermList(items = [], sectionId = "terms", markedTerms = []) {
   return `
     <ol class="chinese-term-list">
-      ${items.map((item, index) => `<li><span class="term-index">${index + 1}</span><span class="term-text">${renderAnnotatableChineseText(item, sectionId, `term_${index}`)}</span></li>`).join("")}
+      ${items.map((item, index) => `<li><span class="term-index">${index + 1}</span><span class="term-text">${renderAnnotatableChineseText(item, sectionId, `term_${index}`, null, { markedTerms })}</span></li>`).join("")}
     </ol>
   `;
 }
@@ -11070,24 +11151,53 @@ function renderInteractiveReadingText(section) {
       <strong>不认识 ${stats.unknown} 字｜不熟悉 ${stats.unsure} 字</strong>
     </div>
     <div class="reading-text interactive-reading-text" data-reading-section="${escapeHtml(section.id)}">
-      ${section.textTitle ? `<h4>${renderAnnotatableChineseText(section.textTitle, section.id, "article_title")}</h4>` : ""}
-      ${(section.paragraphs || []).map((paragraph, paragraphIndex) => `<p>${renderReadingParagraph(section.id, paragraph, paragraphIndex, annotation)}</p>`).join("")}
+      ${section.textTitle ? `<h4>${renderAnnotatableChineseText(section.textTitle, section.id, "article_title", annotation, { markedTerms: section.markedTerms })}</h4>` : ""}
+      ${(section.paragraphs || []).map((paragraph, paragraphIndex) => `<p>${renderReadingParagraph(section.id, paragraph, paragraphIndex, annotation, section.markedTerms)}</p>`).join("")}
     </div>
   `;
 }
 
-function renderReadingParagraph(sectionId, paragraph, paragraphIndex, annotation) {
-  return renderAnnotatableChineseText(paragraph, sectionId, `paragraph_${paragraphIndex}`, annotation);
+function renderReadingParagraph(sectionId, paragraph, paragraphIndex, annotation, markedTerms = []) {
+  return renderAnnotatableChineseText(paragraph, sectionId, `paragraph_${paragraphIndex}`, annotation, { markedTerms, interactive: true });
 }
 
-function renderAnnotatableChineseText(text, sectionId, sourceIndex = "text", existingAnnotation = null) {
+function getChineseMarkedTerms(...sources) {
+  return [...new Set(sources.flatMap((source) => Array.isArray(source) ? source : typeof source === "string" ? [source] : [])
+    .map((term) => typeof term === "string" ? term : term?.text || term?.term || "")
+    .map((term) => safePlainText(term, 40))
+    .filter(Boolean))];
+}
+
+function getMarkedCharacterIndexes(text, markedTerms = []) {
+  const chars = [...String(text || "")];
+  const marked = new Set();
+  getChineseMarkedTerms(markedTerms).forEach((term) => {
+    const termChars = [...term];
+    if (!termChars.length) return;
+    for (let start = 0; start <= chars.length - termChars.length; start += 1) {
+      if (termChars.every((char, offset) => chars[start + offset] === char)) {
+        termChars.forEach((_, offset) => marked.add(start + offset));
+      }
+    }
+  });
+  return marked;
+}
+
+function renderAnnotatableChineseText(text, sectionId, sourceIndex = "text", existingAnnotation = null, options = {}) {
   const annotation = existingAnnotation || getReadingAnnotationSection(getCourseProgress(), sectionId);
+  const markedTerms = getChineseMarkedTerms(options.markedTerms);
+  const interactive = options.interactive === true || options.annotateAll === true;
+  if (!interactive && !markedTerms.length) return escapeHtml(text);
+  const markedIndexes = interactive ? new Set([...String(text || "")].map((_, index) => index)) : getMarkedCharacterIndexes(text, markedTerms);
   return [...String(text || "")].map((char, charIndex) => {
     if (!isHanCharacter(char)) return escapeHtml(char);
+    if (!interactive && !markedIndexes.has(charIndex)) return escapeHtml(char);
     const state = annotation.characters?.[char]?.status || "";
     const stateLabel = state === "unknown" ? "不认识" : state === "unsure" ? "不熟悉" : "未标记";
-    const classes = ["reading-char", state ? `is-${state}` : ""].filter(Boolean).join(" ");
-    return `<button class="${classes}" data-reading-char="${escapeHtml(char)}" data-reading-section="${escapeHtml(sectionId)}" data-reading-source="${escapeHtml(sourceIndex)}" data-reading-index="${charIndex}" type="button" aria-label="${escapeHtml(`${char}，${stateLabel}`)}">${escapeHtml(char)}</button>`;
+    const marked = markedIndexes.has(charIndex);
+    const classes = ["reading-char", state ? `is-${state}` : "", marked ? "is-marked-term" : ""].filter(Boolean).join(" ");
+    const label = `${char}，${stateLabel}${marked ? "，加点词" : ""}`;
+    return `<button class="${classes}" data-reading-char="${escapeHtml(char)}" data-reading-section="${escapeHtml(sectionId)}" data-reading-source="${escapeHtml(sourceIndex)}" data-reading-index="${charIndex}"${marked ? ' data-reading-marked="true"' : ""} type="button" aria-label="${escapeHtml(label)}">${escapeHtml(char)}</button>`;
   }).join("");
 }
 
@@ -11260,8 +11370,9 @@ function recordPassiveRecognitionFromCompletedReading(sectionKey) {
   });
 }
 
-function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 0) {
+function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 0, markedTerms = []) {
   const annotationSectionId = parseChineseQuestionKey(key)?.sectionId || key;
+  const questionMarkedTerms = getChineseMarkedTerms(markedTerms, question?.markedTerms);
   const options = getChineseQuestionOptionOrder(question, key, itemProgress);
   const isSpokenOpen = question.answerMode === "spoken" || (!options.length && (question.recording || question.referenceAnswer || question.answer));
   const fallbackSpokenText = isSpokenOpen ? (question.instructionZh || "请先自己读，再用自己的话说一说。") : (question.prompt || "请回答");
@@ -11274,27 +11385,27 @@ function renderCourseQuestion(question, key, itemProgress = {}, questionIndex = 
   const oralResult = itemProgress.oralAssessmentResults?.[key] || null;
   return `
     <div class="course-question">
-      ${renderQuestionDisplayCards(question, annotationSectionId, questionIndex)}
-      ${renderPromptRow(`<strong>${questionIndex + 1}. ${question.prompt ? renderAnnotatableChineseText(question.prompt, annotationSectionId, `question_${questionIndex}_prompt`) : "请回答"}</strong>`, renderReadAloudButton(`chinese:${key}`, readAloud, { assessment: isSpokenOpen, targetText: question.prompt || question.answer || "" }))}
+      ${renderQuestionDisplayCards(question, annotationSectionId, questionIndex, questionMarkedTerms)}
+      ${renderPromptRow(`<strong>${questionIndex + 1}. ${question.prompt ? renderAnnotatableChineseText(question.prompt, annotationSectionId, `question_${questionIndex}_prompt`, null, { markedTerms: questionMarkedTerms }) : "请回答"}</strong>`, renderReadAloudButton(`chinese:${key}`, readAloud, { assessment: isSpokenOpen, targetText: question.prompt || question.answer || "" }))}
       ${options.length ? `<div class="course-options">${options.map((option, optionIndex) => {
         const selectedClass = normalizeSentenceAnswer(option) === normalizeSentenceAnswer(selected) ? "selected" : "";
-        return `<div class="course-choice-button ${selectedClass}"><button class="choice-letter" data-course-choice="${escapeHtml(key)}" data-choice-value="${escapeHtml(option)}" data-choice-answer="${escapeHtml(question.answer || "")}" data-choice-index="${optionIndex}" type="button" aria-label="选择 ${choiceLetter(optionIndex)}"><span aria-hidden="true">${choiceLetter(optionIndex)}</span></button><span class="choice-text">${renderAnnotatableChineseText(option, annotationSectionId, `question_${questionIndex}_option_${optionIndex}`)}</span></div>`;
+        return `<div class="course-choice-button ${selectedClass}"><button class="choice-letter" data-course-choice="${escapeHtml(key)}" data-choice-value="${escapeHtml(option)}" data-choice-answer="${escapeHtml(question.answer || "")}" data-choice-index="${optionIndex}" type="button" aria-label="选择 ${choiceLetter(optionIndex)}"><span aria-hidden="true">${choiceLetter(optionIndex)}</span></button><span class="choice-text">${renderAnnotatableChineseText(option, annotationSectionId, `question_${questionIndex}_option_${optionIndex}`, null, { markedTerms: questionMarkedTerms })}</span></div>`;
       }).join("")}</div>` : ""}
       ${renderQuestionOralAssessment(question, key, oralResult)}
       ${showFeedback ? `<p class="answer-feedback ${result.correct ? "correct" : "needs-help"}"><strong>${result.correct ? "正确" : "再想想"}</strong><span>${escapeHtml(`你选了 ${result.selectedLetter || ""}`)}</span></p>` : ""}
-      ${!options.length && !isSpokenOpen && (question.referenceAnswer || question.answer) ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(key)}" type="button">查看参考</button><p class="course-answer" data-course-answer="${escapeHtml(key)}" hidden>${renderAnnotatableChineseText(question.referenceAnswer || question.answer, annotationSectionId, `question_${questionIndex}_answer`)}</p>` : ""}
+      ${!options.length && !isSpokenOpen && (question.referenceAnswer || question.answer) ? `<button class="button ghost compact-button" data-course-toggle-answer="${escapeHtml(key)}" type="button">查看参考</button><p class="course-answer" data-course-answer="${escapeHtml(key)}" hidden>${renderAnnotatableChineseText(question.referenceAnswer || question.answer, annotationSectionId, `question_${questionIndex}_answer`, null, { markedTerms: questionMarkedTerms })}</p>` : ""}
       ${isSpokenOpen ? renderCourseItemControls(`chinese:${key}`, getCourseProgress()?.chinese?.sections?.[`chinese:${key}`] || {}) : ""}
     </div>
   `;
 }
 
-function renderQuestionDisplayCards(question, sectionId = "question", questionIndex = 0) {
+function renderQuestionDisplayCards(question, sectionId = "question", questionIndex = 0, markedTerms = []) {
   const cards = question.displayCards;
   if (!cards?.artworkCard && !cards?.labelCards?.length) return "";
   return `
     <div class="question-display-cards">
-      ${cards.artworkCard ? `<div><strong>作品卡</strong><span>${renderAnnotatableChineseText(cards.artworkCard, sectionId, `question_${questionIndex}_artwork`)}</span></div>` : ""}
-      ${cards.labelCards?.length ? `<ol>${cards.labelCards.map((card, cardIndex) => `<li><strong>${escapeHtml(card.id)}</strong><span>${renderAnnotatableChineseText(card.text, sectionId, `question_${questionIndex}_label_${cardIndex}`)}</span></li>`).join("")}</ol>` : ""}
+      ${cards.artworkCard ? `<div><strong>作品卡</strong><span>${renderAnnotatableChineseText(cards.artworkCard, sectionId, `question_${questionIndex}_artwork`, null, { markedTerms })}</span></div>` : ""}
+      ${cards.labelCards?.length ? `<ol>${cards.labelCards.map((card, cardIndex) => `<li><strong>${escapeHtml(card.id)}</strong><span>${renderAnnotatableChineseText(card.text, sectionId, `question_${questionIndex}_label_${cardIndex}`, null, { markedTerms })}</span></li>`).join("")}</ol>` : ""}
     </div>
   `;
 }
@@ -11637,8 +11748,17 @@ function renderCourseItemControls(key, itemProgress) {
         <button class="button ${completeClass} compact-button" data-course-complete="${escapeHtml(key)}" type="button">${escapeHtml(completeLabel)}</button>
       </div>
       ${isChinese && itemProgress.confirmationMessage ? `<p class="course-confirm-message" role="alert">${escapeHtml(itemProgress.confirmationMessage)}</p>` : ""}
-      <div class="course-result-row">
-        ${Object.entries(COURSE_RESULT_LABELS).map(([value, label]) => `<button class="button ${itemProgress.result === value ? "primary" : "ghost"} compact-button" data-course-result="${escapeHtml(key)}" data-result-value="${escapeHtml(value)}" type="button">${escapeHtml(label)}</button>`).join("")}
+      ${renderCourseResultControls(key, itemProgress)}
+    </div>
+  `;
+}
+
+function renderCourseResultControls(key, itemProgress = {}, labels = COURSE_RESULT_LABELS, heading = "") {
+  return `
+    <div class="course-result-group">
+      ${heading ? `<span class="course-result-heading">${escapeHtml(heading)}</span>` : ""}
+      <div class="course-result-row" role="group" aria-label="${escapeHtml(heading || "完成情况")}">
+        ${Object.entries(labels).map(([value, label]) => `<button class="button ${itemProgress.result === value ? "primary" : "ghost"} compact-button" data-course-result="${escapeHtml(key)}" data-result-value="${escapeHtml(value)}" type="button">${itemProgress.result === value ? "✓ " : ""}${escapeHtml(label)}</button>`).join("")}
       </div>
     </div>
   `;
@@ -11649,17 +11769,23 @@ function renderRecordingCard(activityKey, config, course) {
 }
 
 function renderBreakCard(key, title, minutes = 5, itemProgress = {}, instruction = "") {
-  const active = Boolean(itemProgress.breakEndsAt && !itemProgress.breakFinishedAt);
-  const remainingMs = active ? Math.max(0, Number(itemProgress.breakEndsAt) - Date.now()) : Math.max(0, Number(minutes || 5) * 60000);
+  const active = Boolean(itemProgress.breakStartedAt && !itemProgress.breakFinishedAt);
+  const finished = Boolean(itemProgress.breakFinishedAt);
+  const remainingMs = active ? Math.max(0, Number(itemProgress.breakEndsAt || 0) - Date.now()) : Math.max(0, Number(minutes || 5) * 60000);
+  const expired = active && remainingMs <= 0;
+  const recordingPaused = itemProgress.breakResumeRecordingOnEnd === true;
+  const status = active
+    ? `计时已暂停 · ${recordingPaused ? "录音已暂停" : "录音未启动"}`
+    : finished ? "已结束" : "准备休息";
   return `
     <article class="course-card break-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
-        <div><span>休</span><h3>${escapeHtml(title || "休息一下")}</h3><p>${escapeHtml(instruction || "喝水、看远处，放松一下")}</p></div>
+        <div><span class="break-state-label">${active ? "休息中" : finished ? "休息已结束" : "休息"}</span><p>${escapeHtml(status)}</p></div>
       </div>
-      <div class="break-countdown ${active ? "is-active" : ""}" aria-live="polite">${formatClock(remainingMs)}</div>
-      <div class="actions compact">
-        <button class="button secondary compact-button" data-break-start="${escapeHtml(key)}" data-break-minutes="${Number(minutes || 5)}" ${active ? "disabled" : ""} type="button">开始</button>
-        <button class="button primary compact-button" data-break-end="${escapeHtml(key)}" ${active ? "" : "disabled"} type="button">结束</button>
+      <div class="break-countdown ${active ? "is-active" : ""} ${expired ? "is-expired" : ""}" aria-live="polite">${formatClock(remainingMs)}</div>
+      ${expired ? `<p class="break-expired" role="status">休息时间到</p>` : ""}
+      <div class="actions compact break-actions">
+        ${active ? `<button class="button primary compact-button" data-break-end="${escapeHtml(key)}" type="button">结束休息</button>` : finished ? "" : `<button class="button primary compact-button" data-break-start="${escapeHtml(key)}" data-break-minutes="${Number(minutes || 5)}" type="button">开始休息</button>`}
       </div>
     </article>
   `;
@@ -11766,7 +11892,9 @@ function renderCourseStartSettings(kind, progress, items) {
 }
 
 function renderCourseEndFeedback(kind, progress, items) {
-  const hardestOptions = items.map((item, index) => ({ id: item.id || `item_${index}`, title: getStudentSectionTitle(item.title || item.titleZh || `第 ${index + 1} 步`) }));
+  const hardestOptions = items
+    .filter((item) => item.type !== "break" && item.id !== "break")
+    .map((item, index) => ({ id: item.id || `item_${index}`, title: getStudentSectionTitle(item.title || item.titleZh || `第 ${index + 1} 步`) }));
   const selectedHardest = progress.hardestSections || (progress.hardest ? [progress.hardest] : []);
   return `
     <article class="course-end-feedback">
@@ -11907,6 +12035,7 @@ async function startCourseSession(kind, options = {}) {
   const progress = getActiveProgressForCourse(kind);
   const side = progress?.[kind];
   if (!side) return;
+  if (getActiveBreakEvent(progress, `${kind}:fixed_break`) || Object.entries(side.sections || side.steps || {}).some(([key, item]) => getActiveBreakEvent(progress, key) || isBreakProgressItem(key, item) && item.breakStartedAt && !item.breakFinishedAt)) return;
   normalizeCourseTimer(side);
   if (side.isRunning) return;
   const now = Date.now();
@@ -11976,50 +12105,111 @@ function pauseCourseItem(key) {
 }
 
 function startBreak(key, minutes = 5) {
-  const progress = getCourseProgress();
+  const progress = getCourseProgressForKey(key);
+  const kind = getCourseKindFromKey(key);
+  const side = progress?.[kind];
+  if (!progress || !side) return false;
   const bucket = getCourseBucket(progress, key);
   const item = bucket[key] || {};
+  if (item.breakStartedAt && !item.breakFinishedAt) return false;
+  if (item.breakFinishedAt) return false;
   const startedAt = Date.now();
+  const wasSessionRunning = Boolean(side.isRunning && side.runningSince);
+  const wasRecordingActive = isActiveCourseRecording(kind);
+  const recordingClipIds = activeRecording?.clipId ? [activeRecording.clipId] : [];
+  const eventId = `${progress.packId}:${kind}:break:${startedAt.toString(36)}`;
+  const plannedDurationMs = Math.max(1, Number(minutes) || 5) * 60000;
+  const event = {
+    eventId,
+    type: "break",
+    planetId: kind,
+    packId: progress.packId || "",
+    sessionId: side.sessionId || "",
+    activityId: key,
+    startedAt: new Date(startedAt).toISOString(),
+    endedAt: "",
+    plannedDurationMs,
+    elapsedMs: 0,
+    reason: "",
+    autoEnded: false,
+    resumeCourseOnEnd: wasSessionRunning,
+    resumeRecordingOnEnd: wasRecordingActive,
+    recordingClipIds
+  };
+  getSessionEvents(progress).push(event);
+  pauseCourseSide(progress, kind, "break");
   bucket[key] = {
     ...item,
-    startedAt: item.startedAt || new Date(startedAt).toISOString(),
+    breakEventId: eventId,
     breakStartedAt: startedAt,
-    breakEndsAt: startedAt + Math.max(1, minutes) * 60000,
+    breakEndsAt: startedAt + plannedDurationMs,
     breakFinishedAt: null,
-    result: "independent"
+    breakActive: true,
+    breakPlannedDurationMs: plannedDurationMs,
+    breakResumeCourseOnEnd: wasSessionRunning,
+    breakResumeRecordingOnEnd: wasRecordingActive,
+    breakRecordingClipIds: recordingClipIds
   };
-  progress.breaks ||= [];
   saveState();
   rerenderCourseViews();
+  return true;
 }
 
-function endBreak(key, reason = "manual") {
-  const progress = getCourseProgress();
+async function endBreak(key, reason = "manual") {
+  const progress = getCourseProgressForKey(key);
+  const kind = getCourseKindFromKey(key);
   const bucket = getCourseBucket(progress, key);
   const item = bucket[key] || {};
+  let event = getSessionEvents(progress).find((entry) => entry.eventId === item.breakEventId) || getActiveBreakEvent(progress, key);
+  if (!event && item.breakStartedAt && !item.breakFinishedAt) {
+    event = {
+      eventId: item.breakEventId || `legacy-active-break:${progress.packId}:${key}:${item.breakStartedAt}`,
+      type: "break",
+      planetId: kind,
+      packId: progress.packId || "",
+      sessionId: progress?.[kind]?.sessionId || "",
+      activityId: key,
+      startedAt: new Date(Number(item.breakStartedAt)).toISOString(),
+      endedAt: "",
+      plannedDurationMs: Number(item.breakPlannedDurationMs || 0),
+      elapsedMs: 0,
+      reason: "",
+      autoEnded: false,
+      resumeCourseOnEnd: item.breakResumeCourseOnEnd === true,
+      resumeRecordingOnEnd: item.breakResumeRecordingOnEnd === true,
+      recordingClipIds: item.breakRecordingClipIds || []
+    };
+    getSessionEvents(progress).push(event);
+  }
+  if (!event || item.breakFinishedAt) return false;
   const now = Date.now();
   const elapsedMs = item.breakStartedAt ? Math.max(0, now - Number(item.breakStartedAt)) : 0;
+  const endedAt = new Date(now).toISOString();
+  event.endedAt = endedAt;
+  event.elapsedMs = elapsedMs;
+  event.reason = reason === "timer_complete" ? "manual" : reason;
+  event.autoEnded = false;
   bucket[key] = {
     ...item,
     breakFinishedAt: new Date(now).toISOString(),
     breakActive: false,
-    finishedAt: new Date(now).toISOString(),
-    interruptionReason: reason
+    interruptionReason: ""
   };
-  progress.breaks ||= [];
-  const existingIndex = progress.breaks.findIndex((entry) => entry.activityId === key && entry.startedAt === item.breakStartedAt);
-  const entry = {
-    activityId: key,
-    startedAt: item.breakStartedAt || now,
-    endedAt: now,
-    elapsedMs,
-    reason
-  };
-  if (existingIndex >= 0) progress.breaks[existingIndex] = entry;
-  else progress.breaks.push(entry);
   saveState();
   playSoftBreakSignal();
   rerenderCourseViews();
+  if (event.resumeCourseOnEnd) {
+    await startCourseSession(kind, { skipRecordingSync: true });
+  }
+  if (event.resumeRecordingOnEnd) {
+    const resumed = resumeActiveRecording(kind);
+    if (!resumed) await new Promise((resolve) => setTimeout(resolve, 0));
+    const previousClip = event.recordingClipIds?.map((id) => state.recordingClips?.[id]).find(Boolean);
+    if (!resumed && previousClip && !["recording", "paused"].includes(previousClip.status)) await startCourseRecording(kind, { append: true });
+  }
+  saveState();
+  rerenderCourseViews();
+  return true;
 }
 
 function completeCourseItem(key) {
@@ -12068,12 +12258,14 @@ function maybeCompleteChineseParentSection(childKey, progress) {
 }
 
 function countCompletedChineseSections(pack, map) {
-  const keys = getChineseLessonSections(pack).map((section) => `chinese:${section.id}`);
+  const keys = getChineseLessonSections(pack)
+    .filter((section) => section.type !== "break" && section.id !== "break")
+    .map((section) => `chinese:${section.id}`);
   return countCompletedCourseItems(map, keys);
 }
 
 function areChineseSectionsComplete(pack, map) {
-  const sections = getChineseLessonSections(pack);
+  const sections = getChineseLessonSections(pack).filter((section) => section.type !== "break" && section.id !== "break");
   return sections.length > 0 && countCompletedChineseSections(pack, map) === sections.length;
 }
 
@@ -13324,14 +13516,11 @@ function scheduleBreakCountdown() {
   }
   const progress = getCourseProgress();
   const maps = [progress?.chinese?.sections, progress?.english?.steps, progress?.art?.steps].filter(Boolean);
-  const hasActiveBreak = maps.some((map) => Object.values(map).some((item) => item.breakEndsAt && !item.breakFinishedAt));
+  const hasActiveBreak = maps.some((map) => Object.values(map).some((item) => item.breakStartedAt && !item.breakFinishedAt));
   if (!hasActiveBreak) return;
   breakCountdownTimer = setInterval(() => {
-    const activeProgress = getCourseProgress();
-    const activeMaps = [activeProgress?.chinese?.sections, activeProgress?.english?.steps, activeProgress?.art?.steps].filter(Boolean);
-    activeMaps.forEach((map) => Object.entries(map).forEach(([key, item]) => {
-      if (item.breakEndsAt && !item.breakFinishedAt && Date.now() >= Number(item.breakEndsAt)) endBreak(key, "timer_complete");
-    }));
+    // Countdown reaching zero is a visual cue only. The learner must click
+    // “结束休息”; never auto-complete or resume a break from this ticker.
     if ($("#today-chinese")?.classList.contains("active")) renderChineseLesson();
     if ($("#today-english")?.classList.contains("active")) renderEnglishLesson();
     if ($("#today-art")?.classList.contains("active")) renderArtLesson();
@@ -13413,7 +13602,7 @@ function buildCurrentFeedbackSnapshot(pack, progress) {
       startedPlanetCount,
       completedPlanetCount,
       totalActiveMinutes: roundMinutes(Object.values(planets).reduce((sum, planet) => sum + (planet.elapsedSeconds || 0), 0) * 1000),
-      breakMinutes: roundMinutes((progress.breaks || []).reduce((sum, item) => sum + (item.elapsedMs || 0), 0))
+      breakMinutes: roundMinutes(Object.values(planets).reduce((sum, planet) => sum + Number(planet.breakMinutes || 0), 0) * 60000)
     },
     planets,
     attachmentsExpected: collectSnapshotAttachments(planets)
@@ -13438,7 +13627,7 @@ function buildPlanetSnapshot(pack, progress, course) {
     activeMinutes: scheduled ? roundMinutes((single.shared?.totalElapsedSeconds || 0) * 1000) : 0,
     elapsedMinutes: scheduled ? roundMinutes((single.shared?.totalElapsedSeconds || 0) * 1000) : 0,
     elapsedSeconds: scheduled ? (single.shared?.totalElapsedSeconds || 0) : 0,
-    breakMinutes: 0,
+    breakMinutes: Number(single.shared?.breakSeconds || 0) / 60,
     childEase: single.shared?.childEase ?? null,
     parentEase: single.shared?.parentEase ?? null,
     hardestActivityId: single.shared?.hardestActivityId || "",
@@ -13452,6 +13641,7 @@ function buildPlanetSnapshot(pack, progress, course) {
     recordings: getRecordingManifestForCourse(course),
     recordingSummary: summarizeRecordings(getRecordingManifestForCourse(course)),
     courseRecording: summarizeCourseRecording(course),
+    sessionEvents: single.sessionEvents || [],
     readingAnnotations: course === "chinese" && scheduled ? summarizeReadingAnnotations(progress.chinese.readingAnnotations || {}) : null,
     interactions: scheduled ? getCourseInteractions(single, course) : [],
     answers: scheduled ? getCourseAnswers(single, course) : [],
@@ -13590,7 +13780,7 @@ function safeFilePart(value) {
 function getCourseInteractions(single, course) {
   const data = single[course] || {};
   const items = data.sections || data.steps || [];
-  return items.filter((item) => item.startedAt || item.completedAt || item.result || item.hintLevelUsed || item.viewedAnswer || item.attempts || item.readAloudUsed);
+  return items.filter((item) => !isBreakProgressItem(item.sectionId || item.stepId || item.activityId, item) && (item.startedAt || item.completedAt || item.result || item.hintLevelUsed || item.viewedAnswer || item.attempts || item.readAloudUsed));
 }
 
 function getCourseAnswers(single, course) {
@@ -13684,13 +13874,14 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
     audioFileNames: side.audioFeedbackExpected && side.audioFileName ? [side.audioFileName] : [],
     shared: {
       totalElapsedSeconds: Math.round(courseElapsed / 1000),
-      breakSeconds: 0,
+      breakSeconds: Math.round(getBreakEvents(progress).reduce((sum, item) => sum + Number(item.elapsedMs || 0), 0) / 1000),
       childEase: side.childEase ?? null,
       parentEase: side.parentEase ?? null,
       hardestActivityId: side.hardest || "",
       hardestSections: side.hardestSections || (side.hardest ? [side.hardest] : [])
     },
-    generatedAt: new Date().toISOString()
+    generatedAt: new Date().toISOString(),
+    sessionEvents: getBreakEvents(progress).map((event) => structuredCloneSafe(event))
   };
   if (course === "chinese") {
     base.chinese = {
@@ -13769,7 +13960,7 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
 }
 
 function summarizeCourseItems(map, idName) {
-  return Object.entries(map || {}).map(([key, item]) => ({
+  return Object.entries(map || {}).filter(([key, item]) => !isBreakProgressItem(key, item)).map(([key, item]) => ({
     [`${idName}Id`]: key,
     elapsedSeconds: Math.round((item.elapsedMs || 0) / 1000),
     completion: item.finishedAt ? "completed" : item.startedAt ? "started" : "not_started",
@@ -13887,7 +14078,7 @@ function countPendingActivities(course, pack = getActivePackForCourse(course), p
 
 function getExpectedActivityIds(pack, course) {
   if (!pack) return [];
-  if (course === "chinese") return getChineseLessonSections(pack).map((item) => item.id);
+  if (course === "chinese") return getChineseLessonSections(pack).filter((item) => item.type !== "break" && item.id !== "break").map((item) => item.id);
   if (course === "english") return getEnglishLessonSteps(pack, getSelectedEnglishMode(pack)).map((item) => item.id);
   if (course === "art") return getArtLessonSteps(pack).map((item) => item.id);
   return [];
@@ -13895,7 +14086,7 @@ function getExpectedActivityIds(pack, course) {
 
 function inferSessionStatus(side, pending) {
   const map = side.sections || side.steps || {};
-  const hasActivity = Object.values(map).some((item) => item.startedAt || item.finishedAt || item.result);
+  const hasActivity = Object.entries(map).some(([key, item]) => !isBreakProgressItem(key, item) && (item.startedAt || item.finishedAt || item.result));
   if (side.sessionStatus && !(side.sessionStatus === "not_started" && hasActivity)) return side.sessionStatus;
   if (side.finishedAt && pending.pending.length === 0) return "completed";
   if (side.finishedAt) return "stopped_early";
