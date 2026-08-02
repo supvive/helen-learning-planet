@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "packId": "2026-07-25-three-planets",
+  "date": "2026-07-25",
+  "loadMode": "light",
+  "title": "Helen 三科学习包",
+  "sharedPlan": {
+    "plannedChineseMinutes": 35,
+    "plannedBreakMinutes": 5,
+    "defaultEnglishMode": "light",
+    "plannedEnglishMinutes": 20,
+    "sequenceNoteZh": "三科可以分开完成"
+  },
+  "chinese": {
+    "characters": [
+      {"text": "逐", "pinyin": "zhú", "meaning": "一个接一个。", "words": ["逐个", "逐步", "逐渐"], "example": "请逐个检查。", "status": "review"}
+    ],
+    "words": [
+      {"text": "逐个", "meaning": "一个一个地。", "status": "review"}
+    ],
+    "lesson": {
+      "lessonId": "cn-day-13",
+      "title": "Day 13｜桥梁阅读",
+      "sections": [
+        {
+          "id": "reading",
+          "type": "reading_text",
+          "title": "今日阅读",
+          "plannedMinutes": 8,
+          "parentInstructionZh": "请孩子分段读。",
+          "textTitle": "小种子",
+          "paragraphs": ["小种子在泥土里睡觉。春风来了，它慢慢醒来。"],
+          "answerMode": "spoken"
+        },
+        {
+          "id": "comprehension",
+          "type": "comprehension",
+          "title": "说一说",
+          "plannedMinutes": 4,
+          "parentInstructionZh": "请孩子口头回答。",
+          "questions": [
+            {"id": "q1", "prompt": "小种子在哪里？", "options": ["泥土里", "天空上", "河水里"], "answer": "泥土里", "referenceAnswer": "小种子在泥土里。"}
+          ],
+          "answerMode": "spoken"
+        }
+      ],
+      "answerKey": {"q1": "泥土里"}
+    }
+  },
+  "english": {
+    "storyId": "story_primary_school",
+    "storyTitle": "Hello, School!",
+    "anchorSentence": "Open your books.",
+    "translationZh": "打开你们的书。",
+    "words": [
+      {"text": "open", "meaningZh": "打开", "status": "review", "sourceSentence": "Open your books.", "priority": 3}
+    ],
+    "pattern": {"id": "imperative_open", "displayZh": "动词原形指令", "blocks": ["Open", "your", "books."]},
+    "lesson": {
+      "lessonId": "en-day-29",
+      "defaultMode": "light",
+      "allowedModes": ["recovery", "light", "standard"],
+      "previousSentence": "Good morning.",
+      "anchorSentence": "Open your books.",
+      "translationZh": "打开你们的书。",
+      "appLocator": {"appName": "每日英语听力", "folder": "Helen place", "article": "Hello, School v2.2", "targetSentence": "Open your books."},
+      "steps": [
+        {"id": "retrieval", "number": 1, "titleZh": "复习上一句", "tool": "website_and_daily_english_listening", "minutesByMode": {"light": 2, "standard": 3, "recovery": 2}, "actionsZh": ["说出上一句"], "successCriteriaZh": "能说大意即可"},
+        {"id": "blind_listening", "number": 2, "titleZh": "盲听", "tool": "daily_english_listening", "minutesByMode": {"light": 3, "standard": 4}, "actionsZh": ["播放两遍"], "successCriteriaZh": "听到open即可"},
+        {"id": "meaning_and_text", "number": 3, "titleZh": "看原文", "tool": "daily_english_listening", "minutesByMode": {"light": 3, "standard": 4, "recovery": 3}, "actionsZh": ["看原文和中文"], "successCriteriaZh": "知道意思"},
+        {"id": "echo", "number": 4, "titleZh": "跟读", "tool": "daily_english_listening", "minutesByMode": {"light": 4, "standard": 5, "recovery": 3}, "actionsZh": ["跟读两遍"], "successCriteriaZh": "愿意跟读"},
+        {"id": "blocks", "number": 5, "titleZh": "积木拼句", "tool": "website", "minutesByMode": {"light": 4, "standard": 6, "recovery": 2}, "blocks": ["Open", "your", "books."], "targetSentences": ["Open your books."], "acceptedAnswers": ["Open your books."], "actionsZh": ["点击积木拼句"], "successCriteriaZh": "拼出句子"},
+        {"id": "phonics", "number": 6, "titleZh": "拼读", "tool": "website", "minutesByMode": {"light": 3, "standard": 5}, "focus": "oo", "items": ["books"], "actionsZh": ["读books"], "successCriteriaZh": "能读整词"},
+        {"id": "dialogue_exit", "number": 7, "titleZh": "离场对话", "tool": "website_and_parent", "minutesByMode": {"light": 3, "standard": 4, "recovery": 2}, "dialogue": [{"speaker": "parent", "text": "Please open your books."}, {"speaker": "child", "text": "Open your books."}], "exitChecks": ["孩子说一句"], "successCriteriaZh": "轻松结束"}
+      ]
+    }
+  },
+  "art": {
+    "courseId": "marker-drawing-foundations",
+    "lessonId": "art-marker-001",
+    "title": "小狗头像",
+    "plannedMinutes": 40,
+    "skillFocus": ["线条", "基本形", "平涂"],
+    "materials": [
+      {"name": "无毒儿童水性丙烯马克笔", "required": true},
+      {"name": "马克笔纸", "required": true}
+    ],
+    "safetyNotesZh": ["保护桌面", "使用儿童安全画材"],
+    "warmup": {"id": "warmup", "title": "线条热身", "instructionZh": "画三条慢慢的弧线。", "plannedMinutes": 3, "successCriteriaZh": "线条不断开。", "hintLevels": ["手慢一点。"]},
+    "steps": [
+      {"id": "shape", "order": 1, "title": "拆出大形", "instructionZh": "先画一个圆圆的头。", "parentPromptZh": "看圆形再动笔。", "plannedMinutes": 5, "imageAssetId": "art-shape", "narration": {"textZh": "先画一个圆圆的头。", "audioAssetId": "audio-shape"}, "successCriteriaZh": "画出大圆形。", "hintLevels": [{"textZh": "可以先用手指比一下大小。"}]},
+      {"id": "color", "order": 2, "title": "平涂颜色", "instructionZh": "用浅棕色轻轻涂满。", "parentPromptZh": "边缘慢一点。", "plannedMinutes": 8, "imageAssetId": "art-color", "narration": {"textZh": "用浅棕色轻轻涂满。", "audioAssetId": "audio-color"}, "successCriteriaZh": "颜色基本铺满。", "hintLevels": [{"textZh": "从边缘往里面涂。"}]}
+    ],
+    "reflection": {"nameArtwork": true, "promptsZh": ["你最喜欢哪里？", "下次想加什么？"]},
+    "completionCriteria": "完成一张小狗头像。"
+  }
+}

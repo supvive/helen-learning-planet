@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.11",
-  buildId: "2026-08-02T12:55:00+08:00",
+  version: "v3.9.12",
+  buildId: "2026-08-03T01:28:00+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -251,8 +251,8 @@ const COLOR_REFERENCE_DB_VERSION = 1;
 const COLOR_REFERENCE_MAX_FILE_BYTES = 10 * 1024 * 1024;
 const COLOR_REFERENCE_MAX_EDGE = 1600;
 const COLOR_REFERENCE_STEP_TITLES = Object.freeze([
-  "选画笔", "定画面", "定位置", "形状骨架", "前后遮挡", "完整草稿", "主动修改",
-  "闭合线稿", "主体平涂", "配件与背景", "局部暗部", "干后修补", "讲评"
+  "选画笔", "定画面", "定位置", "形状骨架", "前后遮挡", "完整草稿", "主体平涂",
+  "配件与背景", "闭合线稿", "内部细节", "局部暗部/高光", "干后修补", "讲评"
 ]);
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
 const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
@@ -3462,7 +3462,7 @@ function bindDailyPractice() {
 
 function bindDailyCoursePages() {
   document.addEventListener("click", (event) => {
-    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-english-adaptive-nav], [data-english-adaptive-option], [data-english-adaptive-next], [data-english-adaptive-hint], [data-adaptive-audio-play], [data-english-history-library], [data-english-adaptive-home], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle]");
+    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-english-adaptive-nav], [data-english-adaptive-option], [data-english-adaptive-next], [data-english-adaptive-hint], [data-adaptive-audio-play], [data-english-history-library], [data-english-adaptive-home], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle], [data-color-dimensions-toggle]");
     if (!target) return;
     if (target.dataset.courseSessionStart) startCourseSession(target.dataset.courseSessionStart);
     if (target.dataset.courseSessionReset) resetCourseSession(target.dataset.courseSessionReset);
@@ -3521,6 +3521,7 @@ function bindDailyCoursePages() {
     if (target.dataset.colorSizePreset) selectGeneratedColorSize(target.dataset.colorCourseId, target.dataset.colorSizePreset);
     if (target.dataset.colorPaletteChoice) selectGeneratedColorPalette(target.dataset.colorCourseId, target.dataset.colorPaletteTarget, target.dataset.colorPaletteChoice);
     if (target.hasAttribute("data-color-overlay-toggle")) toggleGeneratedColorOverlay(target.dataset.colorCourseId);
+    if (target.hasAttribute("data-color-dimensions-toggle")) toggleGeneratedColorDimensions(target.dataset.colorCourseId);
   });
   document.addEventListener("load", handleArtImageLoad, true);
   document.addEventListener("error", handleArtImageError, true);
@@ -7885,7 +7886,7 @@ function sanitizeArtPaletteItem(item, index) {
 }
 
 function sanitizeStudentFacingArtText(value, maxLength) {
-  return cleanStudentInstructionText(value)
+  return safePlainText(cleanStudentInstructionText(value), maxLength)
     .replace(/儿童(?=安全|可用|水性)/g, "")
     .slice(0, maxLength);
 }
@@ -9599,7 +9600,11 @@ function calculateA4PaperPlan(aspectRatio) {
       widthCm,
       heightCm,
       marginHorizontalCm: Math.round(((21 - widthCm) / 2) * 10) / 10,
-      marginVerticalCm: Math.round(((29.7 - heightCm) / 2) * 10) / 10
+      marginVerticalCm: Math.round(((29.7 - heightCm) / 2) * 10) / 10,
+      marginLeftCm: Math.round(((21 - widthCm) / 2) * 10) / 10,
+      marginRightCm: Math.round(((21 - widthCm) / 2) * 10) / 10,
+      marginTopCm: Math.round(((29.7 - heightCm) / 2) * 10) / 10,
+      marginBottomCm: Math.round(((29.7 - heightCm) / 2) * 10) / 10
     };
   };
   return {
@@ -9620,24 +9625,54 @@ function buildGeneratedColorSteps(analysis) {
   const objects = (analysis.objects || []).slice(0, 4);
   const labels = objects.map((item) => item.labelZh).filter(Boolean);
   const backToFront = [...objects].sort((a, b) => Number(a.depth || 0) - Number(b.depth || 0)).map((item) => item.labelZh);
-  const targetIds = (analysis.paletteTargets || []).map((item) => item.id);
-  const backgroundIds = (analysis.paletteTargets || []).filter((item) => /背景|地面|天空/.test(item.roleZh || "")).map((item) => item.id);
-  const shadowIds = (analysis.paletteTargets || []).filter((item) => /阴影|暗部|深色/.test(item.roleZh || "")).map((item) => item.id);
-  const mainIds = targetIds.filter((id) => !backgroundIds.includes(id) && !shadowIds.includes(id));
+  const paletteTargets = analysis.paletteTargets || [];
+  const targetIds = paletteTargets.map((item) => item.id).filter(Boolean);
+  const targetText = (item) => `${item.roleZh || ""} ${item.targetColorZh || ""}`;
+  const idsMatching = (pattern) => paletteTargets.filter((item) => pattern.test(targetText(item))).map((item) => item.id).filter(Boolean);
+  const uniqueIds = (ids) => [...new Set(ids.filter((id) => targetIds.includes(id)))];
+  const backgroundIds = idsMatching(/背景|地面|天空|水面|海面|云朵/);
+  const outlineIds = idsMatching(/描边|线稿|轮廓|黑色|黑|眼|鼻|嘴/);
+  const shadowIds = idsMatching(/阴影|暗部|深色|接触影|高光|水花|修补/);
+  const detailIds = uniqueIds([...outlineIds, ...idsMatching(/细节|格纹|分隔|装饰/) ]);
+  const mainIds = targetIds.filter((id) => !backgroundIds.includes(id) && !outlineIds.includes(id) && !shadowIds.includes(id));
+  const localIds = mainIds.length ? mainIds : targetIds.filter((id) => !backgroundIds.includes(id) && !outlineIds.includes(id));
+  const foregroundAndBackgroundIds = uniqueIds([...localIds, ...backgroundIds]);
+  const allIds = uniqueIds(targetIds);
+  const paperPlan = calculateA4PaperPlan(analysis.aspectRatio);
+  const paper = paperPlan.variants.find((item) => item.id === "recommended") || paperPlan.variants[0];
+  const cm = (value) => Number(value || 0).toFixed(1);
+  const boardDimensions = [
+    { id: "paper-size", kind: "size", labelZh: `画面 ${cm(paper?.widthCm)} × ${cm(paper?.heightCm)} cm` },
+    { id: "paper-margins", kind: "margins", labelZh: `留白 左/右 ${cm(paper?.marginLeftCm ?? paper?.marginHorizontalCm)} cm · 上/下 ${cm(paper?.marginTopCm ?? paper?.marginVerticalCm)} cm` }
+  ];
+  const objectBboxes = objects.map((item) => item.bbox).filter((bbox) => Array.isArray(bbox) && bbox.length === 4);
+  const groupHeight = objectBboxes.length ? Math.max(...objectBboxes.map((bbox) => Number(bbox[3]) || 0)) : 0;
+  const keySize = groupHeight > 0 ? `主体组高约 ${cm((groupHeight / 1000) * Number(paper?.heightCm || 16.5))} cm` : "主体组保持在画面中央";
+  const stepDimensions = [
+    boardDimensions,
+    [
+      { id: "center-line", kind: "position", labelZh: "中心线" },
+      { id: "top-bottom", kind: "position", labelZh: "最高点 / 最低点" },
+      { id: "water-line", kind: "position", labelZh: "水面线" }
+    ],
+    [{ id: "group-height", kind: "size", labelZh: keySize }],
+    [{ id: "group-height", kind: "size", labelZh: keySize }],
+    [{ id: "group-height", kind: "size", labelZh: keySize }]
+  ];
   const definitions = [
-    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: targetIds },
-    { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], overlay: "position" },
-    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position" },
-    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "只画轻线，暂不补细节。"], overlay: "skeleton" },
-    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}的顺序确认遮挡。`, "擦掉被挡住的结构线。"], overlay: "occlusion" },
-    { actions: ["连接基本形，补全主要轮廓。", "五官和小配件最后加入。"], overlay: "lineart" },
-    { actions: ["对照原图检查比例、方向和留白。", "只修改最明显的一处偏差。"], overlay: "lineart" },
-    { actions: ["确认草稿后沿外轮廓分段勾线。", "每个待填色区域都要闭合。"], overlay: "lineart" },
-    { actions: ["先完成主体的大色块。", "同一区域保持同一铺色方向。"], overlay: "colorRegions", colors: mainIds.length ? mainIds : targetIds },
-    { actions: ["完成配件、背景和地面色块。", "先大面积，后小面积。"], overlay: "colorRegions", colors: backgroundIds.length ? backgroundIds : targetIds },
-    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充局部暗部。`, "暗部面积小于主色面积。"], overlay: "colorRegions", colors: shadowIds.length ? shadowIds : targetIds },
-    { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"] },
-    { actions: ["把作品与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"] }
+    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: allIds, boardMode: "reference" },
+    { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], boardMode: "frame", dimensions: stepDimensions[0] },
+    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position", boardMode: "position", dimensions: stepDimensions[1] },
+    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "只画轻线，暂不补细节。"], overlay: "skeleton", boardMode: "skeleton", dimensions: stepDimensions[2] },
+    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}的顺序确认遮挡。`, "擦掉被挡住的结构线。"], overlay: "occlusion", boardMode: "occlusion", dimensions: stepDimensions[3] },
+    { actions: ["连接基本形，补全主要轮廓。", "五官和小配件最后加入。"], overlay: "lineart", boardMode: "draft", dimensions: stepDimensions[4] },
+    { actions: ["先完成主体和配件的大色块。", "同一区域保持同一铺色方向，背景先留白。"], overlay: "colorRegions", colors: localIds, processColors: localIds, boardMode: "local-color" },
+    { actions: ["加入天空、水面等背景大色区。", "云朵和主体边缘保留纸白，不要盖住。"], overlay: "colorRegions", colors: backgroundIds, processColors: foregroundAndBackgroundIds, boardMode: "background" },
+    { actions: ["确认草稿后沿外轮廓分段勾线。", "每个待填色区域都要闭合。"], overlay: "lineart", colors: outlineIds, processColors: foregroundAndBackgroundIds, boardMode: "lineart" },
+    { actions: ["只保留能改变识别的内部线。", "眼、鼻、嘴、格纹和必要分隔线要清楚。"], overlay: "lineart", colors: detailIds, processColors: foregroundAndBackgroundIds, boardMode: "details" },
+    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充局部暗部和少量高光。`, "重点控制在2–4处，不能盖住轮廓。"], overlay: "colorRegions", colors: shadowIds, processColors: allIds, boardMode: "shading" },
+    { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"], processColors: allIds, boardMode: "repair" },
+    { actions: ["把完成过程板与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"], processColors: allIds, boardMode: "review" }
   ];
   return COLOR_REFERENCE_STEP_TITLES.map((titleZh, index) => ({
     id: `reference_step_${String(index + 1).padStart(2, "0")}`,
@@ -9646,8 +9681,14 @@ function buildGeneratedColorSteps(analysis) {
     studentVoiceZh: definitions[index].actions[0],
     actionsZh: definitions[index].actions,
     colorTargetIds: definitions[index].colors || [],
+    requiredColorTargetIds: definitions[index].colors || [],
+    processColorTargetIds: definitions[index].processColors || [],
+    boardMode: definitions[index].boardMode || "",
+    processBoard: index >= 1,
+    referenceVisible: index === 0 || index === 12,
+    dimensionAnnotations: definitions[index].dimensions || [],
     overlayLayer: definitions[index].overlay || "",
-    completionStandardZh: index === 7 ? "线稿闭合，遮挡线已经擦除。" : ""
+    completionStandardZh: index === 8 ? "线稿闭合，遮挡线已经擦除。" : index === 10 ? "暗部和高光控制在少量重点处。" : ""
   }));
 }
 
@@ -9674,6 +9715,19 @@ function buildGeneratedColorCourse(analysis, draft) {
     steps: buildGeneratedColorSteps(analysis),
     createdAt: new Date().toISOString()
   };
+}
+
+function canRenderGeneratedProcessBoard(course) {
+  if (!course?.generatedFromReference || !Array.isArray(course.steps) || course.steps.length !== 13) return false;
+  const analysis = course.referenceAnalysis || {};
+  const hasObjectGeometry = Array.isArray(analysis.objects) && analysis.objects.some((item) => {
+    const bbox = item?.bbox;
+    return Array.isArray(bbox) && bbox.length === 4 && Number(bbox[2]) > 0 && Number(bbox[3]) > 0;
+  });
+  const hasPalette = Array.isArray(course.paletteTargets) && course.paletteTargets.some((target) => Array.isArray(target.candidates) && target.candidates.length > 0);
+  const hasA4 = Array.isArray(course.paperPlan?.variants) && course.paperPlan.variants.length > 0;
+  const hasIndependentSteps = course.steps.slice(1, 12).every((step) => step.processBoard === true && step.referenceVisible === false && step.boardMode);
+  return hasObjectGeometry && hasPalette && hasA4 && hasIndependentSteps;
 }
 
 function formatColorReferenceError(error) {
@@ -9764,6 +9818,11 @@ async function generateColorReferenceCourse() {
     }
     if (responseData.analysis.imageHash !== colorReferenceDraft.imageHash) throw new Error("参考图校验失败，请重新选择图片。" );
     const course = buildGeneratedColorCourse(responseData.analysis, colorReferenceDraft);
+    if (!canRenderGeneratedProcessBoard(course)) {
+      const error = new Error("独立过程板生成失败，请换一张主体和边界更清晰的图片。" );
+      error.stage = "schema_validate";
+      throw error;
+    }
     course.analysisProfile = {
       modelTier: responseData.meta?.modelTier || settings.modelTier,
       reasoningEffort: responseData.meta?.reasoningEffort || settings.reasoningEffort
@@ -10163,10 +10222,13 @@ function completeColorCourseStep(courseId, stepId) {
   const stepIndex = course?.steps?.findIndex((step) => step.id === stepId) ?? -1;
   if (!course || stepIndex < 0) return false;
   const pack = buildColorCoursePack(course);
-  const progress = initializeCourseProgress(pack);
-  if (course.generatedFromReference && stepIndex === 0) {
+  const progress = course.generatedFromReference ? getGeneratedArtProgress(course) : initializeCourseProgress(pack);
+  if (course.generatedFromReference) {
     progress.art.paletteSelections ||= {};
-    if ((course.paletteTargets || []).some((target) => !progress.art.paletteSelections[target.id])) return false;
+    const requiredIds = Array.isArray(course.steps[stepIndex]?.requiredColorTargetIds)
+      ? course.steps[stepIndex].requiredColorTargetIds
+      : (course.steps[stepIndex]?.colorTargetIds || []);
+    if (requiredIds.some((targetId) => !progress.art.paletteSelections[targetId])) return false;
   }
   const key = `art:${stepId}`;
   progress.art.startedAt ||= new Date().toISOString();
@@ -10571,6 +10633,15 @@ function getGeneratedArtProgress(course) {
   const progress = initializeCourseProgress(pack);
   progress.art.paletteSelections ||= {};
   progress.art.paperPreset ||= course.paperPlan?.selectedPreset || "recommended";
+  let autoSelected = false;
+  (course.paletteTargets || []).forEach((target) => {
+    const candidates = Array.isArray(target.candidates) ? target.candidates : [];
+    if (candidates.length === 1 && candidates[0]?.code && !progress.art.paletteSelections[target.id]) {
+      progress.art.paletteSelections[target.id] = candidates[0].code;
+      autoSelected = true;
+    }
+  });
+  if (autoSelected) saveState();
   return progress;
 }
 
@@ -10605,6 +10676,16 @@ function toggleGeneratedColorOverlay(courseId) {
   return true;
 }
 
+function toggleGeneratedColorDimensions(courseId) {
+  const course = getColorCourseById(courseId);
+  if (!course?.generatedFromReference) return false;
+  const ui = getColorCourseUi(courseId);
+  ui.dimensionsVisible = ui.dimensionsVisible === false;
+  saveState();
+  renderArtLesson();
+  return true;
+}
+
 function getGeneratedPaperVariant(course, progress) {
   const variants = course.paperPlan?.variants || [];
   return variants.find((item) => item.id === progress.art.paperPreset) || variants.find((item) => item.id === "recommended") || variants[0] || null;
@@ -10617,31 +10698,51 @@ function renderGeneratedPaperChoices(course, progress) {
       ${(course.paperPlan?.variants || []).map((item) => `
         <button class="${selected === item.id ? "is-selected" : ""}" data-color-size-preset="${escapeHtml(item.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${selected === item.id ? "true" : "false"}">
           <span>${escapeHtml(item.label)}</span>
-          <strong>${item.widthCm}×${item.heightCm} cm</strong>
+          <strong>${Number(item.widthCm).toFixed(1)}×${Number(item.heightCm).toFixed(1)} cm</strong>
+          <small>左右 ${Number(item.marginLeftCm ?? item.marginHorizontalCm).toFixed(1)} cm · 上下 ${Number(item.marginTopCm ?? item.marginVerticalCm).toFixed(1)} cm</small>
         </button>
       `).join("")}
     </div>
   `;
 }
 
-function renderGeneratedPaletteChoices(course, progress) {
+function getGeneratedCandidateScreenHex(target, candidate, index = 0) {
+  const explicit = candidate?.screenHex || candidate?.hex || candidate?.referenceHex;
+  if (/^#[0-9A-F]{6}$/i.test(String(explicit || ""))) return String(explicit).toUpperCase();
+  const targetHex = String(target?.targetHex || "").toUpperCase();
+  if (/^#[0-9A-F]{6}$/.test(targetHex)) {
+    const rgb = targetHex.slice(1).match(/.{2}/g).map((part) => parseInt(part, 16));
+    const delta = index === 0 ? 0 : index % 2 ? -28 : 28;
+    return `#${rgb.map((value) => Math.max(0, Math.min(255, value + delta)).toString(16).padStart(2, "0")).join("")}`.toUpperCase();
+  }
+  const fallback = ["#4A82A8", "#D76B55", "#E5B83A", "#8C6BAA", "#5C6470", "#F2F1EA"];
+  return fallback[index % fallback.length];
+}
+
+function renderGeneratedPaletteChoices(course, progress, targetIds = null) {
   const selections = progress.art.paletteSelections || {};
+  const ids = Array.isArray(targetIds) ? targetIds : (course.paletteTargets || []).map((target) => target.id);
+  const targets = (course.paletteTargets || []).filter((target) => ids.includes(target.id));
+  if (!targets.length) return `<p class="color-reference-no-palette">本步无需新增色号选择。</p>`;
   return `
-    <div class="color-reference-palette">
-      ${(course.paletteTargets || []).map((target) => `
-        <section class="color-reference-palette-target">
+    <div class="color-reference-palette" aria-label="本步色号选择">
+      ${targets.map((target) => `
+        <section class="color-reference-palette-target" data-color-target="${escapeHtml(target.id)}">
           <div class="color-reference-palette-heading">
             ${target.targetHex ? `<span class="color-reference-target-swatch" style="--target-color:${escapeHtml(target.targetHex)}" aria-hidden="true"></span>` : ""}
-            <strong>${escapeHtml(target.roleZh || target.targetColorZh)}</strong>
+            <div><strong>${escapeHtml(target.roleZh || target.targetColorZh || "本步色组")}</strong><small>负责区域 / 用途</small></div>
           </div>
           <div class="color-reference-candidates" role="group" aria-label="${escapeHtml(target.roleZh || target.targetColorZh)}">
             ${(target.candidates || []).map((candidate) => {
               const chosen = selections[target.id] === candidate.code;
+              const candidateIndex = (target.candidates || []).findIndex((item) => item.code === candidate.code);
+              const screenHex = getGeneratedCandidateScreenHex(target, candidate, candidateIndex);
               return `
                 <button class="${chosen ? "is-selected" : ""}" data-color-palette-choice="${escapeHtml(candidate.code)}" data-color-palette-target="${escapeHtml(target.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${chosen ? "true" : "false"}">
-                  <strong>${escapeHtml(candidate.code)}</strong>
-                  <span class="color-candidate-name">${escapeHtml(candidate.nameZh)}</span>
-                  ${chosen ? `<span class="color-candidate-check" aria-hidden="true">✓</span>` : ""}
+                  <span class="color-candidate-swatch" style="--candidate-color:${escapeHtml(screenHex)}" aria-label="屏幕参考 ${escapeHtml(screenHex)}"></span>
+                  <span class="color-candidate-code"><strong>${escapeHtml(candidate.code)}</strong><small class="color-candidate-name">${escapeHtml(candidate.nameZh || "未命名色")}</small></span>
+                  <span class="color-candidate-use">屏幕参考 · ${escapeHtml(target.roleZh || target.targetColorZh || "本步使用")}</span>
+                  ${chosen ? `<span class="color-candidate-check" aria-hidden="true">✓ ${target.candidates?.length === 1 ? "已确定" : "已选"}</span>` : ""}
                 </button>
               `;
             }).join("")}
@@ -10652,8 +10753,29 @@ function renderGeneratedPaletteChoices(course, progress) {
   `;
 }
 
+function renderGeneratedPaletteSummary(course, progress, targetIds = null) {
+  const selections = progress.art.paletteSelections || {};
+  const ids = Array.isArray(targetIds) && targetIds.length ? targetIds : (course.paletteTargets || []).map((target) => target.id);
+  const targets = (course.paletteTargets || []).filter((target) => ids.includes(target.id));
+  if (!targets.length) return "";
+  return `
+    <section class="color-palette-summary" aria-label="本步色号信息">
+      <h3>色号提示</h3>
+      <div class="color-palette-summary-list">
+        ${targets.map((target) => {
+          const chosen = target.candidates?.find((item) => item.code === selections[target.id]);
+          const shown = chosen || target.candidates?.[0];
+          const screenHex = getGeneratedCandidateScreenHex(target, shown, chosen ? target.candidates.findIndex((item) => item.code === chosen.code) : 0);
+          const candidateText = target.candidates?.length > 1 && !chosen ? `候选：${target.candidates.map((item) => `${item.code} ${item.nameZh || ""}`).join(" / ")}` : `${shown?.code || "待选"} ${shown?.nameZh || ""}`;
+          return `<div class="color-palette-summary-row"><span class="color-candidate-swatch" style="--candidate-color:${escapeHtml(screenHex)}" aria-label="屏幕参考 ${escapeHtml(screenHex)}"></span><div><strong>${escapeHtml(candidateText)}</strong><small>屏幕参考 · 负责区域 / 用途：${escapeHtml(target.roleZh || target.targetColorZh || "本步使用")}</small></div>${chosen ? `<span class="color-candidate-check">✓ 已选</span>` : ""}</div>`;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function renderGeneratedSelectedColors(course, step, progress) {
-  const ids = step.colorTargetIds || [];
+  const ids = step.requiredColorTargetIds || step.colorTargetIds || [];
   if (!ids.length) return "";
   const selections = progress.art.paletteSelections || {};
   const rows = ids.map((id) => {
@@ -10686,20 +10808,217 @@ function renderGeneratedOverlayPrimitive(item, course, layer) {
   return `<g style="${style}"><${type} points="${points}" />${label}</g>`;
 }
 
-function renderGeneratedReferenceFigure(course, step) {
-  const url = getColorReferenceImageUrl(course.referenceImageId);
-  const ui = getColorCourseUi(course.courseId);
-  const layer = step.overlayLayer || "";
-  const primitives = layer ? course.referenceAnalysis?.overlays?.[layer] || [] : [];
-  const visible = ui.overlayVisible !== false && primitives.length;
-  const ratio = Math.max(0.1, Number(course.sourceImage?.width || 1) / Math.max(1, Number(course.sourceImage?.height || 1)));
+function getGeneratedBoardGeometry(course, progress) {
+  const variant = getGeneratedPaperVariant(course, progress) || {};
+  const paperWidth = 21;
+  const paperHeight = 29.7;
+  const widthCm = Number(variant.widthCm || 11);
+  const heightCm = Number(variant.heightCm || 16.5);
+  const width = 1000 * Math.min(1, Math.max(0.05, widthCm / paperWidth));
+  const height = 1414 * Math.min(1, Math.max(0.05, heightCm / paperHeight));
+  return {
+    width: 1000,
+    height: 1414,
+    x: (1000 - width) / 2,
+    y: (1414 - height) / 2,
+    drawWidth: width,
+    drawHeight: height
+  };
+}
+
+function mapGeneratedBoardX(value, geometry) {
+  return geometry.x + (safeOverlayNumber(value) / 1000) * geometry.drawWidth;
+}
+
+function mapGeneratedBoardY(value, geometry) {
+  return geometry.y + (safeOverlayNumber(value) / 1000) * geometry.drawHeight;
+}
+
+function getGeneratedTargetHex(course, targetId, fallback = "#6F9EB4") {
+  const target = course.paletteTargets?.find((item) => item.id === targetId);
+  return /^#[0-9A-F]{6}$/i.test(target?.targetHex || "") ? target.targetHex.toUpperCase() : fallback;
+}
+
+function renderGeneratedBoardPrimitive(item, course, geometry, options = {}) {
+  const type = item?.type;
+  if (!["rect", "ellipse", "line", "polyline", "polygon"].includes(type)) return "";
+  const stroke = options.stroke || getGeneratedTargetHex(course, item?.targetId, "#6F9EB4");
+  const fill = options.fill || "none";
+  const strokeWidth = Number(options.strokeWidth || 4);
+  const opacity = Number(options.opacity ?? 1);
+  const style = `--board-color:${escapeHtml(stroke)};opacity:${Math.max(0, Math.min(1, opacity))}`;
+  const className = options.className ? ` class="${escapeHtml(options.className)}"` : "";
+  if (type === "rect") {
+    const x = mapGeneratedBoardX(item.x, geometry);
+    const y = mapGeneratedBoardY(item.y, geometry);
+    const width = Math.max(0, safeOverlayNumber(item.width) / 1000 * geometry.drawWidth);
+    const height = Math.max(0, safeOverlayNumber(item.height) / 1000 * geometry.drawHeight);
+    return `<rect${className} x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${width.toFixed(2)}" height="${height.toFixed(2)}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
+  }
+  if (type === "ellipse") {
+    const cx = mapGeneratedBoardX(item.cx, geometry);
+    const cy = mapGeneratedBoardY(item.cy, geometry);
+    const rx = Math.max(0, safeOverlayNumber(item.rx) / 1000 * geometry.drawWidth);
+    const ry = Math.max(0, safeOverlayNumber(item.ry) / 1000 * geometry.drawHeight);
+    return `<ellipse${className} cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" rx="${rx.toFixed(2)}" ry="${ry.toFixed(2)}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
+  }
+  if (type === "line") {
+    return `<line${className} x1="${mapGeneratedBoardX(item.x1, geometry).toFixed(2)}" y1="${mapGeneratedBoardY(item.y1, geometry).toFixed(2)}" x2="${mapGeneratedBoardX(item.x2, geometry).toFixed(2)}" y2="${mapGeneratedBoardY(item.y2, geometry).toFixed(2)}" fill="none" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
+  }
+  const points = (item.points || []).slice(0, 30).map((pair) => `${mapGeneratedBoardX(pair?.[0], geometry).toFixed(2)},${mapGeneratedBoardY(pair?.[1], geometry).toFixed(2)}`).join(" ");
+  if (!points) return "";
+  return `<${type}${className} points="${points}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
+}
+
+function renderGeneratedBoardObject(item, course, geometry, options = {}) {
+  const bbox = Array.isArray(item?.bbox) ? item.bbox : [];
+  if (bbox.length !== 4) return "";
+  const [x, y, width, height] = bbox.map((value) => safeOverlayNumber(value));
+  const base = { ...options, className: options.className || "color-process-object" };
+  if (item.primitive === "ellipse") {
+    return renderGeneratedBoardPrimitive({ type: "ellipse", cx: x + width / 2, cy: y + height / 2, rx: width / 2, ry: height / 2 }, course, geometry, base);
+  }
+  if (item.primitive === "polygon") {
+    const points = [[x + width * 0.5, y], [x + width, y + height], [x, y + height]];
+    return renderGeneratedBoardPrimitive({ type: "polygon", points }, course, geometry, base);
+  }
+  return renderGeneratedBoardPrimitive({ type: "rect", x, y, width, height }, course, geometry, base);
+}
+
+function renderGeneratedPositionLayer(course, geometry) {
+  const objects = course.referenceAnalysis?.objects || [];
+  const bboxes = objects.map((item) => item.bbox).filter((bbox) => Array.isArray(bbox) && bbox.length === 4);
+  if (!bboxes.length) return "";
+  const minX = Math.min(...bboxes.map((bbox) => safeOverlayNumber(bbox[0])));
+  const maxX = Math.max(...bboxes.map((bbox) => safeOverlayNumber(bbox[0]) + safeOverlayNumber(bbox[2])));
+  const minY = Math.min(...bboxes.map((bbox) => safeOverlayNumber(bbox[1])));
+  const maxY = Math.max(...bboxes.map((bbox) => safeOverlayNumber(bbox[1]) + safeOverlayNumber(bbox[3])));
+  const centerX = (minX + maxX) / 2;
+  return [
+    { type: "line", x1: centerX, y1: 0, x2: centerX, y2: 1000 },
+    { type: "line", x1: minX, y1: minY, x2: maxX, y2: minY },
+    { type: "line", x1: minX, y1: maxY, x2: maxX, y2: maxY }
+  ].map((item) => renderGeneratedBoardPrimitive(item, course, geometry, { stroke: "#8797A3", strokeWidth: 2, className: "color-process-position-line" })).join("");
+}
+
+function renderGeneratedDimensionOverlay(course, step, geometry) {
+  const paper = getGeneratedPaperVariant(course, getGeneratedArtProgress(course)) || {};
+  const lines = [];
+  const widthY = geometry.y + geometry.drawHeight + 22;
+  const heightX = geometry.x - 22;
+  if (step.order === 2 || step.order >= 7) {
+    lines.push(`<line x1="${geometry.x.toFixed(2)}" y1="${widthY.toFixed(2)}" x2="${(geometry.x + geometry.drawWidth).toFixed(2)}" y2="${widthY.toFixed(2)}" />`);
+    lines.push(`<line x1="${heightX.toFixed(2)}" y1="${geometry.y.toFixed(2)}" x2="${heightX.toFixed(2)}" y2="${(geometry.y + geometry.drawHeight).toFixed(2)}" />`);
+    lines.push(`<text x="${(geometry.x + geometry.drawWidth / 2).toFixed(2)}" y="${(widthY + 18).toFixed(2)}" text-anchor="middle" fill="#687A85" stroke="none" stroke-dasharray="none">${Number(paper.widthCm || 11).toFixed(1)} × ${Number(paper.heightCm || 16.5).toFixed(1)} cm</text>`);
+    lines.push(`<text x="${(geometry.x + geometry.drawWidth / 2).toFixed(2)}" y="${Math.max(20, geometry.y - 14).toFixed(2)}" text-anchor="middle" fill="#687A85" stroke="none" stroke-dasharray="none">留白 左/右 ${Number(paper.marginLeftCm ?? paper.marginHorizontalCm ?? 5).toFixed(1)} · 上/下 ${Number(paper.marginTopCm ?? paper.marginVerticalCm ?? 6.6).toFixed(1)} cm</text>`);
+  } else if (step.order === 3) {
+    lines.push(`<line x1="${(geometry.x + geometry.drawWidth / 2).toFixed(2)}" y1="${geometry.y.toFixed(2)}" x2="${(geometry.x + geometry.drawWidth / 2).toFixed(2)}" y2="${(geometry.y + geometry.drawHeight).toFixed(2)}" />`);
+    lines.push(`<line x1="${geometry.x.toFixed(2)}" y1="${(geometry.y + geometry.drawHeight * 0.18).toFixed(2)}" x2="${(geometry.x + geometry.drawWidth).toFixed(2)}" y2="${(geometry.y + geometry.drawHeight * 0.18).toFixed(2)}" />`);
+    lines.push(`<line x1="${geometry.x.toFixed(2)}" y1="${(geometry.y + geometry.drawHeight * 0.82).toFixed(2)}" x2="${(geometry.x + geometry.drawWidth).toFixed(2)}" y2="${(geometry.y + geometry.drawHeight * 0.82).toFixed(2)}" />`);
+  } else if (step.order >= 4 && step.order <= 6) {
+    lines.push(`<line x1="${(geometry.x + geometry.drawWidth + 14).toFixed(2)}" y1="${geometry.y.toFixed(2)}" x2="${(geometry.x + geometry.drawWidth + 14).toFixed(2)}" y2="${(geometry.y + geometry.drawHeight).toFixed(2)}" />`);
+  }
+  if (!lines.length) return "";
+  return `<g class="color-process-dimension-lines" fill="none" stroke="#8797A3" stroke-width="2" stroke-dasharray="8 7" stroke-linecap="round">${lines.join("")}</g>`;
+}
+
+function renderGeneratedProcessBoard(course, step, progress, options = {}) {
+  const geometry = getGeneratedBoardGeometry(course, progress);
+  const analysis = course.referenceAnalysis || {};
+  const overlays = analysis.overlays || {};
+  const mode = step.boardMode || "draft";
+  const processIds = step.processColorTargetIds || [];
+  const colorRegions = Array.isArray(overlays.colorRegions) ? overlays.colorRegions : [];
+  const lineart = Array.isArray(overlays.lineart) ? overlays.lineart : [];
+  const skeleton = Array.isArray(overlays.skeleton) ? overlays.skeleton : [];
+  const occlusion = Array.isArray(overlays.occlusion) ? overlays.occlusion : [];
+  const allRegions = colorRegions.filter((item) => !item.targetId || processIds.includes(item.targetId));
+  const regions = (items, fillOpacity = 0.68) => items.map((item) => renderGeneratedBoardPrimitive(item, course, geometry, {
+    stroke: getGeneratedTargetHex(course, item.targetId, "#B7C8D0"),
+    fill: getGeneratedTargetHex(course, item.targetId, "#B7C8D0"),
+    opacity: fillOpacity,
+    strokeWidth: 2,
+    className: "color-process-region"
+  })).join("");
+  const objectShapes = (options = {}) => (analysis.objects || []).slice(0, 12).map((item) => renderGeneratedBoardObject(item, course, geometry, options)).join("");
+  const lineShapes = (items, options = {}) => items.map((item) => renderGeneratedBoardPrimitive(item, course, geometry, options)).join("");
+  let content = "";
+  if (mode === "position") {
+    content = renderGeneratedPositionLayer(course, geometry);
+  } else if (mode === "skeleton") {
+    content = skeleton.length ? lineShapes(skeleton, { stroke: "#B9D9E4", strokeWidth: 4, className: "color-process-skeleton" }) : objectShapes({ stroke: "#B9D9E4", strokeWidth: 4, className: "color-process-skeleton" });
+  } else if (mode === "occlusion") {
+    content = (skeleton.length ? lineShapes(skeleton, { stroke: "#B9D9E4", strokeWidth: 3, className: "color-process-skeleton" }) : objectShapes({ stroke: "#B9D9E4", strokeWidth: 3, className: "color-process-skeleton" })) + lineShapes(occlusion.slice(0, 2), { stroke: "#78AFC1", strokeWidth: 4, className: "color-process-occlusion" });
+  } else if (mode === "draft") {
+    content = (skeleton.length ? lineShapes(skeleton, { stroke: "#A3CBD9", strokeWidth: 2, className: "color-process-skeleton" }) : objectShapes({ stroke: "#A3CBD9", strokeWidth: 2, className: "color-process-skeleton" })) + (lineart.length ? lineShapes(lineart, { stroke: "#6F9EB4", strokeWidth: 3, className: "color-process-draft" }) : "");
+  } else if (mode === "local-color") {
+    content = regions(allRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#91B4C2", strokeWidth: 2, className: "color-process-draft" }) : objectShapes({ stroke: "#91B4C2", strokeWidth: 2, className: "color-process-draft" }));
+  } else if (mode === "background") {
+    content = regions(allRegions, 0.8) + (lineart.length ? lineShapes(lineart, { stroke: "#7599AA", strokeWidth: 2, className: "color-process-draft" }) : "");
+  } else if (["lineart", "details"].includes(mode)) {
+    content = regions(allRegions, 0.78) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+  } else if (["shading", "repair", "review"].includes(mode)) {
+    content = regions(colorRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+    if (mode === "shading") {
+      content += lineShapes(colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId)).slice(0, 4), { stroke: "#5B6570", fill: "#5B6570", opacity: 0.48, strokeWidth: 2, className: "color-process-shade" });
+    }
+  }
+  const dimensionVisible = options.dimensionsVisible === true;
   return `
-    <figure class="color-reference-figure" style="--reference-ratio:${ratio}">
-      ${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(course.titleZh)}参考图" />` : `<div class="color-reference-image-loading">图片正在加载</div>`}
-      ${visible ? `<svg class="color-reference-overlay is-${escapeHtml(layer)}" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">${primitives.map((item) => renderGeneratedOverlayPrimitive(item, course, layer)).join("")}</svg>` : ""}
-      ${primitives.length ? `<button class="color-overlay-toggle ${ui.overlayVisible === false ? "" : "is-active"}" data-color-overlay-toggle data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${ui.overlayVisible === false ? "false" : "true"}">辅助线</button>` : ""}
-    </figure>
+    <div class="color-process-board-shell" data-board-mode="${escapeHtml(mode)}">
+      <svg class="color-process-board" viewBox="0 0 1000 1414" preserveAspectRatio="xMidYMid meet" role="img" aria-label="第${step.order}步独立白纸过程板">
+        <rect class="color-process-paper" x="0" y="0" width="1000" height="1414" fill="#FFFFFF" />
+        <rect class="color-process-drawing-area" x="${geometry.x.toFixed(2)}" y="${geometry.y.toFixed(2)}" width="${geometry.drawWidth.toFixed(2)}" height="${geometry.drawHeight.toFixed(2)}" fill="#FFFFFF" stroke="#DEE6EA" stroke-width="2" />
+        ${content}
+        ${dimensionVisible ? renderGeneratedDimensionOverlay(course, step, geometry) : ""}
+      </svg>
+    </div>
   `;
+}
+
+function getGeneratedDimensionAnnotations(course, step) {
+  if (Array.isArray(step?.dimensionAnnotations) && step.dimensionAnnotations.length) return step.dimensionAnnotations.slice(0, 4);
+  if (Number(step?.order || 0) >= 7) return course.steps?.[1]?.dimensionAnnotations?.slice(0, 4) || [];
+  return [];
+}
+
+function renderGeneratedDimensionCard(course, step, ui) {
+  const annotations = getGeneratedDimensionAnnotations(course, step);
+  if (!annotations.length) return "";
+  const defaultVisible = Number(step.order || 0) <= 6;
+  const visible = ui.dimensionsVisible === undefined ? defaultVisible : ui.dimensionsVisible !== false;
+  return `
+    <section class="color-dimension-card ${visible ? "is-visible" : "is-hidden"}" aria-label="尺寸标注">
+      <div class="color-dimension-heading"><div><strong>尺寸</strong><small>${visible ? "辅助线已显示" : "辅助线已隐藏"}</small></div><button class="color-dimensions-toggle" data-color-dimensions-toggle data-color-course-id="${escapeHtml(course.courseId)}" type="button" aria-pressed="${visible ? "true" : "false"}">${visible ? "隐藏尺寸标注" : "显示尺寸标注"}</button></div>
+      <ul>${visible ? annotations.slice(0, 4).map((item) => `<li>${escapeHtml(item.labelZh || "尺寸辅助线")}</li>`).join("") : "<li>尺寸线已隐藏，画布大小不变。</li>"}</ul>
+    </section>
+  `;
+}
+
+function renderGeneratedReferenceFigure(course, step, progress = getGeneratedArtProgress(course)) {
+  const ui = getColorCourseUi(course.courseId);
+  const order = Number(step?.order || 0);
+  if (order === 13) {
+    const url = getColorReferenceImageUrl(course.referenceImageId);
+    const ratio = Math.max(0.1, Number(course.sourceImage?.width || 1) / Math.max(1, Number(course.sourceImage?.height || 1)));
+    const dimensionsVisible = ui.dimensionsVisible === true;
+    return `
+      <div class="color-reference-review-comparison">
+        ${renderGeneratedProcessBoard(course, step, progress, { dimensionsVisible })}
+        <figure class="color-reference-source-card" style="--reference-ratio:${ratio}">${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(course.titleZh)}参考图" />` : `<div class="color-reference-image-loading">图片正在加载</div>`}<figcaption>参考图 · 完成对照</figcaption></figure>
+      </div>
+    `;
+  }
+  if (order === 1) {
+    const url = getColorReferenceImageUrl(course.referenceImageId);
+    const ratio = Math.max(0.1, Number(course.sourceImage?.width || 1) / Math.max(1, Number(course.sourceImage?.height || 1)));
+    return `
+      <figure class="color-reference-source-card color-reference-source-card-small" style="--reference-ratio:${ratio}">${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(course.titleZh)}参考图" />` : `<div class="color-reference-image-loading">图片正在加载</div>`}<figcaption>原图只作色彩来源</figcaption></figure>
+    `;
+  }
+  const defaultVisible = order <= 6;
+  const dimensionsVisible = ui.dimensionsVisible === undefined ? defaultVisible : ui.dimensionsVisible !== false;
+  return renderGeneratedProcessBoard(course, step, progress, { dimensionsVisible });
 }
 
 function renderGeneratedColorCourseLesson(course) {
@@ -10714,10 +11033,13 @@ function renderGeneratedColorCourseLesson(course) {
   const completedCount = course.steps.filter((item) => progress.art.steps?.[`art:${item.id}`]?.finishedAt).length;
   const selectedPaper = getGeneratedPaperVariant(course, progress);
   const actions = stepIndex === 1 && selectedPaper
-    ? [`在A4纸上轻轻画出 ${selectedPaper.widthCm}×${selectedPaper.heightCm} cm边界。`, `左右各留 ${selectedPaper.marginHorizontalCm} cm，上下各留 ${selectedPaper.marginVerticalCm} cm。`]
+    ? [`在A4纸上轻轻画出 ${Number(selectedPaper.widthCm).toFixed(1)}×${Number(selectedPaper.heightCm).toFixed(1)} cm边界。`, `左右各留 ${Number(selectedPaper.marginLeftCm ?? selectedPaper.marginHorizontalCm).toFixed(1)} cm，上下各留 ${Number(selectedPaper.marginTopCm ?? selectedPaper.marginVerticalCm).toFixed(1)} cm。`]
     : step.actionsZh || [];
-  const allColorsSelected = (course.paletteTargets || []).every((target) => progress.art.paletteSelections?.[target.id]);
-  const canComplete = stepIndex !== 0 || allColorsSelected;
+  const requiredIds = step.requiredColorTargetIds || step.colorTargetIds || [];
+  const missingColorTargets = requiredIds.map((targetId) => course.paletteTargets?.find((target) => target.id === targetId)).filter((target) => target && !progress.art.paletteSelections?.[target.id]);
+  const canComplete = missingColorTargets.length === 0;
+  const missingText = missingColorTargets.map((target) => target.roleZh || target.targetColorZh || "本步色组").join("、");
+  const paletteDisplayIds = requiredIds.length ? requiredIds : (step.processColorTargetIds?.length ? step.processColorTargetIds : (course.paletteTargets || []).map((target) => target.id));
   header.innerHTML = `
     <div class="course-topline color-course-heading">
       <div><h1>${escapeHtml(course.titleZh)}</h1></div>
@@ -10735,12 +11057,21 @@ function renderGeneratedColorCourseLesson(course) {
     </nav>
     <article class="course-card color-reference-step-card">
       <div class="color-current-step-heading"><span>${stepIndex + 1} / ${course.steps.length}</span><h2>${escapeHtml(step.titleZh)}</h2></div>
-      ${renderGeneratedReferenceFigure(course, step)}
-      ${stepIndex === 0 ? renderGeneratedPaletteChoices(course, progress) : ""}
-      ${stepIndex === 1 ? renderGeneratedPaperChoices(course, progress) : ""}
-      <ol class="color-step-actions">${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
-      ${renderGeneratedSelectedColors(course, step, progress)}
-      ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
+      <div class="color-reference-work-layout">
+        <div class="color-reference-process-column">
+          ${renderGeneratedReferenceFigure(course, step, progress)}
+        </div>
+        <aside class="color-reference-guide-column">
+          <ol class="color-step-actions">${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
+          ${renderGeneratedDimensionCard(course, step, ui)}
+          ${stepIndex === 1 ? renderGeneratedPaperChoices(course, progress) : ""}
+          ${requiredIds.length ? renderGeneratedPaletteChoices(course, progress, requiredIds) : ""}
+          ${requiredIds.length ? "" : renderGeneratedPaletteSummary(course, progress, paletteDisplayIds)}
+          ${renderGeneratedSelectedColors(course, step, progress)}
+          ${missingText ? `<p class="color-reference-missing" role="status">还需选择：${escapeHtml(missingText)}</p>` : ""}
+          ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
+        </aside>
+      </div>
       <div class="color-course-nav color-reference-nav">
         <button class="button secondary" data-color-step-nav="-1" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${stepIndex === 0 ? "disabled" : ""}>上一步</button>
         <button class="button primary" data-color-step-complete="${escapeHtml(step.id)}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${stepProgress.finishedAt || !canComplete ? "disabled" : ""}>${stepProgress.finishedAt ? "已完成" : "完成本步"}</button>
