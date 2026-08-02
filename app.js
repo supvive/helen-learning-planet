@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.8",
+  version: "v3.9.9",
   buildId: "2026-08-02T12:55:00+08:00",
   product: "学习星球"
 };
@@ -7399,12 +7399,23 @@ function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, er
     primarySkill: safeId(dailyMissionSource.primarySkill || "listening"),
     secondarySkills: Array.isArray(dailyMissionSource.secondarySkills) ? dailyMissionSource.secondarySkills.map((item) => safeId(item)).filter(Boolean).slice(0, 8) : []
   };
+  const diagnosticSource = source.diagnostic || english.diagnostic || {};
+  const diagnosticList = (value) => (Array.isArray(value) ? value : [])
+    .map((item) => sanitizeAdaptiveText(item, 120)).filter(Boolean).slice(0, 16);
+  const diagnostic = {
+    routeDay: sanitizeAdaptiveText(diagnosticSource.routeDay || "", 16),
+    baselineOrRetest: ["baseline", "retest"].includes(diagnosticSource.baselineOrRetest) ? diagnosticSource.baselineOrRetest : "",
+    strengths: diagnosticList(diagnosticSource.strengths),
+    reviewQueue: diagnosticList(diagnosticSource.reviewQueue),
+    nextRecommendation: sanitizeAdaptiveText(diagnosticSource.nextRecommendation || "", 260)
+  };
   const duration = source.durationByMode || english.durationByMode || {};
   const normalized = {
     courseArchitectureVersion: architecture,
     lessonId,
     contentVersion: Number.isFinite(Number(source.contentVersion || english.contentVersion)) ? Number(source.contentVersion || english.contentVersion) : 1,
     dailyMission,
+    diagnostic,
     sourceLearningReference: sanitizeAdaptiveObject(source.sourceLearningReference || english.sourceLearningReference || {}),
     sourceMaterialIds: Array.isArray(source.sourceMaterialIds || english.sourceMaterialIds) ? (source.sourceMaterialIds || english.sourceMaterialIds).map((item) => safeId(item)).filter(Boolean).slice(0, 32) : [],
     evidenceTargetIds: Array.isArray(source.evidenceTargetIds || english.evidenceTargetIds) ? (source.evidenceTargetIds || english.evidenceTargetIds).map((item) => safeId(item)).filter(Boolean).slice(0, 32) : [],
@@ -10427,9 +10438,10 @@ function renderColorChoiceLesson() {
   const sections = $("#artLessonSections");
   if (!header || !sections) return;
   // The legacy five-course catalog remains available to the data layer, but
-  // it is no longer a primary student route. A stale hash or older local
-  // activeCourseId must not render the withdrawn puppy lesson before the
-  // route normalizer sends the student to the reference-image workspace.
+  // it is no longer a primary student route.  A stale hash or an older local
+  // activeCourseId can otherwise render the withdrawn puppy lesson before the
+  // route normalizer gets a chance to send the student to the reference-image
+  // workspace.  Only a locally generated reference course may render here.
   const generatedCourses = getGeneratedColorCourses();
   const colorState = getColorPlanetState();
   const course = generatedCourses.find((item) => item.courseId === colorState.activeCourseId) ||
@@ -13924,17 +13936,38 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
         contentVersion: pack.english.lesson.contentVersion || 1,
         dailyMission: structuredCloneSafe(pack.english.lesson.dailyMission || {}),
         sourceLearningReference: structuredCloneSafe(pack.english.lesson.sourceLearningReference || {}),
-        sourceMaterialIds: [...(pack.english.lesson.sourceMaterialIds || [])],
-        evidenceTargetIds: [...(pack.english.lesson.evidenceTargetIds || [])],
-        activityCount: expectedKeys.length,
-        activities: lessonSteps.map((step) => ({
-          activityId: step.id,
-          activityType: step.activityType || step.type || "",
-          titleZh: step.titleZh || "",
-          completion: progress.english.steps?.[`english:${step.id}`]?.finishedAt ? "completed" : "not_completed",
-          adaptiveAnswer: progress.english.steps?.[`english:${step.id}`]?.adaptiveAnswer ?? null,
-          evidenceTargetIds: [...(step.evidenceTargetIds || [])]
-        }))
+       sourceMaterialIds: [...(pack.english.lesson.sourceMaterialIds || [])],
+       evidenceTargetIds: [...(pack.english.lesson.evidenceTargetIds || [])],
+        diagnostic: structuredCloneSafe(pack.english.lesson.diagnostic || {
+          routeDay: "",
+          baselineOrRetest: "",
+          strengths: [],
+          reviewQueue: [],
+          nextRecommendation: ""
+        }),
+        routeDay: pack.english.lesson.diagnostic?.routeDay || "",
+        baselineOrRetest: pack.english.lesson.diagnostic?.baselineOrRetest || "",
+        strengths: [...(pack.english.lesson.diagnostic?.strengths || [])],
+        reviewQueue: [...(pack.english.lesson.diagnostic?.reviewQueue || [])],
+        nextRecommendation: pack.english.lesson.diagnostic?.nextRecommendation || "",
+       activityCount: expectedKeys.length,
+        activities: lessonSteps.map((step) => {
+          const item = progress.english.steps?.["english:" + step.id] || {};
+          const attempts = Number(item.attempts || item.attemptHistory?.length || 0);
+          return {
+            activityId: step.id,
+            activityType: step.activityType || step.type || "",
+            titleZh: step.titleZh || "",
+            completion: item.finishedAt ? "completed" : "not_completed",
+            result: ["independent", "prompted", "not_yet"].includes(item.result) ? item.result : item.result || "",
+            adaptiveAnswer: item.adaptiveAnswer ?? null,
+            attempts,
+            hintLevelUsed: Number(item.hintLevelUsed || 0),
+            elapsedSeconds: Math.round(Number(item.elapsedMs || 0) / 1000),
+            recordingClipIds: Array.isArray(item.recordingClipIds) ? [...item.recordingClipIds] : [],
+            evidenceTargetIds: [...(step.evidenceTargetIds || [])]
+          };
+        })
       };
     }
   } else if (course === "art") {

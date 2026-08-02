@@ -17,6 +17,174 @@
       "path": "./helen-learning-pack-2026-07-29-revision-a.json"
     },
     {
+      "packId": "2026-08-03-english-diagnostic-d01",
+      "date": "2026-08-03",
+      "title": "字母星球诊断 D01｜基线听辨",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d01",
+      "publishedAt": "2026-08-03T00:00:00+08:00",
+      "path": "./english-diagnostic-d01.json"
+    },
+    {
+      "packId": "2026-08-04-english-diagnostic-d02",
+      "date": "2026-08-04",
+      "title": "字母星球诊断 D02｜课堂指令与邀请",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d02",
+      "publishedAt": "2026-08-04T00:00:00+08:00",
+      "path": "./english-diagnostic-d02.json"
+    },
+    {
+      "packId": "2026-08-05-english-diagnostic-d03",
+      "date": "2026-08-05",
+      "title": "字母星球诊断 D03｜身份问答",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d03",
+      "publishedAt": "2026-08-05T00:00:00+08:00",
+      "path": "./english-diagnostic-d03.json"
+    },
+    {
+      "packId": "2026-08-06-english-diagnostic-d04",
+      "date": "2026-08-06",
+      "title": "字母星球诊断 D04｜指示所属",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d04",
+      "publishedAt": "2026-08-06T00:00:00+08:00",
+      "path": "./english-diagnostic-d04.json"
+    },
+    {
+      "packId": "2026-08-07-english-diagnostic-d05",
+      "date": "2026-08-07",
+      "title": "字母星球诊断 D05｜动作时态",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d05",
+      "publishedAt": "2026-08-07T00:00:00+08:00",
+      "path": "./english-diagnostic-d05.json"
+    },
+    {
+      "packId": "2026-08-08-english-diagnostic-d06",
+      "date": "2026-08-08",
+      "title": "字母星球诊断 D06｜时间场景",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d06",
+      "publishedAt": "2026-08-08T00:00:00+08:00",
+      "path": "./english-diagnostic-d06.json"
+    },
+    {
+      "packId": "2026-08-09-english-diagnostic-d07",
+      "date": "2026-08-09",
+      "title": "字母星球诊断 D07｜语音形式",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d07",
+      "publishedAt": "2026-08-09T00:00:00+08:00",
+      "path": "./english-diagnostic-d07.json"
+    },
+    {
+      "packId": "2026-08-10-english-diagnostic-d08",
+      "date": "2026-08-10",
+      "title": "字母星球诊断 D08｜跨故事辨义",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d08",
+      "publishedAt": "2026-08-10T00:00:00+08:00",
+      "path": "./english-diagnostic-d08.json"
+    },
+    {
+      "packId": "2026-08-11-english-diagnostic-d09",
+      "date": "2026-08-11",
+      "title": "字母星球诊断 D09｜无文本听辨",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d09",
+      "publishedAt": "2026-08-11T00:00:00+08:00",
+      "path": "./english-diagnostic-d09.json"
+    },
+    {
+      "packId": "2026-08-12-english-diagnostic-d10",
+      "date": "2026-08-12",
+      "title": "字母星球诊断 D10｜槽位迁移",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d10",
+      "publishedAt": "2026-08-12T00:00:00+08:00",
+      "path": "./english-diagnostic-d10.json"
+    },
+    {
+      "packId": "2026-08-13-english-diagnostic-d11",
+      "date": "2026-08-13",
+      "title": "字母星球诊断 D11｜重组排序",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d11",
+      "publishedAt": "2026-08-13T00:00:00+08:00",
+      "path": "./english-diagnostic-d11.json"
+    },
+    {
+      "packId": "2026-08-14-english-diagnostic-d12",
+      "date": "2026-08-14",
+      "title": "字母星球诊断 D12｜交际回应",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d12",
+      "publishedAt": "2026-08-14T00:00:00+08:00",
+      "path": "./english-diagnostic-d12.json"
+    },
+    {
+      "packId": "2026-08-15-english-diagnostic-d13",
+      "date": "2026-08-15",
+      "title": "字母星球诊断 D13｜综合迁移",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d13",
+      "publishedAt": "2026-08-15T00:00:00+08:00",
+      "path": "./english-diagnostic-d13.json"
+    },
+    {
+      "packId": "2026-08-16-english-diagnostic-d14",
+      "date": "2026-08-16",
+      "title": "字母星球诊断 D14｜换表面终测",
+      "availableSubjects": [
+        "english"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "english-diagnostic-two-week-d14",
+      "publishedAt": "2026-08-16T00:00:00+08:00",
+      "path": "./english-diagnostic-d14.json"
+    },
+    {
       "packId": "2026-07-27-helen-day15-revision-b-water-table-art01",
       "date": "2026-07-27",
       "title": "Helen Day 15 Revision B｜桌边的一小片水、Hello School与颜色星球续课",
