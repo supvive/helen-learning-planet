@@ -3101,7 +3101,7 @@ textarea:focus {
     gap: 8px;
   }
 
-  .date-switcher.english-adaptive-switcher > select {
+  .date-switcher.english-adaptive-switcher > .adaptive-course-select-label {
     grid-column: 1 / -1;
     grid-row: 1;
   }
@@ -3545,7 +3545,7 @@ textarea:focus {
    imported activity counts can change without changing the page geometry. */
 .english-adaptive-switcher {
   display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) auto;
+  grid-template-columns: auto minmax(180px, 1fr) auto auto;
   align-items: center;
 }
 
@@ -3563,7 +3563,6 @@ textarea:focus {
 
 .adaptive-history-link {
   justify-self: start;
-  margin-top: -6px;
 }
 
 .adaptive-english-topline {

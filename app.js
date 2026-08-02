@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.9",
+  version: "v3.9.10",
   buildId: "2026-08-02T12:55:00+08:00",
   product: "学习星球"
 };
@@ -8308,6 +8308,13 @@ function getStudentCourseTitle(pack, kind = "chinese") {
   );
 }
 
+function getAdaptiveEnglishCourseOptionLabel(entry) {
+  const pack = entry?.pack || null;
+  const title = cleanStudentCourseTitle(entry?.title || getStudentCourseTitle(pack, "english"), "字母星球学习任务");
+  const routeDay = safePlainText(pack?.english?.lesson?.diagnostic?.routeDay || pack?.english?.diagnostic?.routeDay || "", 16);
+  return routeDay && !title.startsWith(`${routeDay}｜`) ? `${routeDay}｜${title}` : title;
+}
+
 function getStudentSectionTitle(value, fallback = "学习环节", markedTerms = []) {
   const title = safePlainText(value || fallback, 80);
   if (title === "今日阅读") return "短文阅读";
@@ -10042,9 +10049,12 @@ function renderEnglishLesson() {
     const courseSwitcher = sequence.length > 1 ? `
       <div class="date-switcher english-adaptive-switcher">
         <button class="button ghost compact-button" data-course-sequence-nav="prev" data-course-kind="english" ${prevPack ? "" : "disabled"} type="button">← 上一课</button>
-        <select data-course-pack-select data-course-kind="english" aria-label="课程列表">
-          ${sequence.map((item) => `<option value="${escapeHtml(item.packId)}" ${item.courseKey === selectedKey ? "selected" : ""}>${escapeHtml(item.title)}</option>`).join("")}
-        </select>
+        <label class="course-pack-select-label adaptive-course-select-label">
+          <span>课程列表</span>
+          <select data-course-pack-select data-course-kind="english" aria-label="课程列表">
+            ${sequence.map((item) => `<option value="${escapeHtml(item.packId)}" ${item.courseKey === selectedKey ? "selected" : ""}>${escapeHtml(getAdaptiveEnglishCourseOptionLabel(item))}</option>`).join("")}
+          </select>
+        </label>
         <button class="button ghost compact-button" data-course-sequence-nav="next" data-course-kind="english" ${nextPack ? "" : "disabled"} type="button">下一课 →</button>
         ${historyAction}
       </div>
