@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.5",
-  buildId: "2026-08-02T10:20:00+08:00",
+  version: "v3.9.6",
+  buildId: "2026-08-02T12:55:00+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -75,6 +75,7 @@ const ENGLISH_BLOCK_EXERCISE_PROMPT_VERSION = 6;
 const LEARNING_PACK_SCHEMA_VERSION = "helen-learning-pack/1";
 const SUPPORTED_LEARNING_PACK_SCHEMAS = ["helen-learning-pack/1", "helen-learning-pack/2"];
 const ADAPTIVE_ENGLISH_ARCHITECTURE = "letter-planet-adaptive/1";
+const ADAPTIVE_ENGLISH_SHELL_SOURCE = "adaptive_shell";
 const ADAPTIVE_ENGLISH_ACTIVITY_TYPES = new Set([
   "select", "multi_select", "match", "classify", "order", "blocks",
   "listen", "read", "speak", "dialogue", "guided_write", "reflect"
@@ -2530,7 +2531,10 @@ const AI_TIMEOUTS = {
   dailyPractice: 90000,
   englishBlocks: 90000,
   examples: 60000,
-  colorReference: 150000
+  // Luna/Terra Max may spend most of the request budget in visual reasoning.
+  // Stay below Vercel's 300s function limit while leaving room for JSON and
+  // browser work; a timeout still fails safely and keeps the uploaded image.
+  colorReference: 285000
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -3010,8 +3014,66 @@ function bindNavigation() {
 }
 
 function navigateToView(view) {
-  if (normalizeStudentRoute(view) === "chinese-course" && selectLatestLearningPackForPrimaryCourse()) return;
+  const normalized = normalizeStudentRoute(view);
+  if (normalized === "chinese-course" && selectLatestLearningPackForPrimaryCourse()) return;
+  if (normalized === "letter-course" && selectLatestAdaptiveEnglishCourseForPrimaryCourse()) return;
+  if (normalized === "color-course") {
+    // A stale static catalog selection must never be the primary route. A
+    // generated reference course may still be opened directly when one exists.
+    const colorState = getColorPlanetState();
+    const generated = getGeneratedColorCourses();
+    const activeGenerated = generated.find((course) => course.courseId === colorState.activeCourseId) ||
+      generated.find((course) => course.courseId === colorState.selectedCourseId);
+    if (activeGenerated) {
+      colorState.activeCourseId = activeGenerated.courseId;
+      colorState.selectedCourseId = activeGenerated.courseId;
+      saveState();
+      showView("color-course");
+    } else {
+      showView("color-work-choice");
+    }
+    return;
+  }
   showView(view);
+}
+
+function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
+  ensureAdaptiveEnglishPrimaryCourse();
+  showView("letter-course", true, { skipRouteDateSelection: true });
+  return true;
+}
+
+function ensureAdaptiveEnglishPrimaryCourse() {
+  const latest = getLearningCourseSequence("english").at(-1);
+  let changed = false;
+  if (!latest || !isAdaptiveEnglishPack(latest.pack)) {
+    // A clean browser may not yet have today's adaptive pack. Keep the
+    // approved adaptive shell visible instead of silently reopening Story 3;
+    // the historical library remains available through its explicit switch.
+    if (state.englishCourseSource !== ADAPTIVE_ENGLISH_SHELL_SOURCE) {
+      state.englishCourseSource = ADAPTIVE_ENGLISH_SHELL_SOURCE;
+      changed = true;
+    }
+  } else {
+    if (state.selectedLearningPackId !== latest.packId) {
+      state.selectedLearningPackId = latest.packId;
+      changed = true;
+    }
+    if (state.learningPackSelectionSource !== "auto") {
+      state.learningPackSelectionSource = "auto";
+      changed = true;
+    }
+    if (state.englishCourseSource !== "adaptive") {
+      state.englishCourseSource = "adaptive";
+      changed = true;
+    }
+    if (state.lastAutoSelectedBuiltinPackId !== latest.packId) {
+      state.lastAutoSelectedBuiltinPackId = latest.packId;
+      changed = true;
+    }
+  }
+  if (changed) saveState();
+  return Boolean(latest && isAdaptiveEnglishPack(latest.pack));
 }
 
 function openPlanetHomeCourse(kind, courseId, view) {
@@ -3026,7 +3088,14 @@ function openPlanetHomeCourse(kind, courseId, view) {
       state.learningPackSelectionSource = "manual";
       state.englishCourseSource = "adaptive";
       initializeCourseProgress(state.learningPacks[courseId].data);
+    } else {
+      state.englishCourseSource = ADAPTIVE_ENGLISH_SHELL_SOURCE;
     }
+  } else if (kind === "art") {
+    // Legacy home cards may still carry a daily/static course id. Route them
+    // to the reference workspace instead of reviving a withdrawn static card.
+    showView("color-work-choice", true, { skipRouteDateSelection: true });
+    return;
   } else if (courseId && state.learningPacks?.[courseId]) {
     state.selectedLearningPackId = courseId;
     state.learningPackSelectionSource = "manual";
@@ -3037,6 +3106,11 @@ function openPlanetHomeCourse(kind, courseId, view) {
 
 function showView(view, updateHash = true, options = {}) {
   const visibleRoute = normalizeStudentRoute(view);
+  // A direct #letter-course deep link must obey the same adaptive-first rule
+  // as the home-card and top-navigation actions. Without this guard the
+  // initial render can fall back to the historical Story 3 library before the
+  // user has had a chance to choose an explicit history lesson.
+  if (visibleRoute === "letter-course") ensureAdaptiveEnglishPrimaryCourse();
   const domView = getDomViewId(visibleRoute);
   const target = $(`#${domView}`) ? domView : "daily";
   const historyMode = typeof updateHash === "string" ? updateHash : updateHash ? "push" : "none";
@@ -8485,8 +8559,25 @@ function buildPlanetCard(planet) {
 
 function getPlanetHomeState(kind) {
   if (kind === "english") return getEnglishPlanetHomeState();
-  if (kind === "chinese" || kind === "art") return getSequencedPlanetHomeState(kind);
+  if (kind === "art") return getColorPlanetHomeState();
+  if (kind === "chinese") return getSequencedPlanetHomeState(kind);
   return emptyPlanetHomeState(kind);
+}
+
+// Reference-image generation is the Color Planet's primary course entry.
+// Keep the static catalog available from explicit history cards, but never
+// let a stale selectedCourseId decide what the home button opens.
+function getColorPlanetHomeState() {
+  return {
+    status: "参考图课程",
+    title: "参考图课程",
+    progressText: "",
+    progressPercent: 0,
+    showProgress: false,
+    actionText: "开始课程",
+    route: "color-work-choice",
+    courseId: ""
+  };
 }
 
 function getSequencedPlanetHomeState(kind) {
@@ -8532,40 +8623,19 @@ function getEnglishPlanetHomeState() {
     if (!latest.progress.completed) return activePlanetHomeState(latest, "下一课", "开始课程", false);
     return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
   }
-  const library = getEnglishLessonLibrary();
-  if (!library?.lessons?.length) {
-    const pack = getActiveEnglishPack();
-    if (!pack || !isPlanetScheduled(pack, "english")) return emptyPlanetHomeState("english");
-    const progress = state.courseProgress?.[pack.packId] || null;
-    const course = {
-      title: pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "字母课程",
-      route: "letter-course",
-      courseId: pack.english?.lesson?.lessonId || "",
-      progress: getHomeCourseProgress(progress?.english || {}, progress?.english?.steps, getEnglishLessonSteps(pack).length)
-    };
-    if (course.progress.started && !course.progress.completed) return activePlanetHomeState(course, "继续课程", "继续课程");
-    if (!course.progress.completed) return activePlanetHomeState(course, "下一课", "开始课程", false);
-    return activePlanetHomeState(course, "已完成最新课程", "查看课程", false);
-  }
-  const courses = library.lessons.map((lessonRecord) => {
-    const pack = buildEnglishLessonPackFromLibraryLesson(library, lessonRecord);
-    const progress = state.courseProgress?.[pack.packId] || null;
-    return {
-      lessonRecord,
-      title: lessonRecord.lesson?.anchorSentence || lessonRecord.anchorSentence || "字母课程",
-      route: "letter-course",
-      courseId: lessonRecord.lessonId,
-      progress: getHomeCourseProgress(progress?.english || {}, progress?.english?.steps, getEnglishLessonSteps(pack).length)
-    };
-  });
-  const inProgress = courses.find((course) => course.progress.started && !course.progress.completed);
-  if (inProgress) return activePlanetHomeState(inProgress, "继续课程", "继续课程");
-  const currentIndex = Math.max(0, courses.findIndex((course) => course.lessonRecord.lessonId === (library.currentLessonId || HELLO_SCHOOL_CURRENT_LESSON_ID)));
-  const releasedCourses = courses.slice(currentIndex);
-  const next = releasedCourses.find((course) => !course.progress.completed);
-  if (next) return activePlanetHomeState(next, "下一课", "开始课程", false);
-  const latest = releasedCourses.at(-1) || courses.at(-1);
-  return activePlanetHomeState(latest, "已完成最新课程", "查看课程", false);
+  // Do not fall back to the historical Story 3 anchor on a clean browser.
+  // The daily adaptive pack is imported separately; until it arrives, expose
+  // the approved shell and let the student explicitly open history.
+  return {
+    status: "待导入日课",
+    title: "今日英语任务",
+    progressText: "",
+    progressPercent: 0,
+    showProgress: false,
+    actionText: "开始课程",
+    route: "letter-course",
+    courseId: ""
+  };
 }
 
 function getHomeCourseProgress(side, items, total, expectedKeys = null) {
@@ -9835,6 +9905,10 @@ function renderChineseLesson() {
 }
 
 function renderEnglishLesson() {
+  if (state.englishCourseSource === ADAPTIVE_ENGLISH_SHELL_SOURCE && !getLearningCourseSequence("english").length) {
+    renderAdaptiveEnglishShellUnavailable();
+    return;
+  }
   const pack = getActiveEnglishPack();
   if (!$("#englishLessonHeader")) return;
   if (!pack) {
@@ -9910,6 +9984,24 @@ function renderEnglishLesson() {
   const websiteSteps = steps.filter((step) => !listeningSteps.includes(step));
   $("#englishListeningZone").innerHTML = renderListeningZone(pack, listeningSteps, selectedMode, progress);
   $("#englishLessonSteps").innerHTML = websiteSteps.map((step, index) => renderEnglishStep(pack, step, index + listeningSteps.length, selectedMode, progress)).join("") + renderCourseEndFeedback("english", progress.english, steps);
+}
+
+function renderAdaptiveEnglishShellUnavailable() {
+  if (!$("#englishLessonHeader")) return;
+  $("#englishLessonHeader").innerHTML = `
+    <div class="course-topline adaptive-english-topline">
+      <div>
+        <h1>今日英语任务</h1>
+        <p class="pack-muted">今日任务尚未导入</p>
+      </div>
+    </div>
+    <div class="adaptive-shell-empty" role="status">
+      <p>导入今日课包后，这里会显示按学习记录生成的活动。</p>
+      <button class="button ghost compact-button" data-english-history-library type="button">历史课程</button>
+    </div>
+  `;
+  $("#englishListeningZone").innerHTML = "";
+  $("#englishLessonSteps").innerHTML = "";
 }
 
 function adaptiveSkillLabel(value) {

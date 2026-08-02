@@ -3571,6 +3571,23 @@ textarea:focus {
   align-items: end;
 }
 
+.adaptive-shell-empty {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 760px);
+  margin-inline: auto;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.adaptive-shell-empty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .adaptive-english-activity {
   width: min(100%, 760px);
   margin-inline: auto;
