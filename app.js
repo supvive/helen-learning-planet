@@ -8108,6 +8108,9 @@ function sanitizeQuestionItem(item, fallbackId) {
   if (item.preserveOptionOrder === true || item.answerPosition) normalized.preserveOptionOrder = true;
   if (item.responseMode) normalized.responseMode = safePlainText(item.responseMode, 40);
   if (item.distractorRationaleZh) normalized.distractorRationaleZh = safePlainText(item.distractorRationaleZh, 300);
+  if (Array.isArray(item.evidenceTargetIds)) normalized.evidenceTargetIds = item.evidenceTargetIds.map((value) => safeId(value)).filter(Boolean).slice(0, 8);
+  if (item.difficultyLevel) normalized.difficultyLevel = safePlainText(item.difficultyLevel, 60);
+  if (item.supportBoundaryZh) normalized.supportBoundaryZh = safePlainText(item.supportBoundaryZh, 220);
   if (item.displayCards) normalized.displayCards = sanitizeQuestionDisplayCards(item.displayCards);
   if (item.oralAssessment) normalized.oralAssessment = sanitizeOralAssessment(item.oralAssessment);
   return normalized;

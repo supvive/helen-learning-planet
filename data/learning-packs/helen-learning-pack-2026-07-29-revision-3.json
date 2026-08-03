@@ -250,6 +250,11 @@
           "questions": [
             {
               "id": "f1",
+              "evidenceTargetIds": [
+                "cn.character.fill_blanks.f1"
+              ],
+              "difficultyLevel": "L1_character_discrimination",
+              "supportBoundaryZh": "只报当前字音；不读正确选项。",
               "prompt": "安安把画纸往上____。",
               "options": [
                 "堆",
@@ -273,6 +278,11 @@
             },
             {
               "id": "f2",
+              "evidenceTargetIds": [
+                "cn.character.fill_blanks.f2"
+              ],
+              "difficultyLevel": "L1_character_discrimination",
+              "supportBoundaryZh": "只报当前字音；不读正确选项。",
               "prompt": "大家把书____回书箱。",
               "options": [
                 "放",
@@ -375,6 +385,11 @@
           "questions": [
             {
               "id": "w1",
+              "evidenceTargetIds": [
+                "cn.word.word_understanding.w1"
+              ],
+              "difficultyLevel": "L2_contextual_meaning",
+              "supportBoundaryZh": "最多给一个具体对比提示；成人解释与Helen自己的表述分开记录。",
               "prompt": "在“露出了标签”里，“露出”表示什么？",
               "answer": "原来被挡住，现在能看见了。",
               "referenceAnswer": "原来被挡住，现在能看见了。",
@@ -479,6 +494,11 @@
           "questions": [
             {
               "id": "c1",
+              "evidenceTargetIds": [
+                "cn.reading.comprehension.c1.cause"
+              ],
+              "difficultyLevel": "L2_evidence_reading",
+              "supportBoundaryZh": "只重读当前题，不给答案；只需说出一个能回指原文的原因。",
               "prompt": "同学们为什么一直在书箱前来回找？",
               "answer": "最左边的标签被画纸盖住，看不清书箱的类别。",
               "referenceAnswer": "最左边的标签被画纸盖住，看不清书箱的类别。",
@@ -490,6 +510,11 @@
             },
             {
               "id": "c2",
+              "evidenceTargetIds": [
+                "cn.reading.comprehension.c2.detail"
+              ],
+              "difficultyLevel": "L1_evidence_detail",
+              "supportBoundaryZh": "只重读当前题；核对是否回答“三组”。",
               "prompt": "安安请大家先把书分成几组？",
               "answer": "三组。",
               "referenceAnswer": "三组。",
@@ -501,6 +526,11 @@
             },
             {
               "id": "c3",
+              "evidenceTargetIds": [
+                "cn.reading.comprehension.c3.result"
+              ],
+              "difficultyLevel": "L1_evidence_result",
+              "supportBoundaryZh": "只核对结果句，不要求重复完整故事。",
               "prompt": "哪一句话说明书很快放好了？",
               "options": [
                 "大家拿起一本书。",
@@ -826,5 +856,4 @@
     }
   }
 }
-
 
