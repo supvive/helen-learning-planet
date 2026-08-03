@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "helen-curriculum-quality-gates/1",
+  "purpose": "课程包进入网站前的多维质量门禁；任一阻断维度失败即退回，不改变学生题面或既有学习记录。",
+  "authorityNoteZh": "本门禁按 Oxford/CEFR A1 的公开能力描述、Oxford 小学英语课程常见任务链和可观察证据原则对齐；它不是 Oxford 官方试卷、授权题库或官方认证。",
+  "english": {
+    "standardId": "Oxford-CEFR-A1-aligned-v1",
+    "reference": [
+      "CEFR A1 listening, reading and spoken interaction descriptors",
+      "Oxford primary English progression: listen → understand → use",
+      "Oxford Learner's Dictionaries A1 vocabulary guidance"
+    ],
+    "releaseRuleZh": "未同时通过八个维度的阻断检查，不得标记为 Oxford 对齐通过，不得进入公开课程目录。",
+    "qualityDimensions": [
+      { "id": "standard_alignment", "titleZh": "标准对齐", "severity": "blocker", "questionZh": "是否只使用既定 A1 能力构念和成熟任务形式？" },
+      { "id": "source_coverage", "titleZh": "历史语料覆盖", "severity": "blocker", "questionZh": "是否跨历史语料取样，而不是围绕一句话反复出题？" },
+      { "id": "task_independence", "titleZh": "题目独立性", "severity": "blocker", "questionZh": "上一题是否能直接预测下一题，或把答案泄露到题面？" },
+      { "id": "item_validity", "titleZh": "题目效度", "severity": "blocker", "questionZh": "每题是否只测一个技能，并有唯一可观察证据？" },
+      { "id": "language_level", "titleZh": "语言水平", "severity": "blocker", "questionZh": "是否只使用已学语料和 A1 可理解表达，不偷偷增加新词？" },
+      { "id": "scaffolding", "titleZh": "支架边界", "severity": "blocker", "questionZh": "提示是否帮助完成任务但不替学生作答？" },
+      { "id": "evidence_progress", "titleZh": "证据与进阶", "severity": "blocker", "questionZh": "是否记录独立/有提示/示范后的结果，并可用于两周画像？" },
+      { "id": "release_safety", "titleZh": "发布安全", "severity": "blocker", "questionZh": "学生题面是否隐藏答案、内部编号和家长字段？" }
+    ],
+    "fixedActivityContract": [
+      {
+        "role": "sentence_listen",
+        "title": "听句选原文",
+        "target": "整句听辨：从完整句候选中识别同一目标句。",
+        "uniqueEvidence": "一次选择记录：selectedValue 等于 targetSentence；记录播放次数与是否使用提示。",
+        "level": "L1_sentence_discrimination",
+        "support": "最多两遍目标句；先给整句任务，不显示答案。"
+      },
+      {
+        "role": "meaning_function",
+        "title": "听懂大意",
+        "target": "语用功能：把目标句映射到一个明确场景/用途。",
+        "uniqueEvidence": "一次选择记录：selectedValue 等于唯一 functionAnswer；干扰项必须是同场景但不同功能。",
+        "level": "L1_function_mapping",
+        "support": "可重读目标句或给出场景提示；不得把中文答案直接读出。"
+      },
+      {
+        "role": "blind_word",
+        "title": "听辨已学词",
+        "target": "声音到词形：英文暂时隐藏，从同场景候选中辨认一个已学词。",
+        "uniqueEvidence": "英文隐藏状态下的唯一选择；selectedValue 必须是 targetSentence 中的目标词。",
+        "level": "L1_lexical_retrieval",
+        "support": "至少两遍播放后才显示/确认选项；记录 audioPlayCount、hintLevelUsed。"
+      },
+      {
+        "role": "key_component",
+        "title": "听后找语言成分",
+        "target": "受约束的成分辨认：明确标出时间、动作、位置、所属等类别。",
+        "uniqueEvidence": "在已声明 category 下选择句中真实出现的唯一成分；不得使用无定义的“关键词”。",
+        "level": "L1_component_discrimination",
+        "support": "先显示 category，再播放一次；提示只能缩小关注范围，不给答案。"
+      },
+      {
+        "role": "surface_transfer",
+        "title": "情境表达",
+        "target": "表层迁移：把已学句型放入一个新但同结构的场景。",
+        "uniqueEvidence": "录音（或等价文字）包含 acceptedAnswers 中一个完整、符合场景的表达；记录是否有提示。",
+        "level": "L2_surface_transfer",
+        "support": "展示场景与回答边界；不显示示例答案，不增加未学词。"
+      },
+      {
+        "role": "response_transfer",
+        "title": "对话回应",
+        "target": "互动迁移：听到对方一句话后，用另一句已学表达完成回应。",
+        "uniqueEvidence": "一段录音与先说者语境相容，并命中 acceptedAnswers/等值表达之一。",
+        "level": "L2_response_transfer",
+        "support": "明确先说者、回应边界和可用已学范围；提示后仍记录为 supported。"
+      }
+    ],
+    "progression": {
+      "D01": "baseline",
+      "D02-D04": "L1_retest",
+      "D05-D10": "L2_transfer",
+      "D11-D13": "L2_sequence_and_interaction",
+      "D14": "retest_and_next_review"
+    },
+    "diagnosticBlueprint": {
+      "alignmentNoteZh": "这是按 Oxford/CEFR A1 的技能分离、语境化任务、由识别到互动的进阶原则实现的家庭诊断蓝图，不冒充 Oxford 官方试卷或授权题库。",
+      "dailyVisibleActivities": 6,
+      "requiredRoles": [
+        "sentence_listen",
+        "meaning_function",
+        "blind_word",
+        "key_component",
+        "surface_transfer",
+        "response_transfer"
+      ],
+      "sourceDiversity": {
+        "minimumDistinctSourceSentenceIds": 6,
+        "maximumUsesOfSameTargetSentencePerDay": 1,
+        "twoWeekCoverage": 32
+      },
+      "evidencePrinciples": [
+        "每题只测一个主要技能，选择、词汇、语言形式和口语互动分开记录。",
+        "听力题使用已学历史语料，但同一天不重复目标句，避免由上一题预测下一题。",
+        "口语题必须给出真实情境、回应边界和可接受历史表达；答案只放在 parentOnly。",
+        "诊断题不新增词汇，不用自造的无定义题型或没有唯一证据的开放题。"
+      ]
+    },
+    "globalChecks": [
+      "每个 D01–D14 经过 adaptive shell 后恰好六个可见活动，顺序固定。",
+      "同一天至少六个不同 sourceSentenceId；同一 targetSentence 不得在六题重复。",
+      "每题必须有 evidenceTargetIds、hintPolicy、supportBoundaryZh、expectedAnswer 和至少一个 acceptedAnswers。",
+      "学生题面不得出现 expectedAnswer、acceptedAnswers、parentOnly、source packId 或内部编号。",
+      "选择题必须有恰好一个选项等于 expectedAnswer；盲听词必须出现在目标句或已学词表中。",
+      "标准模式只改变时长，不增加围绕同一句的扩展题；两周合计必须覆盖32个历史 sourceSentenceId。"
+    ]
+  },
+  "chinese": {
+    "standardId": "C-A",
+    "reference": [
+      "2022 语文课程标准",
+      "结构化识字",
+      "证据型阅读理解",
+      "掌握度/四态反馈"
+    ],
+    "sectionRules": {
+      "review_words": {
+        "target": "间隔复现词语：分开观察读音、词义和独立程度。",
+        "uniqueEvidence": "每个词至少一条独立读音/词义结果。",
+        "level": "L1_retrieval",
+        "support": "只报当前词读音或一个短提示；不得把成人解释算作独立。"
+      },
+      "fill_blanks": {
+        "target": "形近字/音近字在短句中的辨析。",
+        "uniqueEvidence": "每题唯一正确字 + 选项选择记录。",
+        "level": "L1_character_discrimination",
+        "support": "可报当前字音，不读正确选项；完成后停止追加。"
+      },
+      "reading_excerpts": {
+        "target": "短摘录中的独立解码与句意保持。",
+        "uniqueEvidence": "每个摘录的读音卡顿/自读状态与一句理解记录。",
+        "level": "L1_decoding_to_meaning",
+        "support": "先等待，再报当前字音；连续卡顿触发停题规则。"
+      },
+      "word_understanding": {
+        "target": "在原句中解释目标词，不依赖成人替答。",
+        "uniqueEvidence": "目标词 + Helen 自己的释义/例子；成人提示单独记录。",
+        "level": "L2_contextual_meaning",
+        "support": "不使用未呈现的“加点词”；最多一个具体对比提示。"
+      },
+      "four_grid_retell": {
+        "target": "按动作/原因/结果组织四步复述。",
+        "uniqueEvidence": "四格各自的完成状态与录音/口述证据，不合并成一个总确认。",
+        "level": "L2_sequence_retell",
+        "support": "每格独立等待/重读/关键词提示；提示后状态为 supported。"
+      },
+      "comprehension": {
+        "target": "原因、关键细节、结果各自定位，避免重复复述。",
+        "uniqueEvidence": "每题一个可回指原文的答案证据；不要求题面没有的“两个原因”。",
+        "level": "L2_evidence_reading",
+        "support": "只重读当前题；不提供完整答案；口答要点单独记录。"
+      },
+      "transfer_scenario": {
+        "target": "把策略迁移到新情境，保留先看标记再分类的逻辑。",
+        "uniqueEvidence": "新情境中的先后动作与目的各一条。",
+        "level": "L2_transfer",
+        "support": "先等待，再给方向性提示，不给完整答案。"
+      },
+      "post_check": {
+        "target": "逐项记录目标字词首次认读，不把跟读算独立。",
+        "uniqueEvidence": "每个字/词的 firstResponse、supportUsed、finalState。",
+        "level": "L1_recognition_probe",
+        "support": "屏幕不显示拼音；报音后进入下一项。"
+      },
+      "fixed_break": {
+        "target": "休息是时间控制，不是题目。",
+        "uniqueEvidence": "breakStartedAt、breakEndedAt；不得进入题号、hardest 或课程题数。",
+        "level": "excluded",
+        "support": "结束休息必须手动；计时和录音在休息中暂停。"
+      }
+    },
+    "globalChecks": [
+      "每道题必须具备 target、唯一 evidenceTarget、difficultyLevel 和支架使用记录。",
+      "固定栏目标题、四态按钮和导航不计入动态识字/题目证据。",
+      "四态反馈记录 independent、supported、modeled、not_attempted，不重复渲染父级确认。",
+      "休息不占九道大题题位，也不能进入最困难环节多选。"
+    ]
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "packId": "english-reminder-v3-pilot-20260804",
+  "exampleOnly": true,
+  "notForImport": true,
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "english": {
+    "taskSystem": {
+      "schemaVersion": "letter-planet-task-system/1",
+      "status": "draft_pending_dr_george_review",
+      "curriculumPlan": {
+        "planId": "hello-school-a1-reminder-v3-pilot",
+        "selectionSeed": "v3-pilot-20260804-a1",
+        "reasonCodes": ["pilot_protocol", "source_traceability", "draft_only"],
+        "sourceGraphRefs": ["story_primary_school:11", "story_primary_school:12"],
+        "targetConstructs": ["listening_gist", "interaction_retrieval"],
+        "difficultyBand": "L1",
+        "difficultyRationale": "仅验证提醒协议和独立性证据，不宣称课程终审。"
+      },
+      "dailyMission": {
+        "titleZh": "听懂初次见面，再用已学表达回应",
+        "primaryAbility": "listening_gist",
+        "secondaryAbilities": ["interaction_retrieval"],
+        "rationale": "两个活动分别观察场景大意和受限口语取回。"
+      },
+      "duration": {
+        "lightMinutes": 15,
+        "standardMinutes": 20,
+        "maxContinuousMinutes": 12,
+        "stopRules": ["完成一次证据记录后可继续", "孩子主动结束", "录音或音频异常时停止"]
+      },
+      "sourceMaterials": [
+        {"sourceMaterialId": "v3-primary-11", "sourceType": "story_sentence", "storyId": "story_primary_school", "sentenceIds": ["story_primary_school:11"], "text": "“Hello! I’m Amy. What’s your name?” she asks.", "translationZh": "“你好！我是Amy。你叫什么名字？”她问。", "audioRef": {"mode": "mobile_handoff", "provider": "每日英语听力", "text": "Hello! I’m Amy. What’s your name?", "language": "en-US", "maxPlays": 2, "hideTextFirst": true, "verified": false, "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"}, "license": "project-owned-source"},
+        {"sourceMaterialId": "v3-primary-12", "sourceType": "story_sentence", "storyId": "story_primary_school", "sentenceIds": ["story_primary_school:12"], "text": "“My name is Helen. Nice to meet you!”", "translationZh": "“我叫Helen。很高兴认识你！”", "audioRef": {"mode": "mobile_handoff", "provider": "每日英语听力", "text": "My name is Helen. Nice to meet you!", "language": "en-US", "maxPlays": 2, "hideTextFirst": true, "verified": false, "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"}, "license": "project-owned-source"}
+      ],
+      "feedbackPolicy": {"attemptAppendOnly": true, "incompleteExport": true, "independenceSeparate": true, "conflictRule": "正确性与独立性冲突时分别保留，不把提示后答对写成独立掌握。"},
+      "evidenceTargetDefinitions": [
+        {"id": "v3-scene-gist.evidence", "constructId": "listening_gist", "evidenceType": "single_choice", "observableZh": "听后选择主要活动"},
+        {"id": "v3-guided-response.evidence", "constructId": "interaction_retrieval", "evidenceType": "recorded_response", "observableZh": "录下一句已学的姓名回应"}
+      ],
+      "activities": [
+        {
+          "plannedMinutesByMode": {"light": 5, "standard": 6},
+          "activityId": "v3-scene-gist",
+          "activityType": "scene_listen_gist",
+          "titleZh": "听懂发生了什么",
+          "constructId": "listening_gist",
+          "construct": {"id": "listening_gist", "descriptorZh": "理解熟悉初次见面场景的主要事情", "observableBehaviorZh": "听后从同场景选项中找出发生的事情", "independenceRationaleZh": "选项测场景大意，不要求复述任一句原文"},
+          "sourceMaterialIds": ["v3-primary-11", "v3-primary-12"],
+          "evidenceTargetIds": ["v3-scene-gist.evidence"],
+          "childVisible": {"titleZh": "听懂发生了什么", "instructionZh": "听完两句话，选出发生的事情。", "options": [{"optionId": "a", "text": "认识新朋友", "value": "meet_friend"}, {"optionId": "b", "text": "整理玩具", "value": "tidy_toys"}, {"optionId": "c", "text": "寻找小狗", "value": "find_dog"}]},
+          "parentOnly": {"answerKey": {"correctOptionId": "a"}, "distractorRationale": {"b": "同为儿童日常活动，但材料没有整理玩具。", "c": "同为儿童活动，但材料没有寻找小狗。"}},
+          "options": [
+            {"id": "a", "text": "认识新朋友"},
+            {"id": "b", "text": "整理玩具"},
+            {"id": "c", "text": "寻找小狗"}
+          ],
+          "answerKey": {"correctOptionId": "a"},
+          "audioRef": {"mode": "mobile_handoff", "provider": "每日英语听力", "text": "Hello! I’m Amy. What’s your name? My name is Helen. Nice to meet you!", "language": "en-US", "maxPlays": 2, "hideTextFirst": true, "verified": false, "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"},
+          "difficulty": {"overall": 2, "dimensions": {"lexicalLoad": 0, "taskNovelty": 1, "transferDistance": 1, "informationSpan": 1, "supportReduction": 0}},
+          "stopRule": "完成一次选择和证据记录后进入下一活动；孩子可以主动结束。",
+          "reminderSystemV3": {
+            "schemaVersion": "letter-planet-reminder-system/3",
+            "standardId": "helen-oxford-a1-reminder/1",
+            "reminderId": "v3-scene-gist-reminder",
+            "constructId": "listening_gist",
+            "evidenceTargetIds": ["v3-scene-gist.evidence"],
+            "visible": {
+              "initial": {"id": "initial-locate", "actionId": "initial-action", "locateZh": "先听两句话，找出他们在做什么。", "actionZh": "听完后只选一个主要活动。", "trigger": "initial", "singleAction": true, "answerNeutral": true},
+              "support": [
+                {"id": "support-focus", "order": 3, "trigger": "on_request", "textZh": "注意人物第一次见面时说了什么。", "singleAction": true, "answerNeutral": true},
+                {"id": "support-replay", "order": 4, "trigger": "on_request", "textZh": "再听开头，找地点或活动。", "singleAction": true, "answerNeutral": true}
+              ],
+              "model": {"id": "model-scene", "order": 5, "trigger": "after_first_attempt", "textZh": "示范：先听“Hello!”，再判断场景动作。", "singleAction": true, "answerNeutral": false, "requiresAttempt": true, "answerExposure": "after_first_attempt"}
+            },
+            "policy": {
+              "trigger": "on_request",
+              "answerIsolation": "strict",
+              "cognitiveLoad": {"maxInitialLines": 2, "maxLayerCharacters": 80, "maxEnglishTokens": 8},
+              "vocabulary": {"source": "english-source-graph-v1", "allowedTokens": ["school", "friend", "hello", "new"], "allowNewTokens": false, "unknownTokenPolicy": "reject"}
+            },
+            "outcome": {"statuses": [{"id": "independent", "labelZh": "独立完成"}, {"id": "prompted", "labelZh": "看提示后完成"}, {"id": "modeled", "labelZh": "看示范后完成"}, {"id": "not_yet", "labelZh": "暂未完成"}], "separateFromCorrectness": true},
+            "replay": {"schemaVersion": "letter-planet-reminder-event/2", "appendOnly": true, "eventTypes": ["requested", "shown", "blocked", "attempted", "completed", "revoked"], "maxEvents": 48, "storedFields": ["eventId", "reminderId", "layerId", "event", "attemptNumber", "at"], "idempotency": {"keyFields": ["reminderId", "layerId", "attemptNumber"], "duplicatePolicy": "ignore"}, "undo": {"supported": true, "eventType": "revoked"}},
+            "audit": {"method": "automated_plus_human_review", "evidence": "自动校验构念、词汇、负荷、事件和零写入契约；待 Allen/George 内容盲评及真实设备证据。", "dimensions": {"constructAlignment": true, "progression": true, "answerIsolation": true, "a1Language": true, "cognitiveLoad": true, "singleAction": true, "triggerIdempotency": true, "independence": true, "replayUndo": true, "accessibility": true, "failureSafety": true, "explainability": true}},
+            "accessibility": {"minTouchTargetPx": 44, "keyboardFocusable": true, "visibleWithoutColor": true, "noHorizontalScroll320to390": true, "ariaLabelZh": "查看本题分层提醒"},
+            "historyCompatibility": {"legacySchemas": ["letter-planet-reminder-system/1", "letter-planet-reminder-system/2"], "migrationMode": "read_only", "preserveProgress": true, "writeLegacyFields": false, "zeroWriteOnReject": true}
+          }
+        },
+        {
+          "plannedMinutesByMode": {"light": 5, "standard": 6},
+          "activityId": "v3-guided-response",
+          "activityType": "guided_response",
+          "titleZh": "用已学表达回应",
+          "constructId": "interaction_retrieval",
+          "construct": {"id": "interaction_retrieval", "descriptorZh": "在初次见面场景中取回已学回应", "observableBehaviorZh": "听到问候后说出一句边界清楚的已学回应", "independenceRationaleZh": "录音只观察回应功能和已学句型，不把发音口音当作唯一评分"},
+          "sourceMaterialIds": ["v3-primary-11", "v3-primary-12"],
+          "evidenceTargetIds": ["v3-guided-response.evidence"],
+          "childVisible": {"titleZh": "用已学表达回应", "instructionZh": "听到对方问名字后，说一句已学的回应。", "responseBoundaryZh": "只说一句介绍自己的名字。"},
+          "parentOnly": {"answerKey": {"acceptedPhrases": ["My name is Helen."]}, "oralRubric": {"acceptedPhrases": ["My name is Helen."]}, "transferSourceMaterialIds": ["v3-primary-12"]},
+          "options": [],
+          "answerKey": {"acceptedPhrases": ["My name is Helen."]},
+          "audioRef": {"mode": "mobile_handoff", "provider": "每日英语听力", "text": "Hello! I’m Amy. What’s your name?", "language": "en-US", "maxPlays": 2, "hideTextFirst": true, "verified": false, "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"},
+          "difficulty": {"overall": 2, "dimensions": {"lexicalLoad": 0, "taskNovelty": 1, "transferDistance": 1, "informationSpan": 0, "supportReduction": 0}},
+          "stopRule": "录下一次回应后进入结果记录；孩子可以主动结束。",
+          "recording": {"mode": "required_response", "maxSeconds": 30, "promptZh": "请录下你的一句回应。", "startCueZh": "准备好后点开始录音", "stopAction": "done_button", "allowMultipleTakes": true},
+          "reminderSystemV3": {
+            "schemaVersion": "letter-planet-reminder-system/3",
+            "standardId": "helen-oxford-a1-reminder/1",
+            "reminderId": "v3-guided-response-reminder",
+            "constructId": "interaction_retrieval",
+            "evidenceTargetIds": ["v3-guided-response.evidence"],
+            "visible": {
+              "initial": {"id": "initial-locate", "actionId": "initial-action", "locateZh": "先听对方的问候，找出要回应的功能。", "actionZh": "只说一句已学的回应。", "trigger": "initial", "singleAction": true, "answerNeutral": true},
+              "support": [
+                {"id": "support-function", "order": 3, "trigger": "on_request", "textZh": "先想一想：对方是在问候还是在问名字？", "singleAction": true, "answerNeutral": true}
+              ],
+              "model": {"id": "model-response", "order": 4, "trigger": "after_first_attempt", "textZh": "示范：What’s your name? → My name is Helen.", "singleAction": true, "answerNeutral": false, "requiresAttempt": true, "answerExposure": "after_first_attempt"}
+            },
+            "policy": {"trigger": "on_request", "answerIsolation": "strict", "cognitiveLoad": {"maxInitialLines": 2, "maxLayerCharacters": 80, "maxEnglishTokens": 8}, "vocabulary": {"source": "english-source-graph-v1", "allowedTokens": ["hello", "my", "name", "is", "whats", "your", "helen"], "allowNewTokens": false, "unknownTokenPolicy": "reject"}},
+            "outcome": {"statuses": [{"id": "independent", "labelZh": "独立完成"}, {"id": "prompted", "labelZh": "看提示后完成"}, {"id": "modeled", "labelZh": "看示范后完成"}, {"id": "not_yet", "labelZh": "暂未完成"}], "separateFromCorrectness": true},
+            "replay": {"schemaVersion": "letter-planet-reminder-event/2", "appendOnly": true, "eventTypes": ["requested", "shown", "blocked", "attempted", "completed", "revoked"], "maxEvents": 48, "storedFields": ["eventId", "reminderId", "layerId", "event", "attemptNumber", "at"], "idempotency": {"keyFields": ["reminderId", "layerId", "attemptNumber"], "duplicatePolicy": "ignore"}, "undo": {"supported": true, "eventType": "revoked"}},
+            "audit": {"method": "automated_plus_human_review", "evidence": "自动校验构念、词汇、负荷、事件和零写入契约；待 Allen/George 内容盲评及真实设备证据。", "dimensions": {"constructAlignment": true, "progression": true, "answerIsolation": true, "a1Language": true, "cognitiveLoad": true, "singleAction": true, "triggerIdempotency": true, "independence": true, "replayUndo": true, "accessibility": true, "failureSafety": true, "explainability": true}},
+            "accessibility": {"minTouchTargetPx": 44, "keyboardFocusable": true, "visibleWithoutColor": true, "noHorizontalScroll320to390": true, "ariaLabelZh": "查看本题分层提醒"},
+            "historyCompatibility": {"legacySchemas": ["letter-planet-reminder-system/1", "letter-planet-reminder-system/2"], "migrationMode": "read_only", "preserveProgress": true, "writeLegacyFields": false, "zeroWriteOnReject": true}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "helen-letter-reminder-v2-pilot-draft/1",
+  "status": "draft_pending_allen_review",
+  "notForImport": true,
+  "sourceGraph": "data/english-source-graph-v1.json",
+  "purposeZh": "只验证 v2 分层提示的构念、证据与回放语义；不进入正式课包或 manifest。",
+  "activities": [
+    {
+      "activityId": "draft-zoo-action-gist",
+      "activityType": "scene_listen_gist",
+      "constructId": "listening_gist",
+      "constructDescriptorZh": "理解熟悉场景里正在发生的主要动作",
+      "observableBehaviorZh": "听完后从三个熟悉活动中选出场景动作",
+      "independenceRationaleZh": "选项只测场景大意，不要求复述原句或记住新词",
+      "sourceSentenceIds": ["story_zoo:07", "story_zoo:08"],
+      "evidenceTargetIds": ["zoo_invitation.action"],
+      "answerTexts": ["去那里看看", "邀请一起玩", "准备回家"],
+      "reminderSystemV2": {
+        "schemaVersion": "letter-planet-reminder-system/2",
+        "standardId": "helen-letter-planet-reminder-v2-a1",
+        "reminderId": "draft-zoo-action-gist-v2",
+        "constructId": "listening_gist",
+        "measurement": {
+          "constructId": "listening_gist",
+          "singleConstruct": true,
+          "singleActionPerLayer": true,
+          "evidenceTargetIds": ["zoo_invitation.action"]
+        },
+        "layers": {
+          "locate": {
+            "id": "locate-scene-action",
+            "order": 1,
+            "trigger": "initial",
+            "textZh": "先找人物和动作。",
+            "answerNeutral": true
+          },
+          "action": {
+            "id": "action-scene-choice",
+            "order": 2,
+            "trigger": "initial",
+            "textZh": "听完后，只选大家要做的事。",
+            "answerNeutral": true
+          },
+          "strategy": {
+            "maxLevels": 2,
+            "levels": [
+              {
+                "id": "strategy-speaker-action",
+                "order": 3,
+                "trigger": "on_request",
+                "textZh": "先听谁在说话，再找动作。",
+                "answerNeutral": true
+              },
+              {
+                "id": "strategy-place-action",
+                "order": 4,
+                "trigger": "on_request",
+                "textZh": "把注意力放在去哪里、做什么上。",
+                "answerNeutral": true
+              }
+            ]
+          },
+          "demonstration": {
+            "id": "demonstration-zoo-listen",
+            "order": 5,
+            "trigger": "after_first_attempt",
+            "textZh": "示范：Can we go there?",
+            "requiresAttempt": true,
+            "answerNeutral": false,
+            "answerExposure": "after_first_attempt"
+          },
+          "result": {
+            "id": "result-zoo-action",
+            "trigger": "on_completion",
+            "statuses": [
+              {"id": "independent", "labelZh": "独立完成"},
+              {"id": "prompted", "labelZh": "看提示后完成"},
+              {"id": "modeled", "labelZh": "看示范后完成"},
+              {"id": "not_yet", "labelZh": "暂未完成"}
+            ],
+            "separateFromCorrectness": true
+          }
+        },
+        "cognitiveLoad": {
+          "maxVisibleLines": 2,
+          "maxChineseCharacters": 80,
+          "maxEnglishTokens": 6,
+          "maxStrategyLevels": 2
+        },
+        "quality": {
+          "standardId": "helen-letter-planet-reminder-v2-a1",
+          "answerLeakageChecked": true,
+          "a1LanguageChecked": true,
+          "singleActionChecked": true,
+          "cognitiveLoad": {
+            "checked": true,
+            "maxVisibleLines": 2,
+            "maxChineseCharacters": 80,
+            "maxEnglishTokens": 6,
+            "maxStrategyLevels": 2
+          }
+        },
+        "vocabularyPolicy": {
+          "source": "english-source-graph-v1",
+          "allowedTokens": ["can", "we", "go", "there"],
+          "allowNewTokens": false,
+          "unknownTokenPolicy": "reject"
+        },
+        "replay": {
+          "schemaVersion": "letter-planet-reminder-event/1",
+          "appendOnly": true,
+          "eventTypes": ["shown", "requested", "blocked", "completed", "revoked"],
+          "maxEvents": 12,
+          "storedFields": ["eventId", "reminderId", "layerId", "event", "attemptNumber", "at"],
+          "idempotency": {
+            "keyFields": ["reminderId", "layerId", "attemptNumber"],
+            "duplicatePolicy": "ignore"
+          },
+          "undo": {"supported": true, "eventType": "revoked"}
+        },
+        "accessibility": {
+          "minTouchTargetPx": 44,
+          "keyboardFocusable": true,
+          "visibleWithoutColor": true,
+          "ariaLabelZh": "查看分层提示"
+        },
+        "surfaces": {
+          "desktop": {"layout": "inline", "noHorizontalScroll": true},
+          "mobile": {"layout": "stacked", "noHorizontalScroll": true}
+        },
+        "historyCompatibility": {
+          "legacySchema": "letter-planet-reminder-system/1",
+          "readLegacyProgress": true,
+          "preserveProgress": true,
+          "writeLegacyFields": false,
+          "migrationMode": "read_only",
+          "zeroWriteOnReject": true
+        }
+      }
+    },
+    {
+      "activityId": "draft-school-greeting-response",
+      "activityType": "spoken_interaction",
+      "constructId": "spoken_interaction",
+      "constructDescriptorZh": "在熟悉问候场景中听懂并作出一句回应",
+      "observableBehaviorZh": "听到问候后，用已学表达回应一次",
+      "independenceRationaleZh": "回应只使用已学问候句，不考查新语法或书写拼写",
+      "sourceSentenceIds": ["story_primary_school:11", "story_primary_school:12"],
+      "evidenceTargetIds": ["school_greeting.response"],
+      "answerTexts": ["你好，我叫 Helen", "我不知道", "我要回家"],
+      "reminderSystemV2": {
+        "schemaVersion": "letter-planet-reminder-system/2",
+        "standardId": "helen-letter-planet-reminder-v2-a1",
+        "reminderId": "draft-school-greeting-response-v2",
+        "constructId": "spoken_interaction",
+        "measurement": {
+          "constructId": "spoken_interaction",
+          "singleConstruct": true,
+          "singleActionPerLayer": true,
+          "evidenceTargetIds": ["school_greeting.response"]
+        },
+        "layers": {
+          "locate": {
+            "id": "locate-greeting-turn",
+            "order": 1,
+            "trigger": "initial",
+            "textZh": "先听清是谁在问候。",
+            "answerNeutral": true
+          },
+          "action": {
+            "id": "action-greeting-response",
+            "order": 2,
+            "trigger": "initial",
+            "textZh": "听完后，说一句已经学过的回应。",
+            "answerNeutral": true
+          },
+          "strategy": {
+            "maxLevels": 2,
+            "levels": [
+              {
+                "id": "strategy-greeting-name",
+                "order": 3,
+                "trigger": "on_request",
+                "textZh": "先抓住问候，再听对方问什么。",
+                "answerNeutral": true
+              },
+              {
+                "id": "strategy-greeting-turn",
+                "order": 4,
+                "trigger": "on_request",
+                "textZh": "轮到你时，保持一句短回应。",
+                "answerNeutral": true
+              }
+            ]
+          },
+          "demonstration": {
+            "id": "demonstration-greeting-response",
+            "order": 5,
+            "trigger": "after_first_attempt",
+            "textZh": "示范：Hello! My name is Helen.",
+            "requiresAttempt": true,
+            "answerNeutral": false,
+            "answerExposure": "after_first_attempt"
+          },
+          "result": {
+            "id": "result-greeting-response",
+            "trigger": "on_completion",
+            "statuses": [
+              {"id": "independent", "labelZh": "独立完成"},
+              {"id": "prompted", "labelZh": "看提示后完成"},
+              {"id": "modeled", "labelZh": "看示范后完成"},
+              {"id": "not_yet", "labelZh": "暂未完成"}
+            ],
+            "separateFromCorrectness": true
+          }
+        },
+        "cognitiveLoad": {
+          "maxVisibleLines": 2,
+          "maxChineseCharacters": 80,
+          "maxEnglishTokens": 8,
+          "maxStrategyLevels": 2
+        },
+        "quality": {
+          "standardId": "helen-letter-planet-reminder-v2-a1",
+          "answerLeakageChecked": true,
+          "a1LanguageChecked": true,
+          "singleActionChecked": true,
+          "cognitiveLoad": {
+            "checked": true,
+            "maxVisibleLines": 2,
+            "maxChineseCharacters": 80,
+            "maxEnglishTokens": 8,
+            "maxStrategyLevels": 2
+          }
+        },
+        "vocabularyPolicy": {
+          "source": "english-source-graph-v1",
+          "allowedTokens": ["hello", "my", "name", "is", "helen"],
+          "allowNewTokens": false,
+          "unknownTokenPolicy": "reject"
+        },
+        "replay": {
+          "schemaVersion": "letter-planet-reminder-event/1",
+          "appendOnly": true,
+          "eventTypes": ["shown", "requested", "blocked", "completed", "revoked"],
+          "maxEvents": 12,
+          "storedFields": ["eventId", "reminderId", "layerId", "event", "attemptNumber", "at"],
+          "idempotency": {
+            "keyFields": ["reminderId", "layerId", "attemptNumber"],
+            "duplicatePolicy": "ignore"
+          },
+          "undo": {"supported": true, "eventType": "revoked"}
+        },
+        "accessibility": {
+          "minTouchTargetPx": 44,
+          "keyboardFocusable": true,
+          "visibleWithoutColor": true,
+          "ariaLabelZh": "查看分层提示"
+        },
+        "surfaces": {
+          "desktop": {"layout": "inline", "noHorizontalScroll": true},
+          "mobile": {"layout": "stacked", "noHorizontalScroll": true}
+        },
+        "historyCompatibility": {
+          "legacySchema": "letter-planet-reminder-system/1",
+          "readLegacyProgress": true,
+          "preserveProgress": true,
+          "writeLegacyFields": false,
+          "migrationMode": "read_only",
+          "zeroWriteOnReject": true
+        }
+      }
+    }
+  ]
+}

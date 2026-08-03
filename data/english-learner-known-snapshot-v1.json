@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "helen-learner-known-snapshot/1",
+  "status": "missing",
+  "learnerIdHash": "",
+  "asOf": "",
+  "tokens": [],
+  "sourcePackIds": [],
+  "confidence": "none",
+  "notForScoring": true,
+  "reason": "真实学生掌握快照尚未提供；空 tokens 不表示孩子没有掌握任何词。"
+}

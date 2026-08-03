@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "helen-letter-audio-contract/1",
+  "status": "candidate_only",
+  "modes": {
+    "pack_asset": {
+      "desktop": true,
+      "mobile": true,
+      "requiredFields": ["assetId", "url", "text", "language", "verified"],
+      "releaseRule": "verified must be true after real desktop and mobile playback"
+    },
+    "mobile_handoff": {
+      "desktop": false,
+      "mobile": true,
+      "requiredFields": ["provider", "text", "language", "mobileInstructionZh", "verified"],
+      "releaseRule": "never present as a desktop play button; verified does not imply desktop playback"
+    }
+  },
+  "zeroWriteWhen": [
+    "unknown mode",
+    "pack_asset without assetId/url",
+    "any mode with verified=false",
+    "mobile_handoff requested from a desktop-only surface"
+  ],
+  "notForImport": true
+}

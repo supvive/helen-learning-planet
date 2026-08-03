@@ -1,0 +1,680 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "packId": "english-reminder-v4-pilot-revision-1-20260804",
+  "exampleOnly": true,
+  "notForImport": true,
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "reviewRequirements": {
+    "contentReviewer": "Allen",
+    "deviceReviewer": "Dr. George",
+    "status": "pending_content_and_device_evidence"
+  },
+  "english": {
+    "taskSystem": {
+      "schemaVersion": "letter-planet-task-system/1",
+      "status": "draft_pending_dr_george_review",
+      "curriculumPlan": {
+        "planId": "hello-school-a1-reminder-v4-pilot",
+        "selectionSeed": "v4-pilot-20260804-clean-room",
+        "reasonCodes": [
+          "oxford_a1",
+          "clean_room_v4",
+          "source_traceability",
+          "draft_only"
+        ],
+        "sourceGraphRefs": [
+          "story_primary_school:11",
+          "story_primary_school:12",
+          "story_primary_school:13",
+          "story_primary_school:14"
+        ],
+        "targetConstructs": [
+          "listening_gist",
+          "interaction_retrieval"
+        ],
+        "difficultyBand": "L1",
+        "difficultyRationale": "只验证构念、证据和分层支持；不宣称正式日课通过。"
+      },
+      "dailyMission": {
+        "titleZh": "听懂初次见面，再用已学表达回应",
+        "primaryAbility": "listening_gist",
+        "secondaryAbilities": [
+          "interaction_retrieval"
+        ],
+        "rationale": "两个活动分别观察问候场景大意和已学回应取回。"
+      },
+      "duration": {
+        "lightMinutes": 15,
+        "standardMinutes": 20,
+        "maxContinuousMinutes": 12,
+        "stopRules": [
+          "完成一次证据记录后可继续",
+          "孩子主动结束",
+          "录音或音频异常时停止"
+        ]
+      },
+      "sourceMaterials": [
+        {
+          "sourceMaterialId": "v4-primary-11",
+          "sourceType": "story_sentence",
+          "storyId": "story_primary_school",
+          "sentenceIds": [
+            "story_primary_school:11"
+          ],
+          "text": "“Hello! I’m Amy. What’s your name?” she asks.",
+          "translationZh": "“你好！我是Amy。你叫什么名字？”她问。",
+          "audioRef": {
+            "mode": "mobile_handoff",
+            "provider": "每日英语听力",
+            "text": "Hello! I’m Amy. What’s your name?",
+            "language": "en-US",
+            "maxPlays": 2,
+            "hideTextFirst": true,
+            "verified": false,
+            "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+          },
+          "license": "project-owned-source"
+        },
+        {
+          "sourceMaterialId": "v4-primary-12",
+          "sourceType": "story_sentence",
+          "storyId": "story_primary_school",
+          "sentenceIds": [
+            "story_primary_school:12"
+          ],
+          "text": "“My name is Helen. Nice to meet you!”",
+          "translationZh": "“我叫Helen。很高兴认识你！”",
+          "audioRef": {
+            "mode": "mobile_handoff",
+            "provider": "每日英语听力",
+            "text": "My name is Helen. Nice to meet you!",
+            "language": "en-US",
+            "maxPlays": 2,
+            "hideTextFirst": true,
+            "verified": false,
+            "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+          },
+          "license": "project-owned-source"
+        },
+        {
+          "sourceMaterialId": "v4-primary-13",
+          "sourceType": "story_sentence",
+          "storyId": "story_primary_school",
+          "sentenceIds": [
+            "story_primary_school:13"
+          ],
+          "text": "“Nice to meet you, too. Do you want to be my friend?”",
+          "translationZh": "“我也很高兴认识你。你愿意做我的朋友吗？”",
+          "audioRef": {
+            "mode": "mobile_handoff",
+            "provider": "每日英语听力",
+            "text": "Nice to meet you, too. Do you want to be my friend?",
+            "language": "en-US",
+            "maxPlays": 2,
+            "hideTextFirst": true,
+            "verified": false,
+            "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+          },
+          "license": "project-owned-source"
+        },
+        {
+          "sourceMaterialId": "v4-primary-14",
+          "sourceType": "story_sentence",
+          "storyId": "story_primary_school",
+          "sentenceIds": [
+            "story_primary_school:14"
+          ],
+          "text": "“Yes, I do!”",
+          "translationZh": "“是的，我愿意！”",
+          "audioRef": {
+            "mode": "mobile_handoff",
+            "provider": "每日英语听力",
+            "text": "Yes, I do!",
+            "language": "en-US",
+            "maxPlays": 2,
+            "hideTextFirst": true,
+            "verified": false,
+            "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+          },
+          "license": "project-owned-source"
+        }
+      ],
+      "feedbackPolicy": {
+        "attemptAppendOnly": true,
+        "incompleteExport": true,
+        "independenceSeparate": true,
+        "conflictRule": "正确性与独立性冲突时分别保留，不把提示后答对写成独立掌握。"
+      },
+      "activities": [
+        {
+          "plannedMinutesByMode": {
+            "light": 5,
+            "standard": 6
+          },
+          "activityId": "v4-scene-gist",
+          "activityType": "scene_listen_gist",
+          "titleZh": "听懂发生了什么",
+          "constructId": "listening_gist",
+          "construct": {
+            "id": "listening_gist",
+            "descriptorZh": "理解熟悉初次见面场景的主要事情",
+            "observableBehaviorZh": "听后从同场景选项中找出两个角色正在做的事",
+            "independenceRationaleZh": "选项测场景大意，不要求复述原句"
+          },
+          "sourceMaterialIds": [
+            "v4-primary-11",
+            "v4-primary-12"
+          ],
+          "evidenceTargetIds": [
+            "v4-scene-gist.evidence"
+          ],
+          "childVisible": {
+            "titleZh": "听懂发生了什么",
+            "instructionZh": "听完两句话，只选一个主要事情。",
+            "options": [
+              {
+                "optionId": "a",
+                "text": "两个人先互相问候，再介绍自己的名字",
+                "value": "greeting_and_names"
+              },
+              {
+                "optionId": "b",
+                "text": "两个人先互相问候，再介绍自己喜欢的颜色",
+                "value": "greeting_and_colors"
+              },
+              {
+                "optionId": "c",
+                "text": "两个人先互相问候，再询问对方的学校",
+                "value": "greeting_and_school"
+              }
+            ]
+          },
+          "parentOnly": {
+            "answerKey": {
+              "correctOptionId": "a"
+            },
+            "distractorRationale": {
+              "b": "材料出现名字介绍，没有颜色介绍。",
+              "c": "材料出现名字介绍，没有学校询问。"
+            }
+          },
+          "options": [
+            {
+              "id": "a",
+              "text": "两个人先互相问候，再介绍自己的名字",
+              "value": "greeting_and_names"
+            },
+            {
+              "id": "b",
+              "text": "两个人先互相问候，再介绍自己喜欢的颜色",
+              "value": "greeting_and_colors"
+            },
+            {
+              "id": "c",
+              "text": "两个人先互相问候，再询问对方的学校",
+              "value": "greeting_and_school"
+            }
+          ],
+          "answerKey": {
+            "correctOptionId": "a"
+          },
+          "audioRef": {
+            "mode": "mobile_handoff",
+            "provider": "每日英语听力",
+            "text": "Hello! I’m Amy. What’s your name? My name is Helen. Nice to meet you!",
+            "language": "en-US",
+            "maxPlays": 2,
+            "hideTextFirst": true,
+            "verified": false,
+            "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+          },
+          "difficulty": {
+            "overall": 2,
+            "dimensions": {
+              "lexicalLoad": 0,
+              "taskNovelty": 1,
+              "transferDistance": 1,
+              "informationSpan": 1,
+              "supportReduction": 0
+            }
+          },
+          "stopRule": "完成一次选择和证据记录后进入下一活动；孩子可以主动结束。",
+          "reminderSystemV4": {
+            "schemaVersion": "letter-planet-reminder-system/4",
+            "standardId": "helen-oxford-a1-reminder-v4/1",
+            "reminderId": "v4-scene-gist-reminder",
+            "activityId": "v4-scene-gist",
+            "constructId": "listening_gist",
+            "measurement": {
+              "evidenceTargetId": "v4-scene-gist.evidence",
+              "sourceMaterialIds": [
+                "v4-primary-11",
+                "v4-primary-12"
+              ],
+              "sourceSentenceIds": [
+                "story_primary_school:11",
+                "story_primary_school:12"
+              ],
+              "singleConstruct": true,
+              "singleAction": true,
+              "actionId": "choose_one"
+            },
+            "vocabulary": {
+              "scope": "source_material_and_learner_known",
+              "source": "english-source-graph-v1",
+              "allowedTokens": [
+                "my",
+                "name",
+                "is",
+                "helen"
+              ],
+              "allowNewTokens": false,
+              "unknownTokenPolicy": "reject"
+            },
+            "studentSurface": {
+              "initial": {
+                "locate": {
+                  "id": "v4-gist-locate",
+                  "order": 1,
+                  "trigger": "initial",
+                  "textZh": "先听两句话，找出他们在做什么。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                },
+                "action": {
+                  "id": "v4-gist-action",
+                  "order": 2,
+                  "trigger": "initial",
+                  "textZh": "听完后只选一个主要事情。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                }
+              },
+              "supports": [
+                {
+                  "id": "v4-gist-support-focus",
+                  "order": 3,
+                  "trigger": "on_request",
+                  "textZh": "先听清两个人分别说了什么。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                },
+                {
+                  "id": "v4-gist-support-replay",
+                  "order": 4,
+                  "trigger": "on_request",
+                  "textZh": "再听一遍，按“谁—说了什么—对谁”记下一个信息。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                }
+              ],
+              "demonstration": {
+                "id": "v4-gist-model",
+                "order": 5,
+                "trigger": "after_first_attempt",
+                "textZh": "示范：选择“初次问候并介绍名字”。",
+                "singleAction": true,
+                "answerNeutral": false,
+                "requiresAttempt": true,
+                "answerExposure": "after_first_attempt",
+                "evidenceRef": "v4-primary-11"
+              },
+              "outcome": {
+                "statuses": [
+                  {
+                    "id": "independent",
+                    "labelZh": "独立完成"
+                  },
+                  {
+                    "id": "prompted",
+                    "labelZh": "看提示后完成"
+                  },
+                  {
+                    "id": "modeled",
+                    "labelZh": "看示范后完成"
+                  },
+                  {
+                    "id": "not_yet",
+                    "labelZh": "暂未完成"
+                  }
+                ],
+                "separateFromCorrectness": true,
+                "requiresCapturedEvidence": true
+              }
+            },
+            "limits": {
+              "maxVisibleLines": 2,
+              "maxLayerCharacters": 80,
+              "maxEnglishTokens": 8,
+              "maxVisibleButtons": 3
+            },
+            "events": {
+              "schemaVersion": "letter-planet-reminder-event/3",
+              "appendOnly": true,
+              "allowedEvents": [
+                "requested",
+                "shown",
+                "blocked",
+                "attempted",
+                "completed",
+                "revoked"
+              ],
+              "maxEvents": 48,
+              "storedFields": [
+                "schemaVersion",
+                "eventId",
+                "sessionId",
+                "activityId",
+                "reminderId",
+                "layerId",
+                "event",
+                "attemptId",
+                "attemptNumber",
+                "sequence",
+                "at",
+                "kind",
+                "evidenceRef",
+                "reason",
+                "correctness",
+                "evaluator",
+                "outcome",
+                "revokesEventId"
+              ],
+              "idempotency": {
+                "keyFields": [
+                  "sessionId",
+                  "reminderId",
+                  "layerId",
+                  "attemptId",
+                  "attemptNumber",
+                  "event"
+                ],
+                "duplicatePolicy": "ignore"
+              },
+              "undo": {
+                "supported": true,
+                "eventType": "revoked",
+                "requiresEventId": true
+              }
+            },
+            "safety": {
+              "zeroWriteOnReject": true,
+              "legacyProgressMode": "read_only",
+              "failureMode": "reject_without_mutation"
+            },
+            "accessibility": {
+              "minTouchTargetPx": 44,
+              "keyboardFocusable": true,
+              "visibleWithoutColor": true,
+              "noHorizontalScroll320to390": true,
+              "ariaLabelZh": "查看分层提示"
+            }
+          }
+        },
+        {
+          "plannedMinutesByMode": {
+            "light": 5,
+            "standard": 6
+          },
+          "activityId": "v4-interaction-retrieval",
+          "activityType": "guided_response",
+          "titleZh": "用已学表达回应",
+          "constructId": "interaction_retrieval",
+          "construct": {
+            "id": "interaction_retrieval",
+            "descriptorZh": "在熟悉邀请场景中取回一句已学回应",
+            "observableBehaviorZh": "听到邀请后说出一句边界清楚的回应",
+            "independenceRationaleZh": "录音只观察已学回应是否被取回，不把口音当作唯一评分"
+          },
+          "sourceMaterialIds": [
+            "v4-primary-13",
+            "v4-primary-14"
+          ],
+          "evidenceTargetIds": [
+            "v4-interaction-retrieval.evidence"
+          ],
+          "childVisible": {
+            "titleZh": "用已学表达回应",
+            "instructionZh": "听到邀请后，说一句已经学过的回应。",
+            "responseBoundaryZh": "只说一句表示愿意成为朋友的已学回应。"
+          },
+          "parentOnly": {
+            "answerKey": {
+              "acceptedPhrases": [
+                "Yes, I do!"
+              ]
+            },
+            "oralRubric": {
+              "acceptedPhrases": [
+                "Yes, I do!"
+              ]
+            }
+          },
+          "options": [],
+          "answerKey": {
+            "acceptedPhrases": [
+              "Yes, I do!"
+            ]
+          },
+          "audioRef": {
+            "mode": "mobile_handoff",
+            "provider": "每日英语听力",
+            "text": "Nice to meet you, too. Do you want to be my friend?",
+            "language": "en-US",
+            "maxPlays": 2,
+            "hideTextFirst": true,
+            "verified": false,
+            "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+          },
+          "difficulty": {
+            "overall": 2,
+            "dimensions": {
+              "lexicalLoad": 0,
+              "taskNovelty": 1,
+              "transferDistance": 1,
+              "informationSpan": 0,
+              "supportReduction": 0
+            }
+          },
+          "stopRule": "录下一次回应后进入结果记录；孩子可以主动结束。",
+          "recording": {
+            "mode": "required_response",
+            "maxSeconds": 30,
+            "promptZh": "请录下你的一句回应。",
+            "startCueZh": "准备好后点开始录音",
+            "stopAction": "done_button",
+            "allowMultipleTakes": true,
+            "includeInFeedback": true,
+            "category": "dialogue"
+          },
+          "reminderSystemV4": {
+            "schemaVersion": "letter-planet-reminder-system/4",
+            "standardId": "helen-oxford-a1-reminder-v4/1",
+            "reminderId": "v4-interaction-retrieval-reminder",
+            "activityId": "v4-interaction-retrieval",
+            "constructId": "interaction_retrieval",
+            "measurement": {
+              "evidenceTargetId": "v4-interaction-retrieval.evidence",
+              "sourceMaterialIds": [
+                "v4-primary-13",
+                "v4-primary-14"
+              ],
+              "sourceSentenceIds": [
+                "story_primary_school:13",
+                "story_primary_school:14"
+              ],
+              "singleConstruct": true,
+              "singleAction": true,
+              "actionId": "speak_one"
+            },
+            "vocabulary": {
+              "scope": "source_material_and_learner_known",
+              "source": "english-source-graph-v1",
+              "allowedTokens": [
+                "yes",
+                "i",
+                "do"
+              ],
+              "allowNewTokens": false,
+              "unknownTokenPolicy": "reject"
+            },
+            "studentSurface": {
+              "initial": {
+                "locate": {
+                  "id": "v4-response-locate",
+                  "order": 1,
+                  "trigger": "initial",
+                  "textZh": "先听清对方是在邀请你。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                },
+                "action": {
+                  "id": "v4-response-action",
+                  "order": 2,
+                  "trigger": "initial",
+                  "textZh": "听完后只说一句已学回应。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                }
+              },
+              "supports": [
+                {
+                  "id": "v4-response-support-function",
+                  "order": 3,
+                  "trigger": "on_request",
+                  "textZh": "先听出这是在问你愿不愿意成为朋友。",
+                  "singleAction": true,
+                  "answerNeutral": true
+                }
+              ],
+              "demonstration": {
+                "id": "v4-response-model",
+                "order": 4,
+                "trigger": "after_first_attempt",
+                "textZh": "示范：Yes, I do!",
+                "singleAction": true,
+                "answerNeutral": false,
+                "requiresAttempt": true,
+                "answerExposure": "after_first_attempt",
+                "evidenceRef": "v4-primary-14"
+              },
+              "outcome": {
+                "statuses": [
+                  {
+                    "id": "independent",
+                    "labelZh": "独立完成"
+                  },
+                  {
+                    "id": "prompted",
+                    "labelZh": "看提示后完成"
+                  },
+                  {
+                    "id": "modeled",
+                    "labelZh": "看示范后完成"
+                  },
+                  {
+                    "id": "not_yet",
+                    "labelZh": "暂未完成"
+                  }
+                ],
+                "separateFromCorrectness": true,
+                "requiresCapturedEvidence": true
+              }
+            },
+            "limits": {
+              "maxVisibleLines": 2,
+              "maxLayerCharacters": 80,
+              "maxEnglishTokens": 8,
+              "maxVisibleButtons": 1
+            },
+            "events": {
+              "schemaVersion": "letter-planet-reminder-event/3",
+              "appendOnly": true,
+              "allowedEvents": [
+                "requested",
+                "shown",
+                "blocked",
+                "attempted",
+                "completed",
+                "revoked"
+              ],
+              "maxEvents": 48,
+              "storedFields": [
+                "schemaVersion",
+                "eventId",
+                "sessionId",
+                "activityId",
+                "reminderId",
+                "layerId",
+                "event",
+                "attemptId",
+                "attemptNumber",
+                "sequence",
+                "at",
+                "kind",
+                "evidenceRef",
+                "reason",
+                "correctness",
+                "evaluator",
+                "outcome",
+                "revokesEventId"
+              ],
+              "idempotency": {
+                "keyFields": [
+                  "sessionId",
+                  "reminderId",
+                  "layerId",
+                  "attemptId",
+                  "attemptNumber",
+                  "event"
+                ],
+                "duplicatePolicy": "ignore"
+              },
+              "undo": {
+                "supported": true,
+                "eventType": "revoked",
+                "requiresEventId": true
+              }
+            },
+            "safety": {
+              "zeroWriteOnReject": true,
+              "legacyProgressMode": "read_only",
+              "failureMode": "reject_without_mutation"
+            },
+            "accessibility": {
+              "minTouchTargetPx": 44,
+              "keyboardFocusable": true,
+              "visibleWithoutColor": true,
+              "noHorizontalScroll320to390": true,
+              "ariaLabelZh": "查看分层提示"
+            },
+            "audioBoundary": {
+              "responseSourceMaterialIds": [
+                "v4-primary-14"
+              ],
+              "playableSourceMaterialIds": [
+                "v4-primary-13"
+              ],
+              "answerExposure": "source_material_14_is_not_played_or_shown_before_captured_attempt",
+              "boundaryZh": "只播放第13句邀请；第14句仅作为已学回应的来源，首次尝试前不播放、不显示、不朗读。"
+            }
+          },
+          "audioBoundary": {
+            "responseSourceMaterialIds": [
+              "v4-primary-14"
+            ],
+            "playableSourceMaterialIds": [
+              "v4-primary-13"
+            ],
+            "answerExposure": "source_material_14_is_not_played_or_shown_before_captured_attempt",
+            "boundaryZh": "只播放第13句邀请；第14句仅作为已学回应的来源，首次尝试前不播放、不显示、不朗读。"
+          }
+        }
+      ]
+    }
+  }
+}

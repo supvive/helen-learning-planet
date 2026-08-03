@@ -1,0 +1,1374 @@
+{
+  "schemaVersion": "letter-planet-task-system-pilots/1",
+  "status": "draft_pending_dr_george_review",
+  "protocol": "letter-planet-task-system/1",
+  "sourceGraph": "data/english-source-graph-v1.json",
+  "notes": [
+    "三个 pilot 只验证协议、可变活动和证据记录，不是正式 D01-D14。",
+    "音频与图片若标记未验收，学生区不得显示播放/图片成功。",
+    "pilot 内容仍需 Allen 内容终审和 Dr. George 真实设备验收。"
+  ],
+  "pilots": [
+    {
+      "schemaVersion": "helen-learning-pack/2",
+      "packId": "letter-pilot-balanced-a",
+      "date": "2026-08-04",
+      "title": "字母星球试点 A · 听懂并回应",
+      "loadMode": "standard",
+      "contentPolicy": {
+        "authority": "codex-course-designer",
+        "websiteMode": "render-only",
+        "allowModelGeneration": false
+      },
+      "sharedPlan": {
+        "defaultEnglishMode": "light",
+        "plannedEnglishMinutes": 17,
+        "sequenceNoteZh": "本试点只供本地协议与渲染验收，不进入公开日课。"
+      },
+      "chinese": {
+        "characters": [],
+        "words": [],
+        "confusedPairs": [],
+        "lesson": null
+      },
+      "english": {
+        "storyId": "letter-planet-task-system-pilot",
+        "storyTitle": "Oxford/CEFR A1 题型系统试点",
+        "words": [],
+        "taskSystem": {
+          "schemaVersion": "letter-planet-task-system/1",
+          "status": "draft_pending_dr_george_review",
+          "curriculumPlan": {
+            "planId": "hello-school-a1-pilot-balanced",
+            "selectionSeed": "pilot-a-listening-gist-v1",
+            "reasonCodes": [
+              "pilot_profile",
+              "cross_story_source",
+              "draft_protocol"
+            ],
+            "sourceGraphRefs": [
+              "story_zoo:07",
+              "story_kindergarten:10",
+              "story_primary_school:11"
+            ],
+            "targetConstructs": [
+              "listening_gist"
+            ],
+            "difficultyBand": "L1",
+            "difficultyRationale": "试点只验证协议与证据分轨，不宣称课程终审。"
+          },
+          "dailyMission": {
+            "titleZh": "听懂发生了什么，再回应邀请",
+            "primaryAbility": "listening_gist",
+            "secondaryAbilities": [
+              "spoken_interaction",
+              "cross_story_transfer"
+            ],
+            "rationale": "用两个相邻生活场景和一个受限回应，观察大意到互动的独立证据。"
+          },
+          "duration": {
+            "lightMinutes": 17,
+            "standardMinutes": 22,
+            "maxContinuousMinutes": 12,
+            "stopRules": [
+              "连续12分钟后允许暂停",
+              "孩子主动结束",
+              "设备或录音异常时停止"
+            ]
+          },
+          "sourceMaterials": [
+            {
+              "sourceMaterialId": "pilot-a-zoo-07",
+              "sourceType": "story_sentence",
+              "storyId": "story_zoo",
+              "sentenceIds": [
+                "story_zoo:07"
+              ],
+              "text": "Can we go there to look at her?",
+              "translationZh": "我们能去那里看它吗？",
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "Can we go there to look at her?",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-a-kind-10",
+              "sourceType": "story_sentence",
+              "storyId": "story_kindergarten",
+              "sentenceIds": [
+                "story_kindergarten:10"
+              ],
+              "text": "“Do you want to play with us?” she asks.",
+              "translationZh": "“你想和我们一起玩吗？”她问。",
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "Do you want to play with us?",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-a-primary-11",
+              "sourceType": "story_sentence",
+              "storyId": "story_primary_school",
+              "sentenceIds": [
+                "story_primary_school:11"
+              ],
+              "text": "“Hello! I’m Amy. What’s your name?” she asks.",
+              "translationZh": "“你好！我是Amy。你叫什么名字？”她问。",
+              "audioRef": null,
+              "license": "project-owned-source"
+            }
+          ],
+          "activities": [
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先找场景里大家要做什么先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "listening_gist.scene_action",
+                "transfer.cross_story"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-a-scene",
+              "activityType": "scene_listen_gist",
+              "titleZh": "听懂发生了什么",
+              "construct": {
+                "id": "listening_gist",
+                "descriptorZh": "理解熟悉两句场景的主要事情",
+                "observableBehaviorZh": "听后能从同场景选项中找出发生的活动",
+                "independenceRationaleZh": "选项测场景大意，不要求复述任一句原文"
+              },
+              "constructId": "listening_gist",
+              "sourceMaterialIds": [
+                "pilot-a-zoo-07",
+                "pilot-a-kind-10"
+              ],
+              "childVisible": {
+                "titleZh": "听懂发生了什么",
+                "instructionZh": "听完两句话，选出发生的事情。",
+                "options": [
+                  {
+                    "optionId": "opt-invite-play",
+                    "text": "邀请一起玩",
+                    "value": "invite_play"
+                  },
+                  {
+                    "optionId": "opt-find-book",
+                    "text": "寻找一本书",
+                    "value": "find_book"
+                  },
+                  {
+                    "optionId": "opt-say-goodbye",
+                    "text": "准备告别",
+                    "value": "say_goodbye"
+                  }
+                ]
+              },
+              "parentOnly": {
+                "answerKey": {
+                  "correctOptionId": "opt-invite-play"
+                },
+                "distractorRationale": {
+                  "opt-find-book": "同为儿童日常活动，但材料没有找书。",
+                  "opt-say-goodbye": "同为对话动作，但材料没有告别。"
+                }
+              },
+              "answerKey": {
+                "correctOptionId": "opt-invite-play"
+              },
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "Can we go there to look at her? Do you want to play with us?",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "difficulty": {
+                "overall": 2,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 1,
+                  "informationSpan": 1,
+                  "supportReduction": 0
+                }
+              },
+              "locate": "先找场景里大家要做什么",
+              "light": 5,
+              "standard": 6
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先在短句里找明确动作先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "reading_explicit_detail.action"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-a-read",
+              "activityType": "read_select",
+              "titleZh": "读短句找信息",
+              "construct": {
+                "id": "reading_explicit_detail",
+                "descriptorZh": "从熟悉短句中找到一个明示动作",
+                "observableBehaviorZh": "阅读短句后选出人物接下来做什么",
+                "independenceRationaleZh": "阅读任务单独记录，不把听力选择算作阅读证据"
+              },
+              "constructId": "reading_explicit_detail",
+              "sourceMaterialIds": [
+                "pilot-a-kind-10",
+                "pilot-a-primary-11"
+              ],
+              "childVisible": {
+                "titleZh": "读短句找信息",
+                "instructionZh": "读短句，选出这次要做的事。",
+                "textZh": "Do you want to play with us? Yes! I do!",
+                "options": [
+                  {
+                    "optionId": "opt-read-play",
+                    "text": "一起玩",
+                    "value": "play"
+                  },
+                  {
+                    "optionId": "opt-read-read",
+                    "text": "一起读书",
+                    "value": "read"
+                  },
+                  {
+                    "optionId": "opt-read-eat",
+                    "text": "一起吃东西",
+                    "value": "eat"
+                  }
+                ]
+              },
+              "parentOnly": {
+                "answerKey": {
+                  "correctOptionId": "opt-read-play"
+                },
+                "distractorRationale": {
+                  "opt-read-read": "是另一个熟悉课堂动作，文本没有出现。",
+                  "opt-read-eat": "属于日常活动，但文本没有食物信息。"
+                }
+              },
+              "answerKey": {
+                "correctOptionId": "opt-read-play"
+              },
+              "difficulty": {
+                "overall": 2,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 0,
+                  "transferDistance": 1,
+                  "informationSpan": 1,
+                  "supportReduction": 1
+                }
+              },
+              "locate": "先在短句里找明确动作",
+              "light": 5,
+              "standard": 6
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 7,
+                "standard": 8
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先听清楚同学在邀请什么先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "spoken_interaction.invite_response",
+                "spoken_transfer.cross_story"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-a-response",
+              "activityType": "guided_response",
+              "titleZh": "回应并再邀请",
+              "construct": {
+                "id": "spoken_interaction",
+                "descriptorZh": "在熟悉邀请场景中完成一轮回应",
+                "observableBehaviorZh": "先回答同学，再提出一句已学邀请",
+                "independenceRationaleZh": "按交际功能和可理解度记录，不要求逐字背诵原句"
+              },
+              "constructId": "spoken_interaction",
+              "sourceMaterialIds": [
+                "pilot-a-kind-10",
+                "pilot-a-zoo-07"
+              ],
+              "childVisible": {
+                "titleZh": "回应并再邀请",
+                "instructionZh": "同学邀请你一起玩。回答后，再邀请一次。",
+                "roleCueZh": "同学：Do you want to play with us?",
+                "responseBoundaryZh": "说一轮回答，再说一句已学邀请。"
+              },
+              "parentOnly": {
+                "oralRubric": {
+                  "acceptedPhrases": [
+                    "Yes! I do!",
+                    "Can we go there to look at her?"
+                  ],
+                  "correctness": "function_complete",
+                  "independence": "first_response",
+                  "intelligibility": "familiar_listener"
+                },
+                "recording": {
+                  "mode": "required_response",
+                  "maxSeconds": 90,
+                  "promptZh": "请记录孩子的第一轮回答和再邀请。",
+                  "startCueZh": "准备好后点开始录音",
+                  "stopAction": "done_button",
+                  "allowMultipleTakes": true,
+                  "includeInFeedback": true,
+                  "category": "dialogue"
+                }
+              },
+              "recording": {
+                "mode": "required_response",
+                "maxSeconds": 90,
+                "promptZh": "请记录孩子的第一轮回答和再邀请。",
+                "startCueZh": "准备好后点开始录音",
+                "stopAction": "done_button",
+                "allowMultipleTakes": true,
+                "includeInFeedback": true,
+                "category": "dialogue"
+              },
+              "difficulty": {
+                "overall": 3,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 1,
+                  "informationSpan": 1,
+                  "supportReduction": 1
+                }
+              },
+              "locate": "先听清楚同学在邀请什么",
+              "light": 7,
+              "standard": 8
+            }
+          ],
+          "feedbackPolicy": {
+            "attemptAppendOnly": true,
+            "incompleteExport": true,
+            "independenceSeparate": true,
+            "conflictRule": "保留网站结构化记录、录音引用和家长观察；不把最终正确自动写成独立掌握。"
+          }
+        }
+      },
+      "art": null
+    },
+    {
+      "schemaVersion": "helen-learning-pack/2",
+      "packId": "letter-pilot-supported-b",
+      "date": "2026-08-04",
+      "title": "字母星球试点 B · 听辨与图片表达",
+      "loadMode": "standard",
+      "contentPolicy": {
+        "authority": "codex-course-designer",
+        "websiteMode": "render-only",
+        "allowModelGeneration": false
+      },
+      "sharedPlan": {
+        "defaultEnglishMode": "light",
+        "plannedEnglishMinutes": 16,
+        "sequenceNoteZh": "本试点只供本地协议与渲染验收，不进入公开日课。"
+      },
+      "chinese": {
+        "characters": [],
+        "words": [],
+        "confusedPairs": [],
+        "lesson": null
+      },
+      "english": {
+        "storyId": "letter-planet-task-system-pilot",
+        "storyTitle": "Oxford/CEFR A1 题型系统试点",
+        "words": [],
+        "taskSystem": {
+          "schemaVersion": "letter-planet-task-system/1",
+          "status": "draft_pending_dr_george_review",
+          "curriculumPlan": {
+            "planId": "hello-school-a1-pilot-supported",
+            "selectionSeed": "pilot-b-supported-detail-v1",
+            "reasonCodes": [
+              "pilot_profile",
+              "cross_story_source",
+              "draft_protocol"
+            ],
+            "sourceGraphRefs": [
+              "story_kindergarten:07",
+              "story_kindergarten:08",
+              "story_primary_school:20"
+            ],
+            "targetConstructs": [
+              "listening_gist"
+            ],
+            "difficultyBand": "L1",
+            "difficultyRationale": "试点只验证协议与证据分轨，不宣称课程终审。"
+          },
+          "dailyMission": {
+            "titleZh": "找出一个细节，再描述看到的事物",
+            "primaryAbility": "listening_detail",
+            "secondaryAbilities": [
+              "sound_chunk",
+              "picture_description"
+            ],
+            "rationale": "降低词汇负荷并增加提示使用记录，观察细节辨认与图片表达是否分轨。"
+          },
+          "duration": {
+            "lightMinutes": 16,
+            "standardMinutes": 21,
+            "maxContinuousMinutes": 12,
+            "stopRules": [
+              "连续12分钟后允许暂停",
+              "孩子主动结束",
+              "设备或录音异常时停止"
+            ]
+          },
+          "sourceMaterials": [
+            {
+              "sourceMaterialId": "pilot-b-kind-07",
+              "sourceType": "story_sentence",
+              "storyId": "story_kindergarten",
+              "sentenceIds": [
+                "story_kindergarten:07"
+              ],
+              "text": "I see a little girl with a pink hat.",
+              "translationZh": "我看到一个戴粉色帽子的小女孩。",
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "I see a little girl with a pink hat.",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-b-kind-08",
+              "sourceType": "story_sentence",
+              "storyId": "story_kindergarten",
+              "sentenceIds": [
+                "story_kindergarten:08"
+              ],
+              "text": "She has a purple bag.",
+              "translationZh": "她有一个紫色的书包。",
+              "audioRef": null,
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-b-primary-20",
+              "sourceType": "story_sentence",
+              "storyId": "story_primary_school",
+              "sentenceIds": [
+                "story_primary_school:20"
+              ],
+              "text": "“Here are my pencil, ruler and eraser.”",
+              "translationZh": "“这些是我的铅笔、尺子和橡皮。”",
+              "audioRef": null,
+              "license": "project-owned-source"
+            }
+          ],
+          "activities": [
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先只找一个物品先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "listening_detail.object"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-b-detail",
+              "activityType": "detail_listen",
+              "titleZh": "找出一个细节",
+              "construct": {
+                "id": "listening_detail",
+                "descriptorZh": "听出一个明确的人物或物品细节",
+                "observableBehaviorZh": "听后从同类词中选出听到的物品",
+                "independenceRationaleZh": "只记录一个细节，不把整句背诵当作细节掌握"
+              },
+              "constructId": "listening_detail",
+              "sourceMaterialIds": [
+                "pilot-b-kind-07",
+                "pilot-b-kind-08"
+              ],
+              "childVisible": {
+                "titleZh": "找出一个细节",
+                "instructionZh": "听一听，找出听到的物品。",
+                "options": [
+                  {
+                    "optionId": "opt-b-hat",
+                    "text": "hat",
+                    "value": "hat"
+                  },
+                  {
+                    "optionId": "opt-b-bag",
+                    "text": "bag",
+                    "value": "bag"
+                  },
+                  {
+                    "optionId": "opt-b-book",
+                    "text": "book",
+                    "value": "book"
+                  }
+                ]
+              },
+              "parentOnly": {
+                "answerKey": {
+                  "correctOptionId": "opt-b-hat"
+                },
+                "distractorRationale": {
+                  "opt-b-bag": "来自相邻历史句，属于同一生活域。",
+                  "opt-b-book": "为已学物品干扰，不在本次材料。"
+                }
+              },
+              "answerKey": {
+                "correctOptionId": "opt-b-hat"
+              },
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "I see a little girl with a pink hat.",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "difficulty": {
+                "overall": 1,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 0,
+                  "transferDistance": 0,
+                  "informationSpan": 1,
+                  "supportReduction": 0
+                }
+              },
+              "locate": "先只找一个物品",
+              "light": 5,
+              "standard": 6
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先听完整句，再找目标词块先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "sound_chunk.word_recognition"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-b-sound",
+              "activityType": "sound_chunk_focus",
+              "titleZh": "听辨已学词块",
+              "construct": {
+                "id": "sound_chunk",
+                "descriptorZh": "在完整句中辨认一个已学词块",
+                "observableBehaviorZh": "听后从同类词中选出目标词块",
+                "independenceRationaleZh": "声音辨认与阅读选项分开记录，不能自动升级口语迁移"
+              },
+              "constructId": "sound_chunk",
+              "sourceMaterialIds": [
+                "pilot-b-kind-08",
+                "pilot-b-primary-20"
+              ],
+              "childVisible": {
+                "titleZh": "听辨已学词块",
+                "instructionZh": "先听完整句，再选出你听到的词。",
+                "options": [
+                  {
+                    "optionId": "opt-b-sound-bag",
+                    "text": "bag",
+                    "value": "bag"
+                  },
+                  {
+                    "optionId": "opt-b-sound-box",
+                    "text": "box",
+                    "value": "box"
+                  },
+                  {
+                    "optionId": "opt-b-sound-book",
+                    "text": "book",
+                    "value": "book"
+                  }
+                ]
+              },
+              "parentOnly": {
+                "answerKey": {
+                  "correctOptionId": "opt-b-sound-bag"
+                },
+                "distractorRationale": {
+                  "opt-b-sound-box": "与 school items 同域但不是目标词。",
+                  "opt-b-sound-book": "为已学物品，避免荒谬干扰。"
+                }
+              },
+              "answerKey": {
+                "correctOptionId": "opt-b-sound-bag"
+              },
+              "audioRef": {
+                "mode": "pack_asset",
+                "provider": "pilot_unverified",
+                "assetId": "pilot-b-sound-01",
+                "text": "She has a purple bag.",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false
+              },
+              "difficulty": {
+                "overall": 2,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 0,
+                  "informationSpan": 1,
+                  "supportReduction": 1
+                }
+              },
+              "locate": "先听完整句，再找目标词块",
+              "light": 5,
+              "standard": 6
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 6,
+                "standard": 7
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先找人物、物品或颜色先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "spoken_description.picture_detail"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-b-picture",
+              "activityType": "picture_description",
+              "titleZh": "看图说一说",
+              "construct": {
+                "id": "spoken_description",
+                "descriptorZh": "根据一个熟悉物品图说一到两句",
+                "observableBehaviorZh": "说出物品或颜色中的至少一项",
+                "independenceRationaleZh": "录音与选择题分轨，按可理解度和独立度观察"
+              },
+              "constructId": "spoken_description",
+              "sourceMaterialIds": [
+                "pilot-b-kind-07",
+                "pilot-b-kind-08"
+              ],
+              "childVisible": {
+                "titleZh": "看图说一说",
+                "instructionZh": "看图，说一到两句你看到的内容。",
+                "pictureRef": {
+                  "assetId": "pilot-b-picture-01",
+                  "verified": false
+                },
+                "responseBoundaryZh": "可以说人物、物品或颜色中的一到两项。"
+              },
+              "parentOnly": {
+                "oralRubric": {
+                  "correctness": "one_or_two_observed_details",
+                  "independence": "first_response",
+                  "intelligibility": "familiar_listener"
+                },
+                "pictureAssetStatus": "unverified"
+              },
+              "recording": {
+                "mode": "required_response",
+                "maxSeconds": 90,
+                "promptZh": "请记录孩子第一次看图描述。",
+                "startCueZh": "准备好后点开始录音",
+                "stopAction": "done_button",
+                "allowMultipleTakes": true,
+                "includeInFeedback": true,
+                "category": "dialogue"
+              },
+              "difficulty": {
+                "overall": 2,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 1,
+                  "informationSpan": 1,
+                  "supportReduction": 1
+                }
+              },
+              "locate": "先找人物、物品或颜色",
+              "light": 6,
+              "standard": 7
+            }
+          ],
+          "feedbackPolicy": {
+            "attemptAppendOnly": true,
+            "incompleteExport": true,
+            "independenceSeparate": true,
+            "conflictRule": "保留网站结构化记录、录音引用和家长观察；不把最终正确自动写成独立掌握。"
+          }
+        }
+      },
+      "art": null
+    },
+    {
+      "schemaVersion": "helen-learning-pack/2",
+      "packId": "letter-pilot-transfer-c",
+      "date": "2026-08-04",
+      "title": "字母星球试点 C · 阅读、排序与迁移",
+      "loadMode": "standard",
+      "contentPolicy": {
+        "authority": "codex-course-designer",
+        "websiteMode": "render-only",
+        "allowModelGeneration": false
+      },
+      "sharedPlan": {
+        "defaultEnglishMode": "light",
+        "plannedEnglishMinutes": 19,
+        "sequenceNoteZh": "本试点只供本地协议与渲染验收，不进入公开日课。"
+      },
+      "chinese": {
+        "characters": [],
+        "words": [],
+        "confusedPairs": [],
+        "lesson": null
+      },
+      "english": {
+        "storyId": "letter-planet-task-system-pilot",
+        "storyTitle": "Oxford/CEFR A1 题型系统试点",
+        "words": [],
+        "taskSystem": {
+          "schemaVersion": "letter-planet-task-system/1",
+          "status": "draft_pending_dr_george_review",
+          "curriculumPlan": {
+            "planId": "hello-school-a1-pilot-transfer",
+            "selectionSeed": "pilot-c-transfer-sequence-v1",
+            "reasonCodes": [
+              "pilot_profile",
+              "cross_story_source",
+              "draft_protocol"
+            ],
+            "sourceGraphRefs": [
+              "story_zoo:03",
+              "story_kindergarten:12",
+              "story_primary_school:11",
+              "story_primary_school:12"
+            ],
+            "targetConstructs": [
+              "listening_gist"
+            ],
+            "difficultyBand": "L1",
+            "difficultyRationale": "试点只验证协议与证据分轨，不宣称课程终审。"
+          },
+          "dailyMission": {
+            "titleZh": "按顺序理解信息，再换场景回应",
+            "primaryAbility": "sequence",
+            "secondaryAbilities": [
+              "reading_explicit_detail",
+              "spoken_transfer",
+              "guided_write"
+            ],
+            "rationale": "组合三种 Story 的材料，观察先后关系、阅读明示信息和跨场景回应的独立度。"
+          },
+          "duration": {
+            "lightMinutes": 19,
+            "standardMinutes": 24,
+            "maxContinuousMinutes": 12,
+            "stopRules": [
+              "连续12分钟后允许暂停",
+              "孩子主动结束",
+              "设备或录音异常时停止"
+            ]
+          },
+          "sourceMaterials": [
+            {
+              "sourceMaterialId": "pilot-c-zoo-03",
+              "sourceType": "story_sentence",
+              "storyId": "story_zoo",
+              "sentenceIds": [
+                "story_zoo:03"
+              ],
+              "text": "Yes! I love this zoo. Look! What is that?",
+              "translationZh": "喜欢！我爱这个动物园。看！那是什么？",
+              "audioRef": null,
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-c-kind-12",
+              "sourceType": "story_sentence",
+              "storyId": "story_kindergarten",
+              "sentenceIds": [
+                "story_kindergarten:12"
+              ],
+              "text": "We run, hop and throw a small ball together.",
+              "translationZh": "我们一起跑步、跳跃和扔小球。",
+              "audioRef": null,
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-c-primary-11",
+              "sourceType": "story_sentence",
+              "storyId": "story_primary_school",
+              "sentenceIds": [
+                "story_primary_school:11"
+              ],
+              "text": "“Hello! I’m Amy. What’s your name?” she asks.",
+              "translationZh": "“你好！我是Amy。你叫什么名字？”她问。",
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "Hello! I’m Amy. What’s your name?",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "license": "project-owned-source"
+            },
+            {
+              "sourceMaterialId": "pilot-c-primary-12",
+              "sourceType": "story_sentence",
+              "storyId": "story_primary_school",
+              "sentenceIds": [
+                "story_primary_school:12"
+              ],
+              "text": "“My name is Helen. Nice to meet you!”",
+              "translationZh": "“我叫Helen。很高兴认识你！”",
+              "audioRef": null,
+              "license": "project-owned-source"
+            }
+          ],
+          "activities": [
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先找哪句话先发生先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "sequence.dialogue_turn"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-c-sequence",
+              "activityType": "sequence_map",
+              "titleZh": "排出先后顺序",
+              "construct": {
+                "id": "sequence",
+                "descriptorZh": "理解两个熟悉动作的先后关系",
+                "observableBehaviorZh": "把两个已学片段按材料顺序排列",
+                "independenceRationaleZh": "排序只测事件关系，不重复测词义或整句背诵"
+              },
+              "constructId": "sequence",
+              "sourceMaterialIds": [
+                "pilot-c-primary-11",
+                "pilot-c-primary-12"
+              ],
+              "childVisible": {
+                "titleZh": "排出先后顺序",
+                "instructionZh": "把两句话按先后排好。",
+                "options": [
+                  {
+                    "optionId": "opt-c-ask",
+                    "text": "先问名字",
+                    "value": "ask_name"
+                  },
+                  {
+                    "optionId": "opt-c-intro",
+                    "text": "再介绍自己",
+                    "value": "intro_self"
+                  }
+                ]
+              },
+              "parentOnly": {
+                "answerKey": {
+                  "correctOrder": [
+                    "opt-c-ask",
+                    "opt-c-intro"
+                  ]
+                },
+                "distractorRationale": {
+                  "note": "排序活动的正确性来自事件顺序，不由选项长度决定。"
+                }
+              },
+              "answerKey": {
+                "correctOrder": [
+                  "opt-c-ask",
+                  "opt-c-intro"
+                ]
+              },
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "Hello! I’m Amy. What’s your name? My name is Helen. Nice to meet you!",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "difficulty": {
+                "overall": 2,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 1,
+                  "informationSpan": 2,
+                  "supportReduction": 0
+                }
+              },
+              "locate": "先找哪句话先发生",
+              "light": 5,
+              "standard": 6
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先看问题，再找对应回答先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "reading_match.question_response"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-c-read",
+              "activityType": "read_match",
+              "titleZh": "读一读，找对应信息",
+              "construct": {
+                "id": "reading_match",
+                "descriptorZh": "把短句与对应的人物信息匹配",
+                "observableBehaviorZh": "阅读后把问名字和回答名字连起来",
+                "independenceRationaleZh": "阅读匹配与听力顺序分别计证据"
+              },
+              "constructId": "reading_match",
+              "sourceMaterialIds": [
+                "pilot-c-primary-11",
+                "pilot-c-primary-12"
+              ],
+              "childVisible": {
+                "titleZh": "读一读，找对应信息",
+                "instructionZh": "读短句，把问题和合适的回答连起来。",
+                "textZh": "What’s your name? / My name is Helen.",
+                "options": [
+                  {
+                    "optionId": "opt-c-match",
+                    "text": "问名字 → 介绍自己",
+                    "value": "name_pair"
+                  },
+                  {
+                    "optionId": "opt-c-match-wrong-1",
+                    "text": "问名字 → 告别",
+                    "value": "goodbye"
+                  },
+                  {
+                    "optionId": "opt-c-match-wrong-2",
+                    "text": "问名字 → 找书",
+                    "value": "find_book"
+                  }
+                ]
+              },
+              "parentOnly": {
+                "answerKey": {
+                  "correctOptionId": "opt-c-match"
+                },
+                "distractorRationale": {
+                  "opt-c-match-wrong-1": "是熟悉但不同功能的告别。",
+                  "opt-c-match-wrong-2": "是另一个生活场景的信息。"
+                }
+              },
+              "answerKey": {
+                "correctOptionId": "opt-c-match"
+              },
+              "difficulty": {
+                "overall": 2,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 0,
+                  "transferDistance": 1,
+                  "informationSpan": 1,
+                  "supportReduction": 1
+                }
+              },
+              "locate": "先看问题，再找对应回答",
+              "light": 5,
+              "standard": 6
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 6,
+                "standard": 7
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先听懂对方在问什么先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "spoken_transfer.new_context"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-c-transfer",
+              "activityType": "transfer_dialogue",
+              "titleZh": "换个场景回应",
+              "construct": {
+                "id": "spoken_transfer",
+                "descriptorZh": "在新但熟悉的场景完成一轮回应",
+                "observableBehaviorZh": "听到同学问候后说出名字并回应认识",
+                "independenceRationaleZh": "记录是否跨场景独立完成，不要求复制原句整段"
+              },
+              "constructId": "spoken_transfer",
+              "sourceMaterialIds": [
+                "pilot-c-primary-11",
+                "pilot-c-zoo-03"
+              ],
+              "childVisible": {
+                "titleZh": "换个场景回应",
+                "instructionZh": "新同学问你的名字。回答，并说一句友好回应。",
+                "roleCueZh": "新同学：Hello! What’s your name?",
+                "responseBoundaryZh": "说出名字，再说一句友好回应。"
+              },
+              "parentOnly": {
+                "oralRubric": {
+                  "acceptedPhrases": [
+                    "My name is Helen.",
+                    "Nice to meet you!"
+                  ],
+                  "correctness": "function_complete",
+                  "independence": "first_response",
+                  "migrationDistance": "near_transfer",
+                  "intelligibility": "familiar_listener"
+                },
+                "recording": {
+                  "mode": "required_response",
+                  "maxSeconds": 90,
+                  "promptZh": "请记录孩子在新场景的第一轮回应。",
+                  "startCueZh": "准备好后点开始录音",
+                  "stopAction": "done_button",
+                  "allowMultipleTakes": true,
+                  "includeInFeedback": true,
+                  "category": "dialogue"
+                }
+              },
+              "recording": {
+                "mode": "required_response",
+                "maxSeconds": 90,
+                "promptZh": "请记录孩子在新场景的第一轮回应。",
+                "startCueZh": "准备好后点开始录音",
+                "stopAction": "done_button",
+                "allowMultipleTakes": true,
+                "includeInFeedback": true,
+                "category": "dialogue"
+              },
+              "audioRef": {
+                "mode": "mobile_handoff",
+                "provider": "每日英语听力",
+                "text": "Hello! What’s your name?",
+                "language": "en-US",
+                "maxPlays": 2,
+                "hideTextFirst": true,
+                "verified": false,
+                "mobileInstructionZh": "请在手机《每日英语听力》完成这一步，再回到网站记录。"
+              },
+              "difficulty": {
+                "overall": 3,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 2,
+                  "informationSpan": 1,
+                  "supportReduction": 1
+                }
+              },
+              "locate": "先听懂对方在问什么",
+              "light": 6,
+              "standard": 7
+            },
+            {
+              "plannedMinutesByMode": {
+                "light": 5,
+                "standard": 6
+              },
+              "reminderSystem": {
+                "schemaVersion": "letter-planet-reminder-system/1",
+                "locateZh": "先选一个已学句子开头先找出要听或要看的信息。",
+                "actionZh": "完成一次选择、排序或回应。",
+                "levels": [
+                  {
+                    "level": 1,
+                    "id": "focus",
+                    "textZh": "把注意力放在人物和动作上。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  },
+                  {
+                    "level": 2,
+                    "id": "relation",
+                    "textZh": "想一想谁在说话，以及接下来做什么。",
+                    "trigger": "on_request",
+                    "leaksAnswer": false
+                  }
+                ],
+                "resultZh": "记录这次是独立完成、看提示后完成，还是暂未完成。"
+              },
+              "evidenceTargetIds": [
+                "guided_write.self_introduction"
+              ],
+              "stopRule": "完成一次证据记录后进入下一活动；孩子可以主动结束。",
+              "activityId": "pilot-c-write",
+              "activityType": "guided_write",
+              "titleZh": "用词块写一句",
+              "construct": {
+                "id": "guided_write",
+                "descriptorZh": "用已学词块写一句有意义的话",
+                "observableBehaviorZh": "从已学词块写出一条自我介绍",
+                "independenceRationaleZh": "口头和书面记录分开，不按拼写速度替代表达意义"
+              },
+              "constructId": "guided_write",
+              "sourceMaterialIds": [
+                "pilot-c-primary-12",
+                "pilot-c-kind-12"
+              ],
+              "childVisible": {
+                "titleZh": "用词块写一句",
+                "instructionZh": "用已学词块写一句介绍自己的话。",
+                "wordBank": [
+                  "My name is",
+                  "Helen",
+                  "Nice to meet you"
+                ]
+              },
+              "parentOnly": {
+                "scoringRule": {
+                  "meaningFirst": true,
+                  "maxSentences": 1
+                },
+                "acceptedAnswerPolicy": "允许已学词块的自然组合。"
+              },
+              "difficulty": {
+                "overall": 3,
+                "dimensions": {
+                  "lexicalLoad": 0,
+                  "taskNovelty": 1,
+                  "transferDistance": 1,
+                  "informationSpan": 1,
+                  "supportReduction": 2
+                }
+              },
+              "locate": "先选一个已学句子开头",
+              "light": 5,
+              "standard": 6
+            }
+          ],
+          "feedbackPolicy": {
+            "attemptAppendOnly": true,
+            "incompleteExport": true,
+            "independenceSeparate": true,
+            "conflictRule": "保留网站结构化记录、录音引用和家长观察；不把最终正确自动写成独立掌握。"
+          }
+        }
+      },
+      "art": null
+    }
+  ]
+}

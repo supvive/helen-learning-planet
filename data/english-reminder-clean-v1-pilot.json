@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "candidateId": "english-reminder-clean-v1-pilot-20260804",
+  "exampleOnly": true,
+  "notForImport": true,
+  "status": "design_only",
+  "standard": "helen-oxford-a1-reminder-clean-v1",
+  "sourceMaterials": [
+    {"id":"clean-primary-11","sentenceId":"story_primary_school:11","audio":{"mode":"mobile_handoff","verified":false}},
+    {"id":"clean-primary-12","sentenceId":"story_primary_school:12","audio":{"mode":"mobile_handoff","verified":false}},
+    {"id":"clean-primary-13","sentenceId":"story_primary_school:13","audio":{"mode":"mobile_handoff","verified":false}},
+    {"id":"clean-primary-14","sentenceId":"story_primary_school:14","audio":{"mode":"mobile_handoff","verified":false}}
+  ],
+  "learnerKnownSnapshot": {
+    "schemaVersion": "helen-learner-known-snapshot/1",
+    "status": "missing",
+    "tokens": [],
+    "notForScoring": true
+  },
+  "humanReview": {
+    "content": "pending",
+    "device": "pending",
+    "audio": "pending"
+  },
+  "activities": [
+    {
+      "activityId": "clean-scene-gist",
+      "constructId": "listening_gist",
+      "sourceMaterialIds": ["clean-primary-11","clean-primary-12"],
+      "sourceSentenceIds": ["story_primary_school:11","story_primary_school:12"],
+      "evidenceTargetId": "clean-scene-gist.evidence",
+      "answerTexts": ["两个人初次问候并介绍名字"],
+      "audio": {"mode":"mobile_handoff","verified":false},
+      "reminder": {
+        "schemaVersion": "letter-planet-reminder-system/clean-v1",
+        "standardId": "helen-oxford-a1-reminder-clean-v1",
+        "reminderId": "clean-scene-gist-reminder",
+        "activityId": "clean-scene-gist",
+        "constructId": "listening_gist",
+        "measurement": {
+          "evidenceTargetId":"clean-scene-gist.evidence",
+          "sourceMaterialIds":["clean-primary-11","clean-primary-12"],
+          "sourceSentenceIds":["story_primary_school:11","story_primary_school:12"],
+          "singleConstruct":true,
+          "singleAction":true
+        },
+        "vocabulary": {
+          "scope":"material_intersection_learner_known",
+          "allowedTokens":["hello","my","name","is","helen"],
+          "allowNewTokens":false,
+          "unknownTokenPolicy":"reject"
+        },
+        "surface": {
+          "initial":[
+            {"id":"clean-gist-focus","order":1,"trigger":"initial","kind":"focus","text":"先听两句话，找出他们在做什么。","actionCount":1,"answerNeutral":true},
+            {"id":"clean-gist-action","order":2,"trigger":"initial","kind":"action","text":"听完后只选一个主要事情。","actionCount":1,"answerNeutral":true}
+          ],
+          "guides":[
+            {"id":"clean-gist-guide-focus","order":3,"trigger":"request","kind":"focus","text":"再听一遍，只留意人物和动作。","actionCount":1,"answerNeutral":true},
+            {"id":"clean-gist-guide-strategy","order":4,"trigger":"request","kind":"strategy","text":"按“谁—说了什么”记下一个信息。","actionCount":1,"answerNeutral":true}
+          ],
+          "demonstration": {"id":"clean-gist-model","order":5,"trigger":"after_attempt","kind":"model","text":"示范：把听到的两个人的主要事情说完整。","actionCount":1,"answerNeutral":false,"requiresCapturedAttempt":true,"answerExposure":"after_attempt","sourceEvidenceRef":"story_primary_school:11"},
+          "outcomes": {"statuses":[
+            {"id":"independent","label":"独立完成"},
+            {"id":"supported","label":"看提示后完成"},
+            {"id":"modelled","label":"看示范后完成"},
+            {"id":"not_yet","label":"暂未完成"}
+          ],"separateFromCorrectness":true,"requiresCapturedEvidence":true}
+        },
+        "limits":{"maxLines":2,"maxChars":80,"maxEnglishTokens":8,"maxGuides":2},
+        "telemetry": {
+          "schemaVersion":"letter-planet-reminder-event/clean-v1",
+          "appendOnly":true,
+          "allowedEvents":["requested","revealed","blocked","attempted","finished","undone"],
+          "maxEvents":48,
+          "storedFields":["schemaVersion","eventId","sessionId","activityId","reminderId","layerId","event","attemptId","attemptNumber","sequence","at","kind","evidenceRef","reason","correctness","evaluator","outcome","undoneEventId"],
+          "idempotency":{"keyFields":["sessionId","activityId","reminderId","layerId","attemptId","attemptNumber","event"],"duplicatePolicy":"ignore"},
+          "undo":{"eventType":"undone","requiresEventId":true}
+        },
+        "safety":{"zeroWriteOnReject":true,"historyMode":"read_only","failureMutation":"none"},
+        "accessibility":{"minTouchTargetPx":44,"keyboardFocusable":true,"visibleWithoutColor":true,"noHorizontalScroll320to390":true,"ariaLabel":"查看分层提示"}
+      }
+    },
+    {
+      "activityId": "clean-response-retrieval",
+      "constructId": "retrieval",
+      "sourceMaterialIds": ["clean-primary-13","clean-primary-14"],
+      "sourceSentenceIds": ["story_primary_school:13","story_primary_school:14"],
+      "evidenceTargetId": "clean-response-retrieval.evidence",
+      "answerTexts": ["Yes, I do!"],
+      "audio": {"mode":"mobile_handoff","verified":false},
+      "reminder": {
+        "schemaVersion": "letter-planet-reminder-system/clean-v1",
+        "standardId": "helen-oxford-a1-reminder-clean-v1",
+        "reminderId": "clean-response-retrieval-reminder",
+        "activityId": "clean-response-retrieval",
+        "constructId": "retrieval",
+        "measurement": {
+          "evidenceTargetId":"clean-response-retrieval.evidence",
+          "sourceMaterialIds":["clean-primary-13","clean-primary-14"],
+          "sourceSentenceIds":["story_primary_school:13","story_primary_school:14"],
+          "singleConstruct":true,
+          "singleAction":true
+        },
+        "vocabulary": {
+          "scope":"material_intersection_learner_known",
+          "allowedTokens":["yes","i","do"],
+          "allowNewTokens":false,
+          "unknownTokenPolicy":"reject"
+        },
+        "surface": {
+          "initial":[
+            {"id":"clean-response-focus","order":1,"trigger":"initial","kind":"focus","text":"先听清对方是在邀请你。","actionCount":1,"answerNeutral":true},
+            {"id":"clean-response-action","order":2,"trigger":"initial","kind":"action","text":"听完后只说一句已学回应。","actionCount":1,"answerNeutral":true}
+          ],
+          "guides":[
+            {"id":"clean-response-guide-focus","order":3,"trigger":"request","kind":"focus","text":"再听一遍，只留意对方的语气和目的。","actionCount":1,"answerNeutral":true}
+          ],
+          "demonstration": {"id":"clean-response-model","order":4,"trigger":"after_attempt","kind":"model","text":"示范：用一句已经学过的话回应。","actionCount":1,"answerNeutral":false,"requiresCapturedAttempt":true,"answerExposure":"after_attempt","sourceEvidenceRef":"story_primary_school:14"},
+          "outcomes": {"statuses":[
+            {"id":"independent","label":"独立完成"},
+            {"id":"supported","label":"看提示后完成"},
+            {"id":"modelled","label":"看示范后完成"},
+            {"id":"not_yet","label":"暂未完成"}
+          ],"separateFromCorrectness":true,"requiresCapturedEvidence":true}
+        },
+        "limits":{"maxLines":2,"maxChars":80,"maxEnglishTokens":8,"maxGuides":2},
+        "telemetry": {
+          "schemaVersion":"letter-planet-reminder-event/clean-v1",
+          "appendOnly":true,
+          "allowedEvents":["requested","revealed","blocked","attempted","finished","undone"],
+          "maxEvents":48,
+          "storedFields":["schemaVersion","eventId","sessionId","activityId","reminderId","layerId","event","attemptId","attemptNumber","sequence","at","kind","evidenceRef","reason","correctness","evaluator","outcome","undoneEventId"],
+          "idempotency":{"keyFields":["sessionId","activityId","reminderId","layerId","attemptId","attemptNumber","event"],"duplicatePolicy":"ignore"},
+          "undo":{"eventType":"undone","requiresEventId":true}
+        },
+        "safety":{"zeroWriteOnReject":true,"historyMode":"read_only","failureMutation":"none"},
+        "accessibility":{"minTouchTargetPx":44,"keyboardFocusable":true,"visibleWithoutColor":true,"noHorizontalScroll320to390":true,"ariaLabel":"查看分层提示"}
+      }
+    }
+  ]
+}

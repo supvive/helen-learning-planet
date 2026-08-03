@@ -1,0 +1,4052 @@
+{
+  "graphVersion": "letter-planet-source-graph/1",
+  "status": "draft_pending_dr_george_review",
+  "authority": "codex-course-designer",
+  "sourceOfTruth": "app.js SOURCE_EXAMPLES",
+  "titleSentenceIds": [
+    "story_primary_school:01",
+    "story_primary_school:02"
+  ],
+  "coverage": {
+    "totalBodySentences": 89,
+    "byStory": {
+      "story_zoo": 23,
+      "story_kindergarten": 34,
+      "story_primary_school": 32
+    },
+    "storyIds": [
+      "story_zoo",
+      "story_kindergarten",
+      "story_primary_school"
+    ]
+  },
+  "nodes": [
+    {
+      "sourceSentenceId": "story_zoo:01",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 1,
+      "text": "I am at the zoo with my mom, dad and grandma.",
+      "translationZh": "我和我的妈妈、爸爸还有奶奶一起在动物园。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "am",
+        "at",
+        "the",
+        "zoo",
+        "with",
+        "my",
+        "mom",
+        "dad",
+        "and",
+        "grandma"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:02",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 2,
+      "text": "We are so happy! Do you like this zoo, baby?",
+      "translationZh": "我们真开心！宝宝，你喜欢这个动物园吗？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "we",
+        "are",
+        "so",
+        "happy",
+        "do",
+        "you",
+        "like",
+        "this",
+        "zoo",
+        "baby"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:03",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 3,
+      "text": "Yes! I love this zoo. Look! What is that?",
+      "translationZh": "喜欢！我爱这个动物园。看！那是什么？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "i",
+        "love",
+        "this",
+        "zoo",
+        "look",
+        "what",
+        "is",
+        "that"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:04",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 4,
+      "text": "That is a panda. It is black and white.",
+      "translationZh": "那是一只熊猫。它是黑白相间的。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "that",
+        "is",
+        "a",
+        "panda",
+        "it",
+        "black",
+        "and",
+        "white"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:05",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 5,
+      "text": "She is very cute. Do you like her?",
+      "translationZh": "它（熊猫）很可爱。你喜欢它吗？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "she",
+        "is",
+        "very",
+        "cute",
+        "do",
+        "you",
+        "like",
+        "her"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:06",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 6,
+      "text": "Yes! I like her.",
+      "translationZh": "是的！我喜欢它。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "i",
+        "like",
+        "her"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:07",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 7,
+      "text": "Can we go there to look at her?",
+      "translationZh": "我们能去那里看它吗？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "can",
+        "we",
+        "go",
+        "there",
+        "to",
+        "look",
+        "at",
+        "her"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:08",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 8,
+      "text": "Sure! Come here, baby.",
+      "translationZh": "当然可以！过来这里宝宝。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "sure",
+        "come",
+        "here",
+        "baby"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:09",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 9,
+      "text": "Don’t run fast.",
+      "translationZh": "别跑太快。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "don’t",
+        "run",
+        "fast"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:10",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 10,
+      "text": "OK, dad.",
+      "translationZh": "好的，爸爸。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "ok",
+        "dad"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:11",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 11,
+      "text": "Where are the tigers? I can’t find them.",
+      "translationZh": "老虎在哪里？我找不到它们。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "where",
+        "are",
+        "the",
+        "tigers",
+        "i",
+        "can’t",
+        "find",
+        "them"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:12",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 12,
+      "text": "They are in the big cage. Look, they are walking.",
+      "translationZh": "它们在那个大笼子里。看，它们正在走路。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "they",
+        "are",
+        "in",
+        "the",
+        "big",
+        "cage",
+        "look",
+        "walking"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:13",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 13,
+      "text": "Do they eat meat? I need to know.",
+      "translationZh": "它们吃肉吗？我想知道。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "do",
+        "they",
+        "eat",
+        "meat",
+        "i",
+        "need",
+        "to",
+        "know"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:14",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 14,
+      "text": "Yes, they do. They eat some meat every day.",
+      "translationZh": "是的，它们吃。它们每天吃一些肉。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "they",
+        "do",
+        "eat",
+        "some",
+        "meat",
+        "every",
+        "day"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:15",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 15,
+      "text": "Which animal do you like, mom?",
+      "translationZh": "妈妈，你喜欢哪一种动物？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "which",
+        "animal",
+        "do",
+        "you",
+        "like",
+        "mom"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:16",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 16,
+      "text": "I like elephants. They are big and kind.",
+      "translationZh": "我喜欢大象。它们很大并且温顺。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "like",
+        "elephants",
+        "they",
+        "are",
+        "big",
+        "and",
+        "kind"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:17",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 17,
+      "text": "Do you like all animals, grandma?",
+      "translationZh": "奶奶，你喜欢所有的动物吗？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "do",
+        "you",
+        "like",
+        "all",
+        "animals",
+        "grandma"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:18",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 18,
+      "text": "Yes, I do. I love all animals.",
+      "translationZh": "是的，我喜欢。我爱所有的动物。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "i",
+        "do",
+        "love",
+        "all",
+        "animals"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:19",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 19,
+      "text": "Is there anything you want to eat, baby?",
+      "translationZh": "宝宝，你想吃点什么吗？",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "is",
+        "there",
+        "anything",
+        "you",
+        "want",
+        "to",
+        "eat",
+        "baby"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:20",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 20,
+      "text": "No, dad. I need to find something for the pandas.",
+      "translationZh": "不，爸爸。我想找些东西给熊猫吃。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "no",
+        "dad",
+        "i",
+        "need",
+        "to",
+        "find",
+        "something",
+        "for",
+        "the",
+        "pandas"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:21",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 21,
+      "text": "They don’t eat anything except bamboo.",
+      "translationZh": "它们除了竹子，什么都不吃。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "they",
+        "don’t",
+        "eat",
+        "anything",
+        "except",
+        "bamboo"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:22",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 22,
+      "text": "Oh! I see. Thank you, mom and dad.",
+      "translationZh": "哦！我知道了。谢谢爸爸妈妈。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "oh",
+        "i",
+        "see",
+        "thank",
+        "you",
+        "mom",
+        "and",
+        "dad"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_zoo:23",
+      "storyId": "story_zoo",
+      "storyTitle": "Story 1 · ZOO",
+      "order": 23,
+      "text": "We are a happy family!",
+      "translationZh": "我们是幸福的一家人！",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "we",
+        "are",
+        "a",
+        "happy",
+        "family"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:01",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 1,
+      "text": "I am at my kindergarten with my mom and dad.",
+      "translationZh": "我和爸爸妈妈来到我的幼儿园。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "am",
+        "at",
+        "my",
+        "kindergarten",
+        "with",
+        "mom",
+        "and",
+        "dad"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:02",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 2,
+      "text": "Today is my first day here.",
+      "translationZh": "今天是我在这里的第一天。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "today",
+        "is",
+        "my",
+        "first",
+        "day",
+        "here"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:03",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 3,
+      "text": "Wow! The school is big and clean.",
+      "translationZh": "哇！这个学校又大又干净。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "wow",
+        "the",
+        "school",
+        "is",
+        "big",
+        "and",
+        "clean"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:04",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 4,
+      "text": "There are many children here.",
+      "translationZh": "这里有很多小朋友。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "there",
+        "are",
+        "many",
+        "children",
+        "here"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:05",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 5,
+      "text": "Some boys can run very fast.",
+      "translationZh": "一些男孩跑得非常快。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "some",
+        "boys",
+        "can",
+        "run",
+        "very",
+        "fast"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:06",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 6,
+      "text": "Some girls can jump and skip.",
+      "translationZh": "一些女孩会跳和蹦跳。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "some",
+        "girls",
+        "can",
+        "jump",
+        "and",
+        "skip"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:07",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 7,
+      "text": "I see a little girl with a pink hat.",
+      "translationZh": "我看到一个戴粉色帽子的小女孩。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "see",
+        "a",
+        "little",
+        "girl",
+        "with",
+        "pink",
+        "hat"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:08",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 8,
+      "text": "She has a purple bag.",
+      "translationZh": "她有一个紫色的书包。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "she",
+        "has",
+        "a",
+        "purple",
+        "bag"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:09",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 9,
+      "text": "I like her bag very much.",
+      "translationZh": "我非常喜欢她的书包。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "like",
+        "her",
+        "bag",
+        "very",
+        "much"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:10",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 10,
+      "text": "“Do you want to play with us?” she asks.",
+      "translationZh": "“你想和我们一起玩吗？”她问。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "do",
+        "you",
+        "want",
+        "to",
+        "play",
+        "with",
+        "us",
+        "she",
+        "asks"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:11",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 11,
+      "text": "“Yes! I do!” I say.",
+      "translationZh": "“是的！想！”我说。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "i",
+        "do",
+        "say"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:12",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 12,
+      "text": "We run, hop and throw a small ball together.",
+      "translationZh": "我们一起跑步、跳跃和扔小球。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "we",
+        "run",
+        "hop",
+        "and",
+        "throw",
+        "a",
+        "small",
+        "ball",
+        "together"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:13",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 13,
+      "text": "It is so fun.",
+      "translationZh": "太好玩了。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "it",
+        "is",
+        "so",
+        "fun"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:14",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 14,
+      "text": "But now I can’t find my book. “Where is my book?”",
+      "translationZh": "但是现在我找不到我的书了。“我的书在哪里？”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "but",
+        "now",
+        "i",
+        "can’t",
+        "find",
+        "my",
+        "book",
+        "where",
+        "is"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:15",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 15,
+      "text": "“Is it under the chair?” my teacher asks.",
+      "translationZh": "“它在椅子下面吗？”老师问。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "is",
+        "it",
+        "under",
+        "the",
+        "chair",
+        "my",
+        "teacher",
+        "asks"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:16",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 16,
+      "text": "Oh! Yes! It is there.“Thank you, teacher!”",
+      "translationZh": "哦！是的！它在那里。“谢谢老师！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "oh",
+        "yes",
+        "it",
+        "is",
+        "there",
+        "thank",
+        "you",
+        "teacher"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:17",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 17,
+      "text": "“You are welcome,” she says with a smile.",
+      "translationZh": "“别客气，”她微笑着说。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "you",
+        "are",
+        "welcome",
+        "she",
+        "says",
+        "with",
+        "a",
+        "smile"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:18",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 18,
+      "text": "My teacher is very kind.",
+      "translationZh": "我的老师非常温柔。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "my",
+        "teacher",
+        "is",
+        "very",
+        "kind"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:19",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 19,
+      "text": "She teaches us a new song.",
+      "translationZh": "她教我们一首新歌。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "she",
+        "teaches",
+        "us",
+        "a",
+        "new",
+        "song"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:20",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 20,
+      "text": "We sing together like one big team.",
+      "translationZh": "我们像一个大团队一样一起唱歌。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "we",
+        "sing",
+        "together",
+        "like",
+        "one",
+        "big",
+        "team"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:21",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 21,
+      "text": "At snack time, I eat some bread, cookies and an apple.",
+      "translationZh": "点心时间，我吃了一些面包、饼干和一个苹果。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "at",
+        "snack",
+        "time",
+        "i",
+        "eat",
+        "some",
+        "bread",
+        "cookies",
+        "and",
+        "an",
+        "apple"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:22",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 22,
+      "text": "I drink some juice, too.",
+      "translationZh": "我还喝了一些果汁。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "drink",
+        "some",
+        "juice",
+        "too"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:23",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 23,
+      "text": "“Do you like the food here?” dad asks.",
+      "translationZh": "“你喜欢这里的食物吗？”爸爸问。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "do",
+        "you",
+        "like",
+        "the",
+        "food",
+        "here",
+        "dad",
+        "asks"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:24",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 24,
+      "text": "“Yes! I love it!”",
+      "translationZh": "“喜欢！我爱这里！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "i",
+        "love",
+        "it"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:25",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 25,
+      "text": "After that, we go outside.",
+      "translationZh": "之后，我们去外面。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "after",
+        "that",
+        "we",
+        "go",
+        "outside"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:26",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 26,
+      "text": "Some children climb and exercise.",
+      "translationZh": "一些小朋友在攀爬和运动。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "some",
+        "children",
+        "climb",
+        "and",
+        "exercise"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:27",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 27,
+      "text": "One boy wears big black boots.",
+      "translationZh": "一个男孩穿着大大的黑色靴子。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "one",
+        "boy",
+        "wears",
+        "big",
+        "black",
+        "boots"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:28",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 28,
+      "text": "A little dog runs near us.",
+      "translationZh": "一只小狗在我们旁边跑来跑去。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "a",
+        "little",
+        "dog",
+        "runs",
+        "near",
+        "us"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:29",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 29,
+      "text": "“Can he swim?” I ask.",
+      "translationZh": "“它会游泳吗？”我问。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "can",
+        "he",
+        "swim",
+        "i",
+        "ask"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:30",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 30,
+      "text": "“Yes, he can!” says my teacher.",
+      "translationZh": "“会的！”老师说。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "he",
+        "can",
+        "says",
+        "my",
+        "teacher"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:31",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 31,
+      "text": "Now I am not sad or afraid.",
+      "translationZh": "现在我不伤心，也不害怕了。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "now",
+        "i",
+        "am",
+        "not",
+        "sad",
+        "or",
+        "afraid"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:32",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 32,
+      "text": "I am happy here.",
+      "translationZh": "我在这里很开心。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "am",
+        "happy",
+        "here"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:33",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 33,
+      "text": "This kindergarten is new and fun.",
+      "translationZh": "这个幼儿园既新又有趣。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "this",
+        "kindergarten",
+        "is",
+        "new",
+        "and",
+        "fun"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_kindergarten:34",
+      "storyId": "story_kindergarten",
+      "storyTitle": "Story 2 · Kindergarten",
+      "order": 34,
+      "text": "I love my school, my teacher and my new friends.",
+      "translationZh": "我爱我的学校、老师和新朋友们。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "love",
+        "my",
+        "school",
+        "teacher",
+        "and",
+        "new",
+        "friends"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:03",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 3,
+      "text": "Good morning! Today is my first day at primary school.",
+      "translationZh": "早上好！今天是我上小学的第一天。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "good",
+        "morning",
+        "today",
+        "is",
+        "my",
+        "first",
+        "day",
+        "at",
+        "primary",
+        "school"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:04",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 4,
+      "text": "My teacher stands at the classroom door with a big smile.",
+      "translationZh": "老师面带微笑站在教室门口。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "my",
+        "teacher",
+        "stands",
+        "at",
+        "the",
+        "classroom",
+        "door",
+        "with",
+        "a",
+        "big",
+        "smile"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:05",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 5,
+      "text": "“Good morning! I’m Miss Wang,” she says.",
+      "translationZh": "“早上好！我是王老师。”她说道。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "good",
+        "morning",
+        "i’m",
+        "miss",
+        "wang",
+        "she",
+        "says"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:06",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 6,
+      "text": "“Good morning, Miss Wang! I’m Helen,” I say.",
+      "translationZh": "“王老师，早上好！我是Helen。”我说道。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "good",
+        "morning",
+        "miss",
+        "wang",
+        "i’m",
+        "helen",
+        "i",
+        "say"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:07",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 7,
+      "text": "“Nice to meet you, Helen.”",
+      "translationZh": "“很高兴认识你，Helen。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "nice",
+        "to",
+        "meet",
+        "you",
+        "helen"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:08",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 8,
+      "text": "“Nice to meet you, too.”",
+      "translationZh": "“我也很高兴认识您。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "nice",
+        "to",
+        "meet",
+        "you",
+        "too"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:09",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 9,
+      "text": "Miss Wang points to a desk and says, “This is your seat.”",
+      "translationZh": "王老师指着一张课桌说：“这是你的座位。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "miss",
+        "wang",
+        "points",
+        "to",
+        "a",
+        "desk",
+        "and",
+        "says",
+        "this",
+        "is",
+        "your",
+        "seat"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:10",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 10,
+      "text": "A girl sits next to me, and she has a pink pencil box.",
+      "translationZh": "一个女孩坐在我的旁边，她有一个粉色的文具盒。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "a",
+        "girl",
+        "sits",
+        "next",
+        "to",
+        "me",
+        "and",
+        "she",
+        "has",
+        "pink",
+        "pencil",
+        "box"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:11",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 11,
+      "text": "“Hello! I’m Amy. What’s your name?” she asks.",
+      "translationZh": "“你好！我是Amy。你叫什么名字？”她问。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "hello",
+        "i’m",
+        "amy",
+        "what’s",
+        "your",
+        "name",
+        "she",
+        "asks"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:12",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 12,
+      "text": "“My name is Helen. Nice to meet you!”",
+      "translationZh": "“我叫Helen。很高兴认识你！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "my",
+        "name",
+        "is",
+        "helen",
+        "nice",
+        "to",
+        "meet",
+        "you"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:13",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 13,
+      "text": "“Nice to meet you, too. Do you want to be my friend?”",
+      "translationZh": "“我也很高兴认识你。你愿意做我的朋友吗？”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "nice",
+        "to",
+        "meet",
+        "you",
+        "too",
+        "do",
+        "want",
+        "be",
+        "my",
+        "friend"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:14",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 14,
+      "text": "“Yes, I do!”",
+      "translationZh": "“是的，我愿意！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "yes",
+        "i",
+        "do"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:15",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 15,
+      "text": "The school bell rings, and our first class starts.",
+      "translationZh": "上课铃响了，我们的第一节课开始了。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "the",
+        "school",
+        "bell",
+        "rings",
+        "and",
+        "our",
+        "first",
+        "class",
+        "starts"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:16",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 16,
+      "text": "Miss Wang says, “Show me your school things, please.”",
+      "translationZh": "王老师说：“请给我看看你们的学习用品。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "miss",
+        "wang",
+        "says",
+        "show",
+        "me",
+        "your",
+        "school",
+        "things",
+        "please"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:17",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 17,
+      "text": "I put my schoolbag on the desk and say, “Here is my schoolbag.”",
+      "translationZh": "我把书包放在课桌上，说：“这是我的书包。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "put",
+        "my",
+        "schoolbag",
+        "on",
+        "the",
+        "desk",
+        "and",
+        "say",
+        "here",
+        "is"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:18",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 18,
+      "text": "I open it and put my school things on the desk.",
+      "translationZh": "我打开书包，把学习用品放在课桌上。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "open",
+        "it",
+        "and",
+        "put",
+        "my",
+        "school",
+        "things",
+        "on",
+        "the",
+        "desk"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:19",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 19,
+      "text": "“Here is my book, and here is my pencil box.”",
+      "translationZh": "“这是我的书，这是我的文具盒。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "here",
+        "is",
+        "my",
+        "book",
+        "and",
+        "pencil",
+        "box"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:20",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 20,
+      "text": "“Here are my pencil, ruler and eraser.”",
+      "translationZh": "“这些是我的铅笔、尺子和橡皮。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "here",
+        "are",
+        "my",
+        "pencil",
+        "ruler",
+        "and",
+        "eraser"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:21",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 21,
+      "text": "Miss Wang points to my pencil and asks, “What’s this?”",
+      "translationZh": "王老师指着我的铅笔问：“这是什么？”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "miss",
+        "wang",
+        "points",
+        "to",
+        "my",
+        "pencil",
+        "and",
+        "asks",
+        "what’s",
+        "this"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:22",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 22,
+      "text": "“It’s my pencil,” I answer.",
+      "translationZh": "“这是我的铅笔。”我回答。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "it’s",
+        "my",
+        "pencil",
+        "i",
+        "answer"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:23",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 23,
+      "text": "Amy points to my eraser and asks, “What’s that?”",
+      "translationZh": "Amy指着我的橡皮问：“那是什么？”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "amy",
+        "points",
+        "to",
+        "my",
+        "eraser",
+        "and",
+        "asks",
+        "what’s",
+        "that"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:24",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 24,
+      "text": "“It’s my eraser,” I say.",
+      "translationZh": "“那是我的橡皮。”我说道。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "it’s",
+        "my",
+        "eraser",
+        "i",
+        "say"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:25",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 25,
+      "text": "Miss Wang says, “Your ruler, please.”",
+      "translationZh": "王老师说：“请把你的尺子拿给我看一下。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "miss",
+        "wang",
+        "says",
+        "your",
+        "ruler",
+        "please"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:26",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 26,
+      "text": "“Here is my ruler,” I say.",
+      "translationZh": "“这是我的尺子。”我说道。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "here",
+        "is",
+        "my",
+        "ruler",
+        "i",
+        "say"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:27",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 27,
+      "text": "“Hooray! I’m ready for class!”",
+      "translationZh": "“太好了！我准备好上课了！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "hooray",
+        "i’m",
+        "ready",
+        "for",
+        "class"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:28",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 28,
+      "text": "Our teacher says, “Open your books. Let’s read together.”",
+      "translationZh": "老师说：“打开你们的书，让我们一起读吧。”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "our",
+        "teacher",
+        "says",
+        "open",
+        "your",
+        "books",
+        "let’s",
+        "read",
+        "together"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:29",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 29,
+      "text": "We read, listen and learn together.",
+      "translationZh": "我们一起读、一起听、一起学习。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "we",
+        "read",
+        "listen",
+        "and",
+        "learn",
+        "together"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:30",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 30,
+      "text": "At break time, Amy says, “Come on! Let’s play together!”",
+      "translationZh": "课间休息时，Amy说：“来吧！让我们一起玩吧！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "at",
+        "break",
+        "time",
+        "amy",
+        "says",
+        "come",
+        "on",
+        "let’s",
+        "play",
+        "together"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:31",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 31,
+      "text": "We run, jump and skip in the playground.",
+      "translationZh": "我们在操场上跑步、跳跃和蹦跳。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "we",
+        "run",
+        "jump",
+        "and",
+        "skip",
+        "in",
+        "the",
+        "playground"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:32",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 32,
+      "text": "In the afternoon, Miss Wang says, “Good afternoon, children!”",
+      "translationZh": "下午，王老师说：“孩子们，下午好！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "in",
+        "the",
+        "afternoon",
+        "miss",
+        "wang",
+        "says",
+        "good",
+        "children"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:33",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 33,
+      "text": "At the end of the day, we say, “Goodbye, Miss Wang! See you tomorrow!”",
+      "translationZh": "一天结束时，我们说：“王老师，再见！明天见！”",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "at",
+        "the",
+        "end",
+        "of",
+        "day",
+        "we",
+        "say",
+        "goodbye",
+        "miss",
+        "wang",
+        "see",
+        "you",
+        "tomorrow"
+      ]
+    },
+    {
+      "sourceSentenceId": "story_primary_school:34",
+      "storyId": "story_primary_school",
+      "storyTitle": "Story 3 · Hello, School!",
+      "order": 34,
+      "text": "I have a new teacher, a new friend and a happy first day at school.",
+      "translationZh": "我有了一位新老师、一个新朋友，也度过了快乐的入学第一天。",
+      "kind": "body",
+      "sourceType": "story",
+      "tokens": [
+        "i",
+        "have",
+        "a",
+        "new",
+        "teacher",
+        "friend",
+        "and",
+        "happy",
+        "first",
+        "day",
+        "at",
+        "school"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "story_zoo:01",
+      "to": "story_zoo:02",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:03",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:03",
+      "to": "story_zoo:04",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:04",
+      "to": "story_zoo:05",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_zoo:06",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:06",
+      "to": "story_zoo:07",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:07",
+      "to": "story_zoo:08",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:08",
+      "to": "story_zoo:09",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:09",
+      "to": "story_zoo:10",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:10",
+      "to": "story_zoo:11",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:11",
+      "to": "story_zoo:12",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:12",
+      "to": "story_zoo:13",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:13",
+      "to": "story_zoo:14",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:14",
+      "to": "story_zoo:15",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:15",
+      "to": "story_zoo:16",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:16",
+      "to": "story_zoo:17",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:17",
+      "to": "story_zoo:18",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:18",
+      "to": "story_zoo:19",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:19",
+      "to": "story_zoo:20",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:20",
+      "to": "story_zoo:21",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:21",
+      "to": "story_zoo:22",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:22",
+      "to": "story_zoo:23",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:01",
+      "to": "story_kindergarten:02",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:02",
+      "to": "story_kindergarten:03",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_kindergarten:04",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:04",
+      "to": "story_kindergarten:05",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:05",
+      "to": "story_kindergarten:06",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:06",
+      "to": "story_kindergarten:07",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:07",
+      "to": "story_kindergarten:08",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:08",
+      "to": "story_kindergarten:09",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:09",
+      "to": "story_kindergarten:10",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:10",
+      "to": "story_kindergarten:11",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:11",
+      "to": "story_kindergarten:12",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:12",
+      "to": "story_kindergarten:13",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:13",
+      "to": "story_kindergarten:14",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:14",
+      "to": "story_kindergarten:15",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:15",
+      "to": "story_kindergarten:16",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:16",
+      "to": "story_kindergarten:17",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:17",
+      "to": "story_kindergarten:18",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:18",
+      "to": "story_kindergarten:19",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:19",
+      "to": "story_kindergarten:20",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:20",
+      "to": "story_kindergarten:21",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:21",
+      "to": "story_kindergarten:22",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:22",
+      "to": "story_kindergarten:23",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:23",
+      "to": "story_kindergarten:24",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:24",
+      "to": "story_kindergarten:25",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:25",
+      "to": "story_kindergarten:26",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:26",
+      "to": "story_kindergarten:27",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:27",
+      "to": "story_kindergarten:28",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:28",
+      "to": "story_kindergarten:29",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:29",
+      "to": "story_kindergarten:30",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:30",
+      "to": "story_kindergarten:31",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:31",
+      "to": "story_kindergarten:32",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:32",
+      "to": "story_kindergarten:33",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_kindergarten:33",
+      "to": "story_kindergarten:34",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:03",
+      "to": "story_primary_school:04",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:04",
+      "to": "story_primary_school:05",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:06",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:07",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:07",
+      "to": "story_primary_school:08",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:08",
+      "to": "story_primary_school:09",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:10",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:10",
+      "to": "story_primary_school:11",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:11",
+      "to": "story_primary_school:12",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:12",
+      "to": "story_primary_school:13",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:13",
+      "to": "story_primary_school:14",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:14",
+      "to": "story_primary_school:15",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:15",
+      "to": "story_primary_school:16",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:17",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:17",
+      "to": "story_primary_school:18",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:18",
+      "to": "story_primary_school:19",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:19",
+      "to": "story_primary_school:20",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:20",
+      "to": "story_primary_school:21",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:21",
+      "to": "story_primary_school:22",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:22",
+      "to": "story_primary_school:23",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:23",
+      "to": "story_primary_school:24",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:24",
+      "to": "story_primary_school:25",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:25",
+      "to": "story_primary_school:26",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:26",
+      "to": "story_primary_school:27",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:27",
+      "to": "story_primary_school:28",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:28",
+      "to": "story_primary_school:29",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:29",
+      "to": "story_primary_school:30",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:30",
+      "to": "story_primary_school:31",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:31",
+      "to": "story_primary_school:32",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:32",
+      "to": "story_primary_school:33",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_primary_school:33",
+      "to": "story_primary_school:34",
+      "type": "same_story_sequence",
+      "reason": "相邻正文句的确定性顺序边"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_zoo:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "dad"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_zoo:22",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "mom",
+        "dad",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_kindergarten:01",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "with",
+        "mom",
+        "dad",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_kindergarten:03",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "dad"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_primary_school:04",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "with"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_primary_school:15",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_primary_school:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_primary_school:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:01",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:05",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:15",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "are",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:19",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "baby"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_zoo:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "are",
+        "happy"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_kindergarten:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "are",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:02",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:03",
+      "to": "story_zoo:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "yes",
+        "love"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:03",
+      "to": "story_kindergarten:24",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "yes",
+        "love"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:04",
+      "to": "story_primary_school:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "that",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_zoo:15",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_zoo:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_kindergarten:09",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "very",
+        "like",
+        "her"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_kindergarten:10",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "she",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_kindergarten:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "she",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:05",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:06",
+      "to": "story_kindergarten:09",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "like",
+        "her"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:09",
+      "to": "story_kindergarten:05",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "run",
+        "fast"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:11",
+      "to": "story_zoo:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "find"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:11",
+      "to": "story_kindergarten:14",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "where",
+        "can’t",
+        "find"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:12",
+      "to": "story_zoo:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "they",
+        "are",
+        "big"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:12",
+      "to": "story_kindergarten:03",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "big"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:12",
+      "to": "story_primary_school:04",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "big"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:13",
+      "to": "story_zoo:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "they",
+        "eat"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:14",
+      "to": "story_zoo:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "they",
+        "eat"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:14",
+      "to": "story_kindergarten:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "eat",
+        "some"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:15",
+      "to": "story_zoo:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:15",
+      "to": "story_zoo:22",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "mom"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:15",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:16",
+      "to": "story_kindergarten:03",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "big",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:16",
+      "to": "story_kindergarten:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "like",
+        "big"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:16",
+      "to": "story_primary_school:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "are",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:17",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "like"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:18",
+      "to": "story_kindergarten:24",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "yes",
+        "love"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:19",
+      "to": "story_zoo:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "anything",
+        "eat"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:19",
+      "to": "story_kindergarten:10",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "want"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:19",
+      "to": "story_kindergarten:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "there",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:19",
+      "to": "story_primary_school:13",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "want"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:20",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "dad",
+        "the"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:22",
+      "to": "story_kindergarten:01",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "mom",
+        "and",
+        "dad"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:22",
+      "to": "story_kindergarten:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "thank",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:22",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "dad"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_zoo:22",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "see",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:01",
+      "to": "story_kindergarten:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "kindergarten",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:02",
+      "to": "story_primary_school:03",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "today",
+        "first",
+        "day"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:02",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "first",
+        "day"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_kindergarten:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_primary_school:04",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "big"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_primary_school:15",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_primary_school:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_primary_school:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:03",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:04",
+      "to": "story_primary_school:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "are",
+        "here"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:06",
+      "to": "story_kindergarten:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "some",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:06",
+      "to": "story_kindergarten:26",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "some",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:06",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "jump",
+        "and",
+        "skip"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:07",
+      "to": "story_primary_school:10",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "girl",
+        "pink"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:08",
+      "to": "story_primary_school:10",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "she",
+        "has"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:10",
+      "to": "story_kindergarten:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "with",
+        "she"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:10",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "asks"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:10",
+      "to": "story_primary_school:11",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "she",
+        "asks"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:10",
+      "to": "story_primary_school:13",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "want"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:12",
+      "to": "story_primary_school:29",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "together"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:12",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "run",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:15",
+      "to": "story_kindergarten:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "asks"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:15",
+      "to": "story_primary_school:04",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "teacher"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:16",
+      "to": "story_kindergarten:30",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "yes",
+        "teacher"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:17",
+      "to": "story_primary_school:04",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "with",
+        "smile"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:17",
+      "to": "story_primary_school:05",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "she",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:20",
+      "to": "story_kindergarten:27",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "one",
+        "big"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:21",
+      "to": "story_kindergarten:26",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "some",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:23",
+      "to": "story_primary_school:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "here"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:23",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "you",
+        "the"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:30",
+      "to": "story_primary_school:28",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "says",
+        "teacher"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:33",
+      "to": "story_primary_school:09",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "this",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:33",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "this",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:33",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "new",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:34",
+      "to": "story_primary_school:15",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:34",
+      "to": "story_primary_school:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_kindergarten:34",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "teacher",
+        "and",
+        "new"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:03",
+      "to": "story_primary_school:05",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "good",
+        "morning"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:03",
+      "to": "story_primary_school:06",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "good",
+        "morning"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:03",
+      "to": "story_primary_school:15",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "first",
+        "school"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:03",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "first",
+        "day",
+        "school"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:09",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:11",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "i’m",
+        "she"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:25",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:32",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "good",
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:05",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:09",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:25",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:32",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "good",
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:06",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "say"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:07",
+      "to": "story_primary_school:12",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "nice",
+        "meet",
+        "you",
+        "helen"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:07",
+      "to": "story_primary_school:13",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "nice",
+        "meet",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:08",
+      "to": "story_primary_school:12",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "nice",
+        "meet",
+        "you"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:08",
+      "to": "story_primary_school:13",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "nice",
+        "meet",
+        "you",
+        "too"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:16",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says",
+        "your"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "desk",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "desk",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "points",
+        "and",
+        "this"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "points",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:25",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says",
+        "your"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:28",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "says",
+        "your"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:32",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:09",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:10",
+      "to": "story_primary_school:19",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "pencil",
+        "box"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:10",
+      "to": "story_primary_school:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "pencil"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:10",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "pencil"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:11",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "what’s",
+        "asks"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:11",
+      "to": "story_primary_school:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "amy",
+        "what’s",
+        "asks"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:15",
+      "to": "story_primary_school:17",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:15",
+      "to": "story_primary_school:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "school",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:15",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:15",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "and",
+        "first"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:18",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "school",
+        "things"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:25",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says",
+        "your",
+        "please"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:28",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "says",
+        "your"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:32",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:16",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:17",
+      "to": "story_primary_school:19",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "here"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:17",
+      "to": "story_primary_school:20",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "here"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:17",
+      "to": "story_primary_school:26",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "say",
+        "here"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:17",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "and"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:17",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "the",
+        "say"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:18",
+      "to": "story_primary_school:31",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "the"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:18",
+      "to": "story_primary_school:34",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "school"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:19",
+      "to": "story_primary_school:21",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "pencil"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:20",
+      "to": "story_primary_school:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "and",
+        "eraser"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:20",
+      "to": "story_primary_school:26",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "here",
+        "ruler"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:21",
+      "to": "story_primary_school:23",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "points",
+        "and",
+        "asks",
+        "what’s"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:21",
+      "to": "story_primary_school:25",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:21",
+      "to": "story_primary_school:32",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:21",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:25",
+      "to": "story_primary_school:28",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "says",
+        "your"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:25",
+      "to": "story_primary_school:32",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang",
+        "says"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:25",
+      "to": "story_primary_school:33",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "miss",
+        "wang"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    },
+    {
+      "from": "story_primary_school:28",
+      "to": "story_primary_school:30",
+      "type": "lexical_overlap",
+      "sharedTokens": [
+        "says",
+        "let’s",
+        "together"
+      ],
+      "reason": "按历史原文词形交集建立的待审连接，不代表掌握"
+    }
+  ],
+  "indexes": {
+    "byStory": {
+      "story_zoo": [
+        "story_zoo:01",
+        "story_zoo:02",
+        "story_zoo:03",
+        "story_zoo:04",
+        "story_zoo:05",
+        "story_zoo:06",
+        "story_zoo:07",
+        "story_zoo:08",
+        "story_zoo:09",
+        "story_zoo:10",
+        "story_zoo:11",
+        "story_zoo:12",
+        "story_zoo:13",
+        "story_zoo:14",
+        "story_zoo:15",
+        "story_zoo:16",
+        "story_zoo:17",
+        "story_zoo:18",
+        "story_zoo:19",
+        "story_zoo:20",
+        "story_zoo:21",
+        "story_zoo:22",
+        "story_zoo:23"
+      ],
+      "story_kindergarten": [
+        "story_kindergarten:01",
+        "story_kindergarten:02",
+        "story_kindergarten:03",
+        "story_kindergarten:04",
+        "story_kindergarten:05",
+        "story_kindergarten:06",
+        "story_kindergarten:07",
+        "story_kindergarten:08",
+        "story_kindergarten:09",
+        "story_kindergarten:10",
+        "story_kindergarten:11",
+        "story_kindergarten:12",
+        "story_kindergarten:13",
+        "story_kindergarten:14",
+        "story_kindergarten:15",
+        "story_kindergarten:16",
+        "story_kindergarten:17",
+        "story_kindergarten:18",
+        "story_kindergarten:19",
+        "story_kindergarten:20",
+        "story_kindergarten:21",
+        "story_kindergarten:22",
+        "story_kindergarten:23",
+        "story_kindergarten:24",
+        "story_kindergarten:25",
+        "story_kindergarten:26",
+        "story_kindergarten:27",
+        "story_kindergarten:28",
+        "story_kindergarten:29",
+        "story_kindergarten:30",
+        "story_kindergarten:31",
+        "story_kindergarten:32",
+        "story_kindergarten:33",
+        "story_kindergarten:34"
+      ],
+      "story_primary_school": [
+        "story_primary_school:03",
+        "story_primary_school:04",
+        "story_primary_school:05",
+        "story_primary_school:06",
+        "story_primary_school:07",
+        "story_primary_school:08",
+        "story_primary_school:09",
+        "story_primary_school:10",
+        "story_primary_school:11",
+        "story_primary_school:12",
+        "story_primary_school:13",
+        "story_primary_school:14",
+        "story_primary_school:15",
+        "story_primary_school:16",
+        "story_primary_school:17",
+        "story_primary_school:18",
+        "story_primary_school:19",
+        "story_primary_school:20",
+        "story_primary_school:21",
+        "story_primary_school:22",
+        "story_primary_school:23",
+        "story_primary_school:24",
+        "story_primary_school:25",
+        "story_primary_school:26",
+        "story_primary_school:27",
+        "story_primary_school:28",
+        "story_primary_school:29",
+        "story_primary_school:30",
+        "story_primary_school:31",
+        "story_primary_school:32",
+        "story_primary_school:33",
+        "story_primary_school:34"
+      ]
+    },
+    "bySourceSentenceId": {
+      "story_zoo:01": "story_zoo:01",
+      "story_zoo:02": "story_zoo:02",
+      "story_zoo:03": "story_zoo:03",
+      "story_zoo:04": "story_zoo:04",
+      "story_zoo:05": "story_zoo:05",
+      "story_zoo:06": "story_zoo:06",
+      "story_zoo:07": "story_zoo:07",
+      "story_zoo:08": "story_zoo:08",
+      "story_zoo:09": "story_zoo:09",
+      "story_zoo:10": "story_zoo:10",
+      "story_zoo:11": "story_zoo:11",
+      "story_zoo:12": "story_zoo:12",
+      "story_zoo:13": "story_zoo:13",
+      "story_zoo:14": "story_zoo:14",
+      "story_zoo:15": "story_zoo:15",
+      "story_zoo:16": "story_zoo:16",
+      "story_zoo:17": "story_zoo:17",
+      "story_zoo:18": "story_zoo:18",
+      "story_zoo:19": "story_zoo:19",
+      "story_zoo:20": "story_zoo:20",
+      "story_zoo:21": "story_zoo:21",
+      "story_zoo:22": "story_zoo:22",
+      "story_zoo:23": "story_zoo:23",
+      "story_kindergarten:01": "story_kindergarten:01",
+      "story_kindergarten:02": "story_kindergarten:02",
+      "story_kindergarten:03": "story_kindergarten:03",
+      "story_kindergarten:04": "story_kindergarten:04",
+      "story_kindergarten:05": "story_kindergarten:05",
+      "story_kindergarten:06": "story_kindergarten:06",
+      "story_kindergarten:07": "story_kindergarten:07",
+      "story_kindergarten:08": "story_kindergarten:08",
+      "story_kindergarten:09": "story_kindergarten:09",
+      "story_kindergarten:10": "story_kindergarten:10",
+      "story_kindergarten:11": "story_kindergarten:11",
+      "story_kindergarten:12": "story_kindergarten:12",
+      "story_kindergarten:13": "story_kindergarten:13",
+      "story_kindergarten:14": "story_kindergarten:14",
+      "story_kindergarten:15": "story_kindergarten:15",
+      "story_kindergarten:16": "story_kindergarten:16",
+      "story_kindergarten:17": "story_kindergarten:17",
+      "story_kindergarten:18": "story_kindergarten:18",
+      "story_kindergarten:19": "story_kindergarten:19",
+      "story_kindergarten:20": "story_kindergarten:20",
+      "story_kindergarten:21": "story_kindergarten:21",
+      "story_kindergarten:22": "story_kindergarten:22",
+      "story_kindergarten:23": "story_kindergarten:23",
+      "story_kindergarten:24": "story_kindergarten:24",
+      "story_kindergarten:25": "story_kindergarten:25",
+      "story_kindergarten:26": "story_kindergarten:26",
+      "story_kindergarten:27": "story_kindergarten:27",
+      "story_kindergarten:28": "story_kindergarten:28",
+      "story_kindergarten:29": "story_kindergarten:29",
+      "story_kindergarten:30": "story_kindergarten:30",
+      "story_kindergarten:31": "story_kindergarten:31",
+      "story_kindergarten:32": "story_kindergarten:32",
+      "story_kindergarten:33": "story_kindergarten:33",
+      "story_kindergarten:34": "story_kindergarten:34",
+      "story_primary_school:03": "story_primary_school:03",
+      "story_primary_school:04": "story_primary_school:04",
+      "story_primary_school:05": "story_primary_school:05",
+      "story_primary_school:06": "story_primary_school:06",
+      "story_primary_school:07": "story_primary_school:07",
+      "story_primary_school:08": "story_primary_school:08",
+      "story_primary_school:09": "story_primary_school:09",
+      "story_primary_school:10": "story_primary_school:10",
+      "story_primary_school:11": "story_primary_school:11",
+      "story_primary_school:12": "story_primary_school:12",
+      "story_primary_school:13": "story_primary_school:13",
+      "story_primary_school:14": "story_primary_school:14",
+      "story_primary_school:15": "story_primary_school:15",
+      "story_primary_school:16": "story_primary_school:16",
+      "story_primary_school:17": "story_primary_school:17",
+      "story_primary_school:18": "story_primary_school:18",
+      "story_primary_school:19": "story_primary_school:19",
+      "story_primary_school:20": "story_primary_school:20",
+      "story_primary_school:21": "story_primary_school:21",
+      "story_primary_school:22": "story_primary_school:22",
+      "story_primary_school:23": "story_primary_school:23",
+      "story_primary_school:24": "story_primary_school:24",
+      "story_primary_school:25": "story_primary_school:25",
+      "story_primary_school:26": "story_primary_school:26",
+      "story_primary_school:27": "story_primary_school:27",
+      "story_primary_school:28": "story_primary_school:28",
+      "story_primary_school:29": "story_primary_school:29",
+      "story_primary_school:30": "story_primary_school:30",
+      "story_primary_school:31": "story_primary_school:31",
+      "story_primary_school:32": "story_primary_school:32",
+      "story_primary_school:33": "story_primary_school:33",
+      "story_primary_school:34": "story_primary_school:34"
+    }
+  },
+  "notes": [
+    "正文节点由当前三篇Story原文确定性索引生成；标题不计入89句。",
+    "边只表示文本/顺序关系，不表示学习掌握或课程答案。",
+    "scene/function/pattern等语义标注留待Allen内容审阅，不由网站推断。"
+  ]
+}

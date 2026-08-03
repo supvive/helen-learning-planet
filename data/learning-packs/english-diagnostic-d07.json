@@ -2,8 +2,8 @@
   "schemaVersion": "helen-learning-pack/2",
   "packId": "2026-08-09-english-diagnostic-d07",
   "date": "2026-08-09",
-  "revision": "english-diagnostic-two-week-d07",
-  "title": "字母星球诊断 D07｜语音形式",
+  "revision": "english-diagnostic-oxford-v2-d07",
+  "title": "字母星球诊断 D07｜历史语料混合诊断",
   "loadMode": "light",
   "contentPolicy": {
     "authority": "codex-course-designer",
@@ -15,7 +15,7 @@
     "plannedBreakMinutes": 0,
     "defaultEnglishMode": "light",
     "plannedEnglishMinutes": 20,
-    "sequenceNoteZh": "两周历史诊断只复用 Hello, School! 已学材料。",
+    "sequenceNoteZh": "两周诊断混合抽取 Hello, School! 已学历史语料，不围绕单一句子重复出题。",
     "fallbackRules": {
       "chineseOverMinutes": 90,
       "easeBelow": 7,
@@ -31,45 +31,75 @@
   "english": {
     "courseArchitectureVersion": "letter-planet-adaptive/1",
     "lessonId": "english-diagnostic-d07",
-    "contentVersion": 1,
+    "contentVersion": 2,
+    "releaseMetadata": {
+      "releaseChannel": "v3.9.15",
+      "defaultMode": "light",
+      "visibleActivityIds": [
+        "d07_01",
+        "d07_02",
+        "d07_03",
+        "d07_04",
+        "d07_05",
+        "d07_06"
+      ],
+      "excludedStandardActivityIds": [],
+      "exclusionReasonZh": "本诊断的六项均为学生可见，标准模式只改变时长，不增加重复题。"
+    },
     "dailyMission": {
-      "titleZh": "语音形式",
-      "primarySkill": "pronunciation",
+      "titleZh": "历史语料混合诊断 D07",
+      "primarySkill": "listening_and_speaking",
       "secondarySkills": [
-        "listening",
-        "retention"
+        "gist",
+        "vocabulary",
+        "functional_language",
+        "interaction"
       ]
     },
     "sourceLearningReference": {
-      "relationship": "delayed_historical_diagnostic",
+      "relationship": "two_week_historical_diagnostic",
       "externalTool": "每日英语听力",
       "libraryId": "hello-school-story3-complete-32",
       "materialIds": [
-        "story_primary_school:04",
-        "story_primary_school:09"
-      ]
+        "story_primary_school:05",
+        "story_primary_school:07",
+        "story_primary_school:16",
+        "story_primary_school:20",
+        "story_primary_school:23",
+        "story_primary_school:25"
+      ],
+      "selectionRuleZh": "每日至少六个不同源句；两周覆盖全部32个历史句；单日不重复同一目标句。"
     },
     "sourceMaterialIds": [
-      "story_primary_school:04",
-      "story_primary_school:09"
+      "story_primary_school:05",
+      "story_primary_school:07",
+      "story_primary_school:16",
+      "story_primary_school:20",
+      "story_primary_school:23",
+      "story_primary_school:25"
     ],
     "evidenceTargetIds": [
-      "diagnostic_d07_sound_form"
+      "diagnostic_d07_activity_01",
+      "diagnostic_d07_activity_02",
+      "diagnostic_d07_activity_03",
+      "diagnostic_d07_activity_04",
+      "diagnostic_d07_activity_05",
+      "diagnostic_d07_activity_06"
     ],
     "diagnostic": {
       "routeDay": "D07",
       "baselineOrRetest": "retest",
       "strengths": [
-        "能听出 I'm 与 What's 的节奏"
+        "记录听力、词汇、语言形式和口语互动的分项证据"
       ],
       "reviewQueue": [
-        "diagnostic_d07_sound_form"
+        "diagnostic_d07_mixed_history"
       ],
-      "nextRecommendation": "不看英文，先模仿整句语流再辨词。"
+      "nextRecommendation": "按分项证据回排下一轮复习，不按单一句子推断能力。"
     },
     "durationByMode": {
       "lightMinutes": 20,
-      "standardMinutes": 20
+      "standardMinutes": 24
     },
     "defaultMode": "light",
     "allowedModes": [
@@ -79,341 +109,475 @@
     "appLocator": {
       "appName": "每日英语听力",
       "folder": "小学英语 · Hello, School!",
-      "article": "Story 3 · Lessons 2 and 9",
-      "targetSentence": "My teacher stands at the classroom door with a big smile."
+      "article": "Story 3 · Hello, School!",
+      "targetSentence": "",
+      "settingsZh": "按每题给出的源句定位；每题只记录当前源句的播放、选择或回应证据。"
     },
     "activities": [
       {
         "activityId": "d07_01",
         "activityType": "select",
-        "titleZh": "先听整句",
+        "questionRole": "sentence_listen",
+        "titleZh": "听句选原文",
         "plannedMinutesByMode": {
+          "recovery": 2,
           "light": 3,
-          "standard": 3
+          "standard": 4
         },
         "childVisible": {
-          "instructionZh": "听句子，选出你听到的句子。",
+          "instructionZh": "听完整句，从三条已学句子中选出你听到的原句。",
           "options": [
             {
               "id": "a",
-              "label": "My teacher stands at the classroom door with a big smile.",
-              "value": "a"
+              "label": "“Good morning! I’m Miss Wang,” she says.",
+              "value": "“Good morning! I’m Miss Wang,” she says."
             },
             {
               "id": "b",
-              "label": "“Hello! I’m Amy. What’s your name?” she asks.",
-              "value": "b"
+              "label": "“Nice to meet you, Helen.”",
+              "value": "“Nice to meet you, Helen.”"
             },
             {
               "id": "c",
-              "label": "Goodbye, Miss Wang!",
-              "value": "c"
+              "label": "Miss Wang says, “Show me your school things, please.”",
+              "value": "Miss Wang says, “Show me your school things, please.”"
             }
           ]
         },
         "interaction": {
           "delivery": "daily_english_listening",
           "externalTool": "每日英语听力",
-          "article": "Story 3 · Lessons 2 and 9",
+          "article": "Story 3 · Hello, School!",
           "libraryId": "hello-school-story3-complete-32",
+          "materialId": "story_primary_school:05",
           "materialIds": [
-            "story_primary_school:04",
-            "story_primary_school:09"
+            "story_primary_school:05"
           ],
+          "lessonIndex": 3,
+          "sourceSentenceId": "story_primary_school:05",
+          "targetSentence": "“Good morning! I’m Miss Wang,” she says.",
           "hideEnglish": true,
           "hideChinese": false,
           "playCount": 2
         },
+        "expectedAnswer": {
+          "value": "“Good morning! I’m Miss Wang,” she says."
+        },
+        "acceptedAnswers": [
+          "“Good morning! I’m Miss Wang,” she says."
+        ],
         "hintPolicy": {
           "levels": [
             "先听完整句。",
-            "只找已学的关键词。"
+            "再比较句子的开头和主要信息。"
           ]
         },
         "evidenceTargetIds": [
-          "english_d07_语音形式"
+          "diagnostic_d07_activity_01"
         ],
-        "expectedAnswer": {},
-        "acceptedAnswers": [],
+        "supportBoundaryZh": "只重播当前句；记录第一次选择和是否使用提示。",
         "parentOnly": {
+          "supportBoundaryZh": "只重播当前句；记录第一次选择和是否使用提示。",
           "evidenceTargetIds": [
-            "diagnostic_d07_sound_form"
+            "diagnostic_d07_activity_01"
           ],
-          "supportBoundaryZh": "只复用已学材料；记录首次反应与提醒次数。"
+          "expectedAnswer": "“Good morning! I’m Miss Wang,” she says.",
+          "acceptedAnswers": [
+            "“Good morning! I’m Miss Wang,” she says."
+          ],
+          "sourceRoleZh": "听力辨认"
         }
       },
       {
         "activityId": "d07_02",
         "activityType": "select",
-        "titleZh": "抓住意思",
+        "questionRole": "meaning_function",
+        "titleZh": "听懂大意",
         "plannedMinutesByMode": {
+          "recovery": 2,
           "light": 3,
-          "standard": 3
+          "standard": 4
         },
         "childVisible": {
-          "instructionZh": "听完后，选出这句话在做什么。",
+          "instructionZh": "听完后，选出这句话在场景中表达的主要意思。",
           "options": [
             {
               "id": "a",
-              "label": "问候或介绍自己",
-              "value": "greeting"
+              "label": "第一次见面时表达友好，并叫出对方名字。",
+              "value": "第一次见面时表达友好，并叫出对方名字。"
             },
             {
               "id": "b",
-              "label": "整理画具",
-              "value": "school_things"
+              "label": "用Here are一次介绍多个物品。",
+              "value": "用Here are一次介绍多个物品。"
             },
             {
               "id": "c",
-              "label": "跑步跳跃",
-              "value": "play"
+              "label": "用What’s that询问较远或手指所指的物品。",
+              "value": "用What’s that询问较远或手指所指的物品。"
             }
           ]
         },
         "interaction": {
           "delivery": "daily_english_listening",
           "externalTool": "每日英语听力",
-          "article": "Story 3 · Lessons 2 and 9",
+          "article": "Story 3 · Hello, School!",
           "libraryId": "hello-school-story3-complete-32",
+          "materialId": "story_primary_school:07",
           "materialIds": [
-            "story_primary_school:04",
-            "story_primary_school:09"
+            "story_primary_school:07"
           ],
+          "lessonIndex": 5,
+          "sourceSentenceId": "story_primary_school:07",
+          "targetSentence": "“Nice to meet you, Helen.”",
           "hideEnglish": true,
           "hideChinese": false,
           "playCount": 2
         },
+        "expectedAnswer": {
+          "value": "第一次见面时表达友好，并叫出对方名字。"
+        },
+        "acceptedAnswers": [
+          "第一次见面时表达友好，并叫出对方名字。"
+        ],
         "hintPolicy": {
           "levels": [
-            "先听完整句。",
-            "只找已学的关键词。"
+            "先听语气和场景。",
+            "再选择主要意思。"
           ]
         },
         "evidenceTargetIds": [
-          "english_d07_语音形式"
+          "diagnostic_d07_activity_02"
         ],
-        "expectedAnswer": {},
-        "acceptedAnswers": [],
+        "supportBoundaryZh": "只提示场景范围，不读出正确选项；记录首次判断。",
         "parentOnly": {
+          "supportBoundaryZh": "只提示场景范围，不读出正确选项；记录首次判断。",
           "evidenceTargetIds": [
-            "diagnostic_d07_sound_form"
+            "diagnostic_d07_activity_02"
           ],
-          "supportBoundaryZh": "只复用已学材料；记录首次反应与提醒次数。"
+          "expectedAnswer": "第一次见面时表达友好，并叫出对方名字。",
+          "acceptedAnswers": [
+            "第一次见面时表达友好，并叫出对方名字。"
+          ],
+          "sourceRoleZh": "听力理解"
         }
       },
       {
         "activityId": "d07_03",
-        "activityType": "listen",
-        "titleZh": "不看文字再听",
+        "activityType": "select",
+        "questionRole": "blind_word",
+        "titleZh": "听辨已学词",
         "plannedMinutesByMode": {
+          "recovery": 2,
           "light": 3,
-          "standard": 3
+          "standard": 4
         },
         "childVisible": {
-          "instructionZh": "隐藏文字听两遍，记住一个熟悉词。",
-          "items": [
-            "My"
+          "instructionZh": "英文暂时隐藏，听两遍后，从三个已学词中选出听到的词。",
+          "options": [
+            {
+              "id": "a",
+              "label": "show",
+              "value": "show"
+            },
+            {
+              "id": "b",
+              "label": "ruler",
+              "value": "ruler"
+            },
+            {
+              "id": "c",
+              "label": "eraser",
+              "value": "eraser"
+            }
           ]
         },
         "interaction": {
           "delivery": "daily_english_listening",
           "externalTool": "每日英语听力",
-          "article": "Story 3 · Lessons 2 and 9",
+          "article": "Story 3 · Hello, School!",
           "libraryId": "hello-school-story3-complete-32",
+          "materialId": "story_primary_school:16",
           "materialIds": [
-            "story_primary_school:04",
-            "story_primary_school:09"
+            "story_primary_school:16"
           ],
+          "lessonIndex": 14,
+          "sourceSentenceId": "story_primary_school:16",
+          "targetSentence": "Miss Wang says, “Show me your school things, please.”",
           "hideEnglish": true,
           "hideChinese": false,
           "playCount": 2
         },
+        "expectedAnswer": {
+          "value": "show"
+        },
+        "acceptedAnswers": [
+          "show"
+        ],
         "hintPolicy": {
           "levels": [
-            "先听完整句。",
-            "只找已学的关键词。"
+            "先听两遍。",
+            "再回想句中最清楚的一个词。"
           ]
         },
         "evidenceTargetIds": [
-          "english_d07_语音形式"
+          "diagnostic_d07_activity_03"
         ],
-        "expectedAnswer": {},
-        "acceptedAnswers": [],
+        "supportBoundaryZh": "至少播放两遍后再作答；提示只能缩小到词类，不显示答案。",
         "parentOnly": {
+          "supportBoundaryZh": "至少播放两遍后再作答；提示只能缩小到词类，不显示答案。",
           "evidenceTargetIds": [
-            "diagnostic_d07_sound_form"
+            "diagnostic_d07_activity_03"
           ],
-          "supportBoundaryZh": "只复用已学材料；记录首次反应与提醒次数。"
+          "expectedAnswer": "show",
+          "acceptedAnswers": [
+            "show"
+          ],
+          "sourceRoleZh": "词汇辨认",
+          "targetWord": "show"
         }
       },
       {
         "activityId": "d07_04",
         "activityType": "select",
-        "titleZh": "听后回想",
+        "questionRole": "key_component",
+        "titleZh": "听后找语言成分",
         "plannedMinutesByMode": {
+          "recovery": 2,
           "light": 3,
-          "standard": 3
+          "standard": 4
         },
         "childVisible": {
-          "instructionZh": "听完后，选出句子里的关键位置词。",
+          "instructionZh": "这次只听：并列物品。播放后，选出句中真实出现的部分。",
+          "categoryZh": "并列物品",
           "options": [
             {
               "id": "a",
-              "label": "my",
-              "value": "my"
+              "label": "pencil, ruler and eraser",
+              "value": "pencil, ruler and eraser"
             },
             {
               "id": "b",
-              "label": "your",
-              "value": "your"
+              "label": "Good morning",
+              "value": "Good morning"
             },
             {
               "id": "c",
-              "label": "our",
-              "value": "our"
+              "label": "at the classroom door",
+              "value": "at the classroom door"
             }
           ]
         },
         "interaction": {
           "delivery": "daily_english_listening",
           "externalTool": "每日英语听力",
-          "article": "Story 3 · Lessons 2 and 9",
+          "article": "Story 3 · Hello, School!",
           "libraryId": "hello-school-story3-complete-32",
+          "materialId": "story_primary_school:20",
           "materialIds": [
-            "story_primary_school:04",
-            "story_primary_school:09"
+            "story_primary_school:20"
           ],
+          "lessonIndex": 18,
+          "sourceSentenceId": "story_primary_school:20",
+          "targetSentence": "“Here are my pencil, ruler and eraser.”",
           "hideEnglish": true,
           "hideChinese": false,
-          "playCount": 2
+          "playCount": 1
         },
+        "expectedAnswer": {
+          "value": "pencil, ruler and eraser",
+          "category": "并列物品"
+        },
+        "acceptedAnswers": [
+          "pencil, ruler and eraser"
+        ],
         "hintPolicy": {
           "levels": [
-            "先听完整句。",
-            "只找已学的关键词。"
+            "先关注并列物品。",
+            "再选择句中真实出现的部分。"
           ]
         },
         "evidenceTargetIds": [
-          "english_d07_语音形式"
+          "diagnostic_d07_activity_04"
         ],
-        "expectedAnswer": {},
-        "acceptedAnswers": [],
+        "supportBoundaryZh": "先声明成分类别，再播放当前句；不使用没有定义的“关键词”。",
         "parentOnly": {
+          "supportBoundaryZh": "先声明成分类别，再播放当前句；不使用没有定义的“关键词”。",
           "evidenceTargetIds": [
-            "diagnostic_d07_sound_form"
+            "diagnostic_d07_activity_04"
           ],
-          "supportBoundaryZh": "只复用已学材料；记录首次反应与提醒次数。"
+          "expectedAnswer": "pencil, ruler and eraser",
+          "acceptedAnswers": [
+            "pencil, ruler and eraser"
+          ],
+          "sourceRoleZh": "语言形式辨认",
+          "categoryZh": "并列物品",
+          "targetComponent": "pencil, ruler and eraser"
         }
       },
       {
         "activityId": "d07_05",
-        "activityType": "guided_write",
-        "titleZh": "换个表面继续说",
+        "activityType": "dialogue",
+        "questionRole": "surface_transfer",
+        "titleZh": "情境表达",
         "plannedMinutesByMode": {
+          "recovery": 2,
           "light": 4,
-          "standard": 4
+          "standard": 5
         },
         "childVisible": {
-          "instructionZh": "用一个已学词完成新场景回应。",
-          "textZh": "My teacher stands at the classroom door with a big smile. / “Hello! I’m Amy. What’s your name?” she asks."
+          "instructionZh": "看新场景，用已经学过的完整表达说一句；不增加新词。",
+          "sceneZh": "同学指着较远的物品，你听懂并回答相应问句。",
+          "firstSpeakerZh": "情境提示",
+          "childResponseZh": "你的回应：说出符合场景的一句已学表达。",
+          "answerBoundaryZh": "只接受历史语料中的完整表达；允许替换已学的人名或物品槽位。"
         },
         "interaction": {
           "delivery": "website",
           "externalTool": "",
-          "article": "Story 3 · Lessons 2 and 9",
+          "article": "Story 3 · Hello, School!",
           "libraryId": "hello-school-story3-complete-32",
+          "materialId": "story_primary_school:23",
           "materialIds": [
-            "story_primary_school:04",
-            "story_primary_school:09"
+            "story_primary_school:23"
           ],
+          "lessonIndex": 21,
+          "sourceSentenceId": "story_primary_school:23",
+          "targetSentence": "Amy points to my eraser and asks, “What’s that?”",
           "hideEnglish": false,
           "hideChinese": false,
           "playCount": 0
         },
+        "expectedAnswer": {
+          "value": "Amy points to my eraser and asks, “What’s that?”"
+        },
+        "acceptedAnswers": [
+          "Amy points to my eraser and asks, “What’s that?”"
+        ],
         "hintPolicy": {
           "levels": [
-            "先听完整句。",
-            "只找已学的关键词。"
+            "先说出符合场景的一句。",
+            "需要时只提示表达用途。"
           ]
         },
         "evidenceTargetIds": [
-          "english_d07_语音形式"
+          "diagnostic_d07_activity_05"
         ],
-        "expectedAnswer": {},
-        "acceptedAnswers": [],
+        "supportBoundaryZh": "只给场景方向和已学范围；提示后记录为有提示完成。",
         "parentOnly": {
+          "supportBoundaryZh": "只给场景方向和已学范围；提示后记录为有提示完成。",
           "evidenceTargetIds": [
-            "diagnostic_d07_sound_form"
+            "diagnostic_d07_activity_05"
           ],
-          "supportBoundaryZh": "只复用已学材料；记录首次反应与提醒次数。"
+          "expectedAnswer": "Amy points to my eraser and asks, “What’s that?”",
+          "acceptedAnswers": [
+            "Amy points to my eraser and asks, “What’s that?”"
+          ],
+          "sourceRoleZh": "引导口语",
+          "sourceSentenceId": "story_primary_school:23",
+          "sceneZh": "同学指着较远的物品，你听懂并回答相应问句。"
+        },
+        "recording": {
+          "mode": "required_response",
+          "maxSeconds": 60,
+          "promptZh": "请录下符合场景的一句已学表达。",
+          "startCueZh": "准备好后点开始录音",
+          "stopAction": "done_button",
+          "allowMultipleTakes": true,
+          "includeInFeedback": true,
+          "category": "guided_speaking"
         }
       },
       {
         "activityId": "d07_06",
-        "activityType": "guided_write",
-        "titleZh": "说清下一步",
+        "activityType": "dialogue",
+        "questionRole": "response_transfer",
+        "titleZh": "对话回应",
         "plannedMinutesByMode": {
+          "recovery": 2,
           "light": 4,
-          "standard": 4
+          "standard": 5
         },
         "childVisible": {
-          "instructionZh": "完成最后一个小迁移，不增加新词。",
-          "options": [
+          "instructionZh": "先听对方说，再用另一句已学表达完成回应。",
+          "firstSpeakerZh": "对方说：Miss Wang says, “Your ruler, please.”",
+          "childResponseZh": "你的回应：使用合适的已学句完成一轮对话。",
+          "answerBoundaryZh": "回应必须符合当前对话；只使用历史语料，不增加新词。",
+          "dialogue": [
             {
-              "id": "a",
-              "label": "My teacher stands at the classroom door with a big smile.",
-              "value": "a"
+              "speaker": "A",
+              "text": "Miss Wang says, “Your ruler, please.”"
             },
             {
-              "id": "b",
-              "label": "“Hello! I’m Amy. What’s your name?” she asks.",
-              "value": "b"
-            },
-            {
-              "id": "c",
-              "label": "Goodbye, Miss Wang!",
-              "value": "c"
+              "speaker": "B",
+              "text": "请用已学表达回应。"
             }
-          ],
-          "textZh": "My teacher stands at the classroom door with a big smile."
+          ]
         },
         "interaction": {
           "delivery": "website",
           "externalTool": "",
-          "article": "Story 3 · Lessons 2 and 9",
+          "article": "Story 3 · Hello, School!",
           "libraryId": "hello-school-story3-complete-32",
+          "materialId": "story_primary_school:25",
           "materialIds": [
-            "story_primary_school:04",
-            "story_primary_school:09"
+            "story_primary_school:25",
+            "story_primary_school:26"
           ],
+          "lessonIndex": 23,
+          "sourceSentenceId": "story_primary_school:25",
+          "targetSentence": "Miss Wang says, “Your ruler, please.”",
           "hideEnglish": false,
           "hideChinese": false,
-          "playCount": 0
+          "playCount": 0,
+          "responseSourceSentenceId": "story_primary_school:26"
         },
+        "expectedAnswer": {
+          "value": "“Here is my ruler,” I say."
+        },
+        "acceptedAnswers": [
+          "“Here is my ruler,” I say."
+        ],
         "hintPolicy": {
           "levels": [
-            "先听完整句。",
-            "只找已学的关键词。"
+            "先听完对方的话。",
+            "再用合适的已学句回应。"
           ]
         },
         "evidenceTargetIds": [
-          "english_d07_语音形式"
+          "diagnostic_d07_activity_06"
         ],
-        "expectedAnswer": {},
-        "acceptedAnswers": [],
+        "supportBoundaryZh": "先给出对话边界，不显示示例答案；记录是否独立完成、提示次数和录音证据。",
         "parentOnly": {
+          "supportBoundaryZh": "先给出对话边界，不显示示例答案；记录是否独立完成、提示次数和录音证据。",
           "evidenceTargetIds": [
-            "diagnostic_d07_sound_form"
+            "diagnostic_d07_activity_06"
           ],
-          "supportBoundaryZh": "只复用已学材料；记录首次反应与提醒次数。"
+          "expectedAnswer": "“Here is my ruler,” I say.",
+          "acceptedAnswers": [
+            "“Here is my ruler,” I say."
+          ],
+          "sourceRoleZh": "互动口语",
+          "promptSourceSentenceId": "story_primary_school:25",
+          "responseSourceSentenceId": "story_primary_school:26"
+        },
+        "recording": {
+          "mode": "required_response",
+          "maxSeconds": 60,
+          "promptZh": "请录下你的回应。",
+          "startCueZh": "准备好后点开始录音",
+          "stopAction": "done_button",
+          "allowMultipleTakes": true,
+          "includeInFeedback": true,
+          "category": "interaction"
         }
       }
     ],
     "words": [],
     "chunks": [],
     "pattern": {
-      "id": "diagnostic_d07",
-      "displayZh": "已学句型复用",
+      "id": "diagnostic_d07_mixed_history",
+      "displayZh": "历史语料混合诊断",
       "blocks": []
     }
   },

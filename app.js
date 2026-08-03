@@ -65,8 +65,8 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.14",
-  buildId: "2026-08-03T09:45:00+08:00",
+  version: "v3.9.15",
+  buildId: "2026-08-04T00:00:00+08:00",
   product: "学习星球"
 };
 const ENGLISH_BLOCK_EXAMPLE_LEVEL = APP_METADATA.version;
@@ -76,12 +76,48 @@ const LEARNING_PACK_SCHEMA_VERSION = "helen-learning-pack/1";
 const SUPPORTED_LEARNING_PACK_SCHEMAS = ["helen-learning-pack/1", "helen-learning-pack/2"];
 const ADAPTIVE_ENGLISH_ARCHITECTURE = "letter-planet-adaptive/1";
 const ADAPTIVE_ENGLISH_SHELL_SOURCE = "adaptive_shell";
+const LETTER_PLANET_TASK_SYSTEM_SCHEMA = "letter-planet-task-system/1";
+const LETTER_PLANET_TASK_SYSTEM_STATUS = "draft_pending_dr_george_review";
+// The reminder layer is deliberately separate from task content.  It records
+// how help is offered, not what the answer is, so a prompt can be audited
+// without exposing parent-only material to the student.
+const LETTER_PLANET_REMINDER_SYSTEM_SCHEMA = "letter-planet-reminder-system/1";
+// v2 is a clean-room contract.  It is intentionally not accepted by the v1
+// task parser yet: the new validator below is used for design-time pilots
+// until content, device and accessibility gates are approved.
+const LETTER_PLANET_REMINDER_V2_SCHEMA = "letter-planet-reminder-system/2";
+const LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA = "letter-planet-reminder-event/1";
+const LETTER_PLANET_REMINDER_V2_STANDARD_ID = "helen-letter-planet-reminder-v2-a1";
+// clean-v1 is a separate design-time protocol. Keep the public parser fail
+// closed until all Oxford/A1 content and device gates are approved.
+const LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA = "letter-planet-reminder-system/clean-v1";
+// oxford-a1-v1 is the new clean-room protocol. Keep the public parser fail
+// closed until all 17 quality gates and real device evidence are approved.
+const LETTER_PLANET_REMINDER_OXFORD_A1_V1_SCHEMA = "letter-planet-reminder/oxford-a1-v1";
+const LETTER_PLANET_REMINDER_LEVEL_TYPES = new Set(["cue", "strategy", "model"]);
+const LETTER_PLANET_REMINDER_TRIGGERS = new Set(["on_request"]);
+const LETTER_PLANET_TASK_ACTIVITY_TYPES = new Set([
+  "scene_listen_gist", "detail_listen", "sequence_map", "sound_chunk_focus",
+  "guided_response", "transfer_dialogue", "read_match", "read_select",
+  "picture_description", "guided_write", "exit_reflection"
+]);
+const LETTER_PLANET_TASK_OBJECTIVE_TYPES = new Set([
+  "scene_listen_gist", "detail_listen", "sequence_map", "sound_chunk_focus",
+  "read_match", "read_select"
+]);
+const LETTER_PLANET_TASK_AUDIO_MODES = new Set(["pack_asset", "mobile_handoff", "none"]);
+const LETTER_PLANET_TASK_LISTENING_TYPES = new Set([
+  "scene_listen_gist", "detail_listen", "sequence_map", "sound_chunk_focus", "transfer_dialogue"
+]);
+const LETTER_PLANET_TASK_DIFFICULTY_DIMENSIONS = [
+  "lexicalLoad", "taskNovelty", "transferDistance", "informationSpan", "supportReduction"
+];
 const ADAPTIVE_ENGLISH_ACTIVITY_TYPES = new Set([
   "select", "multi_select", "match", "classify", "order", "blocks",
   "listen", "read", "speak", "dialogue", "guided_write", "reflect"
 ]);
 const LETTER_DIAGNOSTIC_TITLES = Object.freeze([
-  "听对整句", "听懂用途", "盲听抓词", "听后找关键部分", "换场景说一句", "完成一轮回应"
+  "听句选原文", "听懂大意", "听辨已学词", "听后找语言成分", "情境表达", "对话回应"
 ]);
 const LETTER_DIAGNOSTIC_ROLES = Object.freeze([
   "sentence_listen", "meaning_function", "blind_word", "key_component", "surface_transfer", "response_transfer"
@@ -1339,6 +1375,77 @@ const SOURCE_EXAMPLES = [
 
 const STORY_SENTENCES = SOURCE_EXAMPLES.filter((item) => item.sourceType === "story");
 const WORD_EXAMPLE_INDEX = buildWordExampleIndex(SOURCE_EXAMPLES);
+
+// This is a deterministic index of project-owned source text. It is a source
+// graph, not a mastery graph: edges never imply that a learner knows either
+// endpoint. Semantic scene/function labels stay with the curriculum review.
+function buildLetterPlanetSourceGraph() {
+  const nodes = SOURCE_EXAMPLES
+    .filter((item) => item.sourceType === "story" && item.kind === "body")
+    .map((item) => ({
+      sourceSentenceId: item.id,
+      storyId: item.sourceId,
+      storyTitle: item.sourceTitle,
+      order: item.order,
+      text: item.english,
+      translationZh: item.chinese,
+      kind: "body",
+      sourceType: "story",
+      tokens: [...new Set(item.normalizedTokens || tokenizeEnglishSentence(item.english))]
+    }));
+  const edges = [];
+  const byStory = {};
+  nodes.forEach((node) => (byStory[node.storyId] ||= []).push(node.sourceSentenceId));
+  Object.values(byStory).forEach((ids) => {
+    for (let index = 1; index < ids.length; index += 1) {
+      edges.push({
+        from: ids[index - 1],
+        to: ids[index],
+        type: "same_story_sequence",
+        reason: "相邻正文句的确定性顺序边"
+      });
+    }
+  });
+  for (let left = 0; left < nodes.length; left += 1) {
+    for (let right = left + 1; right < nodes.length; right += 1) {
+      if (nodes[left].storyId === nodes[right].storyId && Math.abs(nodes[left].order - nodes[right].order) <= 1) continue;
+      const sharedTokens = nodes[left].tokens.filter((token) => token.length > 2 && nodes[right].tokens.includes(token));
+      if (sharedTokens.length < 2) continue;
+      edges.push({
+        from: nodes[left].sourceSentenceId,
+        to: nodes[right].sourceSentenceId,
+        type: "lexical_overlap",
+        sharedTokens: sharedTokens.slice(0, 8),
+        reason: "按历史原文词形交集建立的待审连接，不代表掌握"
+      });
+    }
+  }
+  return {
+    graphVersion: "letter-planet-source-graph/1",
+    status: LETTER_PLANET_TASK_SYSTEM_STATUS,
+    authority: "codex-course-designer",
+    sourceOfTruth: "app.js SOURCE_EXAMPLES",
+    titleSentenceIds: ["story_primary_school:01", "story_primary_school:02"],
+    coverage: {
+      totalBodySentences: nodes.length,
+      byStory: Object.fromEntries(Object.entries(byStory).map(([storyId, ids]) => [storyId, ids.length])),
+      storyIds: Object.keys(byStory)
+    },
+    nodes,
+    edges,
+    indexes: {
+      byStory,
+      bySourceSentenceId: Object.fromEntries(nodes.map((node) => [node.sourceSentenceId, node.sourceSentenceId]))
+    },
+    notes: [
+      "正文节点由当前三篇Story原文确定性索引生成；标题不计入89句。",
+      "边只表示文本/顺序关系，不表示学习掌握或课程答案。",
+      "scene/function/pattern等语义标注留待Allen内容审阅，不由网站推断。"
+    ]
+  };
+}
+
+const LETTER_PLANET_SOURCE_GRAPH = buildLetterPlanetSourceGraph();
 
 const ENGLISH_LEGACY_PATTERN_SNIPPETS = [
   { source: "story_primary_school", pattern: "This is {thing}.", blocks: ["This is", "{thing}"] },
@@ -3174,7 +3281,7 @@ function bindNavigation() {
 function navigateToView(view) {
   const normalized = normalizeStudentRoute(view);
   if (normalized === "chinese-course" && selectLatestLearningPackForPrimaryCourse()) return;
-  if (normalized === "letter-course" && selectLatestAdaptiveEnglishCourseForPrimaryCourse()) return;
+  if (normalized === "letter-course" && selectPrimaryAdaptiveEnglishCourseForPrimaryCourse()) return;
   if (normalized === "color-course") {
     // A stale static catalog selection must never be the primary route. A
     // generated reference course may still be opened directly when one exists.
@@ -3199,9 +3306,24 @@ function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
   const latest = getLearningCourseSequence("english").at(-1);
   if (latest) {
     state.selectedEnglishDiagnosticPackId = latest.packId;
-    state.learningPackSelectionSource = "auto";
+    // Mark the explicit history action as a temporary manual pin so the
+    // primary-entry guard does not immediately replace it with D01.
+    state.learningPackSelectionSource = "manual";
     state.englishCourseSource = "adaptive";
   }
+  ensureAdaptiveEnglishPrimaryCourse();
+  showView("letter-course", true, { skipRouteDateSelection: true });
+  if (latest) {
+    state.learningPackSelectionSource = "auto";
+    saveState();
+  }
+  return true;
+}
+
+// The primary Letter Planet entry starts at the first unfinished diagnostic
+// day (or an in-progress day), not at the last item in a preloaded D01–D14
+// sequence.  "Latest" remains an explicit action from the history switcher.
+function selectPrimaryAdaptiveEnglishCourseForPrimaryCourse() {
   ensureAdaptiveEnglishPrimaryCourse();
   showView("letter-course", true, { skipRouteDateSelection: true });
   return true;
@@ -3217,11 +3339,20 @@ function ensureAdaptiveEnglishPrimaryCourse() {
     return false;
   }
   if (state.englishCourseSource === "library" && state.selectedEnglishLessonId) return false;
-  const manualSelection = state.learningPackSelectionSource === "manual";
+  const manualSelection = state.englishCourseSource === "adaptive" && Boolean(state.selectedEnglishDiagnosticPackId) && state.learningPackSelectionSource === "manual";
   const selected = manualSelection
     ? sequence.find((entry) => entry.packId === state.selectedEnglishDiagnosticPackId)
-    : sequence.at(-1);
-  const resolved = selected || sequence.at(-1);
+    : sequence.find((entry) => {
+      const side = state.courseProgress?.[entry.packId]?.english || {};
+      return side.startedAt && !side.finishedAt;
+    }) || sequence.find((entry) => {
+      const side = state.courseProgress?.[entry.packId]?.english || {};
+      return !side.finishedAt;
+    }) || sequence[0];
+  const resolved = selected || sequence.find((entry) => {
+    const side = state.courseProgress?.[entry.packId]?.english || {};
+    return side.startedAt && !side.finishedAt;
+  }) || sequence.find((entry) => !state.courseProgress?.[entry.packId]?.english?.finishedAt) || sequence[0];
   const keepManualSelection = Boolean(manualSelection && selected);
   let changed = false;
   if (!resolved || !isAdaptiveEnglishPack(resolved.pack)) {
@@ -3489,7 +3620,7 @@ function bindDailyPractice() {
 
 function bindDailyCoursePages() {
   document.addEventListener("click", (event) => {
-    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-english-adaptive-nav], [data-english-adaptive-option], [data-english-adaptive-next], [data-english-adaptive-hint], [data-adaptive-audio-play], [data-english-history-library], [data-english-adaptive-home], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle], [data-color-dimensions-toggle]");
+    const target = event.target.closest("[data-course-session-start], [data-course-session-reset], [data-course-start], [data-course-pause-item], [data-course-complete], [data-course-pause], [data-course-end], [data-course-result], [data-course-toggle-answer], [data-course-choice], [data-chinese-oral-concept], [data-reading-char], [data-break-start], [data-break-end], [data-english-app-complete], [data-english-lesson-nav], [data-english-adaptive-nav], [data-english-adaptive-option], [data-english-adaptive-next], [data-english-adaptive-hint], [data-adaptive-audio-play], [data-letter-task-nav], [data-letter-task-option], [data-letter-task-hint], [data-letter-task-audio], [data-english-history-library], [data-english-adaptive-home], [data-art-audio], [data-art-hint], [data-art-image-open], [data-art-image-retry], [data-art-lightbox-close], [data-read-aloud], [data-course-recording-action], [data-recording-action], [data-recording-consent], [data-recording-play], [data-recording-delete], [data-english-mode], [data-course-reset-blocks], [data-course-block], [data-course-submit-blocks], [data-copy-feedback], [data-feedback-copy], [data-color-data-retry], [data-color-reference-clear], [data-color-reference-generate], [data-color-course-select], [data-color-course-reselect], [data-color-course-start], [data-color-step-jump], [data-color-step-complete], [data-color-step-nav], [data-color-course-complete], [data-color-foundation-toggle], [data-color-foundation-step], [data-color-size-preset], [data-color-palette-choice], [data-color-overlay-toggle], [data-color-dimensions-toggle]");
     if (!target) return;
     if (target.dataset.courseSessionStart) startCourseSession(target.dataset.courseSessionStart);
     if (target.dataset.courseSessionReset) resetCourseSession(target.dataset.courseSessionReset);
@@ -3512,6 +3643,10 @@ function bindDailyCoursePages() {
   if (target.dataset.englishAdaptiveOption) selectAdaptiveEnglishOption(target);
   if (target.dataset.englishAdaptiveHint) revealAdaptiveEnglishHint(target.dataset.englishAdaptiveHint);
   if (target.dataset.adaptiveAudioPlay) playAdaptiveAudio(target.dataset.adaptiveAudioPlay);
+  if (target.dataset.letterTaskNav !== undefined) setLetterPlanetTaskActivity(Number(target.dataset.letterTaskNav));
+  if (target.dataset.letterTaskOption) selectLetterPlanetTaskOption(target);
+  if (target.dataset.letterTaskHint) revealLetterPlanetTaskHint(target.dataset.letterTaskHint);
+  if (target.dataset.letterTaskAudio) playLetterPlanetTaskAudio(target.dataset.letterTaskAudio);
   if (target.dataset.englishHistoryLibrary) openEnglishHistoryLibrary();
   if (target.dataset.englishAdaptiveHome) openEnglishAdaptiveHome();
   if (target.dataset.artAudio) playArtNarration(target);
@@ -3609,6 +3744,10 @@ function bindDailyCoursePages() {
     const target = event.target;
     if (target.matches?.("[data-adaptive-writing]")) {
       updateAdaptiveWritingAnswer(target);
+      return;
+    }
+    if (target.matches?.("[data-letter-task-writing]")) {
+      updateLetterPlanetTaskWritingAnswer(target);
       return;
     }
     if (target.matches?.("[data-color-material-search]")) setColorMaterialSearch(target.value);
@@ -6997,12 +7136,19 @@ function getSelectedEnglishDiagnosticPack() {
   if (!sequence.length) return null;
   const selectedId = state.selectedEnglishDiagnosticPackId || "";
   const selected = sequence.find((entry) => entry.packId === selectedId);
-  return selected?.pack || sequence.at(-1).pack;
+  // A clean browser (or an older saved state) may not have a selected day
+  // yet.  Falling back to sequence.at(-1) silently opened D14 while the
+  // diagnostic set was still loading.  Keep the primary route at the first
+  // unfinished day, then the first published day; "latest" is an explicit
+  // user action handled by the course selector.
+  if (selected?.pack) return selected.pack;
+  const firstUnfinished = sequence.find((entry) => !state.courseProgress?.[entry.packId]?.english?.finishedAt);
+  return (firstUnfinished || sequence[0])?.pack || null;
 }
 
 function getActiveEnglishPack() {
   const selectedPack = getSelectedEnglishDiagnosticPack();
-  if (isAdaptiveEnglishPack(selectedPack) && state.englishCourseSource !== "library") return selectedPack;
+  if ((isAdaptiveEnglishPack(selectedPack) || isLetterPlanetTaskSystemPack(selectedPack)) && state.englishCourseSource !== "library") return selectedPack;
   const library = getEnglishLessonLibrary();
   const lessonRecord = getSelectedEnglishLibraryLesson();
   if (!library || !lessonRecord) return getLatestLearningPack();
@@ -7240,7 +7386,36 @@ function parseLearningPackInput(raw) {
   }
   const jsonText = extractSingleJsonObject(text);
   const parsed = JSON.parse(jsonText);
+  if (containsReminderProtocolMarker(parsed, {
+    schema: LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA,
+    standards: ["helen-oxford-a1-reminder-clean-v1"]
+  })) {
+    throw new Error("clean-v1 提醒系统仍在多维质量审核中，当前候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(parsed, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_V1_SCHEMA,
+    standards: ["helen-oxford-cefr-a1-reminder-v1"],
+    architecture: "letter-planet-adaptive/oxford-a1-v1"
+  })) {
+    throw new Error("Oxford A1 提醒系统从零重建版仍在 E-01 至 E-17 全维度质量审核中，当前候选包保持零写入，不能导入公开课程。");
+  }
+  if (isLetterPlanetTaskSystemPack(parsed)) return validateLetterPlanetTaskSystemPack(parsed);
   return validateLearningPack(parsed);
+}
+
+// Candidate packs can be wrapped under english/taskSystem or other envelope
+// fields.  A top-level-only guard would let a rejected Oxford candidate slip
+// through by moving its marker one level deeper.  This scanner is deliberately
+// conservative: any matching protocol/standard/architecture marker blocks the
+// import before validation, preview writes, or course selection can run.
+function containsReminderProtocolMarker(value, markers, seen = new Set()) {
+  if (value == null || (typeof value !== "object" && typeof value !== "string")) return false;
+  if (typeof value === "string") return value === markers.schema || (markers.standards || []).includes(value) || (markers.architecture && value === markers.architecture);
+  if (seen.has(value)) return false;
+  seen.add(value);
+  if (Array.isArray(value)) return value.some((item) => containsReminderProtocolMarker(item, markers, seen));
+  if (value.schemaVersion === markers.schema || (markers.standards || []).includes(value.standard) || (markers.architecture && value.courseArchitectureVersion === markers.architecture)) return true;
+  return Object.values(value).some((child) => containsReminderProtocolMarker(child, markers, seen));
 }
 
 function extractSingleJsonObject(text) {
@@ -7550,6 +7725,698 @@ function sanitizeAdaptiveObject(value, depth = 0) {
   ]).filter(([key]) => key));
 }
 
+function isLetterPlanetTaskSystemPack(pack) {
+  return Boolean(
+    pack?.schemaVersion === LETTER_PLANET_TASK_SYSTEM_SCHEMA ||
+    pack?.english?.taskSystem?.schemaVersion === LETTER_PLANET_TASK_SYSTEM_SCHEMA
+  );
+}
+
+function getLetterPlanetTaskSystem(pack) {
+  if (!isLetterPlanetTaskSystemPack(pack)) return null;
+  return pack?.schemaVersion === LETTER_PLANET_TASK_SYSTEM_SCHEMA
+    ? (pack.taskSystem || pack)
+    : pack.english.taskSystem;
+}
+
+function getLetterPlanetSourceGraph() {
+  return structuredCloneSafe(LETTER_PLANET_SOURCE_GRAPH);
+}
+
+function normalizeLetterPlanetTaskText(value, limit = 240) {
+  return safePlainText(typeof value === "string" ? value : "", limit);
+}
+
+function normalizeLetterPlanetTaskRef(value) {
+  return String(value || "").trim().toLowerCase().replace(/[^a-z0-9:._-]+/g, "_").replace(/^[_:.]+|[_:.]+$/g, "").slice(0, 100);
+}
+
+function collectLetterPlanetTaskText(value, output = []) {
+  if (typeof value === "string") {
+    output.push(value);
+  } else if (Array.isArray(value)) {
+    value.forEach((item) => collectLetterPlanetTaskText(item, output));
+  } else if (value && typeof value === "object") {
+    Object.values(value).forEach((item) => collectLetterPlanetTaskText(item, output));
+  }
+  return output;
+}
+
+function normalizeLetterPlanetTaskOptions(options) {
+  if (!Array.isArray(options)) return [];
+  return options.slice(0, 8).map((option, index) => {
+    if (typeof option === "string") return { optionId: `option_${index + 1}`, text: normalizeLetterPlanetTaskText(option, 180), value: option };
+    const text = normalizeLetterPlanetTaskText(option?.text || option?.label || option?.value, 180);
+    return {
+      optionId: safeId(option?.optionId || option?.id || `option_${index + 1}`),
+      text,
+      value: normalizeLetterPlanetTaskText(option?.value || text, 180)
+    };
+  }).filter((option) => option.optionId && option.text);
+}
+
+function normalizeLetterPlanetTaskAudioRef(audioRef) {
+  if (!audioRef || typeof audioRef !== "object") return null;
+  const mode = LETTER_PLANET_TASK_AUDIO_MODES.has(audioRef.mode) ? audioRef.mode : "none";
+  return {
+    mode,
+    provider: normalizeLetterPlanetTaskText(audioRef.provider || "", 80),
+    assetId: safeId(audioRef.assetId || ""),
+    url: normalizeLetterPlanetTaskText(audioRef.url || "", 400),
+    text: normalizeLetterPlanetTaskText(audioRef.text || audioRef.transcript || "", 600),
+    language: normalizeLetterPlanetTaskText(audioRef.language || "en-US", 20),
+    maxPlays: clampNumber(audioRef.maxPlays, 1, 4, 2),
+    hideTextFirst: audioRef.hideTextFirst === true,
+    verified: audioRef.verified === true,
+    mobileInstructionZh: normalizeLetterPlanetTaskText(audioRef.mobileInstructionZh || "请在手机《每日英语听力》完成这一步。", 180)
+  };
+}
+
+function normalizeLetterPlanetReminderSystem(value) {
+  const source = value && typeof value === "object" ? value : {};
+  const legacyLevels = Array.isArray(source.levels) ? source.levels : [];
+  const levels = legacyLevels.slice(0, 3).map((level, index) => {
+    const isModel = level?.isModel === true || level?.mode === "model" || level?.kind === "model" || level?.type === "model";
+    const type = LETTER_PLANET_REMINDER_LEVEL_TYPES.has(level?.type) ? level.type : isModel ? "model" : index === 0 ? "cue" : "strategy";
+    return {
+      level: Number(level?.level || index + 1),
+      id: safeId(level?.id || `reminder_${index + 1}`),
+      type,
+      textZh: normalizeLetterPlanetTaskText(level?.textZh || level?.text || "", 180),
+      trigger: LETTER_PLANET_REMINDER_TRIGGERS.has(level?.trigger) ? level.trigger : "on_request",
+      leaksAnswer: level?.leaksAnswer === true,
+      requiresAttempt: level?.requiresAttempt === false ? false : (type === "model" || level?.requiresAttempt === true)
+    };
+  }).filter((level) => level.id && level.textZh);
+  return {
+    schemaVersion: LETTER_PLANET_REMINDER_SYSTEM_SCHEMA,
+    locateZh: normalizeLetterPlanetTaskText(source.locateZh || source.locate || "", 160),
+    actionZh: normalizeLetterPlanetTaskText(source.actionZh || source.action || "", 160),
+    levels,
+    resultZh: normalizeLetterPlanetTaskText(source.resultZh || source.result || "", 160),
+    trigger: LETTER_PLANET_REMINDER_TRIGGERS.has(source.trigger) ? source.trigger : "on_request",
+    maxLevels: levels.length,
+    evidencePolicy: {
+      independent: "no_reminder",
+      prompted: "cue_or_strategy",
+      modeled: "model_after_attempt",
+      notAttempted: "no_completed_response"
+    }
+  };
+}
+
+function reminderSystemToSupportLadder(reminderSystem) {
+  const reminder = normalizeLetterPlanetReminderSystem(reminderSystem);
+  return {
+    locateZh: reminder.locateZh,
+    actionZh: reminder.actionZh,
+    levels: reminder.levels.map((level) => ({
+      level: level.level,
+      id: level.id,
+      textZh: level.textZh,
+      trigger: level.trigger,
+      leaksAnswer: level.leaksAnswer,
+      isModel: level.type === "model"
+    })),
+    resultZh: reminder.resultZh
+  };
+}
+
+function validateLetterPlanetReminderSystem(reminderSystem, errors, index) {
+  const raw = reminderSystem && typeof reminderSystem === "object" ? reminderSystem : {};
+  const reminder = normalizeLetterPlanetReminderSystem(reminderSystem);
+  const prefix = `task-system activities[${index}] reminderSystem`;
+  if (raw.schemaVersion && raw.schemaVersion !== LETTER_PLANET_REMINDER_SYSTEM_SCHEMA) errors.push(`${prefix} schemaVersion 不正确。`);
+  if (!reminder.locateZh || !reminder.actionZh || !reminder.resultZh) errors.push(`${prefix} 必须包含定位、动作和结果三层。`);
+  if (raw.trigger && raw.trigger !== "on_request") errors.push(`${prefix} 只能按需触发，不能自动泄露提示。`);
+  if (!reminder.levels.length || reminder.levels.length > 3) errors.push(`${prefix} 必须有1–3层提示。`);
+  const ids = new Set();
+  const rawLevels = Array.isArray(raw.levels) ? raw.levels : [];
+  reminder.levels.forEach((level, levelIndex) => {
+    if (ids.has(level.id)) errors.push(`${prefix}.levels[${levelIndex}] id 重复。`);
+    ids.add(level.id);
+    if (level.level !== levelIndex + 1) errors.push(`${prefix}.levels 必须连续编号。`);
+    if (!LETTER_PLANET_REMINDER_LEVEL_TYPES.has(level.type)) errors.push(`${prefix}.levels[${levelIndex}] type 不支持。`);
+    const rawLevel = rawLevels[levelIndex] || {};
+    if (rawLevel.level != null && Number(rawLevel.level) !== levelIndex + 1) {
+      errors.push(`${prefix}.levels[${levelIndex}] level 必须从1开始连续编号。`);
+    }
+    if (rawLevel.trigger && rawLevel.trigger !== "on_request") errors.push(`${prefix}.levels[${levelIndex}] 只能按需触发。`);
+    if (rawLevel.type && !LETTER_PLANET_REMINDER_LEVEL_TYPES.has(rawLevel.type) && rawLevel.isModel !== true) errors.push(`${prefix}.levels[${levelIndex}] type 不支持。`);
+    if (!rawLevel.textZh && !rawLevel.text) errors.push(`${prefix}.levels[${levelIndex}] 缺少提示文本。`);
+    if (String(rawLevel.textZh || rawLevel.text || "").length > 180) errors.push(`${prefix}.levels[${levelIndex}] 文本不得超过180字。`);
+    if (level.leaksAnswer) errors.push(`${prefix}.levels[${levelIndex}] 不得泄露答案。`);
+    if (level.type === "model" && !level.requiresAttempt) errors.push(`${prefix}.levels[${levelIndex}] 示范必须要求先尝试。`);
+  });
+  return reminder;
+}
+
+function normalizeLetterPlanetReminderV2Text(value, limit = 120) {
+  return typeof value === "string"
+    ? value.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().slice(0, limit)
+    : "";
+}
+
+function letterPlanetReminderV2Tokens(value) {
+  return (String(value || "").match(/[A-Za-z]+(?:['’][A-Za-z]+)?/g) || [])
+    .map((token) => token.toLowerCase().replace(/[’']/g, ""))
+    .filter(Boolean);
+}
+
+function letterPlanetReminderV2Comparable(value) {
+  return String(value || "").toLowerCase().replace(/[“”"'’.,!?。，！？：:、()（）\s]/g, "");
+}
+
+function letterPlanetReminderV2LegacyKeys(value, path = "", output = []) {
+  if (!value || typeof value !== "object") return output;
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => letterPlanetReminderV2LegacyKeys(item, `${path}[${index}]`, output));
+    return output;
+  }
+  Object.entries(value).forEach(([key, item]) => {
+    const nextPath = path ? `${path}.${key}` : key;
+    if (["supportLadder", "reminderSystem", "locateZh", "actionZh", "resultZh", "evidencePolicy", "leaksAnswer", "isModel", "text"].includes(key)) output.push(nextPath);
+    letterPlanetReminderV2LegacyKeys(item, nextPath, output);
+  });
+  return output;
+}
+
+/**
+ * Clean-room v2 reminder contract.  This validator is design-time only for
+ * now; the v1 task parser deliberately does not call it.  A v2 reminder is
+ * never upgraded from supportLadder/reminderSystem: old fields are rejected
+ * so a pilot cannot pass by carrying v1 semantics under a new name.
+ */
+function validateLetterPlanetReminderSystemV2(input, context = {}) {
+  const source = structuredCloneSafe(input || {});
+  const errors = [];
+  const warnings = [];
+  const add = (message) => errors.push(`reminder-v2 ${message}`);
+  const own = (object, key) => Object.prototype.hasOwnProperty.call(object || {}, key);
+  if (!source || typeof source !== "object" || Array.isArray(source)) add("必须是对象。");
+  if (source.schemaVersion !== LETTER_PLANET_REMINDER_V2_SCHEMA) add("schemaVersion 必须为 letter-planet-reminder-system/2。");
+  if (source.standardId !== LETTER_PLANET_REMINDER_V2_STANDARD_ID) add("standardId 必须为 helen-letter-planet-reminder-v2-a1。" );
+  const legacyPaths = letterPlanetReminderV2LegacyKeys(source);
+  if (legacyPaths.length) add(`不得携带旧 reminderSystem/supportLadder 字段：${legacyPaths.slice(0, 8).join("、")}。`);
+  ["levels", "trigger", "evidencePolicy"].forEach((key) => {
+    if (own(source, key)) add(`不得使用旧顶层字段 ${key}。`);
+  });
+
+  const reminderId = normalizeLetterPlanetTaskRef(source.reminderId || "");
+  const constructId = normalizeLetterPlanetTaskRef(source.constructId || "");
+  if (!/^[a-z][a-z0-9._-]{2,79}$/.test(reminderId)) add("reminderId 缺失或格式不合理。");
+  if (!/^[a-z][a-z0-9._-]{2,79}$/.test(constructId)) add("constructId 缺失或格式不合理。");
+  const measurement = source.measurement && typeof source.measurement === "object" ? source.measurement : {};
+  if (normalizeLetterPlanetTaskRef(measurement.constructId || "") !== constructId) add("measurement.constructId 必须与 constructId 一致。" );
+  if (measurement.singleConstruct !== true) add("measurement.singleConstruct 必须为 true。" );
+  if (measurement.singleActionPerLayer !== true) add("measurement.singleActionPerLayer 必须为 true。" );
+  const evidenceIds = Array.isArray(measurement.evidenceTargetIds) ? measurement.evidenceTargetIds.map(normalizeLetterPlanetTaskRef).filter(Boolean) : [];
+  if (!evidenceIds.length || new Set(evidenceIds).size !== evidenceIds.length) add("measurement.evidenceTargetIds 必须非空且唯一。" );
+  if (context.activityConstructId && normalizeLetterPlanetTaskRef(context.activityConstructId) !== constructId) add("measurement.constructId 必须与活动 constructId 一致。" );
+  if (Array.isArray(context.activityEvidenceTargetIds)) {
+    const activityEvidence = context.activityEvidenceTargetIds.map(normalizeLetterPlanetTaskRef).filter(Boolean);
+    if (activityEvidence.length !== evidenceIds.length || activityEvidence.some((id) => !evidenceIds.includes(id))) add("measurement.evidenceTargetIds 必须与活动 evidenceTargetIds 一致。" );
+  }
+
+  const layers = source.layers && typeof source.layers === "object" && !Array.isArray(source.layers) ? source.layers : {};
+  const locate = layers.locate && typeof layers.locate === "object" ? layers.locate : {};
+  const action = layers.action && typeof layers.action === "object" ? layers.action : {};
+  const strategy = layers.strategy && typeof layers.strategy === "object" ? layers.strategy : {};
+  const demonstration = layers.demonstration && typeof layers.demonstration === "object" ? layers.demonstration : {};
+  const result = layers.result && typeof layers.result === "object" ? layers.result : {};
+  ["locate", "action", "strategy", "demonstration", "result"].forEach((key) => {
+    if (!layers[key] || typeof layers[key] !== "object") add(`layers.${key} 缺失。`);
+  });
+
+  const load = source.cognitiveLoad && typeof source.cognitiveLoad === "object" ? source.cognitiveLoad : {};
+  const loadKeys = ["maxVisibleLines", "maxChineseCharacters", "maxEnglishTokens", "maxStrategyLevels"];
+  loadKeys.forEach((key) => {
+    if (!Number.isFinite(Number(load[key]))) add(`cognitiveLoad.${key} 缺失。`);
+  });
+  const maxVisibleLines = Number(load.maxVisibleLines);
+  const maxChineseCharacters = Number(load.maxChineseCharacters);
+  const maxEnglishTokens = Number(load.maxEnglishTokens);
+  const maxStrategyLevels = Number(load.maxStrategyLevels);
+  if (maxVisibleLines < 1 || maxVisibleLines > 3) add("cognitiveLoad.maxVisibleLines 必须为1–3。");
+  if (maxChineseCharacters < 20 || maxChineseCharacters > 240) add("cognitiveLoad.maxChineseCharacters 必须为20–240。");
+  if (maxEnglishTokens < 0 || maxEnglishTokens > 12) add("cognitiveLoad.maxEnglishTokens 必须为0–12。");
+  if (maxStrategyLevels < 1 || maxStrategyLevels > 2) add("cognitiveLoad.maxStrategyLevels 必须为1–2。");
+  const quality = source.quality && typeof source.quality === "object" ? source.quality : {};
+  if (quality.standardId !== LETTER_PLANET_REMINDER_V2_STANDARD_ID) add("quality.standardId 必须与 v2 standardId 一致。" );
+  if (quality.answerLeakageChecked !== true) add("quality.answerLeakageChecked 必须为 true。" );
+  if (quality.a1LanguageChecked !== true) add("quality.a1LanguageChecked 必须为 true。" );
+  if (quality.singleActionChecked !== true) add("quality.singleActionChecked 必须为 true。" );
+  const qualityLoad = quality.cognitiveLoad && typeof quality.cognitiveLoad === "object" ? quality.cognitiveLoad : {};
+  if (qualityLoad.checked !== true) add("quality.cognitiveLoad.checked 必须为 true。" );
+  ["maxVisibleLines", "maxChineseCharacters", "maxEnglishTokens", "maxStrategyLevels"].forEach((key) => {
+    if (Number(qualityLoad[key]) !== Number(load[key])) add(`quality.cognitiveLoad.${key} 必须与 cognitiveLoad 一致。`);
+  });
+
+  const layerIds = new Set();
+  const visibleTexts = [];
+  const nonDemonstrationTexts = [];
+  const validateLayer = (layer, path, expectedTrigger, order, options = {}) => {
+    if (!layer || typeof layer !== "object") return null;
+    const id = normalizeLetterPlanetTaskRef(layer.id || "");
+    const textZh = normalizeLetterPlanetReminderV2Text(layer.textZh, 120);
+    if (!/^[a-z][a-z0-9._-]{2,79}$/.test(id)) add(`${path}.id 缺失或格式不合理。`);
+    if (layerIds.has(id)) add(`${path}.id 重复。`);
+    layerIds.add(id);
+    if (!textZh) add(`${path}.textZh 缺失。`);
+    if (typeof layer.textZh === "string" && /<[^>]*>|javascript:/i.test(layer.textZh)) add(`${path}.textZh 不得包含HTML或脚本。`);
+    if (layer.trigger !== expectedTrigger) add(`${path}.trigger 必须为 ${expectedTrigger}。`);
+    if (Number(layer.order) !== order) add(`${path}.order 必须为 ${order}。`);
+    if (options.answerNeutral && layer.answerNeutral !== true) add(`${path} 必须明确 answerNeutral=true。`);
+    if (textZh) {
+      visibleTexts.push(textZh);
+      if (!options.demonstration) nonDemonstrationTexts.push(textZh);
+      const lineCount = textZh.split("\\n").length;
+      const englishTokenCount = letterPlanetReminderV2Tokens(textZh).length;
+      if (lineCount > maxVisibleLines) add(`${path}.textZh 超过认知负荷行数上限。`);
+      if (textZh.length > maxChineseCharacters) add(`${path}.textZh 超过认知负荷字数上限。`);
+      if (englishTokenCount > maxEnglishTokens) add(`${path}.textZh 超过认知负荷英文词数上限。`);
+    }
+    return { id, textZh, trigger: expectedTrigger, order };
+  };
+
+  const normalizedLocate = validateLayer(locate, "layers.locate", "initial", 1, { answerNeutral: true });
+  const normalizedAction = validateLayer(action, "layers.action", "initial", 2, { answerNeutral: true });
+  const strategyLevels = Array.isArray(strategy.levels) ? strategy.levels : [];
+  if (strategyLevels.length < 1 || strategyLevels.length > 2) add("layers.strategy.levels 必须有1–2层。" );
+  if (Number(strategy.maxLevels) !== strategyLevels.length || strategy.maxLevels !== maxStrategyLevels) add("layers.strategy.maxLevels 必须与实际层数和 cognitiveLoad.maxStrategyLevels 一致。");
+  const normalizedStrategyLevels = strategyLevels.map((level, index) => validateLayer(level, `layers.strategy.levels[${index}]`, "on_request", 3 + index, { answerNeutral: true })).filter(Boolean);
+  const demoOrder = 3 + strategyLevels.length;
+  const normalizedDemonstration = validateLayer(demonstration, "layers.demonstration", "after_first_attempt", demoOrder, { demonstration: true });
+  if (demonstration.requiresAttempt !== true) add("layers.demonstration.requiresAttempt 必须为 true。" );
+  if (demonstration.answerExposure !== "after_first_attempt") add("layers.demonstration.answerExposure 必须为 after_first_attempt。" );
+  if (demonstration.answerNeutral === true) add("layers.demonstration 不得伪装为 answer-neutral；示范必须单独标记答案暴露时机。" );
+
+  const resultStatuses = Array.isArray(result.statuses) ? result.statuses : [];
+  const resultStatusIds = resultStatuses.map((item) => normalizeLetterPlanetTaskRef(item?.id || ""));
+  const expectedResultStatuses = ["independent", "prompted", "modeled", "not_yet"];
+  if (result.trigger !== "on_completion") add("layers.result.trigger 必须为 on_completion。" );
+  if (result.id && layerIds.has(normalizeLetterPlanetTaskRef(result.id))) add("layers.result.id 与其他层重复。" );
+  if (!/^[a-z][a-z0-9._-]{2,79}$/.test(normalizeLetterPlanetTaskRef(result.id || ""))) add("layers.result.id 缺失或格式不合理。" );
+  if (resultStatusIds.length !== expectedResultStatuses.length || expectedResultStatuses.some((id) => !resultStatusIds.includes(id)) || new Set(resultStatusIds).size !== resultStatusIds.length) add("layers.result.statuses 必须恰好包含四种独立性结果。" );
+  if (result.separateFromCorrectness !== true) add("layers.result.separateFromCorrectness 必须为 true。" );
+  resultStatuses.forEach((status, index) => {
+    if (!normalizeLetterPlanetTaskRef(status?.id)) add(`layers.result.statuses[${index}].id 缺失。`);
+    if (!normalizeLetterPlanetReminderV2Text(status?.labelZh, 40)) add(`layers.result.statuses[${index}].labelZh 缺失。`);
+  });
+  const resultId = normalizeLetterPlanetTaskRef(result.id || "");
+  if (resultId) layerIds.add(resultId);
+
+  const vocabulary = source.vocabularyPolicy && typeof source.vocabularyPolicy === "object" ? source.vocabularyPolicy : {};
+  const allowedTokens = new Set((Array.isArray(vocabulary.allowedTokens) ? vocabulary.allowedTokens : []).map(letterPlanetReminderV2Comparable).filter(Boolean));
+  if (vocabulary.source !== "english-source-graph-v1") add("vocabularyPolicy.source 必须为 english-source-graph-v1。" );
+  if (vocabulary.allowNewTokens !== false) add("vocabularyPolicy.allowNewTokens 必须为 false。" );
+  if (vocabulary.unknownTokenPolicy !== "reject") add("vocabularyPolicy.unknownTokenPolicy 必须为 reject。" );
+  if (!allowedTokens.size) add("vocabularyPolicy.allowedTokens 不能为空。" );
+  const vocabularyTexts = [...visibleTexts, ...resultStatuses.map((status) => status?.labelZh || "")];
+  vocabularyTexts.forEach((textZh) => {
+    letterPlanetReminderV2Tokens(textZh).forEach((token) => {
+      if (!allowedTokens.has(letterPlanetReminderV2Comparable(token))) add(`发现未授权英文词 ${token}。`);
+      const contextTokens = context.allowedEnglishTokens instanceof Set ? context.allowedEnglishTokens : Array.isArray(context.allowedEnglishTokens) ? new Set(context.allowedEnglishTokens.map(letterPlanetReminderV2Comparable)) : null;
+      if (contextTokens && !contextTokens.has(letterPlanetReminderV2Comparable(token))) add(`英文词 ${token} 不在当前来源图谱上下文中。`);
+    });
+  });
+
+  const answerTexts = context.answerTexts;
+  if (!Array.isArray(answerTexts)) add("必须提供独立的 answerTexts 上下文进行答案泄漏审计，不能只依赖提醒自身字段。" );
+  const comparableNonDemo = nonDemonstrationTexts.map(letterPlanetReminderV2Comparable).join("\n");
+  (Array.isArray(answerTexts) ? answerTexts : []).map(letterPlanetReminderV2Comparable).filter(Boolean).forEach((answer) => {
+    if (answer && comparableNonDemo.includes(answer)) add("定位/动作/策略文本包含答案或完整回应。" );
+  });
+  if (/正确答案|参考答案|家长脚本|内部编号|答案是|answer|parent|packid|activityid/i.test(nonDemonstrationTexts.join("\n"))) add("定位/动作/策略不得包含答案、家长脚本或内部字段。" );
+
+  const replay = source.replay && typeof source.replay === "object" ? source.replay : {};
+  const replayEvents = Array.isArray(replay.eventTypes) ? replay.eventTypes.map((item) => normalizeLetterPlanetTaskRef(item)) : [];
+  const requiredReplayEvents = ["shown", "requested", "blocked", "completed", "revoked"];
+  if (replay.schemaVersion !== LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA) add("replay.schemaVersion 不正确。" );
+  if (replay.appendOnly !== true) add("replay.appendOnly 必须为 true。" );
+  if (Number(replay.maxEvents) < 4 || Number(replay.maxEvents) > 32) add("replay.maxEvents 必须为4–32。" );
+  if (requiredReplayEvents.some((event) => !replayEvents.includes(event))) add("replay.eventTypes 必须包含 shown/requested/blocked/completed/revoked。" );
+  const replayFields = new Set(Array.isArray(replay.storedFields) ? replay.storedFields.map((item) => String(item || "").trim()) : []);
+  ["eventId", "reminderId", "layerId", "event", "attemptNumber", "at"].forEach((field) => {
+    if (!replayFields.has(field)) add(`replay.storedFields 缺少 ${field}。`);
+  });
+  const idempotency = replay.idempotency && typeof replay.idempotency === "object" ? replay.idempotency : {};
+  const idempotencyFields = new Set(Array.isArray(idempotency.keyFields) ? idempotency.keyFields.map((item) => String(item || "").trim()) : []);
+  ["reminderId", "layerId", "attemptNumber"].forEach((field) => {
+    if (!idempotencyFields.has(field)) add(`replay.idempotency.keyFields 缺少 ${field}。`);
+  });
+  if (idempotency.duplicatePolicy !== "ignore") add("replay.idempotency.duplicatePolicy 必须为 ignore。" );
+  const undo = replay.undo && typeof replay.undo === "object" ? replay.undo : {};
+  if (undo.supported !== true || undo.eventType !== "revoked") add("replay.undo 必须支持 revoked 撤销事件。" );
+
+  const accessibility = source.accessibility && typeof source.accessibility === "object" ? source.accessibility : {};
+  if (Number(accessibility.minTouchTargetPx) < 44) add("accessibility.minTouchTargetPx 不得小于44。" );
+  if (accessibility.keyboardFocusable !== true) add("accessibility.keyboardFocusable 必须为 true。" );
+  if (accessibility.visibleWithoutColor !== true) add("accessibility.visibleWithoutColor 必须为 true。" );
+  if (!normalizeLetterPlanetReminderV2Text(accessibility.ariaLabelZh, 80)) add("accessibility.ariaLabelZh 缺失。" );
+  const surfaces = source.surfaces && typeof source.surfaces === "object" ? source.surfaces : {};
+  ["desktop", "mobile"].forEach((surface) => {
+    const config = surfaces[surface] && typeof surfaces[surface] === "object" ? surfaces[surface] : {};
+    if (!["inline", "stacked"].includes(config.layout)) add(`surfaces.${surface}.layout 必须为 inline 或 stacked。` );
+    if (config.noHorizontalScroll !== true) add(`surfaces.${surface}.noHorizontalScroll 必须为 true。` );
+  });
+
+  const history = source.historyCompatibility && typeof source.historyCompatibility === "object" ? source.historyCompatibility : {};
+  if (history.legacySchema !== LETTER_PLANET_REMINDER_SYSTEM_SCHEMA) add("historyCompatibility.legacySchema 必须明确为 v1。" );
+  if (history.readLegacyProgress !== true || history.preserveProgress !== true) add("historyCompatibility 必须只读兼容并保留旧进度。" );
+  if (history.writeLegacyFields !== false || history.migrationMode !== "read_only" || history.zeroWriteOnReject !== true) add("historyCompatibility 不得回写旧字段，migrationMode 必须为 read_only 且拒绝时零写入。" );
+
+  const normalized = {
+    schemaVersion: LETTER_PLANET_REMINDER_V2_SCHEMA,
+    standardId: LETTER_PLANET_REMINDER_V2_STANDARD_ID,
+    reminderId,
+    constructId,
+    measurement: { constructId, singleConstruct: true, singleActionPerLayer: true, evidenceTargetIds: evidenceIds },
+    layers: {
+      locate: normalizedLocate,
+      action: normalizedAction,
+      strategy: { maxLevels: normalizedStrategyLevels.length, levels: normalizedStrategyLevels },
+      demonstration: normalizedDemonstration ? { ...normalizedDemonstration, requiresAttempt: true, answerExposure: "after_first_attempt" } : null,
+      result: { id: resultId, trigger: "on_completion", statuses: expectedResultStatuses.map((id) => ({ id, labelZh: normalizeLetterPlanetReminderV2Text(resultStatuses.find((status) => normalizeLetterPlanetTaskRef(status?.id || "") === id)?.labelZh || "", 40) })), separateFromCorrectness: true }
+    },
+    cognitiveLoad: { maxVisibleLines, maxChineseCharacters, maxEnglishTokens, maxStrategyLevels },
+    quality: {
+      standardId: LETTER_PLANET_REMINDER_V2_STANDARD_ID,
+      answerLeakageChecked: true,
+      a1LanguageChecked: true,
+      singleActionChecked: true,
+      cognitiveLoad: { checked: true, maxVisibleLines, maxChineseCharacters, maxEnglishTokens, maxStrategyLevels }
+    },
+    vocabularyPolicy: { source: "english-source-graph-v1", allowedTokens: [...allowedTokens].sort(), allowNewTokens: false, unknownTokenPolicy: "reject" },
+    replay: { schemaVersion: LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA, appendOnly: true, eventTypes: requiredReplayEvents, maxEvents: Number(replay.maxEvents), storedFields: [...replayFields].sort(), idempotency: { keyFields: [...idempotencyFields].sort(), duplicatePolicy: "ignore" }, undo: { supported: true, eventType: "revoked" } },
+    accessibility: { minTouchTargetPx: Number(accessibility.minTouchTargetPx), keyboardFocusable: true, visibleWithoutColor: true, ariaLabelZh: normalizeLetterPlanetReminderV2Text(accessibility.ariaLabelZh, 80) },
+    surfaces: { desktop: { layout: surfaces.desktop?.layout, noHorizontalScroll: true }, mobile: { layout: surfaces.mobile?.layout, noHorizontalScroll: true } },
+    historyCompatibility: { legacySchema: LETTER_PLANET_REMINDER_SYSTEM_SCHEMA, readLegacyProgress: true, preserveProgress: true, writeLegacyFields: false, migrationMode: "read_only", zeroWriteOnReject: true }
+  };
+  if (errors.length) {
+    const error = new Error(errors.join(" "));
+    error.details = { errors, warnings, protocol: LETTER_PLANET_REMINDER_V2_SCHEMA };
+    throw error;
+  }
+  return normalized;
+}
+
+function letterPlanetTaskVisibleKeys(value, output = []) {
+  if (!value || typeof value !== "object") return output;
+  if (Array.isArray(value)) {
+    value.forEach((item) => letterPlanetTaskVisibleKeys(item, output));
+    return output;
+  }
+  Object.entries(value).forEach(([key, item]) => {
+    output.push(key);
+    letterPlanetTaskVisibleKeys(item, output);
+  });
+  return output;
+}
+
+function letterPlanetTaskStudentTextHasForbiddenContext(value) {
+  const keys = letterPlanetTaskVisibleKeys(value).join("\n");
+  const text = collectLetterPlanetTaskText(value).join("\n");
+  return adaptiveStudentTextHasForbiddenContext(value) || /请家长|家长脚本|正确答案|参考答案|parentOnly|answerKey|expectedAnswer|acceptedAnswers|distractorRationale|sourceSentenceId|sourceMaterialIds|activityId|packId|selectionSeed|planId|evidenceTargetIds/i.test(`${keys}\n${text}`);
+}
+
+function validateLetterPlanetTaskAnswerShape(activity, options, errors, index) {
+  const answerKey = activity.answerKey || activity.parentOnly?.answerKey || {};
+  const optionIds = new Set(options.map((option) => option.optionId));
+  const optionTexts = options.map((option) => normalizeEnglishText(option.text));
+  if (optionIds.size !== options.length) errors.push(`english.taskSystem.activities[${index}] 的选项 id 不能重复。`);
+  if (new Set(optionTexts).size !== optionTexts.length) errors.push(`english.taskSystem.activities[${index}] 含重复选项答案。`);
+  if (LETTER_PLANET_TASK_OBJECTIVE_TYPES.has(activity.activityType) && (options.length < 2 || options.length > 4)) {
+    errors.push(`english.taskSystem.activities[${index}] 客观题必须有2–4个选项。`);
+  }
+  const correctOptionIds = Array.isArray(answerKey.correctOptionIds)
+    ? answerKey.correctOptionIds.map((item) => safeId(item)).filter(Boolean)
+    : [];
+  if (answerKey.correctOptionId) {
+    if (!optionIds.has(safeId(answerKey.correctOptionId))) errors.push(`english.taskSystem.activities[${index}] 的 correctOptionId 不存在。`);
+  }
+  if (correctOptionIds.length && (new Set(correctOptionIds).size !== correctOptionIds.length || correctOptionIds.length !== 1)) {
+    errors.push(`english.taskSystem.activities[${index}] 必须只有一个正确选项。`);
+  }
+  if (correctOptionIds.length === 1 && !optionIds.has(correctOptionIds[0])) {
+    errors.push(`english.taskSystem.activities[${index}] 的 correctOptionIds 不存在。`);
+  }
+  if (answerKey.correctOptionId && correctOptionIds.length === 1 && safeId(answerKey.correctOptionId) !== correctOptionIds[0]) {
+    errors.push(`english.taskSystem.activities[${index}] 的正确选项引用不一致。`);
+  }
+  if (LETTER_PLANET_TASK_OBJECTIVE_TYPES.has(activity.activityType)) {
+    if (activity.activityType === "sequence_map") {
+      const order = Array.isArray(answerKey.correctOrder) ? answerKey.correctOrder.map((item) => safeId(item)).filter(Boolean) : [];
+      if (!order.length || new Set(order).size !== order.length || order.some((id) => !optionIds.has(id)) || order.length !== options.length) {
+        errors.push(`english.taskSystem.activities[${index}] 的排序答案必须完整且唯一。`);
+      }
+    } else if (!answerKey.correctOptionId && correctOptionIds.length !== 1) {
+      errors.push(`english.taskSystem.activities[${index}] 缺少唯一正确选项。`);
+    }
+  }
+  return {
+    correctOptionId: safeId(answerKey.correctOptionId || (answerKey.correctOptionIds || [])[0] || ""),
+    correctOrder: Array.isArray(answerKey.correctOrder) ? answerKey.correctOrder.map((item) => safeId(item)).filter(Boolean) : [],
+    acceptedPhrases: Array.isArray(answerKey.acceptedPhrases) ? answerKey.acceptedPhrases.map((item) => normalizeLetterPlanetTaskText(item, 240)).filter(Boolean) : []
+  };
+}
+
+function validateLetterPlanetTaskSystemPack(input) {
+  const source = structuredCloneSafe(input || {});
+  const system = source.schemaVersion === LETTER_PLANET_TASK_SYSTEM_SCHEMA ? (source.taskSystem || source) : source.english?.taskSystem;
+  const errors = [];
+  const warnings = [];
+  if (!system || typeof system !== "object") throw new Error("缺少 letter-planet-task-system/1 协议对象。");
+  if (source.exampleOnly === true || system.exampleOnly === true) errors.push("exampleOnly 学习包只能作为文档示例，禁止解析或导入。");
+  if (!["helen-learning-pack/2", LETTER_PLANET_TASK_SYSTEM_SCHEMA].includes(source.schemaVersion)) errors.push("task-system 学习包必须兼容 helen-learning-pack/2。");
+  const packId = normalizeLetterPlanetTaskRef(source.packId || system.packId || "");
+  if (!/^[a-zA-Z0-9._:-]{6,100}$/.test(packId)) errors.push("task-system packId 缺失或格式不合理。");
+  const contentPolicy = validateContentPolicy(source.contentPolicy || system.contentPolicy || {});
+  if (contentPolicy.authority !== FULL_COURSE_CONTENT_POLICY.authority || contentPolicy.websiteMode !== FULL_COURSE_CONTENT_POLICY.websiteMode || contentPolicy.allowModelGeneration !== false) {
+    errors.push("task-system contentPolicy 必须是 codex-course-designer / render-only / allowModelGeneration=false。");
+  }
+  const allowedStatuses = new Set(["draft_pending_dr_george_review", "blocked", "content_complete_for_dr_george_dispatch"]);
+  const status = allowedStatuses.has(system.status) ? system.status : "";
+  if (!status) errors.push("task-system status 不在批准的状态集合中。");
+  if (status !== LETTER_PLANET_TASK_SYSTEM_STATUS) warnings.push("候选包不是 draft_pending_dr_george_review，导入前仍需独立审核。");
+
+  const plan = system.curriculumPlan || {};
+  const curriculumPlan = {
+    planId: normalizeLetterPlanetTaskRef(plan.planId || ""),
+    selectionSeed: normalizeLetterPlanetTaskText(plan.selectionSeed || "", 120),
+    reasonCodes: Array.isArray(plan.reasonCodes) ? plan.reasonCodes.map(normalizeLetterPlanetTaskRef).filter(Boolean).slice(0, 12) : [],
+    sourceGraphRefs: Array.isArray(plan.sourceGraphRefs) ? plan.sourceGraphRefs.map(normalizeLetterPlanetTaskRef).filter(Boolean).slice(0, 64) : [],
+    targetConstructs: Array.isArray(plan.targetConstructs) ? plan.targetConstructs.map(normalizeLetterPlanetTaskRef).filter(Boolean).slice(0, 12) : [],
+    difficultyBand: normalizeLetterPlanetTaskRef(plan.difficultyBand || ""),
+    difficultyRationale: normalizeLetterPlanetTaskText(plan.difficultyRationale || "", 260)
+  };
+  if (!curriculumPlan.planId) errors.push("task-system curriculumPlan.planId 缺失。");
+  if (!curriculumPlan.selectionSeed) errors.push("task-system curriculumPlan.selectionSeed 缺失。");
+  if (!curriculumPlan.reasonCodes.length) errors.push("task-system curriculumPlan.reasonCodes 不能为空。");
+  if (!curriculumPlan.sourceGraphRefs.length) errors.push("task-system curriculumPlan.sourceGraphRefs 不能为空。");
+  const graphNodeIds = new Set(LETTER_PLANET_SOURCE_GRAPH.nodes.map((node) => node.sourceSentenceId));
+  const graphStoryIds = new Set(LETTER_PLANET_SOURCE_GRAPH.coverage.storyIds);
+  if (curriculumPlan.sourceGraphRefs.some((ref) => !graphNodeIds.has(ref) && !graphStoryIds.has(ref))) {
+    errors.push("task-system curriculumPlan.sourceGraphRefs 必须指向89句图谱节点或已登记 Story。");
+  }
+
+  const missionSource = system.dailyMission || {};
+  const dailyMission = {
+    titleZh: normalizeLetterPlanetTaskText(missionSource.titleZh, 100),
+    primaryAbility: safeId(missionSource.primaryAbility || missionSource.primarySkill || ""),
+    secondaryAbilities: (missionSource.secondaryAbilities || missionSource.secondarySkills || []).map((item) => safeId(item)).filter(Boolean).slice(0, 8),
+    rationale: normalizeLetterPlanetTaskText(missionSource.rationale || "", 260)
+  };
+  if (!dailyMission.titleZh || !dailyMission.primaryAbility || !dailyMission.rationale) errors.push("task-system dailyMission 必须包含 titleZh、primaryAbility 和 rationale。");
+
+  const durationSource = system.duration || {};
+  const duration = {
+    lightMinutes: clampNumber(durationSource.lightMinutes, 15, 20, 17),
+    standardMinutes: clampNumber(durationSource.standardMinutes, 20, 25, 23),
+    maxContinuousMinutes: clampNumber(durationSource.maxContinuousMinutes, 1, 12, 12),
+    stopRules: Array.isArray(durationSource.stopRules) ? durationSource.stopRules.map((item) => normalizeLetterPlanetTaskText(item, 180)).filter(Boolean).slice(0, 8) : []
+  };
+  if (!duration.stopRules.length) errors.push("task-system duration.stopRules 不能为空。");
+
+  const sourceMaterialsSource = Array.isArray(system.sourceMaterials) ? system.sourceMaterials : [];
+  const sourceMaterials = sourceMaterialsSource.map((material, index) => {
+    const sourceMaterialId = normalizeLetterPlanetTaskRef(material?.sourceMaterialId || material?.id || "");
+    const sentenceIds = Array.isArray(material?.sentenceIds) ? material.sentenceIds.map(normalizeLetterPlanetTaskRef).filter(Boolean) : [];
+    if (!sourceMaterialId) errors.push(`task-system sourceMaterials[${index}] 缺少 sourceMaterialId。`);
+    if (!sentenceIds.length || sentenceIds.some((id) => !graphNodeIds.has(id))) errors.push(`task-system sourceMaterials[${index}] 缺少可回溯的89句正文来源。`);
+    return {
+      sourceMaterialId,
+      sourceType: safeId(material?.sourceType || "story_sentence"),
+      storyId: safeId(material?.storyId || sentenceIds[0]?.split(":")[0] || ""),
+      sentenceIds,
+      text: normalizeLetterPlanetTaskText(material?.text, 800),
+      translationZh: normalizeLetterPlanetTaskText(material?.translationZh, 400),
+      audioRef: normalizeLetterPlanetTaskAudioRef(material?.audioRef),
+      license: normalizeLetterPlanetTaskText(material?.license || "project-owned-source", 100)
+    };
+  }).filter((material) => material.sourceMaterialId);
+  if (!sourceMaterials.length) errors.push("task-system sourceMaterials 不能为空。");
+  if (new Set(sourceMaterials.map((material) => material.sourceMaterialId)).size !== sourceMaterials.length) errors.push("task-system sourceMaterials 的 sourceMaterialId 不能重复。");
+  const sourceMaterialIds = new Set(sourceMaterials.map((material) => material.sourceMaterialId));
+
+  const activitiesSource = Array.isArray(system.activities) ? system.activities : [];
+  const seenActivities = new Set();
+  const seenEvidenceTargetIds = new Set();
+  const activities = activitiesSource.map((activity, index) => {
+    if (!activity || typeof activity !== "object") {
+      errors.push(`task-system activities[${index}] 必须是对象。`);
+      return null;
+    }
+    const activityId = normalizeLetterPlanetTaskRef(activity.activityId || activity.id || "");
+    const activityType = normalizeLetterPlanetTaskRef(activity.activityType || "");
+    if (!activityId) errors.push(`task-system activities[${index}] 缺少 activityId。`);
+    if (seenActivities.has(activityId)) errors.push(`task-system activities[${index}] activityId 重复。`);
+    seenActivities.add(activityId);
+    if (!LETTER_PLANET_TASK_ACTIVITY_TYPES.has(activityType)) errors.push(`task-system activities[${index}] activityType 不支持：${activityType || "空"}。`);
+    const sourceIds = Array.isArray(activity.sourceMaterialIds) ? activity.sourceMaterialIds.map(normalizeLetterPlanetTaskRef).filter(Boolean) : [];
+    if (!sourceIds.length || sourceIds.some((id) => !sourceMaterialIds.has(id))) errors.push(`task-system activities[${index}] 缺少可回溯 sourceMaterialIds。`);
+    if (new Set(sourceIds).size !== sourceIds.length) errors.push(`task-system activities[${index}] sourceMaterialIds 不能重复。`);
+    const childVisible = sanitizeAdaptiveObject(activity.childVisible || {});
+    const parentOnly = sanitizeAdaptiveObject(activity.parentOnly || {});
+    if (letterPlanetTaskStudentTextHasForbiddenContext(childVisible)) errors.push(`task-system activities[${index}] childVisible 含内部字段、答案或家长脚本。`);
+    const difficultySource = activity.difficulty || {};
+    const dimensions = Object.fromEntries(LETTER_PLANET_TASK_DIFFICULTY_DIMENSIONS.map((key) => [key, clampNumber(difficultySource.dimensions?.[key], 0, 2, 0)]));
+    const difficulty = { overall: clampNumber(difficultySource.overall, 0, 5, 0), dimensions };
+    const options = normalizeLetterPlanetTaskOptions(activity.options || childVisible.options || childVisible.choices || []);
+    const answerKey = validateLetterPlanetTaskAnswerShape(activity, options, errors, index);
+    const audioRef = normalizeLetterPlanetTaskAudioRef(activity.audioRef || parentOnly.audioRef || sourceMaterials.find((item) => sourceIds.includes(item.sourceMaterialId))?.audioRef);
+    if (LETTER_PLANET_TASK_LISTENING_TYPES.has(activityType) && (!audioRef || audioRef.mode === "none")) errors.push(`task-system activities[${index}] 听力活动缺少 audioRef。`);
+    const candidateAnswerText = [answerKey.acceptedPhrases, parentOnly.oralRubric?.acceptedPhrases || []].flat().filter(Boolean);
+    const v2AnswerTexts = [candidateAnswerText, options.map((option) => option.text), options.map((option) => option.value)].flat().filter(Boolean);
+    if (activity.reminderSystemV3 || parentOnly.reminderSystemV3) {
+      errors.push(`task-system activities[${index}] reminderSystemV3 目前仅允许设计时审计，尚未接入学生运行时；候选包必须保持零写入。`);
+    }
+    const rawReminderSystemV2 = activity.reminderSystemV2 || parentOnly.reminderSystemV2;
+    let reminderSystemV2 = null;
+    let reminderSystem = null;
+    let supportLadder = null;
+    if (rawReminderSystemV2) {
+      if (activity.reminderSystem || parentOnly.reminderSystem || activity.supportLadder || parentOnly.supportLadder) {
+        errors.push(`task-system activities[${index}] v2 提醒不得与旧 reminderSystem/supportLadder 同时存在。`);
+      }
+      try {
+        reminderSystemV2 = validateLetterPlanetReminderSystemV2(rawReminderSystemV2, {
+          answerTexts: v2AnswerTexts,
+          allowedEnglishTokens: new Set(LETTER_PLANET_SOURCE_GRAPH.nodes.flatMap((node) => node.tokens || [])),
+          activityConstructId: activity.constructId || activity.construct?.id || "",
+          activityEvidenceTargetIds: activity.evidenceTargetIds
+        });
+      } catch (error) {
+        errors.push(`task-system activities[${index}] v2 提醒校验失败：${error.message}`);
+      }
+    } else {
+      const rawReminderSystem = activity.reminderSystem || parentOnly.reminderSystem || activity.supportLadder || parentOnly.supportLadder;
+      reminderSystem = validateLetterPlanetReminderSystem(rawReminderSystem, errors, index);
+      supportLadder = reminderSystemToSupportLadder(reminderSystem);
+    }
+    const evidenceTargetIds = Array.isArray(activity.evidenceTargetIds) ? activity.evidenceTargetIds.map(normalizeLetterPlanetTaskRef).filter(Boolean).slice(0, 24) : [];
+    if (!evidenceTargetIds.length) errors.push(`task-system activities[${index}] evidenceTargetIds 不能为空。`);
+    evidenceTargetIds.forEach((evidenceId) => {
+      if (seenEvidenceTargetIds.has(evidenceId)) errors.push(`task-system activities[${index}] evidenceTargetIds 不得跨活动重复：${evidenceId}。`);
+      seenEvidenceTargetIds.add(evidenceId);
+    });
+    const construct = {
+      id: normalizeLetterPlanetTaskRef(activity.constructId || activity.construct?.id || ""),
+      descriptorZh: normalizeLetterPlanetTaskText(activity.constructDescriptorZh || activity.construct?.descriptorZh || "", 220),
+      observableBehaviorZh: normalizeLetterPlanetTaskText(activity.observableBehaviorZh || activity.construct?.observableBehaviorZh || "", 220),
+      independenceRationaleZh: normalizeLetterPlanetTaskText(activity.independenceRationaleZh || activity.construct?.independenceRationaleZh || "", 220)
+    };
+    if (!construct.id || !construct.descriptorZh || !construct.observableBehaviorZh || !construct.independenceRationaleZh) errors.push(`task-system activities[${index}] 构念证据字段不完整。`);
+    const visibleText = collectLetterPlanetTaskText(childVisible).join("\n");
+    if (candidateAnswerText.some((answer) => answer && normalizeSentenceAnswer(visibleText).includes(normalizeSentenceAnswer(answer)))) errors.push(`task-system activities[${index}] childVisible 泄露口语答案。`);
+    if (audioRef?.mode === "pack_asset" && audioRef.verified && !audioRef.url) errors.push(`task-system activities[${index}] 已验收 pack_asset 必须有可访问 url。`);
+    if (LETTER_PLANET_TASK_LISTENING_TYPES.has(activityType) && (!audioRef?.provider || !audioRef?.text || !audioRef?.language)) errors.push(`task-system activities[${index}] 音频引用必须包含 provider、text 和 language。`);
+    const standardOnly = activity.standardOnly === true || activity.lightMode === "skip";
+    return {
+      activityId,
+      id: activityId,
+      activityType,
+      construct,
+      sourceMaterialIds: sourceIds,
+      titleZh: normalizeLetterPlanetTaskText(childVisible.titleZh || activity.titleZh || `活动 ${index + 1}`, 100),
+      childVisible,
+      parentOnly,
+      difficulty,
+      audioRef,
+      reminderSystemV2,
+      reminderSystem,
+      supportLadder,
+      evidenceTargetIds,
+      stopRule: normalizeLetterPlanetTaskText(activity.stopRule || "完成一次记录后进入下一活动；孩子可以主动结束。", 220),
+      options,
+      answerKey,
+      oralRubric: sanitizeAdaptiveObject(activity.oralRubric || parentOnly.oralRubric || {}),
+      feedbackMapping: sanitizeAdaptiveObject(activity.feedbackMapping || {}),
+      recording: validateRecordingConfig(activity.recording || parentOnly.recording),
+      standardOnly,
+      lightMode: standardOnly ? "skip" : "include",
+      plannedMinutesByMode: {
+        light: clampNumber(activity.plannedMinutesByMode?.light, 1, 20, 5),
+        standard: clampNumber(activity.plannedMinutesByMode?.standard, 1, 25, 6)
+      },
+      readAloud: validateReadAloudConfig(activity.readAloud)
+    };
+  }).filter(Boolean);
+  const visibleActivities = activities.filter((activity) => activity.activityType !== "exit_reflection");
+  if (visibleActivities.length < 2 || visibleActivities.length > 5) errors.push(`task-system 学生可见活动必须为2–5个，实际为${visibleActivities.length}个。`);
+  if (activities.some((activity) => activity.activityType === "exit_reflection" && (activity.options.length || activity.answerKey.correctOptionId))) errors.push("exit_reflection 只能作为反馈元数据，不能拥有语言题答案。");
+  if (activities.some((activity) => activity.difficulty.overall > 5)) errors.push("task-system 单活动难度总负荷不得超过5。");
+  if (activities.some((activity) => Object.values(activity.difficulty.dimensions).reduce((sum, value) => sum + value, 0) > 5)) errors.push("task-system 难度维度总负荷不得超过5。");
+
+  const feedbackPolicy = {
+    attemptAppendOnly: system.feedbackPolicy?.attemptAppendOnly === true,
+    incompleteExport: system.feedbackPolicy?.incompleteExport === true,
+    independenceSeparate: system.feedbackPolicy?.independenceSeparate === true,
+    conflictRule: normalizeLetterPlanetTaskText(system.feedbackPolicy?.conflictRule || "", 260)
+  };
+  if (!feedbackPolicy.attemptAppendOnly || !feedbackPolicy.incompleteExport || !feedbackPolicy.independenceSeparate) errors.push("task-system feedbackPolicy 必须保持追加尝试、未完成导出和独立度分轨。");
+  const normalized = {
+    ...source,
+    schemaVersion: source.schemaVersion || "helen-learning-pack/2",
+    packId,
+    contentVersion: Number.isFinite(Number(source.contentVersion || system.contentVersion)) ? Number(source.contentVersion || system.contentVersion) : 1,
+    contentPolicy,
+    taskSystem: {
+      schemaVersion: LETTER_PLANET_TASK_SYSTEM_SCHEMA,
+      status,
+      curriculumPlan,
+      dailyMission,
+      duration,
+      sourceMaterials,
+      activities,
+      feedbackPolicy,
+      integrity: {
+        sourceGraphVersion: LETTER_PLANET_SOURCE_GRAPH.graphVersion,
+        sourceNodeCount: LETTER_PLANET_SOURCE_GRAPH.nodes.length,
+        activityCount: visibleActivities.length,
+        uniqueAnswer: errors.some((error) => /重复选项|正确选项/.test(error)) ? "fail" : "pass",
+        answerLeakScan: errors.some((error) => /泄露|内部字段/.test(error)) ? "fail" : "pass",
+        audioAssetScan: activities.some((activity) => activity.audioRef?.mode === "pack_asset" && !activity.audioRef.verified) ? "unverified" : "pass",
+        reminderProtocol: activities.length && activities.every((activity) => activity.reminderSystemV2?.schemaVersion === LETTER_PLANET_REMINDER_V2_SCHEMA)
+          ? LETTER_PLANET_REMINDER_V2_SCHEMA
+          : "legacy_v1_requires_rebuild",
+        unknownActivityType: "reject_before_write",
+        exampleImport: "must_reject_exampleOnly",
+        warnings
+      }
+    }
+  };
+  if (source.schemaVersion === LETTER_PLANET_TASK_SYSTEM_SCHEMA) normalized.english = { ...(source.english || {}), taskSystem: normalized.taskSystem };
+  else normalized.english = { ...(source.english || {}), taskSystem: normalized.taskSystem };
+  if (errors.length) {
+    const error = new Error(errors.join(" "));
+    error.details = { errors, warnings, protocol: LETTER_PLANET_TASK_SYSTEM_SCHEMA };
+    throw error;
+  }
+  normalized._warnings = warnings;
+  return normalized;
+}
+
 function adaptiveStudentTextHasForbiddenContext(value) {
   if (typeof value === "string") return /孩子|小朋友|宝贝|请家长|家长帮助|正确答案|参考答案/u.test(value);
   if (Array.isArray(value)) return value.some(adaptiveStudentTextHasForbiddenContext);
@@ -7660,8 +8527,23 @@ function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, er
   if (!lessonId) errors.push("english.lessonId 是可变日课必填项。");
   const diagnosticSource = source.diagnostic || english.diagnostic || {};
   const routeDay = sanitizeAdaptiveText(diagnosticSource.routeDay || "", 16).toUpperCase();
-  const diagnosticActivities = buildLetterDiagnosticActivities(routeDay);
-  const activitiesSource = diagnosticActivities || (Array.isArray(source.activities) ? source.activities : Array.isArray(english.activities) ? english.activities : []);
+  // Diagnostic packs are authored data, not a hidden one-sentence template.
+  // Use the pack's reviewed activities whenever they are present; keep the
+  // legacy generator only as a compatibility fallback for an older pack that
+  // genuinely has no activity list.
+  const authoredActivities = Array.isArray(source.activities)
+    ? source.activities
+    : Array.isArray(english.activities)
+      ? english.activities
+      : [];
+  // Published D01–D14 diagnostics must be authored from the historical
+  // blueprint. Do not silently recreate the retired one-sentence template.
+  const publishedDiagnosticDay = Boolean(getLetterDiagnosticSpec(routeDay));
+  if (publishedDiagnosticDay && !authoredActivities.length) {
+    errors.push("english.activities 必须提供跨历史源句的已审核诊断题；禁止回退到单句模板。");
+  }
+  const diagnosticActivities = authoredActivities.length || publishedDiagnosticDay ? null : buildLetterDiagnosticActivities(routeDay);
+  const activitiesSource = authoredActivities.length ? authoredActivities : (diagnosticActivities || []);
   if (!activitiesSource.length) errors.push("english.activities 至少需要一项。");
   const seen = new Set();
   const activities = activitiesSource.map((activity, index) => {
@@ -8274,6 +9156,13 @@ function renderLearningPackError(error) {
 }
 
 function importLearningPack(pack, preview, options = {}) {
+  const taskSystem = getLetterPlanetTaskSystem(pack);
+  if (taskSystem && taskSystem.status !== "content_complete_for_dr_george_dispatch") {
+    throw new Error("letter-planet-task-system/1 候选包仍在审核中，禁止写入学习包、manifest或公开课程。");
+  }
+  if (taskSystem && taskSystem.activities?.some((activity) => activity.reminderSystemV2?.schemaVersion !== LETTER_PLANET_REMINDER_V2_SCHEMA)) {
+    throw new Error("字母星球新课包必须先完成 reminderSystemV2 重建，旧 v1 提醒禁止导入。");
+  }
   const now = new Date().toISOString();
   const shouldSelect = options.select !== false;
   const markLatest = options.markLatest !== false;
@@ -8315,6 +9204,7 @@ function importLearningPack(pack, preview, options = {}) {
   if (markLatest) state.latestLearningPackId = pack.packId;
   if (shouldSelect || !state.selectedLearningPackId) state.selectedLearningPackId = pack.packId;
   if (isAdaptiveEnglishPack(pack)) state.englishCourseSource = "adaptive";
+  if (isLetterPlanetTaskSystemPack(pack)) state.englishCourseSource = "task_system";
   state.lastLearningPackRaw = JSON.stringify(pack, null, 2);
   state.latestLearning = focusFromLearningPack(pack);
   state.focusTitleOverride = familyFacingPackTitle(pack.title) || "今日学习包";
@@ -8577,14 +9467,14 @@ function getLearningCourseSequence(kind = "chinese") {
 function isPackAvailableForCourse(pack, kind, entry = null) {
   if (entry?.availableSubjects?.length && !entry.availableSubjects.includes(kind)) return false;
   if (kind === "chinese") return Boolean(pack.chinese?.lesson || pack.chinese?.characters?.length || pack.chinese?.words?.length);
-  if (kind === "english") return isAdaptiveEnglishPack(pack);
+  if (kind === "english") return isAdaptiveEnglishPack(pack) || isLetterPlanetTaskSystemPack(pack);
   if (kind === "art") return Boolean(pack.art);
   return false;
 }
 
 function getLearningCourseKey(pack, kind) {
-  if (kind === "english" && isAdaptiveEnglishPack(pack)) {
-    return `english:${pack.english.lesson.lessonId || pack.packId}`;
+  if (kind === "english" && (isAdaptiveEnglishPack(pack) || isLetterPlanetTaskSystemPack(pack))) {
+    return `english:${getLetterPlanetTaskSystem(pack)?.curriculumPlan?.planId || pack.english?.lesson?.lessonId || pack.packId}`;
   }
   if (kind === "art") {
     return pack.art?.sequenceId || pack.art?.courseId || pack.art?.lessonId || `art:${pack.date || pack.packId}`;
@@ -8617,6 +9507,9 @@ function cleanStudentCourseTitle(value, fallback = "课程") {
 
 function getStudentCourseTitle(pack, kind = "chinese") {
   if (!pack) return kind === "art" ? "颜色课程" : "中文课程";
+  if (kind === "english" && isLetterPlanetTaskSystemPack(pack)) {
+    return cleanStudentCourseTitle(getLetterPlanetTaskSystem(pack)?.dailyMission?.titleZh, "字母星球学习任务");
+  }
   if (kind === "english" && isAdaptiveEnglishPack(pack)) {
     return cleanStudentCourseTitle(pack.english.lesson.dailyMission?.titleZh, "字母星球学习任务");
   }
@@ -8902,7 +9795,7 @@ function initializeCourseProgress(pack) {
     progress.art.steps[key] ||= {};
   });
   if (!progress.english.selectedMode) progress.english.selectedMode = pack.english?.lesson?.defaultMode || pack.sharedPlan?.defaultEnglishMode || pack.loadMode || "light";
-  if (isAdaptiveEnglishPack(pack)) {
+  if (isAdaptiveEnglishPack(pack) || isLetterPlanetTaskSystemPack(pack)) {
     const total = getEnglishLessonSteps(pack, getSelectedEnglishMode(pack)).length;
     progress.english.currentActivityIndex = Math.max(0, Math.min(total - 1, Number(progress.english.currentActivityIndex || 0)));
   }
@@ -9675,7 +10568,11 @@ function buildColorDraftGeometry(analysis = {}) {
   const occlusionBreaks = readLayer(construction, "occlusionBreaks");
   const dimensionRelations = readLayer(construction, "dimensionRelations");
   const draftContours = readLayer(construction, "draftContours");
-  const closedContours = readLayer(construction, "closedContours");
+  // The closed-line stage may include bounded anatomical and plane contours
+  // in addition to the seven outer silhouettes.  Keep those marks available
+  // to the renderer so the learner sees a complete, traceable drawing rather
+  // than an icon-like silhouette.
+  const closedContours = readLayer(construction, "closedContours", 20);
   // Keep the traced internal structure lines separate from the closed outer
   // contours.  The process board uses them in steps 6–13 so a complete draft
   // teaches face planes, joins and cross-contours instead of showing only a
@@ -9916,7 +10813,10 @@ function buildGeneratedColorSteps(analysis) {
   const draftGeometry = buildColorDraftGeometry(analysis);
   const labels = objects.map((item) => item.labelZh).filter(Boolean);
   const backToFront = [...objects].sort((a, b) => Number(a.depth || 0) - Number(b.depth || 0)).map((item) => item.labelZh);
-  const paletteTargets = analysis.paletteTargets || [];
+  // Step 1 is a real choice gate: only targets with at least one usable
+  // candidate may be required.  Invalid/stub targets stay out of the student
+  // route instead of creating an impossible selection or a false completion.
+  const paletteTargets = (analysis.paletteTargets || []).filter((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code));
   const targetIds = paletteTargets.map((item) => item.id).filter(Boolean);
   const targetText = (item) => `${item.roleZh || ""} ${item.targetColorZh || ""}`;
   const idsMatching = (pattern) => paletteTargets.filter((item) => pattern.test(targetText(item))).map((item) => item.id).filter(Boolean);
@@ -10014,7 +10914,12 @@ function buildGeneratedColorCourse(analysis, draft) {
     sourceImage: { width: draft.width, height: draft.height, mimeType: draft.mimeType },
     paperPlan: calculateA4PaperPlan(analysis.aspectRatio),
     referenceAnalysis,
-    professionalReady: hasProfessionalColorDraftGeometry(analysis),
+    // A fixture carrying an explicit professionalEvidence gate must not leak
+    // into the student route while it is still FAIL.  Provider responses that
+    // do not carry this internal evidence object retain the normal geometry
+    // gate and are handled by the same strict server validation.
+    professionalReady: (!analysis.professionalEvidence || analysis.professionalEvidence.status === "PASS")
+      && hasProfessionalColorDraftGeometry(analysis),
     paletteTargets: structuredCloneSafe(analysis.paletteTargets || []),
     palette: (analysis.paletteTargets || []).map((target) => ({
       code: target.candidates?.[0]?.code || "",
@@ -10034,7 +10939,7 @@ function canRenderGeneratedProcessBoard(course) {
     const bbox = item?.bbox;
     return Array.isArray(bbox) && bbox.length === 4 && Number(bbox[2]) > 0 && Number(bbox[3]) > 0;
   });
-  const hasPalette = Array.isArray(course.paletteTargets) && course.paletteTargets.some((target) => Array.isArray(target.candidates) && target.candidates.length > 0);
+  const hasPalette = Array.isArray(course.paletteTargets) && course.paletteTargets.some((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code));
   const hasA4 = Array.isArray(course.paperPlan?.variants) && course.paperPlan.variants.length > 0;
   const hasIndependentSteps = course.steps.slice(1, 12).every((step) => step.processBoard === true && step.referenceVisible === false && step.boardMode);
   return hasObjectGeometry && hasPalette && hasA4 && hasIndependentSteps && course.professionalReady === true;
@@ -10474,7 +11379,17 @@ function startColorCourse(courseId) {
   progress.art.sessionStatus = "in_progress";
   colorState.selectedCourseId = course.courseId;
   colorState.activeCourseId = course.courseId;
-  colorState.courseUi[course.courseId] ||= { currentStepIndex: firstIncompleteColorStepIndex(course, progress) };
+  // A generated reference course can outlive an earlier failed render.  Do
+  // not let a stale step index (for example the last step from an older
+  // attempt) reopen the course on a blank or completed-looking page.  Resume
+  // at the first unfinished step; explicit step-rail clicks can still take
+  // the learner back to any earlier step afterwards.
+  const firstIncomplete = firstIncompleteColorStepIndex(course, progress);
+  const courseUi = colorState.courseUi[course.courseId] ||= {};
+  const storedIndex = Number(courseUi.currentStepIndex);
+  if (course.generatedFromReference || !Number.isInteger(storedIndex) || storedIndex < 0 || storedIndex >= course.steps.length) {
+    courseUi.currentStepIndex = firstIncomplete;
+  }
   saveState();
   showView("color-course");
   return true;
@@ -10492,7 +11407,12 @@ function getColorCourseUi(courseId) {
   colorState.courseUi[courseId] ||= {
     currentStepIndex: firstIncompleteColorStepIndex(course)
   };
-  return colorState.courseUi[courseId];
+  const ui = colorState.courseUi[courseId];
+  const index = Number(ui.currentStepIndex);
+  if (!Number.isInteger(index) || index < 0 || (course && index >= course.steps.length)) {
+    ui.currentStepIndex = firstIncompleteColorStepIndex(course);
+  }
+  return ui;
 }
 
 function setColorCourseStep(courseId, index) {
@@ -10550,7 +11470,10 @@ function completeColorCourseStep(courseId, stepId) {
     result: "independent"
   };
   const ui = getColorCourseUi(courseId);
-  if (!course.generatedFromReference && stepIndex < course.steps.length - 1) ui.currentStepIndex = stepIndex + 1;
+  // Keep the generated 13-step course in the same predictable flow as the
+  // static lessons: finishing a step immediately opens the next one while
+  // preserving the completed mark for the step rail and history.
+  if (stepIndex < course.steps.length - 1) ui.currentStepIndex = stepIndex + 1;
   if (course.generatedFromReference && course.steps.every((step) => progress.art.steps?.[`art:${step.id}`]?.finishedAt)) {
     progress.art.finishedAt ||= new Date().toISOString();
     progress.art.sessionStatus = "completed";
@@ -10676,8 +11599,8 @@ function renderChineseLesson() {
 
 function renderAdaptiveProgressRail(steps, currentIndex, progress) {
   return `
-    <nav class="adaptive-progress-rail" aria-label="六题进度">
-      ${steps.slice(0, 6).map((step, index) => {
+    <nav class="adaptive-progress-rail" aria-label="活动进度">
+      ${steps.map((step, index) => {
         const key = `english:${step.id}`;
         const item = progress.english.steps[key] || {};
         const done = Boolean(item.finishedAt);
@@ -10712,6 +11635,22 @@ function renderEnglishLesson() {
   const progress = getCourseProgress(pack.packId);
   const selectedMode = getSelectedEnglishMode(pack);
   const steps = getEnglishLessonSteps(pack, selectedMode);
+  if (isLetterPlanetTaskSystemPack(pack)) {
+    const taskSystem = getLetterPlanetTaskSystem(pack);
+    const title = taskSystem.dailyMission?.titleZh || "字母星球学习任务";
+    const currentIndex = Math.max(0, Math.min(Math.max(steps.length - 1, 0), Number(progress.english.currentActivityIndex || 0)));
+    $("#englishLessonHeader").innerHTML = `
+      <div class="course-topline adaptive-english-topline">
+        <div><h1>${escapeHtml(title)}</h1><p class="pack-muted">${escapeHtml(taskSystem.dailyMission?.rationale || "按当天实际活动完成学习任务")}</p></div>
+        <div class="mode-picker">${["light", "standard"].map((mode) => `<button class="button ${mode === selectedMode ? "primary" : "secondary"} compact-button" data-english-mode="${mode}" type="button">${escapeHtml(englishModeLabel(mode))}</button>`).join("")}</div>
+      </div>
+      ${renderAdaptiveProgressRail(steps, currentIndex, progress)}
+      ${renderCourseStartSettings("english", progress.english, steps)}
+    `;
+    $("#englishListeningZone").innerHTML = "";
+    $("#englishLessonSteps").innerHTML = renderLetterPlanetTaskSystemLesson(pack, selectedMode, progress) || renderCourseMissingBox(["english.taskSystem.activities"]);
+    return;
+  }
   if (isAdaptiveEnglishPack(pack)) {
     const activityIndex = Math.max(0, Math.min(steps.length - 1, Number(progress.english.currentActivityIndex || 0)));
     const activity = steps[activityIndex];
@@ -11144,6 +12083,59 @@ function mapGeneratedBoardY(value, geometry) {
   return geometry.y + (safeOverlayNumber(value) / 1000) * geometry.drawHeight;
 }
 
+/*
+ * Model output is deliberately restricted to polyline/polygon primitives.
+ * Rendering every point as a hard corner made the D571 process board read as
+ * a low-resolution icon instead of a continuous pencil construction.  Keep
+ * the data contract conservative, but turn organic open/closed polylines into
+ * a short Catmull–Rom-to-cubic path at render time.  Axes, dimensions,
+ * connection marks and intentional geometric symbols opt out, so the
+ * construction logic remains exact while contours regain a hand-drawn flow.
+ */
+function shouldSmoothGeneratedPolyline(item, options = {}) {
+  if (options.smooth === false || options.smooth === true) return options.smooth;
+  if (item?.type !== "polyline" || !Array.isArray(item.points) || item.points.length < 8) return false;
+  const label = String(item.labelZh || "");
+  return !/星星|帽锥|甜筒|轴|格面|连接|修改|修补|断线|体块|中心|方向|尺寸|长轴|短轴|动态|水平|承托|比例/u.test(label);
+}
+
+function generatedSmoothPath(points, closed = false) {
+  const source = (points || [])
+    .slice(0, 30)
+    .map((pair) => [Number(pair?.[0]), Number(pair?.[1])])
+    .filter((pair) => pair.every(Number.isFinite));
+  if (closed && source.length > 2) {
+    const first = source[0];
+    const last = source[source.length - 1];
+    if (Math.abs(first[0] - last[0]) < 0.5 && Math.abs(first[1] - last[1]) < 0.5) source.pop();
+  }
+  if (source.length < 3) return "";
+  const fmt = (value) => Number(value).toFixed(2);
+  const offset = (point, vector, factor) => [point[0] + vector[0] * factor, point[1] + vector[1] * factor];
+  const offsetBack = (point, vector, factor) => [point[0] - vector[0] * factor, point[1] - vector[1] * factor];
+  const cubic = (p1, p2, p3, p4) => `C ${fmt(p2[0])} ${fmt(p2[1])} ${fmt(p3[0])} ${fmt(p3[1])} ${fmt(p4[0])} ${fmt(p4[1])}`;
+  let path = `M ${fmt(source[0][0])} ${fmt(source[0][1])}`;
+  if (closed) {
+    const n = source.length;
+    for (let index = 0; index < n; index += 1) {
+      const p0 = source[(index - 1 + n) % n];
+      const p1 = source[index];
+      const p2 = source[(index + 1) % n];
+      const p3 = source[(index + 2) % n];
+      path += ` ${cubic(p1, offset(p1, [p2[0] - p0[0], p2[1] - p0[1]], 1 / 6), offsetBack(p2, [p3[0] - p1[0], p3[1] - p1[1]], 1 / 6), p2)}`;
+    }
+    return `${path} Z`;
+  }
+  for (let index = 0; index < source.length - 1; index += 1) {
+    const p0 = source[index === 0 ? 0 : index - 1];
+    const p1 = source[index];
+    const p2 = source[index + 1];
+    const p3 = source[index + 2] || p2;
+    path += ` ${cubic(p1, offset(p1, [p2[0] - p0[0], p2[1] - p0[1]], 1 / 6), offsetBack(p2, [p3[0] - p1[0], p3[1] - p1[1]], 1 / 6), p2)}`;
+  }
+  return path;
+}
+
 function getGeneratedTargetHex(course, targetId, fallback = "#6F9EB4") {
   const target = course.paletteTargets?.find((item) => item.id === targetId);
   return /^#[0-9A-F]{6}$/i.test(target?.targetHex || "") ? target.targetHex.toUpperCase() : fallback;
@@ -11177,6 +12169,14 @@ function renderGeneratedBoardPrimitive(item, course, geometry, options = {}) {
   }
   const points = (item.points || []).slice(0, 30).map((pair) => `${mapGeneratedBoardX(pair?.[0], geometry).toFixed(2)},${mapGeneratedBoardY(pair?.[1], geometry).toFixed(2)}`).join(" ");
   if (!points) return "";
+  if (type === "polyline" && fill === "none" && shouldSmoothGeneratedPolyline(item, options)) {
+    const mapped = (item.points || []).slice(0, 30).map((pair) => [mapGeneratedBoardX(pair?.[0], geometry), mapGeneratedBoardY(pair?.[1], geometry)]);
+    const first = mapped[0];
+    const last = mapped[mapped.length - 1];
+    const closed = Boolean(first && last && Math.abs(first[0] - last[0]) < 0.5 && Math.abs(first[1] - last[1]) < 0.5);
+    const d = generatedSmoothPath(mapped, closed);
+    if (d) return `<path${className} d="${d}" fill="none" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="${style}" />`;
+  }
   return `<${type}${className} points="${points}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="${style}" />`;
 }
 
@@ -11319,21 +12319,33 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
     content = renderGeneratedConstructionMarks(position, course, geometry, { stroke: "#A9B4BA", opacity: 0.46, strokeWidth: 1.2, className: "color-process-position-mark", showLabels: false });
     content += renderGeneratedConstructionMarks(draftGeometry.negativeSpaces || [], course, geometry, { stroke: "#A1B0B7", opacity: 0.44, strokeWidth: 1.2, className: "color-process-negative-space", showLabels: false });
   } else if (stageMode === "skeleton") {
-    content = stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#7D8A91", opacity: 0.68, strokeWidth: 1.8, className: "color-process-skeleton" }) : "";
-    content += renderGeneratedConstructionMarks(draftGeometry.connections || [], course, geometry, { stroke: "#7D8A91", opacity: 0.68, strokeWidth: 1.8, className: "color-process-connection", showLabels: false });
+    content = stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#68777E", opacity: 0.76, strokeWidth: 2.25, className: "color-process-skeleton" }) : "";
+    content += renderGeneratedConstructionMarks(draftGeometry.connections || [], course, geometry, { stroke: "#68777E", opacity: 0.76, strokeWidth: 2.25, className: "color-process-connection", showLabels: false });
+    content += renderGeneratedConstructionMarks(draftGeometry.negativeSpaces || [], course, geometry, { stroke: "#A1B0B7", opacity: 0.48, strokeWidth: 1.15, className: "color-process-negative-space", showLabels: false });
   } else if (mode === "occlusion") {
     content = (stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#7D8A91", opacity: 0.58, strokeWidth: 1.6, className: "color-process-skeleton" }) : "") + lineShapes(stageOcclusion.slice(0, 6), { stroke: "#64727A", opacity: 0.82, strokeWidth: 2.2, className: "color-process-occlusion" });
     content += renderGeneratedConstructionMarks(draftGeometry.negativeSpaces || [], course, geometry, { stroke: "#A1B0B7", opacity: 0.5, strokeWidth: 1.2, className: "color-process-negative-space", showLabels: false });
   } else if (stageMode === "draft") {
     // The underdrawing stays visible as a light construction layer while the
     // traced contour and internal planes carry the readable pencil weight.
-    content = (stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#A9B4BA", opacity: 0.32, strokeWidth: 1.15, className: "color-process-skeleton" }) : "")
-      + (stageDraft.length ? lineShapes(stageDraft, { stroke: "#5E707B", opacity: 0.82, strokeWidth: 2.35, className: "color-process-draft" }) : "")
-      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#75858D", opacity: 0.66, strokeWidth: 1.55, className: "color-process-structure" }) : "");
+    content = (stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#A9B4BA", opacity: 0.38, strokeWidth: 1.25, className: "color-process-skeleton" }) : "")
+      + (stageDraft.length ? lineShapes(stageDraft, { stroke: "#506773", opacity: 0.92, strokeWidth: 2.7, className: "color-process-draft" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#667A83", opacity: 0.8, strokeWidth: 1.85, className: "color-process-structure" }) : "")
+      // Keep the meaningful gaps visible while the learner connects the
+      // basic forms.  A dashed, very light layer explains spacing without
+      // competing with the blue contour they are meant to copy.
+      + renderGeneratedConstructionMarks(draftGeometry.negativeSpaces || [], course, geometry, { stroke: "#A1B0B7", opacity: 0.46, strokeWidth: 1.1, className: "color-process-negative-space", showLabels: false });
     if (step.correctionMarks) content += renderGeneratedConstructionMarks((draftGeometry.modificationMarks || []).slice(0, 4), course, geometry, { stroke: "#9B7445", opacity: 0.82, strokeWidth: 1.8, className: "color-process-correction", showLabels: false });
   } else if (stageMode === "lineart") {
-    content = (stageLineart.length ? lineShapes(stageLineart, { stroke: "#30383D", opacity: 0.96, strokeWidth: 3.2, className: "color-process-lineart" }) : "")
-      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#46545C", opacity: 0.9, strokeWidth: 2.25, className: "color-process-structure" }) : "");
+    // Give the seven true silhouettes the strongest pencil weight; inner
+    // closures (ears, arm seams, cone planes, beak and volume lines) stay one
+    // step lighter so the drawing reads like a professional construction
+    // sheet rather than a uniformly thick cartoon icon.
+    const outerLineart = stageLineart.filter((item) => /闭合(?:外)?轮廓/u.test(String(item?.labelZh || "")));
+    const innerLineart = stageLineart.filter((item) => !/闭合(?:外)?轮廓/u.test(String(item?.labelZh || "")));
+    content = (outerLineart.length ? lineShapes(outerLineart, { stroke: "#30383D", opacity: 0.97, strokeWidth: 3.2, className: "color-process-lineart" }) : "")
+      + (innerLineart.length ? lineShapes(innerLineart, { stroke: "#46545C", opacity: 0.86, strokeWidth: 2.05, className: "color-process-structure" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#46545C", opacity: 0.82, strokeWidth: 1.8, className: "color-process-structure" }) : "");
   } else if (stageMode === "flatColor") {
     content = regions(allRegions, 0.88) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#64727A", opacity: 0.78, strokeWidth: 1.8, className: "color-process-draft" }) : "")
       + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#46545C", opacity: 0.86, strokeWidth: 1.85, className: "color-process-structure" }) : "");
@@ -11358,6 +12370,20 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
       content += lineShapes(colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId)).slice(0, 4), { stroke: "#5B6570", fill: "#5B6570", opacity: 0.48, strokeWidth: 2, className: "color-process-shade" });
     }
   }
+  // Dimension relations are useful on the paper, position, skeleton,
+  // occlusion and draft boards.  Keep them out of colour/detail stages so a
+  // learner can focus on the chosen colour area rather than a measurement
+  // overlay that no longer controls the drawing.
+  const order = Number(step?.order || 0);
+  if (order >= 2 && order <= 6 && Array.isArray(draftGeometry.dimensionRelations) && draftGeometry.dimensionRelations.length) {
+    content += renderGeneratedConstructionMarks(draftGeometry.dimensionRelations.slice(0, 4), course, geometry, {
+      stroke: "#A4B1B7",
+      opacity: 0.58,
+      strokeWidth: 1.05,
+      className: "color-process-dimension-relations",
+      showLabels: order <= 4
+    });
+  }
   if (mode === "repair" && draftGeometry.repairMarks?.length) {
     content += renderGeneratedConstructionMarks(draftGeometry.repairMarks.slice(0, 4), course, geometry, { stroke: "#9B7445", opacity: 0.82, strokeWidth: 1.8, className: "color-process-correction", showLabels: false });
   }
@@ -11365,6 +12391,7 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
   const colorLabelRegions = colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId));
   if (showColorLabels) content += renderGeneratedColorLabels(colorLabelRegions.length ? colorLabelRegions : allRegions, course, geometry, progress);
   const dimensionVisible = options.dimensionsVisible === true;
+  const showLayerLegend = order >= 2 && order <= 8;
   return `
     <div class="color-process-board-shell" data-board-mode="${escapeHtml(mode)}" data-stage-mode="${escapeHtml(stageMode)}">
       <svg class="color-process-board" viewBox="0 0 1000 1414" preserveAspectRatio="xMidYMid meet" role="img" aria-label="第${step.order}步独立白纸过程板">
@@ -11373,6 +12400,7 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
         ${content}
         ${dimensionVisible ? renderGeneratedDimensionOverlay(course, step, geometry) : ""}
       </svg>
+      ${showLayerLegend ? `<div class="color-process-board-legend" aria-label="过程线层说明"><span><i class="is-guide" aria-hidden="true"></i>浅灰：定位/轴线</span><span><i class="is-draft" aria-hidden="true"></i>蓝灰：浅稿/结构</span><span><i class="is-outer" aria-hidden="true"></i>深色：闭合轮廓</span></div>` : ""}
     </div>
   `;
 }
@@ -11437,9 +12465,14 @@ function renderGeneratedColorCourseLesson(course) {
     ? [`在A4纸上轻轻画出 ${Number(selectedPaper.widthCm).toFixed(1)}×${Number(selectedPaper.heightCm).toFixed(1)} cm边界。`, `左右各留 ${Number(selectedPaper.marginLeftCm ?? selectedPaper.marginHorizontalCm).toFixed(1)} cm，上下各留 ${Number(selectedPaper.marginTopCm ?? selectedPaper.marginVerticalCm).toFixed(1)} cm。`]
     : step.actionsZh || [];
   const requiredIds = step.requiredColorTargetIds || step.colorTargetIds || [];
-  const missingColorTargets = requiredIds.map((targetId) => course.paletteTargets?.find((target) => target.id === targetId)).filter((target) => target && !progress.art.paletteSelections?.[target.id]);
+  const requiredTargets = requiredIds.map((targetId) => course.paletteTargets?.find((target) => target.id === targetId) || { id: targetId });
+  // Treat a missing target as incomplete as well.  Previously the render
+  // filtered missing targets before calculating `canComplete`, so a malformed
+  // or legacy course could show an enabled button that then silently failed
+  // in completeColorCourseStep().
+  const missingColorTargets = requiredTargets.filter((target) => !target?.id || !progress.art.paletteSelections?.[target.id]);
   const canComplete = missingColorTargets.length === 0;
-  const missingText = missingColorTargets.map((target) => target.roleZh || target.targetColorZh || "本步色组").join("、");
+  const missingText = missingColorTargets.map((target) => target.roleZh || target.targetColorZh || target.id || "本步色组").join("、");
   const paletteDisplayIds = requiredIds.length ? requiredIds : (step.processColorTargetIds?.length ? step.processColorTargetIds : []);
   header.innerHTML = `
     <div class="course-topline color-course-heading">
@@ -12087,6 +13120,19 @@ function getChineseLessonSections(pack) {
 }
 
 function getEnglishLessonSteps(pack, mode = null) {
+  if (isLetterPlanetTaskSystemPack(pack)) {
+    const taskSystem = getLetterPlanetTaskSystem(pack);
+    return (taskSystem?.activities || [])
+      .filter((activity) => activity.activityType !== "exit_reflection")
+      .filter((activity) => !(mode === "light" && (activity.standardOnly === true || activity.lightMode === "skip")))
+      .map((activity, index) => ({
+        ...activity,
+        id: activity.activityId || activity.id || `activity_${index + 1}`,
+        number: index + 1,
+        titleZh: activity.titleZh || `活动 ${index + 1}`,
+        minutesByMode: activity.minutesByMode || activity.plannedMinutesByMode || {}
+      }));
+  }
   if (isAdaptiveEnglishPack(pack)) {
     const activities = pack.english.lesson.activities || [];
     return activities
@@ -12805,6 +13851,127 @@ function renderAdaptiveEnglishActivity(pack, activity, index, total, mode, progr
   `;
 }
 
+function renderLetterPlanetTaskAudio(activity, key, itemProgress = {}) {
+  const audio = activity.audioRef;
+  if (!audio || audio.mode === "none") return "";
+  if (audio.mode === "mobile_handoff") {
+    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="手机输入提示"><div class="adaptive-source-card-title"><strong>听一听</strong><span>手机输入</span></div><p>${escapeHtml(audio.mobileInstructionZh)}</p><p class="adaptive-source-card-note">完成后回到这里记录；网站不会把外部播放伪装成已播放。</p></aside>`;
+  }
+  if (!audio.verified || (audio.mode === "pack_asset" && !audio.url)) {
+    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="音频待验收"><div class="adaptive-source-card-title"><strong>听一听</strong><span>音频待设备验收</span></div><p class="adaptive-audio-error" role="status">这段音频还没有完成真实设备验收，暂不显示播放成功。</p></aside>`;
+  }
+  const status = itemProgress.audioStatus === "played" ? "已播放" : itemProgress.audioStatus === "failed" ? "播放失败" : "未播放";
+  const played = Math.min(audio.maxPlays, Number(itemProgress.audioPlayCount || 0));
+  return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="课程音频"><div class="adaptive-source-card-title"><strong>听一听</strong><span>${status} · ${played}/${audio.maxPlays}遍</span></div><button class="button secondary compact-button" data-letter-task-audio="${escapeHtml(key)}" type="button">播放音频 ${played}/${audio.maxPlays}</button>${itemProgress.audioError ? `<p class="adaptive-audio-error" role="status">${escapeHtml(itemProgress.audioError)}</p>` : ""}</aside>`;
+}
+
+function renderLetterPlanetTaskPicture(visible = {}) {
+  const picture = visible.pictureRef || visible.imageRef || {};
+  if (!picture || typeof picture !== "object" || (!picture.assetId && !picture.url)) return "";
+  if (picture.verified === true && picture.url) {
+    return `<figure class="letter-task-picture"><img src="${escapeHtml(picture.url)}" alt="${escapeHtml(picture.altZh || "活动图片")}" loading="lazy"><figcaption>${escapeHtml(picture.captionZh || "")}</figcaption></figure>`;
+  }
+  return `<div class="adaptive-source-card letter-task-picture-pending" role="status"><strong>图片素材待验收</strong><p>这张图片还没有完成真实资产验收，暂不显示图片成功。</p></div>`;
+}
+
+function renderLetterPlanetTaskBody(activity, key, itemProgress = {}) {
+  const visible = activity.childVisible || {};
+  const support = getLetterPlanetReminderPresentation(activity);
+  const intro = [
+    support.locateZh ? `<p class="letter-task-layer locate">${escapeHtml(support.locateZh)}</p>` : "",
+    support.actionZh ? `<p class="letter-task-layer action">${escapeHtml(support.actionZh)}</p>` : "",
+    visible.instructionZh || visible.promptZh ? `<p class="adaptive-activity-instruction">${escapeHtml(visible.instructionZh || visible.promptZh)}</p>` : "",
+    visible.textZh || visible.text ? `<p class="adaptive-activity-text">${escapeHtml(visible.textZh || visible.text)}</p>` : "",
+    renderLetterPlanetTaskPicture(visible)
+  ].filter(Boolean).join("");
+  const ordered = Array.isArray(activity.answerKey?.correctOrder) && activity.answerKey.correctOrder.length > 0;
+  const selected = Array.isArray(itemProgress.taskAnswer)
+    ? itemProgress.taskAnswer
+    : itemProgress.taskAnswer || itemProgress.adaptiveAnswer || (ordered ? [] : "");
+  const options = activity.options || normalizeLetterPlanetTaskOptions(visible.options || visible.choices || []);
+  if (options.length) {
+    return `${intro}<div class="adaptive-option-list letter-task-option-list${ordered ? " letter-task-order-list" : ""}" role="group" aria-label="${escapeHtml(activity.titleZh)}">${options.map((option) => {
+      const isSelected = ordered ? selected.includes(option.optionId) : String(selected) === String(option.optionId);
+      const orderNumber = ordered && isSelected ? selected.indexOf(option.optionId) + 1 : "";
+      return `<button class="adaptive-option ${isSelected ? "is-selected" : ""}" data-letter-task-option="${escapeHtml(key)}" data-letter-task-option-value="${escapeHtml(option.optionId)}" type="button">${orderNumber ? `${orderNumber}. ` : ""}${escapeHtml(option.text)}</button>`;
+    }).join("")}</div>`;
+  }
+  if (activity.activityType === "guided_write") {
+    const wordBank = Array.isArray(visible.wordBank) ? visible.wordBank.map((item) => typeof item === "string" ? item : item?.text || item?.label || "").filter(Boolean) : [];
+    return `${intro}${wordBank.length ? `<div class="letter-task-word-bank" aria-label="词块提示">${wordBank.map((item) => `<span class="course-chip">${escapeHtml(item)}</span>`).join("")}</div>` : ""}<textarea class="adaptive-writing-input" data-letter-task-writing="${escapeHtml(key)}" rows="4" placeholder="写下你的回答">${escapeHtml(typeof selected === "string" ? selected : "")}</textarea>`;
+  }
+  const roleCue = visible.roleCueZh || visible.sceneZh || visible.promptZh;
+  const responseBoundary = visible.responseBoundaryZh || visible.answerBoundaryZh;
+  const dialogue = Array.isArray(visible.dialogue) ? visible.dialogue : [];
+  return `${intro}${roleCue && roleCue !== visible.promptZh ? `<p class="adaptive-prompt-card">${escapeHtml(roleCue)}</p>` : ""}${responseBoundary ? `<p class="adaptive-answer-boundary">${escapeHtml(responseBoundary)}</p>` : ""}${dialogue.length ? `<div class="adaptive-dialogue">${dialogue.map((line) => `<p><strong>${escapeHtml(line.speaker || "")}</strong> ${escapeHtml(line.text || line)}</p>`).join("")}</div>` : ""}`;
+}
+
+function renderLetterPlanetTaskHints(activity, key, itemProgress = {}) {
+  const support = getLetterPlanetReminderPresentation(activity);
+  const levels = Array.isArray(support.levels) ? support.levels : [];
+  if (!levels.length) return "";
+  const visible = Math.min(levels.length, Number(itemProgress.hintLevelUsed || 0));
+  const revoked = new Set(Array.isArray(itemProgress.revokedReminderLevelIds) ? itemProgress.revokedReminderLevelIds : []);
+  const ariaLabel = support.accessibility?.ariaLabelZh || "查看分层学习提示";
+  const shownLevels = levels.slice(0, visible).filter((level) => !revoked.has(level.id));
+  return `<div class="adaptive-hints letter-task-hints" data-reminder-system="${escapeHtml(support.schemaVersion || LETTER_PLANET_REMINDER_SYSTEM_SCHEMA)}"><button class="button ghost compact-button" data-letter-task-hint="${escapeHtml(key)}" aria-label="${escapeHtml(ariaLabel)}" ${visible >= levels.length ? "disabled" : ""} type="button">${visible >= levels.length ? "提示已显示完" : visible ? "再看一点提示" : "查看提示"}</button><div class="adaptive-hint-list">${shownLevels.map((level) => `<p data-reminder-level="${escapeHtml(level.type || "cue")}">${escapeHtml(level.textZh)}</p>`).join("")}</div></div>`;
+}
+
+function getLetterPlanetReminderPresentation(activity) {
+  const v2 = activity?.reminderSystemV2;
+  if (v2?.schemaVersion === LETTER_PLANET_REMINDER_V2_SCHEMA) {
+    const strategyLevels = Array.isArray(v2.layers?.strategy?.levels) ? v2.layers.strategy.levels : [];
+    const levels = strategyLevels.map((level, index) => ({
+      level: index + 1,
+      id: level.id,
+      type: index === 0 ? "cue" : "strategy",
+      textZh: level.textZh,
+      trigger: level.trigger,
+      requiresAttempt: false
+    }));
+    if (v2.layers?.demonstration) levels.push({
+      level: levels.length + 1,
+      id: v2.layers.demonstration.id,
+      type: "model",
+      textZh: v2.layers.demonstration.textZh,
+      trigger: v2.layers.demonstration.trigger,
+      requiresAttempt: true
+    });
+    return {
+      schemaVersion: v2.schemaVersion,
+      locateZh: v2.layers?.locate?.textZh || "",
+      actionZh: v2.layers?.action?.textZh || "",
+      levels,
+      resultZh: (v2.layers?.result?.statuses || []).map((status) => status.labelZh).filter(Boolean).join("、"),
+      accessibility: v2.accessibility || {}
+    };
+  }
+  const support = activity?.reminderSystem || activity?.supportLadder || {};
+  return {
+    ...support,
+    schemaVersion: support.schemaVersion || LETTER_PLANET_REMINDER_SYSTEM_SCHEMA,
+    accessibility: {}
+  };
+}
+
+function renderLetterPlanetTaskActivity(pack, activity, index, total, mode, progress) {
+  const key = `english:${activity.activityId || activity.id}`;
+  const itemProgress = progress?.english?.steps?.[key] || {};
+  const readText = [activity.titleZh, activity.childVisible?.instructionZh || activity.childVisible?.promptZh].filter(Boolean).join("。\n");
+  const readAloud = normalizeReadAloudConfig(activity.readAloud, readText, "instruction_only");
+  const isLast = index >= total - 1;
+  return `<article class="course-card adaptive-english-activity letter-task-activity" data-course-card="${escapeHtml(key)}" data-letter-task-activity-type="${escapeHtml(activity.activityType)}"><div class="course-card-head"><div><span>${index + 1}</span>${renderPromptRow(`<h3>${escapeHtml(activity.titleZh)}</h3>`, renderReadAloudButton(key, readAloud, { targetText: readText }))}</div></div>${renderLetterPlanetTaskAudio(activity, key, itemProgress)}<div class="adaptive-english-student-zone">${renderLetterPlanetTaskBody(activity, key, itemProgress)}</div>${renderLetterPlanetTaskHints(activity, key, itemProgress)}${renderAdaptiveRecordingCard(key, activity, itemProgress, pack)}${renderAdaptiveActivityControls(key, itemProgress)}<div class="adaptive-activity-nav"><button class="button ghost compact-button" data-letter-task-nav="${index - 1}" ${index > 0 ? "" : "disabled"} type="button">上一步</button>${isLast ? `<button class="button primary compact-button" data-course-end="english" type="button">完成课程</button>` : `<button class="button secondary compact-button" data-letter-task-nav="${index + 1}" type="button">下一步</button>`}</div></article>`;
+}
+
+function renderLetterPlanetTaskSystemLesson(pack, mode = "light", progress = initializeCourseProgress(pack)) {
+  const taskSystem = getLetterPlanetTaskSystem(pack);
+  const steps = getEnglishLessonSteps(pack, mode);
+  const currentIndex = Math.max(0, Math.min(Math.max(steps.length - 1, 0), Number(progress?.english?.currentActivityIndex || 0)));
+  const activity = steps[currentIndex];
+  if (!taskSystem || !activity) return "";
+  return `${renderAdaptiveProgressRail(steps, currentIndex, progress)}${renderLetterPlanetTaskActivity(pack, activity, currentIndex, steps.length, mode, progress)}`;
+}
+
 function updateAdaptiveAudioProgress(pack, key, patch = {}, rerender = true) {
   const progress = initializeCourseProgress(pack);
   const item = progress.english.steps[key] || {};
@@ -12882,8 +14049,20 @@ function playAdaptiveAudio(key) {
     utterance.onerror = () => markFailed("本机朗读没有播放成功，请检查设备音量后重试。");
     currentAdaptiveAudio = { key, utterance, audio: null };
     updateAdaptiveAudioProgress(pack, key, { audioStatus: "device_tts_pending", audioSource: "device_tts", audioError: "" });
+    // Chrome can drop a speech request when cancel() and speak() happen in
+    // the same event turn, especially after switching lessons. Resume the
+    // native queue and schedule speak on the next turn so the user gesture is
+    // preserved while the stale utterance is cleared first.
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    if (typeof window.speechSynthesis.resume === "function") window.speechSynthesis.resume();
+    setTimeout(() => {
+      if (currentAdaptiveAudio.utterance !== utterance) return;
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch {
+        markFailed("本机朗读没有播放成功，请检查浏览器声音权限后重试。");
+      }
+    }, 0);
     return true;
   }
   return markFailed("当前课程没有可用音频，请在移动端每日英语听力完成前四项。");
@@ -12946,6 +14125,214 @@ function updateAdaptiveWritingAnswer(input) {
   const value = String(input.value || "").slice(0, 2000);
   progress.english.steps[key] = { ...item, adaptiveAnswer: value, updatedAt: new Date().toISOString() };
   saveState();
+}
+
+function getActiveLetterPlanetTaskActivity(key = "") {
+  const pack = getActiveEnglishPack();
+  if (!isLetterPlanetTaskSystemPack(pack)) return { pack: null, activity: null, key };
+  const activity = getEnglishLessonSteps(pack).find((entry) => `english:${entry.id}` === key) || null;
+  return { pack, activity, key };
+}
+
+function setLetterPlanetTaskActivity(index) {
+  const pack = getActiveEnglishPack();
+  if (!isLetterPlanetTaskSystemPack(pack)) return false;
+  const progress = initializeCourseProgress(pack);
+  const total = getEnglishLessonSteps(pack, getSelectedEnglishMode(pack)).length;
+  if (!total) return false;
+  progress.english.currentActivityIndex = Math.max(0, Math.min(total - 1, Number(index || 0)));
+  saveState();
+  renderEnglishLesson();
+  return true;
+}
+
+function selectLetterPlanetTaskOption(button) {
+  const key = button?.dataset?.letterTaskOption || "";
+  const value = button?.dataset?.letterTaskOptionValue || "";
+  const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
+  if (!pack || !activity || !value) return false;
+  const progress = initializeCourseProgress(pack);
+  const item = progress.english.steps[key] || {};
+  const ordered = Array.isArray(activity.answerKey?.correctOrder) && activity.answerKey.correctOrder.length > 0;
+  const current = Array.isArray(item.taskAnswer) ? [...item.taskAnswer] : item.taskAnswer ? [item.taskAnswer] : [];
+  const nextAnswer = ordered
+    ? (current.includes(value) ? current.filter((item) => item !== value) : [...current, value])
+    : value;
+  progress.english.steps[key] = {
+    ...item,
+    taskAnswer: nextAnswer,
+    selectedOptionId: ordered ? "" : value,
+    selectedAt: new Date().toISOString(),
+    independence: ["prompted", "modeled"].includes(item.independence) ? item.independence : "not_attempted",
+    updatedAt: new Date().toISOString()
+  };
+  saveState();
+  renderEnglishLesson();
+  return true;
+}
+
+function evaluateLetterPlanetTaskResponse(activity, response) {
+  if (!activity || response == null || response === "" || (Array.isArray(response) && !response.length)) return "not_attempted";
+  const answerKey = activity.answerKey || {};
+  if (answerKey.correctOptionId) return String(response) === String(answerKey.correctOptionId) ? "correct" : "not_yet";
+  if (Array.isArray(answerKey.correctOrder) && answerKey.correctOrder.length) {
+    return Array.isArray(response) && response.length === answerKey.correctOrder.length && response.every((item, index) => String(item) === String(answerKey.correctOrder[index])) ? "correct" : "not_yet";
+  }
+  return "not_attempted";
+}
+
+function updateLetterPlanetTaskWritingAnswer(input) {
+  const key = input?.dataset?.letterTaskWriting || "";
+  const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
+  if (!pack || !activity || !key) return false;
+  const progress = initializeCourseProgress(pack);
+  const item = progress.english.steps[key] || {};
+  progress.english.steps[key] = {
+    ...item,
+    taskAnswer: String(input.value || "").slice(0, 2000),
+    updatedAt: new Date().toISOString()
+  };
+  saveState();
+  return true;
+}
+
+function revealLetterPlanetTaskHint(key) {
+  const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
+  const reminder = activity?.reminderSystemV2 || activity?.reminderSystem || activity?.supportLadder || {};
+  const presentation = getLetterPlanetReminderPresentation(activity);
+  const levels = presentation.levels || [];
+  if (!pack || !activity || !levels.length) return false;
+  const progress = initializeCourseProgress(pack);
+  const item = progress.english.steps[key] || {};
+  const currentLevel = Math.max(0, Number(item.hintLevelUsed || 0));
+  if (currentLevel >= levels.length) return false;
+  const nextLevel = currentLevel + 1;
+  const level = levels[nextLevel - 1];
+  const hasAttempt = Boolean(item.startedAt || item.selectedAt || item.taskAnswer || item.attempts || item.attemptHistory?.length);
+  const isV2 = reminder?.schemaVersion === LETTER_PLANET_REMINDER_V2_SCHEMA;
+  const attemptNumber = Math.max(1, Number(item.attempts || 0) + 1);
+  const reminderId = isV2 ? reminder.reminderId : key;
+  let eventBuffer = Array.isArray(item.reminderEvents) ? item.reminderEvents : [];
+  const appendEvent = (eventType) => {
+    const eventId = `${key}:${reminderId}:${level.id}:${attemptNumber}:${eventType}`;
+    if (eventBuffer.some((event) => event.eventId === eventId)) return eventBuffer;
+    eventBuffer = [...eventBuffer, {
+      schemaVersion: isV2 ? LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA : LETTER_PLANET_REMINDER_SYSTEM_SCHEMA,
+      eventId,
+      reminderId,
+      layerId: level.id,
+      event: eventType,
+      attemptNumber,
+      at: new Date().toISOString()
+    }].slice(- (isV2 ? 32 : 12));
+    return eventBuffer;
+  };
+  appendEvent("requested");
+  if ((level?.type === "model" || level?.isModel || level?.requiresAttempt) && !hasAttempt) {
+    progress.english.steps[key] = {
+      ...item,
+      reminderEvents: appendEvent("blocked"),
+      completionMessage: "先试一次，再看完整示范。",
+      updatedAt: new Date().toISOString()
+    };
+    saveState();
+    renderEnglishLesson();
+    return false;
+  }
+  const reminderEvent = {
+    level: nextLevel,
+    type: level?.type || (level?.isModel ? "model" : "cue"),
+    triggered: level?.trigger || "on_request",
+    at: new Date().toISOString()
+  };
+  progress.english.steps[key] = {
+    ...item,
+    hintLevelUsed: nextLevel,
+    independence: (level?.type === "model" || level?.isModel) ? "modeled" : "prompted",
+    result: item.result || "prompted",
+    reminderHistory: [...(Array.isArray(item.reminderHistory) ? item.reminderHistory : []), reminderEvent].slice(-12),
+    reminderEvents: appendEvent("shown"),
+    reminderSystemSchema: isV2 ? LETTER_PLANET_REMINDER_V2_SCHEMA : LETTER_PLANET_REMINDER_SYSTEM_SCHEMA,
+    updatedAt: new Date().toISOString()
+  };
+  saveState();
+  renderEnglishLesson();
+  return true;
+}
+
+function revokeLetterPlanetTaskHint(key, levelId = "") {
+  const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
+  const reminder = activity?.reminderSystemV2 || activity?.reminderSystem || activity?.supportLadder || {};
+  if (!pack || !activity || reminder?.schemaVersion !== LETTER_PLANET_REMINDER_V2_SCHEMA) return false;
+  const progress = initializeCourseProgress(pack);
+  const item = progress.english.steps[key] || {};
+  const target = levelId || getLetterPlanetReminderPresentation(activity).levels[Math.max(0, Number(item.hintLevelUsed || 1) - 1)]?.id;
+  if (!target) return false;
+  const existing = Array.isArray(item.reminderEvents) ? item.reminderEvents : [];
+  const event = existing.find((entry) => entry.layerId === target && entry.event === "shown");
+  if (!event) return false;
+  const attemptNumber = Number(event.attemptNumber || 1);
+  const eventId = `${key}:${reminder.reminderId}:${target}:${attemptNumber}:revoked`;
+  if (existing.some((entry) => entry.eventId === eventId)) return false;
+  progress.english.steps[key] = {
+    ...item,
+    revokedReminderLevelIds: [...new Set([...(item.revokedReminderLevelIds || []), target])],
+    reminderEvents: [...existing, {
+      schemaVersion: LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA,
+      eventId,
+      reminderId: reminder.reminderId,
+      layerId: target,
+      event: "revoked",
+      attemptNumber,
+      at: new Date().toISOString()
+    }].slice(-32),
+    updatedAt: new Date().toISOString()
+  };
+  saveState();
+  renderEnglishLesson();
+  return true;
+}
+
+function playLetterPlanetTaskAudio(key) {
+  const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
+  const audio = activity?.audioRef;
+  if (!pack || !activity || !audio) return false;
+  const progress = initializeCourseProgress(pack);
+  const item = progress.english.steps[key] || {};
+  if (audio.mode === "mobile_handoff") {
+    progress.english.steps[key] = { ...item, audioStatus: "mobile_handoff", audioSource: "mobile_handoff", audioError: "", updatedAt: new Date().toISOString() };
+    saveState();
+    renderEnglishLesson();
+    return false;
+  }
+  if (audio.mode !== "pack_asset" || audio.verified !== true || !audio.url || typeof Audio !== "function") {
+    progress.english.steps[key] = { ...item, audioStatus: "unverified", audioSource: "pack_asset", audioError: "课程音频尚未完成真实设备验收，不能显示播放成功。", updatedAt: new Date().toISOString() };
+    saveState();
+    renderEnglishLesson();
+    return false;
+  }
+  stopAdaptiveAudioPlayback();
+  const maxPlays = Math.max(1, Number(audio.maxPlays || 1));
+  const played = Math.min(maxPlays, Number(item.audioPlayCount || 0));
+  const audioElement = new Audio(audio.url);
+  audioElement.preload = "auto";
+  audioElement.onplay = () => {
+    progress.english.steps[key] = { ...progress.english.steps[key], audioPlayCount: Math.min(maxPlays, played + 1), audioStatus: "playing", audioSource: "pack_audio", audioError: "", updatedAt: new Date().toISOString() };
+    saveState();
+  };
+  audioElement.onended = () => {
+    progress.english.steps[key] = { ...progress.english.steps[key], audioStatus: "played", audioCompletedAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    saveState();
+    renderEnglishLesson();
+  };
+  audioElement.onerror = () => {
+    progress.english.steps[key] = { ...progress.english.steps[key], audioStatus: "failed", audioError: "课程音频无法播放，请检查资源后重试。", updatedAt: new Date().toISOString() };
+    saveState();
+    renderEnglishLesson();
+  };
+  currentAdaptiveAudio = { key, utterance: null, audio: audioElement };
+  audioElement.play().catch(() => audioElement.onerror?.());
+  return true;
 }
 
 function renderEnglishStepBody(pack, step, mode) {
@@ -13252,6 +14639,23 @@ function validateChineseCourseCompleteness(pack, missing) {
 }
 
 function validateEnglishCourseCompleteness(pack, missing) {
+  if (isLetterPlanetTaskSystemPack(pack)) {
+    const taskSystem = getLetterPlanetTaskSystem(pack);
+    const activities = (taskSystem?.activities || []).filter((activity) => activity.activityType !== "exit_reflection");
+    if (taskSystem?.status !== "content_complete_for_dr_george_dispatch") missing.push("english.taskSystem.status 尚未通过课程终审");
+    if (!taskSystem?.curriculumPlan?.planId) missing.push("english.taskSystem.curriculumPlan.planId");
+    if (!taskSystem?.dailyMission?.titleZh) missing.push("english.taskSystem.dailyMission.titleZh");
+    if (activities.length < 2 || activities.length > 5) missing.push("english.taskSystem.activities 2–5个");
+    activities.forEach((activity, index) => {
+      const prefix = `english.taskSystem.activities.${activity.activityId || index}`;
+      if (!LETTER_PLANET_TASK_ACTIVITY_TYPES.has(activity.activityType)) missing.push(`${prefix}.activityType`);
+      if (!activity.titleZh) missing.push(`${prefix}.titleZh`);
+      if (!activity.childVisible || typeof activity.childVisible !== "object") missing.push(`${prefix}.childVisible`);
+      if (!activity.sourceMaterialIds?.length) missing.push(`${prefix}.sourceMaterialIds`);
+      if (!activity.evidenceTargetIds?.length) missing.push(`${prefix}.evidenceTargetIds`);
+    });
+    return;
+  }
   const lesson = pack.english?.lesson;
   if (!lesson) {
     missing.push("english.lesson");
@@ -13504,6 +14908,14 @@ function completeCourseItem(key) {
   if (isCourseItemLocked(key, progress)) return;
   const bucket = getCourseBucket(progress, key);
   const item = bucket[key] || {};
+  const taskContext = key.startsWith("english:") ? getActiveLetterPlanetTaskActivity(key) : { pack: null, activity: null };
+  const hasTaskResponse = Array.isArray(item.taskAnswer) ? item.taskAnswer.length > 0 : Boolean(item.taskAnswer || item.adaptiveAnswer);
+  if (taskContext.activity?.options?.length && !hasTaskResponse) {
+    bucket[key] = { ...item, completionMessage: "请先完成这一项，再确认。", updatedAt: new Date().toISOString() };
+    saveState();
+    rerenderCourseViews();
+    return;
+  }
   if (key.startsWith("chinese:") && !confirmChineseObjectiveSection(key, item, progress)) {
     saveState();
     renderChineseLesson();
@@ -13512,7 +14924,21 @@ function completeCourseItem(key) {
   }
   const elapsedMs = (item.elapsedMs || 0) + (item.runningSince ? Date.now() - item.runningSince : 0);
   const finishedAt = new Date().toISOString();
-  const nextItem = { ...item, elapsedMs, runningSince: null, finishedAt, result: item.result || "independent" };
+  const taskIndependence = taskContext.activity
+    ? (["prompted", "modeled"].includes(item.independence)
+      ? item.independence
+      : hasTaskResponse || item.recordingClipIds?.length ? "independent" : "not_attempted")
+    : "independent";
+  const taskCorrectness = taskContext.activity ? evaluateLetterPlanetTaskResponse(taskContext.activity, item.taskAnswer) : "";
+  const nextItem = {
+    ...item,
+    elapsedMs,
+    runningSince: null,
+    finishedAt,
+    correctness: taskCorrectness || item.correctness || "not_attempted",
+    independence: taskContext.activity ? taskIndependence : item.independence || taskIndependence,
+    result: item.result || taskIndependence
+  };
   if (key.startsWith("english:")) appendEnglishStepAttempt(nextItem, key, progress, finishedAt);
   bucket[key] = nextItem;
   if (key.startsWith("chinese:")) {
@@ -13579,8 +15005,11 @@ function areChineseSectionsComplete(pack, map) {
 }
 
 function appendEnglishStepAttempt(item, key, progress, completedAt) {
-  const pack = getActiveEnglishPack();
+  const pack = state.learningPacks?.[progress?.packId]?.data || getActiveEnglishPack();
   const lesson = getSelectedEnglishLibraryLesson();
+  const taskActivity = isLetterPlanetTaskSystemPack(pack)
+    ? getEnglishLessonSteps(pack).find((step) => `english:${step.id}` === key)
+    : null;
   item.attemptHistory ||= [];
   item.attemptHistory.push({
     attemptId: `${key}:${Date.now().toString(36)}:${item.attemptHistory.length + 1}`,
@@ -13591,9 +15020,38 @@ function appendEnglishStepAttempt(item, key, progress, completedAt) {
     stepId: key.replace(/^english:/, ""),
     mode: progress?.english?.selectedMode || "",
     result: item.result || "independent",
+    correctness: item.correctness || "not_attempted",
+    independence: item.independence || (item.hintLevelUsed ? "prompted" : "independent"),
+    taskSystemSchema: taskActivity ? LETTER_PLANET_TASK_SYSTEM_SCHEMA : "",
+    activityType: taskActivity?.activityType || "",
+    taskAnswer: item.taskAnswer ?? null,
+    evidenceTargetIds: [...(taskActivity?.evidenceTargetIds || [])],
+    hintLevelUsed: Number(item.hintLevelUsed || 0),
+    reminderSystemSchema: taskActivity?.reminderSystemV2?.schemaVersion || taskActivity?.reminderSystem?.schemaVersion || "",
+    reminderHistory: structuredCloneSafe(item.reminderHistory || []),
+    migrationDistance: item.migrationDistance || "",
+    selectedAt: item.selectedAt || "",
     elapsedMs: item.elapsedMs || 0,
     completedAt
   });
+  if (taskActivity?.reminderSystemV2?.schemaVersion === LETTER_PLANET_REMINDER_V2_SCHEMA) {
+    const reminder = taskActivity.reminderSystemV2;
+    const attemptNumber = item.attemptHistory.length;
+    const layerId = reminder.layers?.result?.id || "result";
+    const eventId = `${key}:${reminder.reminderId}:${layerId}:${attemptNumber}:completed`;
+    const events = Array.isArray(item.reminderEvents) ? item.reminderEvents : [];
+    if (!events.some((event) => event.eventId === eventId)) {
+      item.reminderEvents = [...events, {
+        schemaVersion: LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA,
+        eventId,
+        reminderId: reminder.reminderId,
+        layerId,
+        event: "completed",
+        attemptNumber,
+        at: completedAt || new Date().toISOString()
+      }].slice(-32);
+    }
+  }
   item.attempts = item.attemptHistory.length;
 }
 
@@ -14872,6 +16330,35 @@ function playSoftBreakSignal() {
   }
 }
 
+function buildFeedbackWorkflowEnvelope(payload, course = payload?.course || "snapshot") {
+  const traceId = safePlainText(payload?.feedbackId || payload?.snapshotId || `${payload?.packId || "feedback"}-${course}`, 180);
+  return {
+    schemaVersion: "helen-feedback-workflow/1",
+    traceId,
+    course,
+    status: "pending_human_review",
+    participants: ["Nick", "Allen", "George"],
+    handoff: ["Nick", "Allen", "George"],
+    route: [
+      { actor: "Nick", role: "draft_and_package", status: "submitted" },
+      { actor: "Allen", role: "content_review", status: "pending" },
+      { actor: "George", role: "device_and_release_review", status: "pending" }
+    ],
+    deliverables: {
+      parentReport: { id: "parent_report", labelZh: "家长报告", status: "pending" },
+      childReport: { id: "child_report", labelZh: "孩子报告", status: "pending" },
+      nextDayCoursePack: { id: "next_day_course_pack", labelZh: "次日课包", status: "pending" }
+    },
+    deliverableIds: ["parent_report", "child_report", "next_day_course_pack"],
+    approval: {
+      automatic: false,
+      autoApprove: false,
+      requiresHumanApproval: true,
+      approvedBy: ""
+    }
+  };
+}
+
 function buildFeedbackPackage(course = "snapshot") {
   const pack = getLatestLearningPack();
   if (!pack) return null;
@@ -14933,6 +16420,7 @@ function buildCurrentFeedbackSnapshot(pack, progress) {
     planets,
     attachmentsExpected: collectSnapshotAttachments(planets)
   };
+  payload.workflowEnvelope = buildFeedbackWorkflowEnvelope(payload, "snapshot");
   const human = formatSnapshotHuman(payload, pack);
   return { human, payload };
 }
@@ -15170,6 +16658,48 @@ function renderCurrentFeedbackSnapshot() {
   return feedback;
 }
 
+// Keep the append-only task evidence useful to the parent review workflow
+// without copying the whole mutable progress item (which may contain runtime
+// timers or UI-only fields).  This is intentionally a narrow, replayable
+// shape: result, correctness and independence stay separate.
+function sanitizeLetterPlanetTaskAttempt(attempt = {}) {
+  const allowedResult = new Set(["independent", "prompted", "modeled", "not_yet", "not_attempted"]);
+  const allowedCorrectness = new Set(["correct", "not_yet", "not_attempted"]);
+  const allowedIndependence = new Set(["independent", "prompted", "modeled", "not_attempted"]);
+  return {
+    attemptId: safePlainText(attempt.attemptId || "", 140),
+    result: allowedResult.has(attempt.result) ? attempt.result : "not_attempted",
+    correctness: allowedCorrectness.has(attempt.correctness) ? attempt.correctness : "not_attempted",
+    independence: allowedIndependence.has(attempt.independence) ? attempt.independence : "not_attempted",
+    activityType: safeId(attempt.activityType || ""),
+    taskAnswer: structuredCloneSafe(attempt.taskAnswer ?? null),
+    evidenceTargetIds: Array.isArray(attempt.evidenceTargetIds) ? attempt.evidenceTargetIds.map(normalizeLetterPlanetTaskRef).filter(Boolean).slice(0, 24) : [],
+    hintLevelUsed: Number(attempt.hintLevelUsed || 0),
+    reminderSystemSchema: [LETTER_PLANET_REMINDER_SYSTEM_SCHEMA, LETTER_PLANET_REMINDER_V2_SCHEMA].includes(attempt.reminderSystemSchema)
+      ? attempt.reminderSystemSchema
+      : safePlainText(attempt.reminderSystemSchema || "", 80),
+    reminderHistory: Array.isArray(attempt.reminderHistory) ? attempt.reminderHistory.slice(-12).map((event) => ({
+      level: Number(event?.level || 0),
+      type: safeId(event?.type || ""),
+      triggered: safeId(event?.triggered || ""),
+      at: safePlainText(event?.at || "", 40)
+    })) : [],
+    reminderEvents: Array.isArray(attempt.reminderEvents) ? attempt.reminderEvents.slice(-32).map((event) => ({
+      schemaVersion: [LETTER_PLANET_REMINDER_SYSTEM_SCHEMA, LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA].includes(event?.schemaVersion) ? event.schemaVersion : "",
+      eventId: safePlainText(event?.eventId || "", 180),
+      reminderId: safeId(event?.reminderId || ""),
+      layerId: safeId(event?.layerId || ""),
+      event: safeId(event?.event || ""),
+      attemptNumber: Number(event?.attemptNumber || 0),
+      at: safePlainText(event?.at || "", 40)
+    })) : [],
+    migrationDistance: safeId(attempt.migrationDistance || ""),
+    selectedAt: safePlainText(attempt.selectedAt || "", 40),
+    elapsedSeconds: Math.round(Number(attempt.elapsedMs || 0) / 1000),
+    completedAt: safePlainText(attempt.completedAt || "", 40)
+  };
+}
+
 function buildSingleCourseFeedback(pack, progress, course, options = {}) {
   const side = progress[course] || {};
   const activityMap = side.sections || side.steps || {};
@@ -15222,6 +16752,7 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
     };
   } else if (course === "english") {
     const adaptive = isAdaptiveEnglishPack(pack);
+    const taskSystemPack = isLetterPlanetTaskSystemPack(pack);
     const lessonSteps = getEnglishLessonSteps(pack, getSelectedEnglishMode(pack));
     const expectedKeys = lessonSteps.map((step) => `english:${step.id}`);
     base.english = {
@@ -15234,7 +16765,7 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       phonicsResults: collectStepResults(progress.english.steps, "phonics"),
       exitCheckResults: collectStepResults(progress.english.steps, "dialogue_exit"),
       anchorSentence: pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "",
-      lessonLibrary: adaptive ? null : buildEnglishLessonLibraryFeedback(pack)
+      lessonLibrary: adaptive || taskSystemPack ? null : buildEnglishLessonLibraryFeedback(pack)
     };
     if (adaptive) {
       base.english.adaptive = {
@@ -15277,6 +16808,50 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
         })
       };
     }
+    if (taskSystemPack) {
+      const taskSystem = getLetterPlanetTaskSystem(pack);
+      base.english.taskSystem = {
+        schemaVersion: LETTER_PLANET_TASK_SYSTEM_SCHEMA,
+        status: taskSystem.status,
+        curriculumPlan: structuredCloneSafe(taskSystem.curriculumPlan || {}),
+        dailyMission: structuredCloneSafe(taskSystem.dailyMission || {}),
+        duration: structuredCloneSafe(taskSystem.duration || {}),
+        activityCount: expectedKeys.length,
+        activities: lessonSteps.map((step) => {
+          const item = progress.english.steps?.[`english:${step.id}`] || {};
+          return {
+            activityId: step.id,
+            activityType: step.activityType || "",
+            constructId: step.construct?.id || "",
+            completion: item.finishedAt ? "completed" : item.startedAt ? "partial" : "not_started",
+            correctness: item.correctness || "not_attempted",
+            independence: item.independence || (item.hintLevelUsed ? "prompted" : "not_attempted"),
+            result: item.result || "not_attempted",
+            migrationDistance: item.migrationDistance || "",
+            taskAnswer: item.taskAnswer ?? null,
+            selectedAt: item.selectedAt || "",
+            attempts: Number(item.attempts || item.attemptHistory?.length || 0),
+            attemptHistory: Array.isArray(item.attemptHistory) ? item.attemptHistory.slice(-12).map(sanitizeLetterPlanetTaskAttempt) : [],
+            hintLevelUsed: Number(item.hintLevelUsed || 0),
+            reminderSystemSchema: step.reminderSystemV2?.schemaVersion || step.reminderSystem?.schemaVersion || "",
+            reminderHistory: structuredCloneSafe(item.reminderHistory || []),
+            reminderEvents: Array.isArray(item.reminderEvents) ? item.reminderEvents.slice(-32).map((event) => ({
+              schemaVersion: [LETTER_PLANET_REMINDER_SYSTEM_SCHEMA, LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA].includes(event?.schemaVersion) ? event.schemaVersion : "",
+              eventId: safePlainText(event?.eventId || "", 180),
+              reminderId: safeId(event?.reminderId || ""),
+              layerId: safeId(event?.layerId || ""),
+              event: safeId(event?.event || ""),
+              attemptNumber: Number(event?.attemptNumber || 0),
+              at: safePlainText(event?.at || "", 40)
+            })) : [],
+            elapsedSeconds: Math.round(Number(item.elapsedMs || 0) / 1000),
+            recordingClipIds: Array.isArray(item.recordingClipIds) ? [...item.recordingClipIds] : [],
+            evidenceTargetIds: [...(step.evidenceTargetIds || [])]
+          };
+        }),
+        feedbackPolicy: structuredCloneSafe(taskSystem.feedbackPolicy || {})
+      };
+    }
   } else if (course === "art") {
     base.art = {
       elapsedSeconds: Math.round(getCourseElapsed(progress.art, progress.art.steps) / 1000),
@@ -15290,6 +16865,7 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       paletteSelections: structuredCloneSafe(progress.art.paletteSelections || {})
     };
   }
+  base.workflowEnvelope = buildFeedbackWorkflowEnvelope(base, course);
   const human = [
     `Helen ${courseLabel(course)}反馈包`,
     `日期：${pack.date}`,

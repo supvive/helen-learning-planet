@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "candidateId": "oxford-a1-v1-pilot-greeting-and-belonging",
+  "courseArchitectureVersion": "letter-planet-adaptive/oxford-a1-v1",
+  "exampleOnly": true,
+  "notForImport": true,
+  "status": "design_only",
+  "standard": "helen-oxford-cefr-a1-reminder-v1",
+  "curriculumPlan": {
+    "planId": "hello-school-a1-plan-v1",
+    "stage": "baseline",
+    "selectionSeed": "pilot:2026-08-04:baseline:001",
+    "targetConstructs": ["listening_gist", "listening_detail", "sequence", "interaction"],
+    "difficultyBand": "L1",
+    "reasonCodes": ["baseline:cross_scene", "spaced_retest:greeting", "transfer:school_context"],
+    "sourceGraphVersion": "letter-planet-source-graph/1"
+  },
+  "learnerKnownSnapshot": {
+    "path": "data/english-learner-known-snapshot-v1.json",
+    "requiredStatus": "verified",
+    "status": "missing"
+  },
+  "sourceMaterials": [
+    {"id": "school-greeting-11", "sourceSentenceId": "story_primary_school:11", "audio": {"mode": "pack_asset", "assetId": "hello-school-11", "verified": false}},
+    {"id": "school-greeting-12", "sourceSentenceId": "story_primary_school:12", "audio": {"mode": "pack_asset", "assetId": "hello-school-12", "verified": false}},
+    {"id": "school-greeting-13", "sourceSentenceId": "story_primary_school:13", "audio": {"mode": "pack_asset", "assetId": "hello-school-13", "verified": false}},
+    {"id": "school-greeting-14", "sourceSentenceId": "story_primary_school:14", "audio": {"mode": "pack_asset", "assetId": "hello-school-14", "verified": false}},
+    {"id": "school-intro-05", "sourceSentenceId": "story_primary_school:05", "audio": {"mode": "pack_asset", "assetId": "hello-school-05", "verified": false}},
+    {"id": "school-intro-06", "sourceSentenceId": "story_primary_school:06", "audio": {"mode": "pack_asset", "assetId": "hello-school-06", "verified": false}},
+    {"id": "school-intro-07", "sourceSentenceId": "story_primary_school:07", "audio": {"mode": "pack_asset", "assetId": "hello-school-07", "verified": false}},
+    {"id": "school-intro-08", "sourceSentenceId": "story_primary_school:08", "audio": {"mode": "pack_asset", "assetId": "hello-school-08", "verified": false}}
+  ],
+  "humanReview": {
+    "content": "pending",
+    "device": "pending",
+    "audio": "pending",
+    "owner": "Dr. George"
+  },
+  "activities": [
+    {
+      "activityId": "oxford-scene-gist-greeting",
+      "family": "scene_listen_gist",
+      "constructId": "listening_gist",
+      "evidenceTargetId": "evidence.scene_gist.001",
+      "sourceMaterialIds": ["school-greeting-11", "school-greeting-12", "school-greeting-13"],
+      "sourceSentenceIds": ["story_primary_school:11", "story_primary_school:12", "story_primary_school:13"],
+      "selectionReason": "三句连续对话形成一个完整问候—认识微场景。",
+      "audio": {"mode": "pack_asset", "assetIds": ["hello-school-11", "hello-school-12", "hello-school-13"], "verified": false},
+      "difficulty": {"overall": 1, "dimensions": {"lexicalLoad": 1, "discourseLength": 1, "distractorSimilarity": 0, "supportReduction": 0}},
+      "childVisible": {
+        "titleZh": "听懂发生了什么",
+        "instruction": "先听三句话，再选出这段对话在做什么。",
+        "choices": [
+          {"id": "greet-and-meet", "label": "两个人互相问候并认识对方"},
+          {"id": "find-seat", "label": "老师带同学找座位"},
+          {"id": "start-class", "label": "第一节课开始了"}
+        ]
+      },
+      "parentOnly": {
+        "answerKey": {"choiceId": "greet-and-meet"},
+        "distractorRationale": {"find-seat": "同一学校场景但来源句不在本段", "start-class": "同一故事但事件发生在后续"},
+        "selectionReason": "三句连续对话形成一个完整问候—认识微场景。"
+      },
+      "reminder": {
+        "schemaVersion": "letter-planet-reminder/oxford-a1-v1",
+        "standardId": "helen-oxford-cefr-a1-reminder-v1",
+        "reminderId": "reminder.scene-gist-greeting",
+        "constructId": "listening_gist",
+        "evidenceTargetId": "evidence.scene_gist.001",
+        "vocabulary": {"scope": "material_intersection_learner_known", "allowedTokens": ["hello", "name", "nice", "meet", "you", "my"], "allowNewTokens": false, "unknownTokenPolicy": "reject"},
+        "surface": {
+          "initial": [
+            {"id": "scene-gist-focus", "order": 1, "trigger": "initial", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "先听三句话，注意人物在做什么。"},
+            {"id": "scene-gist-action", "order": 2, "trigger": "initial", "kind": "action", "actionCount": 1, "requiresAttempt": false, "text": "听完后选出这段对话的主要事情。"}
+          ],
+          "supports": [
+            {"id": "scene-gist-support-focus", "order": 3, "trigger": "on_request", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "再听一次，只关注两个人是否在互相说话。"},
+            {"id": "scene-gist-support-strategy", "order": 4, "trigger": "on_request", "kind": "strategy", "actionCount": 1, "requiresAttempt": false, "text": "把三句话想成一次短对话，再比较三个选项。"}
+          ],
+          "demonstration": {"id": "scene-gist-demonstration", "order": 5, "trigger": "after_attempt", "kind": "model", "actionCount": 1, "requiresAttempt": true, "text": "示范：先找人物和动作，再排除没有发生的事情。"},
+          "outcomes": {"statuses": [{"id": "independent", "label": "独立完成"}, {"id": "supported", "label": "看提示后完成"}, {"id": "modelled", "label": "看示范后完成"}, {"id": "not_yet", "label": "暂未完成"}], "separateFromCorrectness": true, "requiresCapturedEvidence": true}
+        },
+        "telemetry": {"schemaVersion": "letter-planet-reminder-event/oxford-a1-v1", "appendOnly": true, "maxEvents": 64, "allowedEvents": ["started", "support_requested", "support_shown", "attempted", "evaluated", "undone", "blocked", "finished"], "idempotency": {"duplicatePolicy": "ignore", "keyFields": "sessionId|activityId|reminderId|layerId|attemptId|attemptNumber|event"}, "undo": {"eventType": "undone", "requiresEventId": true}, "storedFields": ["schemaVersion", "eventId", "sessionId", "activityId", "reminderId", "layerId", "event", "attemptId", "attemptNumber", "sequence", "at", "kind"]},
+        "accessibility": {"minTouchTargetPx": 44, "keyboardFocusable": true, "visibleWithoutColor": true, "noHorizontalScroll320to390": true},
+        "safety": {"zeroWriteOnReject": true, "historyMode": "read_only", "failureMutation": "none"}
+      }
+    },
+    {
+      "activityId": "oxford-detail-name",
+      "family": "detail_listen",
+      "constructId": "listening_detail",
+      "evidenceTargetId": "evidence.detail.name.001",
+      "sourceMaterialIds": ["school-greeting-11", "school-greeting-12"],
+      "sourceSentenceIds": ["story_primary_school:11", "story_primary_school:12"],
+      "selectionReason": "在问候微场景中定位一个明确人物细节。",
+      "audio": {"mode": "pack_asset", "assetIds": ["hello-school-11", "hello-school-12"], "verified": false},
+      "difficulty": {"overall": 1, "dimensions": {"lexicalLoad": 1, "discourseLength": 0, "distractorSimilarity": 1, "supportReduction": 0}},
+      "childVisible": {"titleZh": "找出名字", "instruction": "再听一次，只找出她问到的名字。", "choices": [{"id": "amy", "label": "Amy"}, {"id": "helen", "label": "Helen"}, {"id": "wang", "label": "Miss Wang"}]},
+      "parentOnly": {"answerKey": {"choiceId": "amy"}, "distractorRationale": {"helen": "对话中出现但不是被问到的名字", "wang": "故事人物出现但不在本段问句中"}, "selectionReason": "在问候微场景中定位一个明确人物细节。"},
+      "reminder": {
+        "schemaVersion": "letter-planet-reminder/oxford-a1-v1", "standardId": "helen-oxford-cefr-a1-reminder-v1", "reminderId": "reminder.detail-name", "constructId": "listening_detail", "evidenceTargetId": "evidence.detail.name.001",
+        "vocabulary": {"scope": "material_intersection_learner_known", "allowedTokens": ["hello", "name", "nice", "meet", "you", "my"], "allowNewTokens": false, "unknownTokenPolicy": "reject"},
+        "surface": {"initial": [{"id": "detail-name-focus", "order": 1, "trigger": "initial", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "再听一次，注意她问的一个细节。"}, {"id": "detail-name-action", "order": 2, "trigger": "initial", "kind": "action", "actionCount": 1, "requiresAttempt": false, "text": "从三个名字中选出她问到的名字。"}], "supports": [{"id": "detail-name-support-focus", "order": 3, "trigger": "on_request", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "只听问句，不用记住后面的回答。"}], "demonstration": {"id": "detail-name-demonstration", "order": 4, "trigger": "after_attempt", "kind": "model", "actionCount": 1, "requiresAttempt": true, "text": "示范：先听清问句，再把听到的人名和选项比较。"}, "outcomes": {"statuses": [{"id": "independent", "label": "独立完成"}, {"id": "supported", "label": "看提示后完成"}, {"id": "modelled", "label": "看示范后完成"}, {"id": "not_yet", "label": "暂未完成"}], "separateFromCorrectness": true, "requiresCapturedEvidence": true}},
+        "telemetry": {"schemaVersion": "letter-planet-reminder-event/oxford-a1-v1", "appendOnly": true, "maxEvents": 64, "allowedEvents": ["started", "support_requested", "support_shown", "attempted", "evaluated", "undone", "blocked", "finished"], "idempotency": {"duplicatePolicy": "ignore", "keyFields": "sessionId|activityId|reminderId|layerId|attemptId|attemptNumber|event"}, "undo": {"eventType": "undone", "requiresEventId": true}, "storedFields": ["schemaVersion", "eventId", "sessionId", "activityId", "reminderId", "layerId", "event", "attemptId", "attemptNumber", "sequence", "at", "kind"]},
+        "accessibility": {"minTouchTargetPx": 44, "keyboardFocusable": true, "visibleWithoutColor": true, "noHorizontalScroll320to390": true}, "safety": {"zeroWriteOnReject": true, "historyMode": "read_only", "failureMutation": "none"}
+      }
+    },
+    {
+      "activityId": "oxford-sequence-greeting",
+      "family": "sequence_map",
+      "constructId": "sequence",
+      "evidenceTargetId": "evidence.sequence.greeting.001",
+      "sourceMaterialIds": ["school-intro-05", "school-intro-06", "school-intro-07", "school-intro-08"],
+      "sourceSentenceIds": ["story_primary_school:05", "story_primary_school:06", "story_primary_school:07", "story_primary_school:08"],
+      "selectionReason": "使用同一问候功能的四个历史轮次，测先后与回应关系而不是背单词。",
+      "audio": {"mode": "pack_asset", "assetIds": ["hello-school-05", "hello-school-06", "hello-school-07", "hello-school-08"], "verified": false},
+      "difficulty": {"overall": 2, "dimensions": {"lexicalLoad": 1, "discourseLength": 1, "distractorSimilarity": 1, "supportReduction": 0}},
+      "childVisible": {"titleZh": "排出对话顺序", "instruction": "听完四句话，把对话按发生顺序排好。", "choices": [{"id": "teacher-greeting", "label": "老师先问候"}, {"id": "helen-greeting", "label": "Helen回应"}, {"id": "meet-1", "label": "老师说很高兴认识你"}, {"id": "meet-2", "label": "Helen回应也很高兴"}]},
+      "parentOnly": {"answerKey": {"order": ["teacher-greeting", "helen-greeting", "meet-1", "meet-2"]}, "distractorRationale": {}, "selectionReason": "使用同一问候功能的四个历史轮次，测先后与回应关系而不是背单词。"},
+      "reminder": {
+        "schemaVersion": "letter-planet-reminder/oxford-a1-v1", "standardId": "helen-oxford-cefr-a1-reminder-v1", "reminderId": "reminder.sequence-greeting", "constructId": "sequence", "evidenceTargetId": "evidence.sequence.greeting.001",
+        "vocabulary": {"scope": "material_intersection_learner_known", "allowedTokens": ["good", "morning", "i’m", "nice", "to", "meet", "you"], "allowNewTokens": false, "unknownTokenPolicy": "reject"},
+        "surface": {"initial": [{"id": "sequence-focus", "order": 1, "trigger": "initial", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "先听四句话，注意谁先说、谁后回应。"}, {"id": "sequence-action", "order": 2, "trigger": "initial", "kind": "action", "actionCount": 1, "requiresAttempt": false, "text": "把四个片段按发生顺序排列。"}], "supports": [{"id": "sequence-support-focus", "order": 3, "trigger": "on_request", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "先找第一句问候，再找回应。"}, {"id": "sequence-support-strategy", "order": 4, "trigger": "on_request", "kind": "strategy", "actionCount": 1, "requiresAttempt": false, "text": "最后两句是一问一答，放在前两句之后。"}], "demonstration": {"id": "sequence-demonstration", "order": 5, "trigger": "after_attempt", "kind": "model", "actionCount": 1, "requiresAttempt": true, "text": "示范：先找开始对话的人，再按回应关系向后排。"}, "outcomes": {"statuses": [{"id": "independent", "label": "独立完成"}, {"id": "supported", "label": "看提示后完成"}, {"id": "modelled", "label": "看示范后完成"}, {"id": "not_yet", "label": "暂未完成"}], "separateFromCorrectness": true, "requiresCapturedEvidence": true}},
+        "telemetry": {"schemaVersion": "letter-planet-reminder-event/oxford-a1-v1", "appendOnly": true, "maxEvents": 64, "allowedEvents": ["started", "support_requested", "support_shown", "attempted", "evaluated", "undone", "blocked", "finished"], "idempotency": {"duplicatePolicy": "ignore", "keyFields": "sessionId|activityId|reminderId|layerId|attemptId|attemptNumber|event"}, "undo": {"eventType": "undone", "requiresEventId": true}, "storedFields": ["schemaVersion", "eventId", "sessionId", "activityId", "reminderId", "layerId", "event", "attemptId", "attemptNumber", "sequence", "at", "kind"]},
+        "accessibility": {"minTouchTargetPx": 44, "keyboardFocusable": true, "visibleWithoutColor": true, "noHorizontalScroll320to390": true}, "safety": {"zeroWriteOnReject": true, "historyMode": "read_only", "failureMutation": "none"}
+      }
+    },
+    {
+      "activityId": "oxford-guided-response-friend",
+      "family": "guided_response",
+      "constructId": "interaction",
+      "evidenceTargetId": "evidence.interaction.friend.001",
+      "sourceMaterialIds": ["school-greeting-13", "school-greeting-14"],
+      "sourceSentenceIds": ["story_primary_school:13", "story_primary_school:14"],
+      "selectionReason": "在相同功能的新轮次中完成一句有边界的口语回应；不要求新增词。",
+      "audio": {"mode": "pack_asset", "assetIds": ["hello-school-13", "hello-school-14"], "verified": false},
+      "difficulty": {"overall": 2, "dimensions": {"lexicalLoad": 1, "discourseLength": 1, "distractorSimilarity": 0, "supportReduction": 0}},
+      "childVisible": {"titleZh": "回应一句话", "instruction": "听完对方的话，用已经学过的一句话回应。", "role": "你的同学邀请你做朋友", "recording": {"minSeconds": 1, "maxSeconds": 8}},
+      "parentOnly": {"answerKey": {"acceptedFunction": "accept_friend_invitation", "acceptedPhrases": ["Yes, I do!"]}, "selectionReason": "在相同功能的新轮次中完成一句有边界的口语回应；不要求新增词。"},
+      "reminder": {
+        "schemaVersion": "letter-planet-reminder/oxford-a1-v1", "standardId": "helen-oxford-cefr-a1-reminder-v1", "reminderId": "reminder.guided-response-friend", "constructId": "interaction", "evidenceTargetId": "evidence.interaction.friend.001",
+        "vocabulary": {"scope": "material_intersection_learner_known", "allowedTokens": ["nice", "to", "meet", "you", "do", "want", "be", "my", "friend", "yes", "i"], "allowNewTokens": false, "unknownTokenPolicy": "reject"},
+        "surface": {"initial": [{"id": "response-focus", "order": 1, "trigger": "initial", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "先听对方的邀请，想一想要表示什么。"}, {"id": "response-action", "order": 2, "trigger": "initial", "kind": "action", "actionCount": 1, "requiresAttempt": false, "text": "录下你的一句回应，不用增加新词。"}], "supports": [{"id": "response-support-focus", "order": 3, "trigger": "on_request", "kind": "focus", "actionCount": 1, "requiresAttempt": false, "text": "先判断你是接受还是拒绝这个邀请。"}, {"id": "response-support-strategy", "order": 4, "trigger": "on_request", "kind": "strategy", "actionCount": 1, "requiresAttempt": false, "text": "从学过的同意表达中选一句说出来。"}], "demonstration": {"id": "response-demonstration", "order": 5, "trigger": "after_attempt", "kind": "model", "actionCount": 1, "requiresAttempt": true, "text": "示范：听清邀请的目的，再用完整短句回应。"}, "outcomes": {"statuses": [{"id": "independent", "label": "独立完成"}, {"id": "supported", "label": "看提示后完成"}, {"id": "modelled", "label": "看示范后完成"}, {"id": "not_yet", "label": "暂未完成"}], "separateFromCorrectness": true, "requiresCapturedEvidence": true}},
+        "telemetry": {"schemaVersion": "letter-planet-reminder-event/oxford-a1-v1", "appendOnly": true, "maxEvents": 64, "allowedEvents": ["started", "support_requested", "support_shown", "attempted", "evaluated", "undone", "blocked", "finished"], "idempotency": {"duplicatePolicy": "ignore", "keyFields": "sessionId|activityId|reminderId|layerId|attemptId|attemptNumber|event"}, "undo": {"eventType": "undone", "requiresEventId": true}, "storedFields": ["schemaVersion", "eventId", "sessionId", "activityId", "reminderId", "layerId", "event", "attemptId", "attemptNumber", "sequence", "at", "kind"]},
+        "accessibility": {"minTouchTargetPx": 44, "keyboardFocusable": true, "visibleWithoutColor": true, "noHorizontalScroll320to390": true}, "safety": {"zeroWriteOnReject": true, "historyMode": "read_only", "failureMutation": "none"}
+      }
+    }
+  ]
+}
