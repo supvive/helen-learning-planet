@@ -32,6 +32,13 @@
     "courseArchitectureVersion": "letter-planet-adaptive/1",
     "lessonId": "english-diagnostic-d03",
     "contentVersion": 1,
+    "releaseMetadata": {
+      "releaseChannel": "v3.9.14",
+      "defaultMode": "light",
+      "visibleActivityIds": ["d03_01", "d03_02", "d03_03", "d03_04", "d03_05", "d03_06"],
+      "excludedStandardActivityIds": ["d03_07"],
+      "exclusionReasonZh": "标准模式扩展保留在源档案，但本次发布不进入学生题面。"
+    },
     "dailyMission": {
       "titleZh": "身份问答",
       "primarySkill": "spoken_recall",
