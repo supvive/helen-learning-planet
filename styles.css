@@ -2411,6 +2411,34 @@ textarea:focus {
   vector-effect: non-scaling-stroke;
 }
 
+.color-process-board .color-process-construction,
+.color-process-board .color-process-connection,
+.color-process-board .color-process-position-mark,
+.color-process-board .color-process-negative-space,
+.color-process-board .color-process-correction {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.color-process-board .color-process-negative-space {
+  stroke-dasharray: 4 5;
+}
+
+.color-process-board .color-process-correction {
+  stroke-dasharray: 2 4;
+}
+
+.color-process-board .color-process-annotation {
+  font-size: 15px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 4px;
+  vector-effect: non-scaling-stroke;
+}
+
 .color-process-board .color-process-color-label {
   pointer-events: none;
 }
@@ -4055,11 +4083,17 @@ textarea:focus {
 
 .adaptive-answer-boundary,
 .adaptive-recording-takes,
-.adaptive-audio-gate {
+.adaptive-audio-gate,
+.adaptive-source-card-note,
+.adaptive-audio-error {
   margin: 0;
   color: var(--muted);
   font-size: var(--type-support);
   line-height: 1.55;
+}
+
+.adaptive-audio-error {
+  color: #9a463e;
 }
 
 .adaptive-category-tag {

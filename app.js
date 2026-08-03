@@ -65,7 +65,7 @@ const ENGLISH_BLOCK_EXERCISE_CACHE_KEY = "english-block-exercise-batches-v1";
 const ENGLISH_BLOCK_SELECTED_PATTERN_KEY = "english-blocks-selected-pattern-id-v1";
 const ENGLISH_BLOCK_SOURCE_FILTER_KEY = "english-blocks-source-filter-v1";
 const APP_METADATA = {
-  version: "v3.9.13",
+  version: "v3.9.14",
   buildId: "2026-08-03T09:45:00+08:00",
   product: "学习星球"
 };
@@ -251,8 +251,8 @@ const COLOR_REFERENCE_DB_VERSION = 1;
 const COLOR_REFERENCE_MAX_FILE_BYTES = 10 * 1024 * 1024;
 const COLOR_REFERENCE_MAX_EDGE = 1600;
 const COLOR_REFERENCE_STEP_TITLES = Object.freeze([
-  "选画笔", "定画面", "定位置", "形状骨架", "前后遮挡", "完整草稿", "主体平涂",
-  "配件与背景", "闭合线稿", "内部细节", "局部暗部/高光", "干后修补", "讲评"
+  "选画笔", "定画面", "定位置", "形状骨架", "前后遮挡", "完整草稿", "主动修改",
+  "闭合线稿", "主体平涂", "配件与背景", "局部暗部", "干后修补", "讲评"
 ]);
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
 const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
@@ -2600,6 +2600,7 @@ let state = loadState();
 initializeHistoricalRecognitionProfile();
 let pendingLearningPackPreview = null;
 let currentReadAloud = { key: "", utterance: null, audio: null, button: null };
+let currentAdaptiveAudio = { key: "", utterance: null, audio: null };
 let activeRecording = null;
 const artImagePreloadCache = new Map();
 const recordingStartPending = new Set();
@@ -3256,6 +3257,10 @@ function ensureAdaptiveEnglishPrimaryCourse() {
 
 function openPlanetHomeCourse(kind, courseId, view) {
   if (kind === "english") {
+    // Do not let an early click while the sequential diagnostic-pack fetch is
+    // still empty fall through to ensureAdaptiveEnglishPrimaryCourse(), which
+    // would otherwise make the blank home card appear to jump straight to D14.
+    if (!courseId && !getLearningCourseSequence("english").length) return false;
     const library = getEnglishLessonLibrary();
     if (library?.lessons?.some((lesson) => lesson.lessonId === courseId)) {
       state.englishCourseSource = "library";
@@ -6868,7 +6873,11 @@ function getColorCourses() {
 }
 
 function getGeneratedColorCourses() {
-  return getColorPlanetState().generatedCourses || [];
+  // Older local state may contain a course built before the professional
+  // geometry gate existed.  Keep that data recoverable in storage, but never
+  // expose it as a selectable or renderable course: its bbox fallback is not
+  // a teaching-quality process board.
+  return (getColorPlanetState().generatedCourses || []).filter((course) => canRenderGeneratedProcessBoard(course));
 }
 
 function getColorCourseById(courseId) {
@@ -7624,8 +7633,8 @@ function buildLetterDiagnosticActivities(routeDay) {
         instructionZh: "换一个新场景，用本课学过的句子说一句；不增加新词。",
         sceneZh: spec.q5.scene,
         firstSpeakerZh: "你自己",
-        childResponseZh: `示例回应：${spec.q5.answer}`,
-        answerBoundaryZh: `判定范围：${spec.q5.accepted?.length ? "目标句或允许的已学等值表达" : "目标句"}；不增加未学词。`
+        childResponseZh: "你的回应：说出符合场景的一句已学表达。",
+        answerBoundaryZh: "判定范围：符合场景的已学表达；不增加未学词。"
       },
       interaction: baseInteraction(0, false, "website"), expectedAnswer: { value: spec.q5.answer }, acceptedAnswers: [spec.q5.answer, ...(spec.q5.accepted || [])],
       recording: recording("english_retrieval", "请录下示例回应或允许的已学等值表达。"), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
@@ -7636,8 +7645,8 @@ function buildLetterDiagnosticActivities(routeDay) {
       childVisible: {
         instructionZh: "完成这一轮回应：先听对方说，再用另一句已学话回应；不增加新词。",
         firstSpeakerZh: spec.q6.first,
-        childResponseZh: `示例回应：${spec.q6.answer}`,
-        answerBoundaryZh: `判定范围：${spec.q6.accepted?.length ? "目标回应或允许的已学等值表达" : "目标回应"}；不增加未学词。`
+        childResponseZh: "你的回应：用另一句已学表达完成回应。",
+        answerBoundaryZh: "判定范围：符合对话语境的已学回应；不增加未学词。"
       },
       interaction: baseInteraction(0, false, "website"), expectedAnswer: { value: spec.q6.answer }, acceptedAnswers: [spec.q6.answer, ...(spec.q6.accepted || [])],
       recording: recording("dialogue", "请录下示例回应或允许的已学等值表达。"), hintPolicy, evidenceTargetIds, supportBoundaryZh, parentOnly: { supportBoundaryZh }
@@ -8969,7 +8978,7 @@ function buildPlanetCard(planet) {
       <p class="planet-card-status">${escapeHtml(state.status)}</p>
       <h3 class="planet-card-course">${escapeHtml(state.title)}</h3>
       ${progress}
-      <button class="button primary planet-card-action" data-go-view="${escapeHtml(state.route)}" data-home-course-kind="${escapeHtml(kind)}" data-home-course-id="${escapeHtml(state.courseId)}" type="button">${escapeHtml(state.actionText)}</button>
+      <button class="button primary planet-card-action" data-go-view="${escapeHtml(state.route)}" data-home-course-kind="${escapeHtml(kind)}" data-home-course-id="${escapeHtml(state.courseId)}" type="button" ${state.actionDisabled ? "disabled" : ""}>${escapeHtml(state.actionText)}</button>
     </article>
   `;
 }
@@ -9029,6 +9038,7 @@ function getEnglishPlanetHomeState() {
       const expectedKeys = steps.map((step) => `english:${step.id}`);
       return {
         title: getStudentCourseTitle(pack, "english"),
+        routeDay: pack.english?.lesson?.diagnostic?.routeDay || pack.english?.diagnostic?.routeDay || "",
         route: "letter-course",
         courseId: entry.packId,
         progress: getHomeCourseProgress(progress?.english || {}, progress?.english?.steps, steps.length, expectedKeys)
@@ -9038,7 +9048,7 @@ function getEnglishPlanetHomeState() {
     const inProgress = courses.find((course) => course.progress.started && !course.progress.completed);
     const active = selected || inProgress || courses[0];
     if (active.progress.started && !active.progress.completed) return activePlanetHomeState(active, "继续课程", "继续课程");
-    if (!active.progress.completed) return activePlanetHomeState(active, "开始 D01", "开始课程", false);
+    if (!active.progress.completed) return activePlanetHomeState(active, `开始 ${active.routeDay || "课程"}`, "开始课程", false);
     return activePlanetHomeState(active, "已完成课程", "查看课程", false);
   }
   // Do not fall back to the historical Story 3 anchor on a clean browser.
@@ -9050,7 +9060,12 @@ function getEnglishPlanetHomeState() {
     progressText: "",
     progressPercent: 0,
     showProgress: false,
-    actionText: "开始课程",
+    // The built-in diagnostic packs are fetched one-by-one.  Keep the home
+    // action inert until that sequence exists; otherwise a click during the
+    // loading window falls through to the route guard and silently selects
+    // D14 as a false "latest" course.
+    actionText: "课程加载中…",
+    actionDisabled: state.builtinLearningPackLoad?.ok !== true,
     route: "letter-course",
     courseId: ""
   };
@@ -9643,8 +9658,259 @@ function calculateA4PaperPlan(aspectRatio) {
   };
 }
 
+function buildColorDraftGeometry(analysis = {}) {
+  const overlays = analysis.overlays || {};
+  const construction = analysis.construction || {};
+  const readLayer = (source, name, limit = 12) => Array.isArray(source?.[name]) ? source[name].slice(0, limit) : [];
+  const position = readLayer(overlays, "position", 20);
+  const skeletonOverlay = readLayer(overlays, "skeleton", 20);
+  const occlusionOverlay = readLayer(overlays, "occlusion", 20);
+  const colorRegions = readLayer(overlays, "colorRegions", 20);
+  const axes = readLayer(construction, "axes");
+  const connections = readLayer(construction, "connections");
+  const negativeSpaces = readLayer(construction, "negativeSpaces");
+  const occlusionBreaks = readLayer(construction, "occlusionBreaks");
+  const dimensionRelations = readLayer(construction, "dimensionRelations");
+  const draftContours = readLayer(construction, "draftContours");
+  const closedContours = readLayer(construction, "closedContours");
+  // Keep the traced internal structure lines separate from the closed outer
+  // contours.  The process board uses them in steps 6–13 so a complete draft
+  // teaches face planes, joins and cross-contours instead of showing only a
+  // handful of silhouette arcs.
+  const closedContourSignatures = new Set(closedContours.map(colorDraftGeometrySignature).filter(Boolean));
+  const lineartDetails = readLayer(overlays, "lineart", 40).filter((item) => {
+    const signature = colorDraftGeometrySignature(item);
+    return signature && !closedContourSignatures.has(signature);
+  });
+  const modificationMarks = readLayer(construction, "modificationMarks");
+  const repairMarks = readLayer(construction, "repairMarks");
+  return {
+    position,
+    skeleton: skeletonOverlay.concat(axes).slice(0, 20),
+    occlusion: occlusionOverlay.concat(occlusionBreaks).slice(0, 20),
+    draft: draftContours.concat(connections).slice(0, 20),
+    lineart: closedContours,
+    lineartDetails: lineartDetails.slice(0, 20),
+    colorRegions,
+    axes,
+    connections,
+    negativeSpaces,
+    occlusionBreaks,
+    dimensionRelations,
+    draftContours,
+    closedContours,
+    modificationMarks,
+    repairMarks,
+    lineHierarchy: construction.lineHierarchy || { outer: 1, structure: 0.72, guide: 0.42 }
+  };
+}
+
+function colorDraftGeometrySignature(item) {
+  if (!item || typeof item !== "object") return "";
+  const type = String(item.type || "");
+  const number = (value) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed.toFixed(2) : "";
+  };
+  if (type === "rect") return `${type}:${["x", "y", "width", "height"].map((key) => number(item[key])).join(",")}`;
+  if (type === "ellipse") return `${type}:${["cx", "cy", "rx", "ry"].map((key) => number(item[key])).join(",")}`;
+  if (type === "line") {
+    const points = [[number(item.x1), number(item.y1)], [number(item.x2), number(item.y2)]].sort((a, b) => a.join(",").localeCompare(b.join(",")));
+    return `${type}:${points.map((point) => point.join(",")).join(";")}`;
+  }
+  if (!["polyline", "polygon"].includes(type) || !Array.isArray(item.points) || !item.points.length) return "";
+  const points = item.points.map((pair) => [number(pair?.[0]), number(pair?.[1])]);
+  if (points.some((pair) => pair.some((value) => !value))) return "";
+  const serial = (list) => list.map((pair) => pair.join(",")).join(";");
+  const candidates = [points, [...points].reverse()];
+  if (type === "polygon") {
+    candidates.length = 0;
+    for (const sequence of [points, [...points].reverse()]) {
+      for (let index = 0; index < sequence.length; index += 1) candidates.push(sequence.slice(index).concat(sequence.slice(0, index)));
+    }
+  }
+  return `${type}:${candidates.map(serial).sort()[0]}`;
+}
+
+function colorDraftGeometryOverlap(first, second) {
+  const left = new Set((Array.isArray(first) ? first : []).map(colorDraftGeometrySignature).filter(Boolean));
+  return (Array.isArray(second) ? second : []).some((item) => left.has(colorDraftGeometrySignature(item)));
+}
+
+function colorDraftItemPoints(item) {
+  if (!item || typeof item !== "object") return [];
+  const type = item.type;
+  if (type === "line") return [[item.x1, item.y1], [item.x2, item.y2]];
+  if (type === "polyline" || type === "polygon") return Array.isArray(item.points) ? item.points : [];
+  if (type === "rect") {
+    const { x, y, width, height } = item;
+    return [[x, y], [Number(x) + Number(width), y], [Number(x) + Number(width), Number(y) + Number(height)], [x, Number(y) + Number(height)]];
+  }
+  if (type === "ellipse") {
+    const { cx, cy, rx, ry } = item;
+    return [[Number(cx) - Number(rx), cy], [Number(cx) + Number(rx), cy], [cx, Number(cy) - Number(ry)], [cx, Number(cy) + Number(ry)]];
+  }
+  return [];
+}
+
+function colorDraftPointInBBox(point, bbox, margin = 0) {
+  if (!Array.isArray(point) || point.length !== 2 || !Array.isArray(bbox) || bbox.length !== 4) return false;
+  const [x, y, bx, by, width, height] = [Number(point[0]), Number(point[1]), Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3])];
+  if (![x, y, bx, by, width, height].every(Number.isFinite)) return false;
+  return bx - margin <= x && x <= bx + width + margin && by - margin <= y && y <= by + height + margin;
+}
+
+function colorDraftContourTurns(item) {
+  const points = colorDraftItemPoints(item);
+  if (points.length < 3) return 0;
+  let turns = 0;
+  for (let index = 1; index < points.length - 1; index += 1) {
+    const ax = Number(points[index][0]) - Number(points[index - 1][0]);
+    const ay = Number(points[index][1]) - Number(points[index - 1][1]);
+    const bx = Number(points[index + 1][0]) - Number(points[index][0]);
+    const by = Number(points[index + 1][1]) - Number(points[index][1]);
+    if ([ax, ay, bx, by].every(Number.isFinite) && Math.abs(ax * by - ay * bx) >= 1) turns += 1;
+  }
+  return turns;
+}
+
+function colorDraftContourSupportsBBox(item, bbox) {
+  const points = colorDraftItemPoints(item);
+  if (points.length < 8 || colorDraftContourTurns(item) < 3) return false;
+  const inside = points.filter((point) => colorDraftPointInBBox(point, bbox, 32)).length;
+  return inside >= Math.max(4, Math.floor(points.length / 2));
+}
+
+function colorDraftObjectContour(item, objectId, bbox) {
+  if (colorDraftOwnership(item) !== objectId || !["polyline", "polygon"].includes(item?.type)) return false;
+  return colorDraftContourSupportsBBox(item, bbox);
+}
+
+function colorDraftOwnership(item) {
+  if (!item || typeof item !== "object") return "";
+  const normalize = (value) => safeOptionalId(String(value || "").toLowerCase()).slice(0, 40);
+  const objectId = normalize(item.objectId);
+  const subjectId = normalize(item.subjectId);
+  return objectId && subjectId && objectId !== subjectId ? "" : objectId || subjectId;
+}
+
+function colorDraftRelatedObjectIds(item) {
+  if (!item || typeof item !== "object") return [];
+  const normalizeList = (value) => Array.isArray(value) ? value.map((item) => safeOptionalId(String(item || "").toLowerCase()).slice(0, 40)).filter(Boolean) : [];
+  const objectIds = normalizeList(item.relatedObjectIds);
+  const subjectIds = normalizeList(item.relatedSubjectIds);
+  if (objectIds.length && subjectIds.length && objectIds.join("|") !== subjectIds.join("|")) return [];
+  return [...new Set(objectIds.length ? objectIds : subjectIds)];
+}
+
+function colorDraftNearbyObjectIds(point, objects, margin = 64) {
+  return objects.filter((item) => colorDraftPointInBBox(point, item.bbox, margin)).map((item) => item.id);
+}
+
+function colorDraftItemEndpoints(item) {
+  const points = colorDraftItemPoints(item);
+  return points.length >= 2 ? [points[0], points[points.length - 1]] : [];
+}
+
+function colorDraftStructureLine(items, objectId) {
+  return items.some((item) => colorDraftOwnership(item) === objectId
+    && ["line", "polyline", "polygon"].includes(item?.type)
+    && colorDraftItemPoints(item).length >= 2
+    && /轴|骨架|结构|中心|转折|体块|比例|姿态|关节|连接|轮廓/u.test(String(item.labelZh || "")));
+}
+
+function colorDraftConnectionIsReal(item, objects) {
+  const endpoints = colorDraftItemEndpoints(item);
+  const related = colorDraftRelatedObjectIds(item);
+  if (!["line", "polyline", "polygon"].includes(item?.type) || endpoints.length !== 2 || JSON.stringify(endpoints[0]) === JSON.stringify(endpoints[1]) || related.length < 2) return false;
+  const firstIds = colorDraftNearbyObjectIds(endpoints[0], objects);
+  const secondIds = colorDraftNearbyObjectIds(endpoints[1], objects);
+  return firstIds.some((firstId) => secondIds.some((secondId) => firstId !== secondId && related.includes(firstId) && related.includes(secondId)));
+}
+
+function colorDraftNegativeSpaceIsSemantic(item, objects, multiSubject = false) {
+  const points = colorDraftItemPoints(item);
+  const related = colorDraftRelatedObjectIds(item);
+  if (!/负空间|间距|空隙|留白|空白|间隔|边缘/u.test(String(item?.labelZh || "")) || points.length < 3 || !related.length || (multiSubject && related.length < 2)) return false;
+  return related.every((objectId) => {
+    const object = objects.find((item) => item.id === objectId);
+    return object && points.every((point) => colorDraftPointInBBox(point, object.bbox, 64));
+  });
+}
+
+function colorDraftOcclusionBreakIsSemantic(item, objects, multiSubject = false) {
+  const endpoints = colorDraftItemEndpoints(item);
+  const related = colorDraftRelatedObjectIds(item);
+  if (!/遮挡|被挡|断线|断开|覆盖|交界|前后/u.test(String(item?.labelZh || "")) || endpoints.length !== 2 || JSON.stringify(endpoints[0]) === JSON.stringify(endpoints[1]) || (multiSubject && !related.length)) return false;
+  const scoped = related.length ? objects.filter((object) => related.includes(object.id)) : objects;
+  return endpoints.every((endpoint) => colorDraftNearbyObjectIds(endpoint, scoped).length > 0);
+}
+
+function hasProfessionalColorDraftGeometry(analysis = {}) {
+  const overlays = analysis.overlays || {};
+  const construction = analysis.construction || {};
+  const overlayLayers = ["position", "skeleton", "occlusion", "lineart", "colorRegions"];
+  const constructionLayers = ["axes", "connections", "negativeSpaces", "occlusionBreaks", "dimensionRelations", "draftContours", "closedContours", "modificationMarks", "repairMarks"];
+  if (!overlayLayers.every((layer) => Array.isArray(overlays[layer])) || !constructionLayers.every((layer) => Array.isArray(construction[layer]))) return false;
+  const lineart = overlays.lineart;
+  const skeleton = overlays.skeleton;
+  const lineartTurns = lineart.filter((item) => ["polyline", "polygon"].includes(item?.type) && Array.isArray(item.points) && item.points.length >= 4);
+  const objects = (analysis.objects || []).slice(0, 12).filter((item) => item && item.id && item.primitive === "polygon" && Array.isArray(item.bbox) && item.bbox.length === 4);
+  const objectCount = Math.max(1, Math.min(12, objects.length));
+  const hierarchy = construction.lineHierarchy || {};
+  const draftContours = construction.draftContours;
+  const closedContours = construction.closedContours;
+  const dimensionLabels = construction.dimensionRelations.filter((item) => String(item?.labelZh || "").trim());
+  const draftTurns = draftContours.filter((item) => ["polyline", "polygon"].includes(item?.type) && Array.isArray(item.points) && item.points.length >= 3 && JSON.stringify(item.points[0]) !== JSON.stringify(item.points[item.points.length - 1]));
+  const closedTurns = closedContours.filter((item) => ["polyline", "polygon"].includes(item?.type) && Array.isArray(item.points) && item.points.length >= 4 && JSON.stringify(item.points[0]) === JSON.stringify(item.points[item.points.length - 1]));
+  const stagePointCounts = [skeleton, draftContours, closedContours].map((items) => Math.max(0, ...(items || []).map((item) => colorDraftItemPoints(item).length)));
+  const objectRecords = objects.map((item) => ({ id: safeId(String(item.id).toLowerCase()).slice(0, 40), bbox: item.bbox }));
+  const structureLayers = [...(construction.axes || []), ...(construction.connections || [])];
+  const contourLayers = [...lineart, ...draftContours, ...closedContours];
+  const objectContoursReady = objectRecords.every((object) => contourLayers.some((item) => colorDraftOwnership(item) === object.id && colorDraftContourSupportsBBox(item, object.bbox)) && colorDraftStructureLine(structureLayers, object.id));
+  const objectStageContoursReady = objectRecords.every((object) => {
+    const stages = [skeleton, draftContours, closedContours].map((items) => (items || []).filter((item) => colorDraftObjectContour(item, object.id, object.bbox)));
+    const counts = stages.map((items) => Math.max(0, ...items.map((item) => colorDraftItemPoints(item).length)));
+    return stages.every((items) => items.length > 0) && counts[0] < counts[1] && counts[1] < counts[2];
+  });
+  const multiSubject = objectCount > 1;
+  const semanticConstructionReady = multiSubject
+    ? construction.connections.filter((item) => colorDraftConnectionIsReal(item, objectRecords)).length >= 2
+      && construction.negativeSpaces.some((item) => colorDraftNegativeSpaceIsSemantic(item, objectRecords, true))
+      && construction.occlusionBreaks.some((item) => colorDraftOcclusionBreakIsSemantic(item, objectRecords, true))
+    : construction.negativeSpaces.some((item) => colorDraftNegativeSpaceIsSemantic(item, objectRecords))
+      && (!construction.occlusionBreaks.length || construction.occlusionBreaks.some((item) => colorDraftOcclusionBreakIsSemantic(item, objectRecords)));
+  return lineart.length >= Math.max(4, objectCount * 2)
+    && lineartTurns.length >= 1
+    && overlays.position.length >= 1
+    && overlays.colorRegions.length >= 1
+    && skeleton.length >= 1
+    && draftContours.length >= 3
+    && closedContours.length >= 4
+    && draftTurns.length >= 1
+    && closedTurns.length >= 1
+    && !colorDraftGeometryOverlap(skeleton, draftContours)
+    && !colorDraftGeometryOverlap(skeleton, closedContours)
+    && !colorDraftGeometryOverlap(draftContours, closedContours)
+    && !colorDraftGeometryOverlap(lineart, skeleton)
+    && objectContoursReady
+    && objectStageContoursReady
+    && stagePointCounts[0] < stagePointCounts[1] && stagePointCounts[1] < stagePointCounts[2]
+    && semanticConstructionReady
+    && construction.axes.length >= Math.max(1, Math.min(4, objectCount))
+    && construction.connections.length >= 1
+    && construction.negativeSpaces.length >= 1
+    && construction.modificationMarks.length >= 1 && construction.modificationMarks.length <= 3
+    && construction.repairMarks.length >= 1 && construction.repairMarks.length <= 3
+    && (objectCount < 2 || construction.occlusionBreaks.length >= 1)
+    && dimensionLabels.length >= 2
+    && ["outer", "structure", "guide"].every((key) => Number.isFinite(Number(hierarchy[key])))
+    && Number(hierarchy.outer) > Number(hierarchy.structure) && Number(hierarchy.structure) > Number(hierarchy.guide);
+}
+
 function buildGeneratedColorSteps(analysis) {
   const objects = (analysis.objects || []).slice(0, 4);
+  const draftGeometry = buildColorDraftGeometry(analysis);
   const labels = objects.map((item) => item.labelZh).filter(Boolean);
   const backToFront = [...objects].sort((a, b) => Number(a.depth || 0) - Number(b.depth || 0)).map((item) => item.labelZh);
   const paletteTargets = analysis.paletteTargets || [];
@@ -9675,24 +9941,25 @@ function buildGeneratedColorSteps(analysis) {
     [
       { id: "center-line", kind: "position", labelZh: "中心线" },
       { id: "top-bottom", kind: "position", labelZh: "最高点 / 最低点" },
-      { id: "water-line", kind: "position", labelZh: "水面线" }
+      { id: "water-line", kind: "position", labelZh: "地平线 / 水面线" },
+      ...(draftGeometry.dimensionRelations || []).slice(0, 1).map((item) => ({ id: "group-width", kind: "size", labelZh: item.labelZh || "主体组宽度" }))
     ],
-    [{ id: "group-height", kind: "size", labelZh: keySize }],
-    [{ id: "group-height", kind: "size", labelZh: keySize }],
-    [{ id: "group-height", kind: "size", labelZh: keySize }]
+    [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "long-short-axis", kind: "relation", labelZh: "长轴方向与主体朝向一致" }],
+    [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "negative-space", kind: "spacing", labelZh: "主体间负空间保持可见" }],
+    [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "edge-spacing", kind: "spacing", labelZh: "外轮廓距画面边缘留白" }]
   ];
   const definitions = [
-    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: allIds, boardMode: "reference", stageMode: "paper" },
+    { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: allIds, boardMode: "reference", stageMode: "paper", stageLayer: "paper" },
     { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], boardMode: "frame", stageMode: "paper", dimensions: stepDimensions[0] },
-    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position", boardMode: "position", stageMode: "paper", dimensions: stepDimensions[1] },
-    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "只画轻线，暂不补细节。"], overlay: "skeleton", boardMode: "skeleton", stageMode: "skeleton", dimensions: stepDimensions[2] },
-    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}的顺序确认遮挡。`, "擦掉被挡住的结构线。"], overlay: "occlusion", boardMode: "occlusion", stageMode: "draft", dimensions: stepDimensions[3] },
-    { actions: ["连接基本形，补全主要轮廓。", "五官和小配件最后加入。"], overlay: "lineart", boardMode: "draft", stageMode: "draft", dimensions: stepDimensions[4] },
-    { actions: ["按标记调整主体比例和位置。", "仍用浅线，先不铺色。"], overlay: "lineart", boardMode: "draft", stageMode: "draft" },
-    { actions: ["沿外轮廓分段勾线并闭合缺口。", "擦掉被挡住的结构线，区域先留白。"], overlay: "lineart", colors: [], processColors: [], boardMode: "lineart", stageMode: "lineart" },
-    { actions: ["先完成主体大色块。", "同一区域保持同一铺色方向。"], overlay: "colorRegions", colors: localIds, processColors: localIds, boardMode: "flatColor", stageMode: "flatColor" },
-    { actions: ["再加入天空、水面和配件色区。", "已完成区域不重复覆盖。"], overlay: "colorRegions", colors: backgroundIds, processColors: foregroundAndBackgroundIds, boardMode: "flatColor", stageMode: "flatColor" },
-    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充局部暗部和少量高光。`, "重点控制在2–4处，不能盖住轮廓。"], overlay: "colorRegions", colors: shadowIds, processColors: allIds, boardMode: "details", stageMode: "details" },
+    { actions: [`标出${labels.slice(0, 3).join("、") || "主要对象"}的最高、最低、最左和最右位置。`], overlay: "position", boardMode: "position", stageMode: "paper", dimensions: stepDimensions[1], stageLayer: "position" },
+    { actions: [`用${objects.map((item) => ({ ellipse: "椭圆", rect: "方形", polygon: "多边形" }[item.primitive] || "基本形")).join("、") || "基本形"}概括主体。`, "补长短轴和连接线，暂不补细节。"], overlay: "skeleton", boardMode: "skeleton", stageMode: "skeleton", dimensions: stepDimensions[2], stageLayer: "skeleton" },
+    { actions: [`按${backToFront.join("→") || "后景→主体→前景"}标出前后关系。`, "擦掉被挡住的线段，保留负空间。"], overlay: "occlusion", boardMode: "occlusion", stageMode: "draft", dimensions: stepDimensions[3], stageLayer: "occlusion" },
+    { actions: ["连接基本形，补全云朵、配件和主要轮廓。", "线条保持浅蓝，留出可修改空间。"], overlay: "lineart", boardMode: "draft", stageMode: "draft", dimensions: stepDimensions[4], stageLayer: "draft" },
+    { actions: ["只改标出的1–3处比例或间距。", "擦掉错误线，再向正确方向移动。"], overlay: "lineart", boardMode: "draft", stageMode: "draft", dimensions: stepDimensions[4], stageLayer: "draft", correctionMarks: true },
+    { actions: ["沿外轮廓分段勾线并闭合缺口。", "遮挡处不穿线，区域先留白。"], overlay: "lineart", colors: [], processColors: [], boardMode: "lineart", stageMode: "lineart", stageLayer: "lineart" },
+    { actions: ["先完成主体大色块。", "已确认的描边色不重复选择。"], overlay: "colorRegions", colors: localIds, processColors: localIds, boardMode: "flatColor", stageMode: "flatColor", stageLayer: "flatColor" },
+    { actions: ["再加入天空、水面和配件色区。", "已完成区域不重复覆盖。"], overlay: "colorRegions", colors: backgroundIds, processColors: foregroundAndBackgroundIds, boardMode: "flatColor", stageMode: "flatColor", stageLayer: "flatColor" },
+    { actions: [`根据${analysis.lightingDirectionZh || "原图光线"}补充2–4处暗部。`, "高光用小白点，不能盖住轮廓。"], overlay: "colorRegions", colors: shadowIds, processColors: allIds, boardMode: "details", stageMode: "details", stageLayer: "details" },
     { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"], processColors: allIds, boardMode: "repair", stageMode: "details" },
     { actions: ["把完成过程板与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"], processColors: allIds, boardMode: "review", stageMode: "final" }
   ];
@@ -9703,21 +9970,37 @@ function buildGeneratedColorSteps(analysis) {
     studentVoiceZh: definitions[index].actions[0],
     actionsZh: definitions[index].actions,
     colorTargetIds: definitions[index].colors || [],
-    requiredColorTargetIds: definitions[index].colors || [],
+    // Colour choices are made once in step 1.  Steps 9–11 show the active
+    // region and confirmed code as a summary instead of asking the student to
+    // re-select an already confirmed marker.
+    requiredColorTargetIds: index === 0 ? (definitions[index].colors || []) : [],
     processColorTargetIds: definitions[index].processColors || [],
     boardMode: definitions[index].boardMode || "",
     stageMode: definitions[index].stageMode || "paper",
+    stageLayer: definitions[index].stageLayer || definitions[index].boardMode || "paper",
+    stageLayers: draftGeometry,
+    correctionMarks: Boolean(definitions[index].correctionMarks),
     processBoard: index >= 1,
     referenceVisible: index === 0 || index === 12,
     dimensionAnnotations: definitions[index].dimensions || [],
     overlayLayer: definitions[index].overlay || "",
-    completionStandardZh: index === 8 ? "线稿闭合，遮挡线已经擦除。" : index === 10 ? "暗部和高光控制在少量重点处。" : ""
+    completionStandardZh: [
+      "每个主体的中心、边界和留白已标出。",
+      "长短轴方向与主体朝向一致，基本形连接清楚。",
+      "被挡线段已擦除，主体间负空间没有挤成一条缝。",
+      "主要轮廓、配件和前后关系齐全，仍保留浅线层级。",
+      "只修正标出的比例或间距，错误线已擦掉。",
+      "外轮廓闭合，遮挡处不穿线。"
+    ][index - 2] || (index === 10 ? "暗部和高光控制在少量重点处。" : "")
   }));
 }
 
 function buildGeneratedColorCourse(analysis, draft) {
   const courseId = `color-reference-${analysis.imageHash.slice(0, 16)}`;
   const referenceImageId = `reference-${analysis.imageHash.slice(0, 24)}`;
+  const draftGeometry = buildColorDraftGeometry(analysis);
+  const referenceAnalysis = structuredCloneSafe(analysis);
+  referenceAnalysis.draftGeometry = draftGeometry;
   return {
     courseId,
     generatedFromReference: true,
@@ -9727,7 +10010,8 @@ function buildGeneratedColorCourse(analysis, draft) {
     choiceCardZh: "参考图课程",
     sourceImage: { width: draft.width, height: draft.height, mimeType: draft.mimeType },
     paperPlan: calculateA4PaperPlan(analysis.aspectRatio),
-    referenceAnalysis: structuredCloneSafe(analysis),
+    referenceAnalysis,
+    professionalReady: hasProfessionalColorDraftGeometry(analysis),
     paletteTargets: structuredCloneSafe(analysis.paletteTargets || []),
     palette: (analysis.paletteTargets || []).map((target) => ({
       code: target.candidates?.[0]?.code || "",
@@ -9750,7 +10034,7 @@ function canRenderGeneratedProcessBoard(course) {
   const hasPalette = Array.isArray(course.paletteTargets) && course.paletteTargets.some((target) => Array.isArray(target.candidates) && target.candidates.length > 0);
   const hasA4 = Array.isArray(course.paperPlan?.variants) && course.paperPlan.variants.length > 0;
   const hasIndependentSteps = course.steps.slice(1, 12).every((step) => step.processBoard === true && step.referenceVisible === false && step.boardMode);
-  return hasObjectGeometry && hasPalette && hasA4 && hasIndependentSteps;
+  return hasObjectGeometry && hasPalette && hasA4 && hasIndependentSteps && course.professionalReady === true;
 }
 
 function formatColorReferenceError(error) {
@@ -10876,7 +11160,7 @@ function renderGeneratedBoardPrimitive(item, course, geometry, options = {}) {
     const y = mapGeneratedBoardY(item.y, geometry);
     const width = Math.max(0, safeOverlayNumber(item.width) / 1000 * geometry.drawWidth);
     const height = Math.max(0, safeOverlayNumber(item.height) / 1000 * geometry.drawHeight);
-    return `<rect${className} x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${width.toFixed(2)}" height="${height.toFixed(2)}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
+    return `<rect${className} x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${width.toFixed(2)}" height="${height.toFixed(2)}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" stroke-linejoin="round" style="${style}" />`;
   }
   if (type === "ellipse") {
     const cx = mapGeneratedBoardX(item.cx, geometry);
@@ -10886,26 +11170,11 @@ function renderGeneratedBoardPrimitive(item, course, geometry, options = {}) {
     return `<ellipse${className} cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" rx="${rx.toFixed(2)}" ry="${ry.toFixed(2)}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
   }
   if (type === "line") {
-    return `<line${className} x1="${mapGeneratedBoardX(item.x1, geometry).toFixed(2)}" y1="${mapGeneratedBoardY(item.y1, geometry).toFixed(2)}" x2="${mapGeneratedBoardX(item.x2, geometry).toFixed(2)}" y2="${mapGeneratedBoardY(item.y2, geometry).toFixed(2)}" fill="none" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
+    return `<line${className} x1="${mapGeneratedBoardX(item.x1, geometry).toFixed(2)}" y1="${mapGeneratedBoardY(item.y1, geometry).toFixed(2)}" x2="${mapGeneratedBoardX(item.x2, geometry).toFixed(2)}" y2="${mapGeneratedBoardY(item.y2, geometry).toFixed(2)}" fill="none" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="${style}" />`;
   }
   const points = (item.points || []).slice(0, 30).map((pair) => `${mapGeneratedBoardX(pair?.[0], geometry).toFixed(2)},${mapGeneratedBoardY(pair?.[1], geometry).toFixed(2)}`).join(" ");
   if (!points) return "";
-  return `<${type}${className} points="${points}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" style="${style}" />`;
-}
-
-function renderGeneratedBoardObject(item, course, geometry, options = {}) {
-  const bbox = Array.isArray(item?.bbox) ? item.bbox : [];
-  if (bbox.length !== 4) return "";
-  const [x, y, width, height] = bbox.map((value) => safeOverlayNumber(value));
-  const base = { ...options, className: options.className || "color-process-object" };
-  if (item.primitive === "ellipse") {
-    return renderGeneratedBoardPrimitive({ type: "ellipse", cx: x + width / 2, cy: y + height / 2, rx: width / 2, ry: height / 2 }, course, geometry, base);
-  }
-  if (item.primitive === "polygon") {
-    const points = [[x + width * 0.5, y], [x + width, y + height], [x, y + height]];
-    return renderGeneratedBoardPrimitive({ type: "polygon", points }, course, geometry, base);
-  }
-  return renderGeneratedBoardPrimitive({ type: "rect", x, y, width, height }, course, geometry, base);
+  return `<${type}${className} points="${points}" fill="${escapeHtml(fill)}" stroke="${escapeHtml(stroke)}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="${style}" />`;
 }
 
 function getGeneratedStageMode(step) {
@@ -10921,20 +11190,23 @@ function getGeneratedStageMode(step) {
   return "final";
 }
 
-function renderGeneratedPositionLayer(course, geometry) {
-  const objects = course.referenceAnalysis?.objects || [];
-  const bboxes = objects.map((item) => item.bbox).filter((bbox) => Array.isArray(bbox) && bbox.length === 4);
-  if (!bboxes.length) return "";
-  const minX = Math.min(...bboxes.map((bbox) => safeOverlayNumber(bbox[0])));
-  const maxX = Math.max(...bboxes.map((bbox) => safeOverlayNumber(bbox[0]) + safeOverlayNumber(bbox[2])));
-  const minY = Math.min(...bboxes.map((bbox) => safeOverlayNumber(bbox[1])));
-  const maxY = Math.max(...bboxes.map((bbox) => safeOverlayNumber(bbox[1]) + safeOverlayNumber(bbox[3])));
-  const centerX = (minX + maxX) / 2;
-  return [
-    { type: "line", x1: centerX, y1: 0, x2: centerX, y2: 1000 },
-    { type: "line", x1: minX, y1: minY, x2: maxX, y2: minY },
-    { type: "line", x1: minX, y1: maxY, x2: maxX, y2: maxY }
-  ].map((item) => renderGeneratedBoardPrimitive(item, course, geometry, { stroke: "#8797A3", strokeWidth: 2, className: "color-process-position-line" })).join("");
+function renderGeneratedConstructionMarks(items, course, geometry, options = {}) {
+  const stroke = options.stroke || "#7EA9B8";
+  const fill = options.fill || "none";
+  const opacity = Number(options.opacity ?? 0.72);
+  const strokeWidth = Number(options.strokeWidth || 2);
+  const className = options.className || "color-process-construction";
+  const showLabels = options.showLabels !== false;
+  return (items || []).slice(0, 12).map((item) => {
+    const primitive = renderGeneratedBoardPrimitive(item, course, geometry, { stroke, fill, opacity, strokeWidth, className });
+    if (!showLabels || !item?.labelZh) return primitive;
+    const anchor = getGeneratedBoardItemAnchor(item, geometry);
+    const label = safePlainText(item.labelZh, 24);
+    const width = Math.max(52, Math.min(150, label.length * 14 + 18));
+    const x = Math.max(geometry.x + 4, Math.min(geometry.x + geometry.drawWidth - width - 4, anchor.x + 8));
+    const y = Math.max(geometry.y + 18, Math.min(geometry.y + geometry.drawHeight - 8, anchor.y - 8));
+    return `${primitive}<text class="color-process-annotation" x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${escapeHtml(stroke)}" text-anchor="start">${escapeHtml(label)}</text>`;
+  }).join("");
 }
 
 function renderGeneratedDimensionOverlay(course, step, geometry) {
@@ -11018,14 +11290,18 @@ function renderGeneratedColorLabels(items, course, geometry, progress) {
 function renderGeneratedProcessBoard(course, step, progress, options = {}) {
   const geometry = getGeneratedBoardGeometry(course, progress);
   const analysis = course.referenceAnalysis || {};
+  const draftGeometry = step.stageLayers || analysis.draftGeometry || {};
   const overlays = analysis.overlays || {};
   const mode = step.boardMode || "draft";
   const stageMode = getGeneratedStageMode(step);
   const processIds = step.processColorTargetIds || [];
   const colorRegions = Array.isArray(overlays.colorRegions) ? overlays.colorRegions : [];
-  const lineart = Array.isArray(overlays.lineart) ? overlays.lineart : [];
-  const skeleton = Array.isArray(overlays.skeleton) ? overlays.skeleton : [];
-  const occlusion = Array.isArray(overlays.occlusion) ? overlays.occlusion : [];
+  const position = Array.isArray(overlays.position) && overlays.position.length ? overlays.position : (draftGeometry.position || []);
+  const stageSkeleton = draftGeometry.skeleton || [];
+  const stageOcclusion = draftGeometry.occlusion || [];
+  const stageDraft = draftGeometry.draft || [];
+  const stageLineart = draftGeometry.lineart || [];
+  const stageStructure = draftGeometry.lineartDetails || [];
   const allRegions = colorRegions.filter((item) => !item.targetId || processIds.includes(item.targetId));
   const regions = (items, fillOpacity = 0.68) => items.map((item) => renderGeneratedBoardPrimitive(item, course, geometry, {
     stroke: getGeneratedTargetHex(course, item.targetId, "#B7C8D0"),
@@ -11034,39 +11310,53 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
     strokeWidth: 2,
     className: "color-process-region"
   })).join("");
-  const objectShapes = (options = {}) => (analysis.objects || []).slice(0, 12).map((item) => renderGeneratedBoardObject(item, course, geometry, options)).join("");
   const lineShapes = (items, options = {}) => items.map((item) => renderGeneratedBoardPrimitive(item, course, geometry, options)).join("");
   let content = "";
   if (mode === "position") {
-    content = renderGeneratedPositionLayer(course, geometry);
+    content = renderGeneratedConstructionMarks(position, course, geometry, { stroke: "#A9B4BA", opacity: 0.46, strokeWidth: 1.2, className: "color-process-position-mark", showLabels: false });
+    content += renderGeneratedConstructionMarks(draftGeometry.negativeSpaces || [], course, geometry, { stroke: "#A1B0B7", opacity: 0.44, strokeWidth: 1.2, className: "color-process-negative-space", showLabels: false });
   } else if (stageMode === "skeleton") {
-    content = skeleton.length ? lineShapes(skeleton, { stroke: "#63B8D1", strokeWidth: 4, className: "color-process-skeleton" }) : objectShapes({ stroke: "#63B8D1", strokeWidth: 4, className: "color-process-skeleton" });
+    content = stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#7D8A91", opacity: 0.68, strokeWidth: 1.8, className: "color-process-skeleton" }) : "";
+    content += renderGeneratedConstructionMarks(draftGeometry.connections || [], course, geometry, { stroke: "#7D8A91", opacity: 0.68, strokeWidth: 1.8, className: "color-process-connection", showLabels: false });
   } else if (mode === "occlusion") {
-    content = (skeleton.length ? lineShapes(skeleton, { stroke: "#B9D9E4", strokeWidth: 3, className: "color-process-skeleton" }) : objectShapes({ stroke: "#B9D9E4", strokeWidth: 3, className: "color-process-skeleton" })) + lineShapes(occlusion.slice(0, 2), { stroke: "#78AFC1", strokeWidth: 4, className: "color-process-occlusion" });
+    content = (stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#7D8A91", opacity: 0.58, strokeWidth: 1.6, className: "color-process-skeleton" }) : "") + lineShapes(stageOcclusion.slice(0, 6), { stroke: "#64727A", opacity: 0.82, strokeWidth: 2.2, className: "color-process-occlusion" });
+    content += renderGeneratedConstructionMarks(draftGeometry.negativeSpaces || [], course, geometry, { stroke: "#A1B0B7", opacity: 0.5, strokeWidth: 1.2, className: "color-process-negative-space", showLabels: false });
   } else if (stageMode === "draft") {
-    content = (skeleton.length ? lineShapes(skeleton, { stroke: "#63B8D1", strokeWidth: 2, className: "color-process-skeleton" }) : objectShapes({ stroke: "#63B8D1", strokeWidth: 2, className: "color-process-skeleton" })) + (lineart.length ? lineShapes(lineart, { stroke: "#63B8D1", strokeWidth: 2, className: "color-process-draft" }) : "");
+    // The underdrawing stays visible as a light construction layer while the
+    // traced contour and internal planes carry the readable pencil weight.
+    content = (stageSkeleton.length ? lineShapes(stageSkeleton, { stroke: "#A9B4BA", opacity: 0.32, strokeWidth: 1.15, className: "color-process-skeleton" }) : "")
+      + (stageDraft.length ? lineShapes(stageDraft, { stroke: "#5E707B", opacity: 0.82, strokeWidth: 2.35, className: "color-process-draft" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#75858D", opacity: 0.66, strokeWidth: 1.55, className: "color-process-structure" }) : "");
+    if (step.correctionMarks) content += renderGeneratedConstructionMarks((draftGeometry.modificationMarks || []).slice(0, 4), course, geometry, { stroke: "#9B7445", opacity: 0.82, strokeWidth: 1.8, className: "color-process-correction", showLabels: false });
   } else if (stageMode === "lineart") {
-    content = lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" });
+    content = (stageLineart.length ? lineShapes(stageLineart, { stroke: "#30383D", opacity: 0.96, strokeWidth: 3.2, className: "color-process-lineart" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#46545C", opacity: 0.9, strokeWidth: 2.25, className: "color-process-structure" }) : "");
   } else if (stageMode === "flatColor") {
-    content = regions(allRegions, 0.88) + (lineart.length ? lineShapes(lineart, { stroke: "#70858F", strokeWidth: 2, className: "color-process-draft" }) : objectShapes({ stroke: "#70858F", strokeWidth: 2, className: "color-process-draft" }));
+    content = regions(allRegions, 0.88) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#64727A", opacity: 0.78, strokeWidth: 1.8, className: "color-process-draft" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#46545C", opacity: 0.86, strokeWidth: 1.85, className: "color-process-structure" }) : "");
   } else if (stageMode === "details") {
-    content = regions(allRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+    content = regions(allRegions, 0.84) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#30383D", opacity: 0.92, strokeWidth: 2.4, className: "color-process-lineart" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#46545C", opacity: 0.92, strokeWidth: 2.0, className: "color-process-structure" }) : "");
     if (mode === "shading") {
       content += lineShapes(colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId)).slice(0, 4), { stroke: "#5B6570", fill: "#5B6570", opacity: 0.48, strokeWidth: 2, className: "color-process-shade" });
     }
   } else if (stageMode === "final") {
-    content = regions(colorRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+    content = regions(colorRegions, 0.84) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#30383D", opacity: 0.96, strokeWidth: 3.2, className: "color-process-lineart" }) : "")
+      + (stageStructure.length ? lineShapes(stageStructure, { stroke: "#30383D", opacity: 0.96, strokeWidth: 2.45, className: "color-process-structure" }) : "");
   } else if (mode === "local-color") {
-    content = regions(allRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#91B4C2", strokeWidth: 2, className: "color-process-draft" }) : objectShapes({ stroke: "#91B4C2", strokeWidth: 2, className: "color-process-draft" }));
+    content = regions(allRegions, 0.84) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#64727A", opacity: 0.78, strokeWidth: 1.8, className: "color-process-draft" }) : "");
   } else if (mode === "background") {
-    content = regions(allRegions, 0.8) + (lineart.length ? lineShapes(lineart, { stroke: "#7599AA", strokeWidth: 2, className: "color-process-draft" }) : "");
+    content = regions(allRegions, 0.8) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#64727A", opacity: 0.7, strokeWidth: 1.6, className: "color-process-draft" }) : "");
   } else if (["lineart", "details"].includes(mode)) {
-    content = regions(allRegions, 0.78) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+    content = regions(allRegions, 0.78) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#30383D", opacity: 0.9, strokeWidth: 2.8, className: "color-process-lineart" }) : "");
   } else if (["shading", "repair", "review"].includes(mode)) {
-    content = regions(colorRegions, 0.84) + (lineart.length ? lineShapes(lineart, { stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }) : objectShapes({ stroke: "#222A2F", strokeWidth: 5, className: "color-process-lineart" }));
+    content = regions(colorRegions, 0.84) + (stageLineart.length ? lineShapes(stageLineart, { stroke: "#30383D", opacity: 0.92, strokeWidth: 2.8, className: "color-process-lineart" }) : "");
     if (mode === "shading") {
       content += lineShapes(colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId)).slice(0, 4), { stroke: "#5B6570", fill: "#5B6570", opacity: 0.48, strokeWidth: 2, className: "color-process-shade" });
     }
+  }
+  if (mode === "repair" && draftGeometry.repairMarks?.length) {
+    content += renderGeneratedConstructionMarks(draftGeometry.repairMarks.slice(0, 4), course, geometry, { stroke: "#9B7445", opacity: 0.82, strokeWidth: 1.8, className: "color-process-correction", showLabels: false });
   }
   const showColorLabels = [9, 10, 11].includes(Number(step?.order || 0)) && ["flatColor", "details"].includes(stageMode);
   const colorLabelRegions = colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId));
@@ -11147,7 +11437,7 @@ function renderGeneratedColorCourseLesson(course) {
   const missingColorTargets = requiredIds.map((targetId) => course.paletteTargets?.find((target) => target.id === targetId)).filter((target) => target && !progress.art.paletteSelections?.[target.id]);
   const canComplete = missingColorTargets.length === 0;
   const missingText = missingColorTargets.map((target) => target.roleZh || target.targetColorZh || "本步色组").join("、");
-  const paletteDisplayIds = requiredIds.length ? requiredIds : (step.processColorTargetIds?.length ? step.processColorTargetIds : (course.paletteTargets || []).map((target) => target.id));
+  const paletteDisplayIds = requiredIds.length ? requiredIds : (step.processColorTargetIds?.length ? step.processColorTargetIds : []);
   header.innerHTML = `
     <div class="course-topline color-course-heading">
       <div><h1>${escapeHtml(course.titleZh)}</h1></div>
@@ -11174,7 +11464,7 @@ function renderGeneratedColorCourseLesson(course) {
           ${renderGeneratedDimensionCard(course, step, ui)}
           ${stepIndex === 1 ? renderGeneratedPaperChoices(course, progress) : ""}
           ${requiredIds.length ? renderGeneratedPaletteChoices(course, progress, requiredIds) : ""}
-          ${requiredIds.length ? "" : renderGeneratedPaletteSummary(course, progress, paletteDisplayIds)}
+          ${requiredIds.length || !paletteDisplayIds.length ? "" : renderGeneratedPaletteSummary(course, progress, paletteDisplayIds)}
           ${renderGeneratedSelectedColors(course, step, progress)}
           ${missingText ? `<p class="color-reference-missing" role="status">还需选择：${escapeHtml(missingText)}</p>` : ""}
           ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
@@ -11216,6 +11506,17 @@ function renderColorChoiceLesson() {
     return;
   }
   if (course.generatedFromReference) {
+    if (!canRenderGeneratedProcessBoard(course)) {
+      header.innerHTML = `
+        <div class="color-course-empty">
+          <h1>参考图课程</h1>
+          <p class="color-reference-error">这张参考图缺少专业过程板，请重新上传并生成课程。</p>
+          <a class="button primary" href="#color-work-choice" data-go-view="color-work-choice">重新选择参考图</a>
+        </div>
+      `;
+      sections.innerHTML = "";
+      return;
+    }
     renderGeneratedColorCourseLesson(course);
     return;
   }
@@ -11808,19 +12109,26 @@ function renderChineseSection(pack, section, index, progress) {
   const childInstruction = getChineseSectionChildInstruction(section);
   const readText = assessment ? (childInstruction || "请按要求完成这一部分。") : [sectionTitle, childInstruction || section.prompt || ""].filter(Boolean).join("。");
   const readAloud = normalizeReadAloudConfig(section.readAloud, readText, assessment ? "instruction_only" : "full");
+  const showParentCompletion = shouldRenderChineseSectionControls(section);
+  const showParentFeedback = section.type !== "four_grid_retell" && section.id !== "four_grid_retell";
   return `
     <article class="course-card" data-course-card="${escapeHtml(key)}">
       <div class="course-card-head">
         <div><span>${displayIndex}</span>${renderPromptRow(`<h3>${escapeHtml(sectionTitle)}</h3>`, renderReadAloudButton(key, readAloud, { assessment, targetText: [...(section.characters || []), ...(section.words || [])].join("") }))}${childInstruction ? `<p>${renderAnnotatableChineseText(childInstruction, section.id, "instruction", null, { markedTerms: section.markedTerms })}</p>` : ""}</div>
       </div>
       ${renderChineseSectionBody(pack, section, itemProgress)}
-      ${shouldRenderChineseSectionControls(section) ? renderCourseItemControls(key, itemProgress, getChineseSectionResultLabels(section)) : ""}
-      ${shouldRenderChineseSectionControls(section) ? "" : renderChineseSectionFeedbackControls(section, itemProgress)}
+      ${showParentCompletion ? renderCourseItemControls(key, itemProgress, getChineseSectionResultLabels(section)) : ""}
+      ${showParentFeedback ? renderChineseSectionFeedbackControls(section, itemProgress) : ""}
     </article>
   `;
 }
 
 function shouldRenderChineseSectionControls(section) {
+  // Four-grid retell and reading-comprehension sections complete from their
+  // child interactions. They still expose section feedback where appropriate,
+  // but must not show a duplicate parent-level "确认" button.
+  if (section?.type === "four_grid_retell" || section?.id === "four_grid_retell") return false;
+  if (section?.type === "comprehension" || section?.id === "comprehension") return false;
   const childKeys = getChineseSectionChildKeys(section);
   return !childKeys.length || getChineseObjectiveQuestions(section).length > 0;
 }
@@ -12334,6 +12642,18 @@ function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
   const sentence = interaction.targetSentence || "";
   const playCount = Math.max(1, Number(interaction.playCount || 1));
   const played = Math.min(playCount, Number(itemProgress.audioPlayCount || 0));
+  const audioStatus = String(itemProgress.audioStatus || "");
+  const statusText = audioStatus === "playing"
+    ? "正在播放"
+    : audioStatus === "device_tts_pending"
+      ? "等待本机朗读"
+    : audioStatus === "device_tts"
+      ? "本机朗读"
+      : audioStatus === "played"
+        ? "已播放"
+        : audioStatus === "failed"
+          ? "播放失败"
+          : "未播放";
   const playbackLabel = activity.questionRole === "sentence_listen"
     ? "播放整句"
     : activity.questionRole === "blind_word"
@@ -12345,11 +12665,12 @@ function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
     <aside class="adaptive-source-card" aria-label="每日英语听力来源">
       <div class="adaptive-source-card-title"><strong>音频来源</strong><span>${escapeHtml(path)}</span></div>
       <div class="adaptive-source-card-line"><strong>目标句</strong><span class="adaptive-source-sentence ${interaction.hideEnglish ? "is-hidden" : ""}">${escapeHtml(target)}</span></div>
-      <div class="adaptive-source-card-line"><strong>播放</strong><span>本题 ${played}/${playCount} 遍${interaction.hideEnglish ? " · 英文暂时隐藏" : ""}</span></div>
+      <div class="adaptive-source-card-line"><strong>播放</strong><span>${statusText} · 本题 ${played}/${playCount} 遍${interaction.hideEnglish ? " · 英文暂时隐藏" : ""}</span></div>
       <div class="adaptive-source-card-actions">
         <button class="button secondary compact-button" data-adaptive-audio-play="${escapeHtml(key)}" type="button">${playbackLabel} ${played}/${playCount}</button>
-        <a class="button ghost compact-button" href="https://www.eudic.net/" target="_blank" rel="noreferrer">打开每日英语听力</a>
       </div>
+      <p class="adaptive-source-card-note">来源：${escapeHtml(path)}。请在移动端每日英语听力完成前四项；此处仅提供本机朗读或课程音频。</p>
+      ${itemProgress.audioStatus === "failed" && itemProgress.audioError ? `<p class="adaptive-audio-error" role="status">${escapeHtml(itemProgress.audioError)}</p>` : ""}
     </aside>
   `;
 }
@@ -12481,24 +12802,88 @@ function renderAdaptiveEnglishActivity(pack, activity, index, total, mode, progr
   `;
 }
 
+function updateAdaptiveAudioProgress(pack, key, patch = {}, rerender = true) {
+  const progress = initializeCourseProgress(pack);
+  const item = progress.english.steps[key] || {};
+  progress.english.steps[key] = { ...item, ...patch, updatedAt: new Date().toISOString() };
+  saveState();
+  if (rerender) renderEnglishLesson();
+}
+
+function stopAdaptiveAudioPlayback() {
+  if (currentAdaptiveAudio.audio) {
+    currentAdaptiveAudio.audio.pause();
+    currentAdaptiveAudio.audio.currentTime = 0;
+  }
+  if (currentAdaptiveAudio.utterance && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+  currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+}
+
 function playAdaptiveAudio(key) {
   const pack = getActiveEnglishPack();
   if (!isAdaptiveEnglishPack(pack) || !key) return false;
-  const progress = initializeCourseProgress(pack);
   const activity = pack.english.lesson.activities.find((entry) => `english:${entry.activityId || entry.id}` === key);
   if (!activity) return false;
-  const item = progress.english.steps[key] || {};
-  const playCount = Math.max(1, Number(activity.interaction?.playCount || 1));
-  const nextCount = Math.min(playCount, Number(item.audioPlayCount || 0) + 1);
-  progress.english.steps[key] = {
-    ...item,
-    audioPlayCount: nextCount,
-    audioCompletedAt: nextCount >= playCount ? item.audioCompletedAt || new Date().toISOString() : item.audioCompletedAt || "",
-    updatedAt: new Date().toISOString()
+  stopAdaptiveAudioPlayback();
+  const interaction = activity.interaction || {};
+  const audioUrl = safePlainText(interaction.audioUrl || interaction.audio?.url || interaction.audioAssetUrl || "", 400);
+  const speechText = safePlainText(interaction.targetSentence || activity.targetSentence || "", 500);
+  const playCount = Math.max(1, Number(interaction.playCount || 1));
+  const progress = initializeCourseProgress(pack);
+  const previousCount = Math.min(playCount, Number(progress.english.steps[key]?.audioPlayCount || 0));
+  const markStarted = (source) => {
+    const nextCount = Math.min(playCount, previousCount + 1);
+    updateAdaptiveAudioProgress(pack, key, {
+      audioPlayCount: nextCount,
+      audioStatus: source === "device_tts" ? "device_tts" : "playing",
+      audioSource: source,
+      audioError: "",
+      audioCompletedAt: nextCount >= playCount ? progress.english.steps[key]?.audioCompletedAt || new Date().toISOString() : progress.english.steps[key]?.audioCompletedAt || ""
+    });
   };
-  saveState();
-  renderEnglishLesson();
-  return true;
+  const markPlayed = () => {
+    updateAdaptiveAudioProgress(pack, key, {
+      audioStatus: "played",
+      audioCompletedAt: new Date().toISOString(),
+      audioError: ""
+    });
+    currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+  };
+  const markFailed = (message) => {
+    updateAdaptiveAudioProgress(pack, key, {
+      audioStatus: "failed",
+      audioSource: audioUrl ? "pack_audio" : "device_tts",
+      audioError: message,
+      audioCompletedAt: ""
+    });
+    currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+    return false;
+  };
+  if (audioUrl && typeof Audio === "function") {
+    const audio = new Audio(audioUrl);
+    audio.preload = "auto";
+    audio.onplay = () => markStarted("pack_audio");
+    audio.onended = markPlayed;
+    audio.onerror = () => markFailed("课程音频无法播放，请检查网络后重试。");
+    currentAdaptiveAudio = { key, utterance: null, audio };
+    audio.play().catch(() => markFailed("课程音频无法播放，请检查网络后重试。"));
+    return true;
+  }
+  if (speechText && typeof SpeechSynthesisUtterance !== "undefined" && typeof window !== "undefined" && window.speechSynthesis) {
+    const utterance = new SpeechSynthesisUtterance(speechText);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.volume = 1;
+    utterance.onstart = () => markStarted("device_tts");
+    utterance.onend = markPlayed;
+    utterance.onerror = () => markFailed("本机朗读没有播放成功，请检查设备音量后重试。");
+    currentAdaptiveAudio = { key, utterance, audio: null };
+    updateAdaptiveAudioProgress(pack, key, { audioStatus: "device_tts_pending", audioSource: "device_tts", audioError: "" });
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+    return true;
+  }
+  return markFailed("当前课程没有可用音频，请在移动端每日英语听力完成前四项。");
 }
 
 function revealAdaptiveEnglishHint(key) {
@@ -13140,12 +13525,34 @@ function completeCourseItem(key) {
 
 function maybeCompleteChineseParentSection(childKey, progress) {
   const pack = getLatestLearningPack();
-  const section = getChineseLessonSections(pack).find((item) => getChineseSectionChildKeys(item).includes(childKey));
-  if (!section || getChineseObjectiveQuestions(section).length) return false;
+  const section = getChineseLessonSections(pack).find((item) => {
+    const parentKey = `chinese:${item.id}`;
+    return parentKey === childKey || getChineseSectionChildKeys(item).includes(childKey);
+  });
+  if (!section) return false;
+  const objectiveQuestions = getChineseObjectiveQuestions(section);
+  // Objective questions in ordinary sections still require an explicit
+  // parent confirmation. Reading comprehension is the one mixed section
+  // whose choice question is confirmed as soon as every question is done.
+  if (objectiveQuestions.length && section.type !== "comprehension" && section.id !== "comprehension") return false;
   const childKeys = getChineseSectionChildKeys(section);
-  if (!childKeys.length || !childKeys.every((key) => progress.chinese.sections[key]?.finishedAt)) return false;
   const parentKey = `chinese:${section.id}`;
   const parent = progress.chinese.sections[parentKey] || {};
+  if (objectiveQuestions.length) {
+    const hasSelection = ({ questionKey }) => {
+      const result = (parent.choiceResults || []).find((entry) => entry.questionKey === questionKey);
+      const draft = parent.pendingChoices?.[questionKey];
+      return Boolean(draft?.selected || result?.selected);
+    };
+    if (!objectiveQuestions.every(hasSelection)) return false;
+    const needsConfirmation = objectiveQuestions.some(({ questionKey }) => {
+      const result = (parent.choiceResults || []).find((entry) => entry.questionKey === questionKey);
+      const draft = parent.pendingChoices?.[questionKey];
+      return !result || (draft?.selected && draft.selected !== result.selected);
+    });
+    if (needsConfirmation && !confirmChineseObjectiveSection(parentKey, parent, progress)) return false;
+  }
+  if (childKeys.length && !childKeys.every((key) => progress.chinese.sections[key]?.finishedAt)) return false;
   progress.chinese.sections[parentKey] = {
     ...parent,
     startedAt: parent.startedAt || progress.chinese.sections[childKeys[0]]?.startedAt || new Date().toISOString(),
@@ -13257,7 +13664,10 @@ function confirmChineseObjectiveSection(sectionKey, item, progress) {
   item.totalCount = objectiveQuestions.length;
   item.allCorrect = correctCount === objectiveQuestions.length;
   item.attempts = (item.attempts || 0) + 1;
-  item.result = item.allCorrect ? "independent" : "prompted";
+  // Keep an explicit parent feedback selection (for example, "需要示范")
+  // when automatic choice grading runs. Only derive a result when the parent
+  // has not already supplied one.
+  item.result = item.result || (item.allCorrect ? "independent" : "prompted");
   item.confirmationMessage = "";
   item.updatedAt = now;
   progress.chinese.sections[sectionKey] = item;
@@ -14036,6 +14446,12 @@ function selectCourseChoice(button) {
     confirmationMessage: "",
     updatedAt: new Date().toISOString()
   };
+  // Reading comprehension mixes spoken child questions with one or more
+  // choices. Once the choice set is complete, grade it automatically; the
+  // spoken child confirmations then finish the parent section.
+  if (context.section.type === "comprehension" || context.section.id === "comprehension") {
+    maybeCompleteChineseParentSection(context.sectionKey, progress);
+  }
   saveState();
   renderChineseLesson();
 }
