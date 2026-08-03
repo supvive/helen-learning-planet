@@ -16338,18 +16338,31 @@ function buildFeedbackWorkflowEnvelope(payload, course = payload?.course || "sna
     course,
     status: "pending_human_review",
     participants: ["Nick", "Allen", "George"],
-    handoff: ["Nick", "Allen", "George"],
+    entry: {
+      receivedBy: "George",
+      source: "parent_direct_feedback_package",
+      packageSchema: "helen-learning-feedback/1",
+      automaticCourseWrite: false
+    },
+    handoff: [
+      { from: "Parent", to: "George", artifact: "feedback_package", status: "submitted" },
+      { from: "George", to: "Nick", artifact: "feedback_package", status: "queued" },
+      { from: "Nick", to: "Allen", artifact: "analysis_and_next_day_draft", status: "pending" },
+      { from: "Allen", to: "George", artifact: "reviewed_analysis_and_pack", status: "pending" },
+      { from: "George", to: "Parent", artifact: "three_final_deliverables", status: "pending" }
+    ],
     route: [
       { actor: "Nick", role: "draft_and_package", status: "submitted" },
       { actor: "Allen", role: "content_review", status: "pending" },
       { actor: "George", role: "device_and_release_review", status: "pending" }
     ],
     deliverables: {
-      parentReport: { id: "parent_report", labelZh: "家长报告", status: "pending" },
-      childReport: { id: "child_report", labelZh: "孩子报告", status: "pending" },
-      nextDayCoursePack: { id: "next_day_course_pack", labelZh: "次日课包", status: "pending" }
+      parentReport: { id: "parent_report", labelZh: "家长报告", format: "markdown", required: true, status: "pending" },
+      childReport: { id: "child_report", labelZh: "孩子报告", format: "markdown", required: true, status: "pending" },
+      nextDayCoursePack: { id: "next_day_course_pack", labelZh: "次日可复制课包", format: "helen-learning-pack/2", required: true, status: "pending" }
     },
     deliverableIds: ["parent_report", "child_report", "next_day_course_pack"],
+    completionRule: "三项 deliverables 均由 George 标记 approved 后，才算本次反馈闭环；未完成不得自动写入或替换课程。",
     approval: {
       automatic: false,
       autoApprove: false,
@@ -16483,8 +16496,10 @@ function formatSnapshotHuman(payload, pack) {
   const planetLine = (label, planet) => `${label}：${snapshotStatusLabel(planet.status)}${["in_progress", "paused"].includes(planet.status) ? ` ${Math.round((planet.completionRatio || 0) * 100)}%` : ""}`;
   const audioCount = payload.attachmentsExpected?.audio?.length || 0;
   return [
-    "请优先使用最新生成时间的反馈。",
+    "请将此反馈包直接发送给 Dr. George，由 George 统一编排 Nick→Allen→George 流程。",
+    "本包只提供证据，不自动生成或写入下一节课。",
     audioCount ? `本次另有${audioCount}段录音，请同时发送反馈资源包。` : "本次没有网页录音附件。",
+    "George 最终需要返回：家长报告、孩子报告、次日可复制课包。",
     "Helen 当前反馈快照",
     `生成时间：${payload.generatedAt}`,
     `日期：${pack.date}`,
@@ -16868,6 +16883,8 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
   base.workflowEnvelope = buildFeedbackWorkflowEnvelope(base, course);
   const human = [
     `Helen ${courseLabel(course)}反馈包`,
+    "请直接发送给 Dr. George；George 负责安排 Nick 分析、Allen 审核，再由 George 交付最终结果。",
+    "最终交付固定为：家长报告、孩子报告、次日可复制课包。",
     `日期：${pack.date}`,
     `课程：${pack.title || ""}`,
     `packId：${pack.packId}`,
@@ -16875,9 +16892,9 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
     `状态：${base.sessionStatus}`,
     `最困难环节：${base.shared.hardestSections?.length ? base.shared.hardestSections.join("、") : "未填"}`,
     `另附录音/照片：${base.audioFeedbackExpected || base.art?.artworkPhotoExpected ? "是" : "否"}`,
-    `请把下面两样东西发给总课程设计师：`,
-    `1. 网站反馈包；`,
-    `2. 本次学习录音（如果已录制）。`,
+    `流程追踪：${base.workflowEnvelope?.traceId || ""}`,
+    `最终交付：家长报告 + 孩子报告 + 次日可复制课包（均需 George 审核）。`,
+    "本包只记录证据，不自动批准、不自动写入下一节课。",
     "",
     "```json",
     JSON.stringify(base, null, 2),
