@@ -10958,6 +10958,63 @@ function renderGeneratedDimensionOverlay(course, step, geometry) {
   return `<g class="color-process-dimension-lines" fill="none" stroke="#8797A3" stroke-width="2" stroke-dasharray="8 7" stroke-linecap="round">${lines.join("")}</g>`;
 }
 
+function getGeneratedBoardItemAnchor(item, geometry) {
+  const type = item?.type;
+  let x = 500;
+  let y = 500;
+  if (type === "rect") {
+    x = safeOverlayNumber(item.x) + safeOverlayNumber(item.width) / 2;
+    y = safeOverlayNumber(item.y) + safeOverlayNumber(item.height) / 2;
+  } else if (type === "ellipse") {
+    x = safeOverlayNumber(item.cx);
+    y = safeOverlayNumber(item.cy);
+  } else if (type === "line") {
+    x = (safeOverlayNumber(item.x1) + safeOverlayNumber(item.x2)) / 2;
+    y = (safeOverlayNumber(item.y1) + safeOverlayNumber(item.y2)) / 2;
+  } else if (["polyline", "polygon"].includes(type)) {
+    const points = (item.points || []).slice(0, 30).filter((pair) => Array.isArray(pair) && pair.length >= 2);
+    if (points.length) {
+      x = points.reduce((sum, pair) => sum + safeOverlayNumber(pair[0]), 0) / points.length;
+      y = points.reduce((sum, pair) => sum + safeOverlayNumber(pair[1]), 0) / points.length;
+    }
+  }
+  const boardX = mapGeneratedBoardX(x, geometry);
+  const boardY = mapGeneratedBoardY(y, geometry);
+  return {
+    x: Math.max(geometry.x + 28, Math.min(geometry.x + geometry.drawWidth - 28, boardX)),
+    y: Math.max(geometry.y + 22, Math.min(geometry.y + geometry.drawHeight - 22, boardY))
+  };
+}
+
+function getGeneratedColorLabelCode(course, targetId, progress) {
+  const target = course.paletteTargets?.find((item) => item.id === targetId);
+  if (!target) return "";
+  const selected = progress?.art?.paletteSelections?.[targetId];
+  const candidate = target.candidates?.find((item) => item.code === selected) || target.candidates?.[0];
+  return safePlainText(candidate?.code || "", 24);
+}
+
+function renderGeneratedColorLabels(items, course, geometry, progress) {
+  const seen = new Set();
+  return (items || []).filter((item) => {
+    const targetId = safePlainText(item?.targetId || "", 80);
+    if (!targetId || seen.has(targetId)) return false;
+    seen.add(targetId);
+    return Boolean(getGeneratedColorLabelCode(course, targetId, progress));
+  }).slice(0, 12).map((item) => {
+    const targetId = safePlainText(item.targetId, 80);
+    const code = getGeneratedColorLabelCode(course, targetId, progress);
+    const anchor = getGeneratedBoardItemAnchor(item, geometry);
+    const target = course.paletteTargets?.find((entry) => entry.id === targetId);
+    const border = getGeneratedTargetHex(course, targetId, "#6F9EB4");
+    const label = `${code}${target?.roleZh ? ` · ${safePlainText(target.roleZh, 28)}` : ""}`;
+    const width = Math.max(58, Math.min(150, label.length * 13 + 20));
+    const x = Math.max(geometry.x + 4, Math.min(geometry.x + geometry.drawWidth - width - 4, anchor.x - width / 2));
+    const y = Math.max(geometry.y + 4, Math.min(geometry.y + geometry.drawHeight - 28, anchor.y - 14));
+    return `<g class="color-process-color-label" aria-label="${escapeHtml(`${target?.roleZh || "颜色"}，色号 ${code}`)}"><rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${width.toFixed(2)}" height="24" rx="6" fill="#FFFFFF" fill-opacity="0.94" stroke="${escapeHtml(border)}" stroke-width="2" /><text x="${(x + width / 2).toFixed(2)}" y="${(y + 16).toFixed(2)}" text-anchor="middle">${escapeHtml(label)}</text></g>`;
+  }).join("");
+}
+
 function renderGeneratedProcessBoard(course, step, progress, options = {}) {
   const geometry = getGeneratedBoardGeometry(course, progress);
   const analysis = course.referenceAnalysis || {};
@@ -11011,6 +11068,9 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
       content += lineShapes(colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId)).slice(0, 4), { stroke: "#5B6570", fill: "#5B6570", opacity: 0.48, strokeWidth: 2, className: "color-process-shade" });
     }
   }
+  const showColorLabels = [9, 10, 11].includes(Number(step?.order || 0)) && ["flatColor", "details"].includes(stageMode);
+  const colorLabelRegions = colorRegions.filter((item) => item.targetId && (step.colorTargetIds || []).includes(item.targetId));
+  if (showColorLabels) content += renderGeneratedColorLabels(colorLabelRegions.length ? colorLabelRegions : allRegions, course, geometry, progress);
   const dimensionVisible = options.dimensionsVisible === true;
   return `
     <div class="color-process-board-shell" data-board-mode="${escapeHtml(mode)}" data-stage-mode="${escapeHtml(stageMode)}">

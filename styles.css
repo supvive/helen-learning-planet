@@ -2411,6 +2411,25 @@ textarea:focus {
   vector-effect: non-scaling-stroke;
 }
 
+.color-process-board .color-process-color-label {
+  pointer-events: none;
+}
+
+.color-process-board .color-process-color-label rect {
+  vector-effect: non-scaling-stroke;
+}
+
+.color-process-board .color-process-color-label text {
+  fill: #20313a;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
 .color-reference-source-card {
   position: relative;
   width: min(100%, 280px);
