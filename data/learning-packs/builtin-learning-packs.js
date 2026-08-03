@@ -2,14 +2,14 @@
 // This lets the app load authoritative built-in lessons when opened as file://.
 (function () {
   const bundle = {
-  "version": "v3.9.12",
-  "generatedAt": "2026-08-03T01:28:00+08:00",
+  "version": "v3.9.13",
+  "generatedAt": "2026-08-03T09:45:00+08:00",
   "source": "data/learning-packs/manifest.json",
   "manifest": {
     "version": 1,
     "timezone": "Asia/Shanghai",
     "latestPackId": "2026-07-29-allen-chinese-repair-book-box-01",
-    "latest": "./helen-learning-pack-2026-07-29-revision-a.json",
+    "latest": "./helen-learning-pack-2026-07-29-revision-3.json",
     "packs": [
       {
         "packId": "2026-07-29-allen-chinese-repair-book-box-01",
@@ -19,9 +19,11 @@
           "chinese"
         ],
         "schemaVersion": "helen-learning-pack/2",
-        "revision": "allen-revision-a",
-        "publishedAt": "2026-07-29T00:00:00+08:00",
-        "path": "./helen-learning-pack-2026-07-29-revision-a.json"
+        "revision": "nick-revision-3",
+        "publishedAt": "2026-08-03T09:45:00+08:00",
+        "path": "./helen-learning-pack-2026-07-29-revision-3.json",
+        "previousRevision": "allen-revision-a",
+        "previousPath": "./helen-learning-pack-2026-07-29-revision-a.json"
       },
       {
         "packId": "2026-08-03-english-diagnostic-d01",
@@ -258,10 +260,19 @@
       },
       "packId": "2026-07-29-allen-chinese-repair-book-box-01",
       "date": "2026-07-29",
-      "revision": "allen-revision-a",
+      "revision": "nick-revision-3",
       "loadMode": "light",
       "title": "下一课初稿｜先看清，再放好",
-      "workflowStatus": "approved_by_allen_pending_george_schedule",
+      "workflowStatus": "ready_for_import",
+      "submissionStatus": "approved_pending_george_synthesis",
+      "allenReview": {
+        "evidenceDecision": "A_approved",
+        "packDecision": "B_approved",
+        "reviewer": "Allen",
+        "reviewScope": "Revision 3：真实 sections 数组中 four_grid_retell 位于 comprehension 之前；Revision 2 四态反馈和手动结束休息规则保留。",
+        "approvalEvidence": "Allen final approval received by George coordinator; no website publication implied.",
+        "approvedRevision": "nick-revision-3"
+      },
       "sourceLearningReference": [
         "references/2026-08-02-complete-feedback-1.hfeedback.zip",
         "references/helen-next-learning-pack-2026-07-28.json",
@@ -452,6 +463,12 @@
                 }
               ],
               "answerMode": "spoken",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "间隔复现仍不稳定的词语，并分开观察读音和词义。",
               "parentInstructionZh": "每项先等约3秒。不会读时只报当前词的读音；读出后仍不会回答，最多提醒“说意思或说一句话”。不解释词义，不给完整句。",
               "stopRuleZh": "三项都尝试，或3分钟到时，完成当前词后停止。",
@@ -532,6 +549,12 @@
                 }
               ],
               "answerMode": "choice",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "用两道短题复测推与形近字，并控制题面操作成本。",
               "parentInstructionZh": "先让Helen读题和选项。若不认识，只报当前字音；不要把正确选项读出来。选好后读完整句，完成两题即停。",
               "stopRuleZh": "完成两题，或2分钟到时，完成当前题后停止。",
@@ -565,6 +588,12 @@
                 "不到两分钟，书都放好了。"
               ],
               "answerMode": "spoken",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "不重读整篇旧文，只观察短摘录中的独立解码和句意保持。",
               "parentInstructionZh": "只读这四句话，不重读完整旧文。每处卡顿先等约3秒，只报当前字音；一句中连续三处需要报音时，读完当前句就停并记录。",
               "stopRuleZh": "3分钟到时，读完当前句即停；不为读完整句追加时间。",
@@ -610,6 +639,12 @@
                 }
               ],
               "answerMode": "spoken",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "复测“露出”的语境意义，分开记录成人解释和Helen自己的表述。",
               "parentInstructionZh": "题面不写“加点词”，也不依赖视觉下划线。先等5秒；无回应时只重读问题；仍不明白时最多给一个具体对比提示“刚才看不见，现在能看见”，随后结束。",
               "stopRuleZh": "完成一次回答，或2分钟到时停止；不追加第二个抽象词。",
@@ -645,7 +680,9 @@
               "answerMode": "spoken",
               "sectionResultOptions": [
                 "independent",
-                "prompted"
+                "prompted",
+                "modeled",
+                "not_yet"
               ],
               "learningGoalZh": "保留四步组织能力，但把抽象的“现象/有效”改成可观察的动作和结果。",
               "parentInstructionZh": "逐格完成，每格先等约7秒。无回应时只重读当前格；仍无回应时给一个关键词，如“画纸”或“分组”。不解释“现象”，不要求扩成长篇。",
@@ -739,6 +776,12 @@
                 }
               ],
               "answerMode": "spoken_and_choice",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "把原因、关键细节和结果证据分开检测，不要求凑两个原因。",
               "parentInstructionZh": "c1和c2先等7秒；需要时只重读当前题，不给答案。c2只听是否回答“三组”；c3只核对结果句。",
               "stopRuleZh": "三题完成，或3分钟到时，完成当前回答后停止。",
@@ -769,7 +812,7 @@
               "prompt": "休息5分钟：喝水、走动、看看远处。",
               "answerMode": "none",
               "parentInstructionZh": "完成第六个学习任务后立即休息5分钟；休息中不讲字、不核对答案、不预告后题。",
-              "stopRuleZh": "计时5分钟后再继续。",
+              "stopRuleZh": "计时到后仍保持休息；只有点击“结束休息”才恢复课程计时和录音。",
               "parentOnly": {
                 "recordFields": [
                   "completion",
@@ -780,6 +823,8 @@
                   "pauseCourseTimer": true,
                   "pauseActiveRecording": true,
                   "resumeOn": "manual_end",
+                  "keepPausedWhenTimerEnds": true,
+                  "manualResumeButtonZh": "结束休息",
                   "recordBreakSeparately": true
                 }
               },
@@ -796,6 +841,12 @@
               "childInstructionZh": "想一想，你会怎么做？",
               "prompt": "三本书要放回三个格子，每个格子上有不同的字。你拿着一本书，会先看什么，再把书放到哪里？请说清楚。",
               "answerMode": "spoken",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "把“先看标记，再放到对应位置”的办法迁移到短的新题面。",
               "parentInstructionZh": "先等10秒。无回应时只重复“每个格子上有不同的字”；仍无回应时只问“你先看哪里”，不提供完整答案。",
               "stopRuleZh": "完成一次回答，或2分钟到时完成当前回答后停止。",
@@ -849,6 +900,12 @@
                 "露出"
               ],
               "answerMode": "spoken",
+              "sectionResultOptions": [
+                "independent",
+                "prompted",
+                "modeled",
+                "not_yet"
+              ],
               "learningGoalZh": "逐项观察当前目标字词的首次反应，不把跟读后的正确写成独立。",
               "parentInstructionZh": "屏幕不显示拼音。每项先等约3秒；不会读时只报读音并立即进入下一项，不解释、不造句、不追加同类题。",
               "stopRuleZh": "九项各测一次，或2分钟到时立即停止。",
@@ -999,7 +1056,27 @@
           "英语和颜色没有本次可用课堂证据",
           "仍需生产解析与childVisible/parentOnly扫描"
         ],
-        "boundary": "Nick初稿，未经Allen批准不得视为完成；未联系Elon/Jony，未导入，未发布。"
+        "boundary": "Allen A/B 已通过 Revision 3；本课包 ready_for_import，仍需 Elon 运行时验收与用户导入；未自动覆盖网站。",
+        "revision2Checks": {
+          "sectionResultOptions": "所有非休息中文主环节均配置 independent / prompted / modeled / not_yet 四态。",
+          "break": "fixed_break 不占题号、不进入 hardest；计时到后保持暂停，只有手动“结束休息”才恢复。",
+          "hardest": "反馈导出必须只允许非 break 的学习环节进入 hardestActivityId/hardestSections。"
+        },
+        "revision3Checks": {
+          "actualSectionsOrder": [
+            "review_words",
+            "fill_blanks",
+            "reading_excerpts",
+            "word_understanding",
+            "four_grid_retell",
+            "comprehension",
+            "fixed_break",
+            "transfer_scenario",
+            "post_check"
+          ],
+          "fourGridBeforeComprehension": true,
+          "reason": "Allen B复审要求：真实 sections 数组与 sectionOrder 一致"
+        }
       }
     },
     "2026-08-03-english-diagnostic-d01": {
