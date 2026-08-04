@@ -9356,6 +9356,54 @@ function renderLearningPackError(error) {
   `;
 }
 
+// Feedback-driven lessons must be replayable as:
+// evidence -> profile version/delta -> weighted goals -> item evidence.
+// These checks are intentionally fail-closed and only apply to generated or
+// repair candidates; ordinary historical packs remain readable.
+function auditFeedbackDrivenDesignRuntime(pack, items, eventIds) {
+  const blockers = [];
+  const profile = pack?.abilityProfile || {};
+  const trace = pack?.feedbackTrace || {};
+  const profileVersion = String(profile.version || profile.profileVersion || "").trim();
+  const traceVersion = String(trace.profileVersion || trace.abilityProfileVersion || "").trim();
+  if (!profileVersion || !traceVersion || profileVersion !== traceVersion) blockers.push("CN-PROFILE-VERSION");
+  const rawGoals = trace.goalMap || trace.goals || profile.goalMap || profile.goals;
+  const goals = Array.isArray(rawGoals) ? rawGoals.filter((goal) => goal && typeof goal === "object") : [];
+  const goalIds = new Set();
+  let goalProblem = false;
+  goals.forEach((goal) => {
+    const id = String(goal.targetId || goal.knowledgePointId || goal.goalId || "").trim();
+    const weight = Number(goal.weight);
+    const refs = goal.evidenceIds || goal.evidenceRefs || (goal.evidenceId ? [goal.evidenceId] : []);
+    if (!id || !Number.isFinite(weight) || weight <= 0 || weight > 1 || !String(goal.status || goal.need || "").trim() || !Array.isArray(refs) || !refs.length || refs.some((ref) => !eventIds.has(String(ref || "").trim())) || !String(goal.spacingReason || goal.rationale || goal.nextStepReason || "").trim()) goalProblem = true;
+    if (id) goalIds.add(id);
+  });
+  if (!goals.length || goalProblem) blockers.push("CN-GOAL-MAP");
+  let itemProblem = false;
+  items.forEach(({ item }) => {
+    const targets = item.targetKnowledgePointIds || item.knowledgePointIds || item.targetIds || [];
+    const refs = item.feedbackEvidenceIds || item.feedbackEvidenceRefs || item.evidenceRefs || [];
+    const source = String(item.sourceSentenceId || item.sourceMaterialId || item.sourceStimulusId || (Array.isArray(item.sourceMaterialIds) ? item.sourceMaterialIds[0] : "") || "").trim();
+    if (!Array.isArray(targets) || !targets.length || targets.some((target) => !goalIds.has(String(target || "").trim()))) itemProblem = true;
+    if (!Array.isArray(refs) || !refs.length || refs.some((ref) => !eventIds.has(String(ref || "").trim()))) itemProblem = true;
+    if (!String(item.spacingReason || item.selectionReason || item.feedbackReason || "").trim()) itemProblem = true;
+    if (!String(item.retrievalLevel || item.transferLevel || item.cognitiveLevel || "").trim()) itemProblem = true;
+    if (!source) itemProblem = true;
+  });
+  if (!items.length || itemProblem) blockers.push("CN-FEEDBACK-DESIGN");
+  const sourceCounts = new Map();
+  items.forEach(({ item }) => {
+    const source = String(item.sourceSentenceId || item.sourceMaterialId || item.sourceStimulusId || (Array.isArray(item.sourceMaterialIds) ? item.sourceMaterialIds[0] : "") || "").trim();
+    if (source) sourceCounts.set(source, (sourceCounts.get(source) || 0) + 1);
+  });
+  const maxSourceShare = items.length ? Math.max(...sourceCounts.values(), 0) / items.length : 1;
+  if (items.length && (sourceCounts.size < Math.min(2, items.length) || maxSourceShare > 0.5)) blockers.push("CN-STIMULUS-MIX");
+  const previousDigest = String(trace.previousLessonDigest || trace.previousPackDigest || pack.previousLessonDigest || "").trim();
+  const priorPackDigest = String(pack.previousFeedback?.contentDigest || pack.previousPack?.contentDigest || "").trim();
+  if (previousDigest && priorPackDigest && previousDigest !== priorPackDigest) blockers.push("CN-PRIOR-LESSON-LINK");
+  return [...new Set(blockers)];
+}
+
 function auditChineseFeedbackImportGate(pack) {
   // Withdrawn packs remain readable in the historical archive.  Their formal
   // import is rejected separately at the write boundary; only the external
@@ -9402,6 +9450,7 @@ function auditChineseFeedbackImportGate(pack) {
   });
   const maxTargetShare = items.length ? Math.max(...targetCounts.values(), 0) / items.length : 1;
   if (missingTarget || targetCounts.size < 2 || maxTargetShare > 0.8) blockers.push("CN-TARGET-WEIGHT");
+  blockers.push(...auditFeedbackDrivenDesignRuntime(pack, items.map((item) => ({ item })), eventIds));
   const review = pack.semanticReview || {};
   if (review.status !== "approved" || !String(review.revision || "").trim() || !String(review.candidateDigest || "").trim() || review.candidateDigest !== pack.contentDigest || !String(review.reviewerId || "").trim() || !Array.isArray(review.questionChecks) || review.questionChecks.length < items.length || review.questionChecks.some((check) => !String(check?.validityConclusion || "").trim() || !String(check?.ambiguityConclusion || "").trim())) blockers.push("CN-SEMANTIC-BINDING");
   const withdrawnDigest = String(pack?.withdrawnContentDigest || "").trim();
