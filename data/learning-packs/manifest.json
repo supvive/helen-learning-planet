@@ -1,23 +1,9 @@
 {
   "version": 1,
   "timezone": "Asia/Shanghai",
-  "latestPackId": "2026-07-29-allen-chinese-repair-book-box-01",
-  "latest": "./helen-learning-pack-2026-07-29-revision-3.json",
+  "latestPackId": "2026-07-27-helen-day15-revision-b-water-table-art01",
+  "latest": "./helen-learning-pack-2026-07-27-day15-revision-b.json",
   "packs": [
-    {
-      "packId": "2026-07-29-allen-chinese-repair-book-box-01",
-      "date": "2026-07-29",
-      "title": "下一课初稿｜先看清，再放好",
-      "availableSubjects": [
-        "chinese"
-      ],
-      "schemaVersion": "helen-learning-pack/2",
-      "revision": "nick-revision-3",
-      "publishedAt": "2026-08-03T09:45:00+08:00",
-      "path": "./helen-learning-pack-2026-07-29-revision-3.json",
-      "previousRevision": "allen-revision-a",
-      "previousPath": "./helen-learning-pack-2026-07-29-revision-a.json"
-    },
     {
       "packId": "2026-08-03-english-diagnostic-d01",
       "date": "2026-08-03",

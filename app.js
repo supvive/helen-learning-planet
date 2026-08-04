@@ -302,9 +302,11 @@ const COLOR_REFERENCE_STEP_TITLES = Object.freeze([
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
 const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
 const WITHDRAWN_BUILTIN_PACK_IDS = new Set([
+  "2026-07-29-allen-chinese-repair-book-box-01",
   "2026-07-26-helen-day14-open-books-art01",
   "2026-07-26-helen-day14-revision-d-open-books-art01"
 ]);
+const WITHDRAWN_BUILTIN_PACK_DATES = new Set(["2026-07-26", "2026-07-29"]);
 const COURSE_PROGRESS_STORAGE_KEY = "helen-course-progress-v1";
 const COURSE_TIMER_MODEL_VERSION = 2;
 const COURSE_TIMER_HEARTBEAT_MS = 5000;
@@ -2954,6 +2956,8 @@ function loadState() {
     loaded.learningPackSelectionSource ||= standalonePacks.selectionSource || inferLearningPackSelectionSource(loaded);
     loaded.lastAutoSelectedBuiltinPackId ||= standalonePacks.lastAutoSelectedBuiltinPackId || (loaded.learningPackSelectionSource === "auto" ? loaded.selectedLearningPackId || "" : "");
     loaded.learningPackArchive = migrateLearningPackArchive(loaded);
+    if (WITHDRAWN_BUILTIN_PACK_IDS.has(loaded.selectedLearningPackId)) loaded.selectedLearningPackId = "";
+    if (WITHDRAWN_BUILTIN_PACK_IDS.has(loaded.latestLearningPackId)) loaded.latestLearningPackId = "";
     loaded.courseProgress = { ...(loadStandaloneCourseProgress().progress || {}), ...(loaded.courseProgress || {}) };
     normalizeStaleCourseRecordingStates(loaded);
     reconcilePersistedCourseTimers(loaded);
@@ -3419,6 +3423,10 @@ function openPlanetHomeCourse(kind, courseId, view) {
     // to the reference workspace instead of reviving a withdrawn static card.
     showView("color-work-choice", true, { skipRouteDateSelection: true });
     return;
+  } else if (courseId && WITHDRAWN_BUILTIN_PACK_IDS.has(courseId)) {
+    const fallback = getLearningCourseSequence("chinese").at(-1);
+    state.selectedLearningPackId = fallback?.packId || "";
+    state.learningPackSelectionSource = "auto";
   } else if (courseId && state.learningPacks?.[courseId]) {
     state.selectedLearningPackId = courseId;
     state.learningPackSelectionSource = "manual";
@@ -3564,6 +3572,17 @@ function applyRouteDateSelection() {
     state.selectedLearningPackId = packId;
     state.learningPackSelectionSource = "manual";
     saveState();
+    return;
+  }
+  const withdrawnDate = !packId && (WITHDRAWN_BUILTIN_PACK_DATES.has(date) ||
+    (state.learningPackArchive?.entries || []).some((entry) => entry.date === date && WITHDRAWN_BUILTIN_PACK_IDS.has(entry.packId)) ||
+    Object.values(state.learningPacks || {}).some((record) => WITHDRAWN_BUILTIN_PACK_IDS.has(record?.packId) && (record?.date || record?.data?.date) === date));
+  if (withdrawnDate) {
+    const fallback = getLatestAvailableChinesePackId();
+    state.selectedLearningPackId = fallback;
+    state.learningPackSelectionSource = "auto";
+    saveState();
+    updateBrowserRoute("chinese-course", "replace");
   }
 }
 
@@ -6767,6 +6786,10 @@ function normalizeBuiltinManifestEntries(manifest) {
 }
 
 function applyBuiltinPackSelectionPolicy({ latestPackId, beforeSelectedPackId, beforeLatestPackId, beforeSelectionSource }) {
+  if (WITHDRAWN_BUILTIN_PACK_IDS.has(beforeSelectedPackId)) {
+    beforeSelectedPackId = "";
+    beforeSelectionSource = "auto";
+  }
   const routeDate = parseRouteHash().date;
   if (routeDate) {
     const routePackId = getPackIdForDate(routeDate);
@@ -6801,6 +6824,14 @@ function applyBuiltinPackSelectionPolicy({ latestPackId, beforeSelectedPackId, b
 }
 
 function recordBuiltinLearningPackLoadFailure(stage, message) {
+  const selectedWithdrawn = WITHDRAWN_BUILTIN_PACK_IDS.has(state.selectedLearningPackId);
+  const latestWithdrawn = WITHDRAWN_BUILTIN_PACK_IDS.has(state.latestLearningPackId);
+  if (selectedWithdrawn || latestWithdrawn) {
+    const fallback = getLatestAvailableChinesePackId();
+    state.selectedLearningPackId = fallback;
+    state.learningPackSelectionSource = fallback ? "auto" : "";
+    if (latestWithdrawn) state.latestLearningPackId = fallback;
+  }
   const pack = getSelectedLearningPack();
   state.builtinLearningPackLoad = {
     ok: false,
@@ -9183,6 +9214,9 @@ function renderLearningPackError(error) {
 }
 
 function importLearningPack(pack, preview, options = {}) {
+  if (WITHDRAWN_BUILTIN_PACK_IDS.has(pack?.packId)) {
+    throw new Error("该学习包已撤回，不能重新导入或激活。");
+  }
   // Defense in depth: normal UI flow calls parseLearningPackInput first, but
   // this write boundary must remain fail-closed if an internal caller ever
   // hands it a raw candidate directly.  Design-only reminder protocols are
@@ -9468,12 +9502,23 @@ function normalizeLearningPackForStorage(pack) {
 }
 
 function getLatestLearningPack() {
-  const id = state.selectedLearningPackId || state.latestLearningPackId;
+  const requestedId = state.selectedLearningPackId || state.latestLearningPackId;
+  const id = WITHDRAWN_BUILTIN_PACK_IDS.has(requestedId) ? getLatestAvailableChinesePackId() : requestedId;
   return id ? state.learningPacks?.[id]?.data || null : null;
 }
 
 function getSelectedLearningPack() {
   return getLatestLearningPack();
+}
+
+function getLatestAvailableChinesePackId() {
+  const sequenceLatest = getLearningCourseSequence("chinese").at(-1)?.packId;
+  if (sequenceLatest) return sequenceLatest;
+  return Object.values(state.learningPacks || {})
+    .map((record) => ({ packId: record?.packId, pack: record?.data || record, stamp: record?.publishedAt || record?.updatedAt || record?.importedAt || "" }))
+    .filter(({ packId, pack }) => packId && !WITHDRAWN_BUILTIN_PACK_IDS.has(packId) && isPackAvailableForCourse(pack, "chinese"))
+    .sort((a, b) => String(a.pack?.date || "").localeCompare(String(b.pack?.date || "")) || String(a.stamp).localeCompare(String(b.stamp)) || String(a.packId).localeCompare(String(b.packId)))
+    .at(-1)?.packId || "";
 }
 
 function getPackIdForDate(date) {
@@ -9482,7 +9527,7 @@ function getPackIdForDate(date) {
 
 function getPackArchiveEntriesForDate(date) {
   const entries = (state.learningPackArchive?.entries || [])
-    .filter((entry) => entry.date === date && state.learningPacks?.[entry.packId]);
+    .filter((entry) => entry.date === date && state.learningPacks?.[entry.packId] && !WITHDRAWN_BUILTIN_PACK_IDS.has(entry.packId));
   const latestId = state.latestLearningPackId || "";
   return entries.sort((a, b) => {
     if (a.packId === latestId) return -1;
@@ -9495,7 +9540,7 @@ function getPackArchiveEntriesForDate(date) {
 
 function getLearningPackDates() {
   return (state.learningPackArchive?.entries || [])
-    .filter((entry) => state.learningPacks?.[entry.packId])
+    .filter((entry) => state.learningPacks?.[entry.packId] && !WITHDRAWN_BUILTIN_PACK_IDS.has(entry.packId))
     .map((entry) => entry.date)
     .filter((date, index, arr) => date && arr.indexOf(date) === index)
     .sort();
@@ -9504,6 +9549,7 @@ function getLearningPackDates() {
 function getLearningCourseSequence(kind = "chinese") {
   const selectedByCourse = new Map();
   (state.learningPackArchive?.entries || []).forEach((entry, archiveOrder) => {
+    if (WITHDRAWN_BUILTIN_PACK_IDS.has(entry.packId)) return;
     const pack = state.learningPacks?.[entry.packId]?.data;
     if (!pack || !isPackAvailableForCourse(pack, kind, entry)) return;
     const courseKey = getLearningCourseKey(pack, kind);
@@ -9649,7 +9695,7 @@ function selectRelativeLearningCourse(direction, kind = "chinese") {
 }
 
 function selectLatestLearningPackForPrimaryCourse() {
-  const latestPackId = getLearningCourseSequence("chinese").at(-1)?.packId || state.latestLearningPackId || "";
+  const latestPackId = getLatestAvailableChinesePackId();
   if (!latestPackId || !state.learningPacks?.[latestPackId]) return false;
   state.selectedLearningPackId = latestPackId;
   state.learningPackSelectionSource = "auto";
