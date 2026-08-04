@@ -3389,7 +3389,17 @@ function selectPrimaryAdaptiveEnglishCourseForPrimaryCourse() {
 function ensureAdaptiveEnglishPrimaryCourse() {
   const sequence = getLearningCourseSequence("english");
   if (!sequence.length) {
-    if (state.englishCourseSource === "library") {
+    // A legacy D01–D14 pointer can survive in an older browser even though
+    // those packs are now read-only and excluded from the active sequence.
+    // Clear the pointer whenever the sequence is empty so the primary entry
+    // cannot render or flash the withdrawn last day before the shell guard.
+    if (state.selectedEnglishDiagnosticPackId) {
+      state.selectedEnglishDiagnosticPackId = "";
+      state.lastAutoSelectedEnglishLessonId = "";
+      state.englishPrimaryEntryPending = false;
+      saveState();
+    }
+    if (state.englishCourseSource === "library" || state.englishCourseSource !== ADAPTIVE_ENGLISH_SHELL_SOURCE) {
       state.englishCourseSource = ADAPTIVE_ENGLISH_SHELL_SOURCE;
       saveState();
     }
