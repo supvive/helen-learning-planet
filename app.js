@@ -14405,18 +14405,22 @@ function renderAdaptiveEnglishActivity(pack, activity, index, total, mode, progr
 }
 
 function renderLetterPlanetTaskAudio(activity, key, itemProgress = {}) {
-  const audio = activity.audioRef;
-  if (!audio || audio.mode === "none") {
-    const text = getLetterPlanetTaskLocalSpeechText(activity);
-    if (!text) return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="本机朗读不可用"><div class="adaptive-source-card-title"><strong>听一听</strong><span>本机朗读不可用</span></div><p class="adaptive-audio-error" role="status">这一步没有可朗读文本，也没有已验收课程音频。</p></aside>`;
-    const status = itemProgress.audioStatus === "device_tts" ? "本机朗读中" : itemProgress.audioStatus === "device_tts_complete" ? "本机朗读完成" : itemProgress.audioStatus === "device_tts_failed" ? "本机朗读失败" : "可用";
-    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="本机朗读"><div class="adaptive-source-card-title"><strong>听一听</strong><span>${status} · 非课程音频</span></div><button class="button secondary compact-button" data-letter-task-local-speech="${escapeHtml(key)}" type="button">本机朗读</button><p class="adaptive-source-card-note">临时使用本机语音，不是已验收课程音频，也不会记为课程音频播放。</p>${itemProgress.audioError ? `<p class="adaptive-audio-error" role="status">${escapeHtml(itemProgress.audioError)}</p>` : ""}</aside>`;
+  const audio = activity.audioRef || {};
+  const text = getLetterPlanetTaskLocalSpeechText(activity);
+  const courseAudioReady = audio.mode === "pack_asset" && audio.verified === true && Boolean(audio.url);
+  if (audio.mode === "pack_asset" && !courseAudioReady) {
+    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="音频待验收"><div class="adaptive-source-card-title"><strong>听一听</strong><span>音频待设备验收</span></div><p class="adaptive-audio-error" role="status">这段课程音频还没有完成真实设备验收，暂不显示播放成功。</p></aside>`;
   }
-  if (audio.mode === "mobile_handoff") {
-    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="手机输入提示"><div class="adaptive-source-card-title"><strong>听一听</strong><span>手机输入</span></div><p>${escapeHtml(audio.mobileInstructionZh)}</p><p class="adaptive-source-card-note">完成后回到这里记录；网站不会把外部播放伪装成已播放。</p></aside>`;
-  }
-  if (!audio.verified || (audio.mode === "pack_asset" && !audio.url)) {
-    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="音频待验收"><div class="adaptive-source-card-title"><strong>听一听</strong><span>音频待设备验收</span></div><p class="adaptive-audio-error" role="status">这段音频还没有完成真实设备验收，暂不显示播放成功。</p></aside>`;
+  if (!courseAudioReady) {
+    const status = itemProgress.audioStatus === "device_tts" || itemProgress.audioStatus === "device_tts_pending"
+      ? "设备朗读中"
+      : itemProgress.audioStatus === "device_tts_complete"
+        ? "设备朗读完成"
+        : itemProgress.audioStatus === "device_tts_failed"
+          ? "设备朗读失败"
+          : "可用";
+    if (!text) return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="音频待验收"><div class="adaptive-source-card-title"><strong>听一听</strong><span>暂不可播放</span></div><p class="adaptive-audio-error" role="status">这一步没有可朗读文本，也没有已验收课程音频。</p></aside>`;
+    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="播放整句"><div class="adaptive-source-card-title"><strong>听一听</strong><span>${status} · 设备朗读</span></div><button class="button secondary compact-button" data-letter-task-local-speech="${escapeHtml(key)}" type="button">播放整句</button><p class="adaptive-source-card-note">本机朗读使用当前设备英语语音；这是非课程音频，不是已验收课程音频，也不计入课程音频播放记录。</p>${itemProgress.audioError ? `<p class="adaptive-audio-error" role="status">${escapeHtml(itemProgress.audioError)}</p>` : ""}</aside>`;
   }
   const status = itemProgress.audioStatus === "played" ? "已播放" : itemProgress.audioStatus === "failed" ? "播放失败" : "未播放";
   const played = Math.min(audio.maxPlays, Number(itemProgress.audioPlayCount || 0));
@@ -14901,7 +14905,8 @@ function getLetterPlanetTaskLocalSpeechText(activity) {
 
 function playLetterPlanetTaskLocalSpeech(key) {
   const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
-  if (!pack || !activity || activity.audioRef?.mode !== "none") return false;
+  const audio = activity?.audioRef || {};
+  if (!pack || !activity || audio.mode === "pack_asset") return false;
   const text = getLetterPlanetTaskLocalSpeechText(activity);
   const update = (patch) => updateAdaptiveAudioProgress(pack, key, { audioSource: "device_tts", ...patch });
   if (!text || typeof SpeechSynthesisUtterance === "undefined" || typeof window === "undefined" || !window.speechSynthesis) {
