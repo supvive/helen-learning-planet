@@ -43,3 +43,13 @@ git push public HEAD:main
 ```
 
 当前 `public/main` 与 `pages-final-sync-remote` 并非同一提交线，直接把后者强推到 `public/main` 会回退 Pages 已有的样式改动，因此本分支已从 `public/main` 单独建立，可在审阅后安全快进推送。若不执行推送，阻断原因仅是发布审批/部署窗口，而不是代码或回归失败；Oxford 仍需独立等待真实 learner-known、媒体、盲审和儿童证据。
+
+## 推送与线上核对
+
+已快进推送到 `public/main`：
+
+- GitHub `public/main`：`5be3b300008117e066cba333474872d29d2cfc89`
+- Pages 首页：HTTP 200，可达；仍引用 `app.js?v=v3.9.15` 与 `styles.css?v=v3.9.15`
+- 线上 `app.js` SHA-256：`e0b3cdf51a53972bec0be26777b0baedde0c2b074bffd65ceff74d8996772e84`（与发布树一致）
+- 线上 `styles.css` SHA-256：`775e143bff12510f94fac5b95fecd29feab52f4beba2ddb97aacdd95144ec770`（未被本补丁改变）
+- 线上代码包含 stale-D01–D14 pointer guard；线上清单的历史 D01–D14 仍是既有 `returned_design_only` / `historical_read_only` 记录，本次没有新增或修改任何 Oxford design-only 候选文件。
