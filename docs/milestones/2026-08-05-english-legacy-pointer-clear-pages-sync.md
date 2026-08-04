@@ -30,6 +30,8 @@
   - `test-learning-planet.mjs` 通过；
   - `test-adaptive-switcher.mjs` 通过。
 
+在以 `public/main` 为基线的 Pages 发布树中，`test-planet-state-audit-queue.mjs` 所需的 Oxford blueprint/audit 文档没有随公开站点发布，这是有意的 design-only 隔离；该测试已在完整源仓库通过。Pages 树本身已用相同的 app.js 夹具验证旧 D14 指针清除，并通过 letter、planet-current、learning-planet、adaptive-switcher 回归。
+
 ## 发布边界
 
 该补丁可以独立提交到 Pages 发布分支，但不应把当前主开发工作树的 Oxford 候选文件带入 Pages。若执行公开推送，应在 Pages 工作树中确认 `git diff --name-only` 只出现上述两个文件，然后运行：
@@ -40,4 +42,4 @@ git commit -m "Fix stale English diagnostic pointer on empty sequence"
 git push public HEAD:main
 ```
 
-如果不执行推送，阻断原因仅是发布审批/部署窗口，而不是代码或回归失败；Oxford 仍需独立等待真实 learner-known、媒体、盲审和儿童证据。
+当前 `public/main` 与 `pages-final-sync-remote` 并非同一提交线，直接把后者强推到 `public/main` 会回退 Pages 已有的样式改动，因此本分支已从 `public/main` 单独建立，可在审阅后安全快进推送。若不执行推送，阻断原因仅是发布审批/部署窗口，而不是代码或回归失败；Oxford 仍需独立等待真实 learner-known、媒体、盲审和儿童证据。
