@@ -3719,6 +3719,7 @@ function bindDailyCoursePages() {
   if (target.dataset.letterTaskOption) selectLetterPlanetTaskOption(target);
   if (target.dataset.letterTaskHint) revealLetterPlanetTaskHint(target.dataset.letterTaskHint);
   if (target.dataset.letterTaskAudio) playLetterPlanetTaskAudio(target.dataset.letterTaskAudio);
+  if (target.dataset.letterTaskLocalSpeech) playLetterPlanetTaskLocalSpeech(target.dataset.letterTaskLocalSpeech);
   if (target.dataset.englishHistoryLibrary) openEnglishHistoryLibrary();
   if (target.dataset.englishAdaptiveHome) openEnglishAdaptiveHome();
   if (target.dataset.artAudio) playArtNarration(target);
@@ -14348,7 +14349,12 @@ function renderAdaptiveEnglishActivity(pack, activity, index, total, mode, progr
 
 function renderLetterPlanetTaskAudio(activity, key, itemProgress = {}) {
   const audio = activity.audioRef;
-  if (!audio || audio.mode === "none") return "";
+  if (!audio || audio.mode === "none") {
+    const text = getLetterPlanetTaskLocalSpeechText(activity);
+    if (!text) return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="本机朗读不可用"><div class="adaptive-source-card-title"><strong>听一听</strong><span>本机朗读不可用</span></div><p class="adaptive-audio-error" role="status">这一步没有可朗读文本，也没有已验收课程音频。</p></aside>`;
+    const status = itemProgress.audioStatus === "device_tts" ? "本机朗读中" : itemProgress.audioStatus === "device_tts_complete" ? "本机朗读完成" : itemProgress.audioStatus === "device_tts_failed" ? "本机朗读失败" : "可用";
+    return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="本机朗读"><div class="adaptive-source-card-title"><strong>听一听</strong><span>${status} · 非课程音频</span></div><button class="button secondary compact-button" data-letter-task-local-speech="${escapeHtml(key)}" type="button">本机朗读</button><p class="adaptive-source-card-note">临时使用本机语音，不是已验收课程音频，也不会记为课程音频播放。</p>${itemProgress.audioError ? `<p class="adaptive-audio-error" role="status">${escapeHtml(itemProgress.audioError)}</p>` : ""}</aside>`;
+  }
   if (audio.mode === "mobile_handoff") {
     return `<aside class="adaptive-source-card letter-task-audio-card" aria-label="手机输入提示"><div class="adaptive-source-card-title"><strong>听一听</strong><span>手机输入</span></div><p>${escapeHtml(audio.mobileInstructionZh)}</p><p class="adaptive-source-card-note">完成后回到这里记录；网站不会把外部播放伪装成已播放。</p></aside>`;
   }
@@ -14827,6 +14833,50 @@ function playLetterPlanetTaskAudio(key) {
   };
   currentAdaptiveAudio = { key, utterance: null, audio: audioElement };
   audioElement.play().catch(() => audioElement.onerror?.());
+  return true;
+}
+
+function getLetterPlanetTaskLocalSpeechText(activity) {
+  return [activity?.audioRef?.text, activity?.targetSentence, activity?.childVisible?.text]
+    .map((text) => safePlainText(text || "", 600))
+    .find((text) => /[A-Za-z]/.test(text)) || "";
+}
+
+function playLetterPlanetTaskLocalSpeech(key) {
+  const { pack, activity } = getActiveLetterPlanetTaskActivity(key);
+  if (!pack || !activity || activity.audioRef?.mode !== "none") return false;
+  const text = getLetterPlanetTaskLocalSpeechText(activity);
+  const update = (patch) => updateAdaptiveAudioProgress(pack, key, { audioSource: "device_tts", ...patch });
+  if (!text || typeof SpeechSynthesisUtterance === "undefined" || typeof window === "undefined" || !window.speechSynthesis) {
+    update({ audioStatus: "device_tts_failed", audioError: "当前设备没有可用本机朗读；请检查浏览器声音设置后重试。" });
+    return false;
+  }
+  stopAdaptiveAudioPlayback();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = activity.audioRef?.language || "en-US";
+  utterance.rate = 0.9;
+  utterance.volume = 1;
+  utterance.onstart = () => update({ audioStatus: "device_tts", audioError: "" });
+  utterance.onend = () => {
+    update({ audioStatus: "device_tts_complete", audioError: "" });
+    currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+  };
+  utterance.onerror = () => {
+    update({ audioStatus: "device_tts_failed", audioError: "本机朗读没有播放成功，请检查设备音量后重试。" });
+    currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+  };
+  currentAdaptiveAudio = { key, utterance, audio: null };
+  update({ audioStatus: "device_tts_pending", audioError: "" });
+  window.speechSynthesis.cancel();
+  if (typeof window.speechSynthesis.resume === "function") window.speechSynthesis.resume();
+  setTimeout(() => {
+    if (currentAdaptiveAudio.utterance !== utterance) return;
+    try {
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      utterance.onerror?.();
+    }
+  }, 0);
   return true;
 }
 
