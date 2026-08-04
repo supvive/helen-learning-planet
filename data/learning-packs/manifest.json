@@ -254,6 +254,20 @@
       "schemaVersion": "helen-learning-pack/2",
       "publishedAt": "2026-07-25T00:00:00+08:00",
       "path": "./helen-learning-pack-2026-07-25-day13.json"
+    },
+    {
+      "packId": "2026-08-06-nick-text-feedback-candidate-b-revision-8",
+      "date": "2026-08-06",
+      "title": "明日候选｜小雨的彩笔盒（Revision 8）",
+      "availableSubjects": [
+        "chinese"
+      ],
+      "schemaVersion": "helen-learning-pack/2",
+      "revision": "nick-candidate-b-revision-8-2026-08-05",
+      "lifecycle": "published",
+      "visibility": "public",
+      "publishedAt": "2026-08-05T05:30:00+08:00",
+      "path": "./helen-learning-pack-2026-08-06-chinese-r8.json"
     }
   ]
 }

@@ -9510,7 +9510,12 @@ function auditChineseFeedbackImportGate(pack) {
   const fingerprintValue = (item) => JSON.stringify({ prompt: String(item?.prompt || item?.question || "").trim(), answer: String(item?.answer || item?.referenceAnswer || "").trim(), options: Array.isArray(item?.options) ? item.options.map((option) => String(option || "").trim()) : [], evidence: Array.isArray(item?.evidenceTargetIds) ? item.evidenceTargetIds.map((id) => String(id || "").trim()).sort() : [] });
   const itemFingerprints = items.map((item) => String(item?.fingerprint || item?.questionFingerprint || item?.promptFingerprint || "").trim());
   const historyFingerprints = new Set();
-  Object.values(state.learningPacks || {}).map((record) => record?.data || record).filter(Boolean).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))).slice(0, 7).forEach((historyPack) => {
+  Object.values(state.learningPacks || {}).map((record) => record?.data || record).filter(Boolean)
+    // A repeated import is checked after the first write.  The just-imported
+    // pack is not a prior lesson and must not collide with its own fingerprints;
+    // different pack IDs remain subject to the cross-day duplicate gate.
+    .filter((historyPack) => String(historyPack?.packId || "").trim() !== String(pack?.packId || "").trim())
+    .sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))).slice(0, 7).forEach((historyPack) => {
     (historyPack?.chinese?.lesson?.sections || []).forEach((section) => {
       [...(section.questions || []), ...(section.prompts || [])].filter((item) => item && typeof item === "object").forEach((item) => {
         historyFingerprints.add(String(item.fingerprint || item.questionFingerprint || item.promptFingerprint || "").trim() || checksumString(fingerprintValue(item)));

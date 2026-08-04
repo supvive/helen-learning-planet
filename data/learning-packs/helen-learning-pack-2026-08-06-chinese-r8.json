@@ -1,0 +1,2777 @@
+{
+  "schemaVersion": "helen-learning-pack/2",
+  "contentPolicy": {
+    "authority": "codex-course-designer",
+    "websiteMode": "render-only",
+    "allowModelGeneration": false
+  },
+  "packId": "2026-08-06-nick-text-feedback-candidate-b-revision-8",
+  "date": "2026-08-06",
+  "revision": "nick-candidate-b-revision-8-2026-08-05",
+  "loadMode": "light",
+  "title": "明日候选｜小雨的彩笔盒（Revision 8）",
+  "workflowStatus": "george_approved_release_ready",
+  "submissionStatus": "approved",
+  "allenReview": {
+    "evidenceDecision": "A_approved",
+    "packDecision": "B_approved",
+    "reviewer": "Allen",
+    "reviewScope": "Revision 8 C-A gate repair；不恢复已撤回课包，不替代独立语义盲评。",
+    "approvalEvidence": "Allen 已审核本课的反馈意图、答案边界和四项定向修复；C-A 结构修复保留同一教学目标，正式发布仍需 George 审核。",
+    "approvedRevision": "nick-candidate-b-revision-8-2026-08-05"
+  },
+  "sourceLearningReference": [
+    "feedback-snapshot:2026-08-05-user-latest-written-feedback-snapshot-01",
+    "feedback-run:2026-08-05-latest-text-feedback-run-01",
+    "constraint-source:user-latest-written-feedback",
+    "schema-reference:helen-learning-pack/2",
+    "history-window:available-seven-chinese-packs"
+  ],
+  "sourceMaterialIds": [
+    "2026-08-05-user-latest-written-feedback-snapshot-01",
+    "chinese-design-constraints-no-unmarked-highlight",
+    "chinese-design-constraints-single-cause-evidence",
+    "chinese-design-constraints-retell-sequence-distinct-from-comprehension",
+    "chinese-design-constraints-break-after-six-learning-tasks",
+    "chinese-design-constraints-five-minute-manual-break",
+    "chinese-design-constraints-four-state-feedback"
+  ],
+  "evidenceTargetIds": [
+    "cn:reading:sequence",
+    "cn:review:labels",
+    "cn:review:核对",
+    "cn:review:相配",
+    "cn:word:整齐",
+    "cn:word:混在一起",
+    "cn:word:分组",
+    "cn:retell:sequence-organization",
+    "cn:comprehension:single-cause",
+    "cn:comprehension:quantity",
+    "cn:comprehension:result",
+    "cn:transfer:sort-by-color",
+    "cn:post:分组",
+    "cn:post:整齐",
+    "cn:post:颜色",
+    "cn:fill:组",
+    "cn:fill:整齐",
+    "cn:word:整齐-context",
+    "cn:retell:step1",
+    "cn:retell:step2",
+    "cn:retell:step3",
+    "cn:retell:step4"
+  ],
+  "sharedPlan": {
+    "plannedChineseMinutes": 16,
+    "plannedBreakMinutes": 5,
+    "defaultEnglishMode": "deferred",
+    "plannedEnglishMinutes": 0,
+    "sequenceNoteZh": "六个学习任务完成后休息5分钟；休息不占题位，时间到仍暂停，必须手动结束休息才继续。",
+    "fallbackRules": {
+      "chineseOverMinutes": 25,
+      "easeBelow": 7,
+      "recoveryEaseBelow": 6
+    },
+    "breakProtocol": {
+      "afterLearningTaskNumber": 6,
+      "durationMinutes": 5,
+      "isQuestion": false,
+      "pauseRecording": true,
+      "pauseTimer": true,
+      "autoResumeOnTimeout": false,
+      "resumeAction": "manual_end_break"
+    }
+  },
+  "chinese": {
+    "characters": [
+      {
+        "text": "混",
+        "pinyin": "hùn",
+        "meaning": "合在一起，不分开",
+        "words": [
+          "混在一起",
+          "混合",
+          "混乱"
+        ],
+        "example": "红、黄、蓝三种彩笔混在一起。",
+        "status": "new",
+        "priority": 5,
+        "source": "候选短文；无新录音，低置信度；status=new表示候选首次目标，尚无掌握证据"
+      },
+      {
+        "text": "组",
+        "pinyin": "zǔ",
+        "meaning": "把同类东西分在一起",
+        "words": [
+          "分组",
+          "小组",
+          "组员"
+        ],
+        "example": "她把彩笔分成三组。",
+        "status": "new",
+        "priority": 5,
+        "source": "候选短文；无新录音，低置信度；status=new表示候选首次目标，尚无掌握证据"
+      },
+      {
+        "text": "整",
+        "pinyin": "zhěng",
+        "meaning": "在“整理”里表示把东西收拾好；在“整齐”里和“齐”一起表示不乱。",
+        "words": [
+          "整理",
+          "整齐",
+          "整洁"
+        ],
+        "example": "桌面变得整齐。",
+        "status": "new",
+        "priority": 5,
+        "source": "候选短文；无新录音，低置信度；status=new表示候选首次目标，尚无掌握证据"
+      },
+      {
+        "text": "齐",
+        "pinyin": "qí",
+        "meaning": "整齐、平齐；在“整齐”里表示有次序、不乱。",
+        "words": [
+          "整齐",
+          "齐全",
+          "齐声"
+        ],
+        "example": "桌面也变得整齐。",
+        "status": "new",
+        "priority": 5,
+        "source": "候选短文；无新录音，低置信度；status=new表示候选首次目标，尚无掌握证据"
+      }
+    ],
+    "words": [
+      {
+        "text": "标签",
+        "word": "标签",
+        "meaning": "标明名称、类别或信息的小标记",
+        "status": "review",
+        "source": "历史课间隔复习"
+      },
+      {
+        "text": "核对",
+        "word": "核对",
+        "meaning": "对照检查",
+        "status": "review",
+        "source": "历史课间隔复习"
+      },
+      {
+        "text": "相配",
+        "word": "相配",
+        "meaning": "彼此合适",
+        "status": "review",
+        "source": "历史课间隔复习"
+      },
+      {
+        "text": "混在一起",
+        "word": "混在一起",
+        "meaning": "没有分开，放在同一处",
+        "status": "new",
+        "source": "候选短文；低置信度；status=new表示候选首次目标，尚无掌握证据"
+      },
+      {
+        "text": "分组",
+        "word": "分组",
+        "meaning": "按标准分成几组",
+        "status": "new",
+        "source": "候选短文；低置信度；status=new表示候选首次目标，尚无掌握证据"
+      },
+      {
+        "text": "整齐",
+        "word": "整齐",
+        "meaning": "有顺序、不乱",
+        "status": "new",
+        "source": "候选短文；低置信度；status=new表示候选首次目标，尚无掌握证据"
+      },
+      {
+        "text": "彩笔",
+        "word": "彩笔",
+        "meaning": "用来涂画颜色的笔",
+        "status": "new",
+        "source": "候选短文；无新录音，低置信度"
+      },
+      {
+        "text": "盒子",
+        "word": "盒子",
+        "meaning": "可以装东西的容器",
+        "status": "new",
+        "source": "候选短文；无新录音，低置信度"
+      },
+      {
+        "text": "彩笔",
+        "word": "彩笔",
+        "meaning": "用来涂画颜色的笔",
+        "status": "new",
+        "source": "候选短文；无新录音，低置信度"
+      },
+      {
+        "text": "盒子",
+        "word": "盒子",
+        "meaning": "可以装东西的容器",
+        "status": "new",
+        "source": "候选短文；无新录音，低置信度"
+      }
+    ],
+    "review_words": [
+      "标签",
+      "核对",
+      "相配"
+    ],
+    "targetWords": [
+      "混在一起",
+      "分组",
+      "整齐"
+    ],
+    "confusedPairs": [
+
+    ],
+    "lesson": {
+      "lessonId": "candidate-chinese-color-pencil-box-01-r8",
+      "title": "小雨的彩笔盒",
+      "contentStatus": "candidate_only",
+      "sectionOrder": [
+        "review_words",
+        "fill_blanks",
+        "reading_excerpts",
+        "word_understanding",
+        "four_grid_retell",
+        "comprehension",
+        "fixed_break",
+        "transfer_scenario",
+        "post_check"
+      ],
+      "paragraphs": [
+        "小雨打开彩笔盒，发现红、黄、蓝三种彩笔混在一起。",
+        "她先把彩笔按颜色分成三组，再把每组放回盒子里。",
+        "最后，盒子盖好了，桌面也变得整齐。"
+      ],
+      "review_words": [
+        "标签",
+        "核对",
+        "相配"
+      ],
+      "targetWords": [
+        "混在一起",
+        "分组",
+        "整齐"
+      ],
+      "learningTaskCountBeforeBreak": 6,
+      "breakAfterTaskNumber": 6,
+      "sections": [
+        {
+          "id": "review_words",
+          "type": "word_review",
+          "title": "复习词语",
+          "taskNumber": 1,
+          "plannedMinutes": 2,
+          "items": [
+            {
+              "id": "rv1",
+              "word": "标签",
+              "prompt": "读一读“标签”，说说它是用来做什么的。",
+              "itemContract": {
+                "itemId": "rv1",
+                "sourceEvidenceIds": [
+                  "HIST-REVIEW-D15-LABEL"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-05"
+                ],
+                "evidenceTargetIds": [
+                  "cn:review:labels"
+                ],
+                "targetKnowledge": [
+                  "标签"
+                ],
+                "spacingRationale": "来自最近历史课，作为间隔复习；不更新稳定掌握。",
+                "difficultyLevel": "L0",
+                "answerDomain": {
+                  "type": "spoken_meaning",
+                  "acceptedAnswers": [
+                    "用来标明名称、类别或信息的小纸条/标记"
+                  ],
+                  "requiredConcepts": [
+                    "标明信息"
+                  ],
+                  "rejectIf": [
+                    "只重复词语但不说用途"
+                  ]
+                },
+                "independenceRule": "首次说出用途，independent；重读后完成，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRule": "一次回答或45秒到时即停。",
+                "supportBoundaryZh": "等待5秒；最多重读词和问题一次，不先说‘标明信息’。"
+              },
+              "responseMode": "spoken",
+              "answer": "用来标明名称、类别或信息的小纸条/标记",
+              "referenceAnswerZh": "用来标明名称、类别或信息的小纸条/标记",
+              "maxSeconds": 60,
+              "itemAudit": {
+                "target": "标签",
+                "uniqueEvidence": "HIST-REVIEW-D15-LABEL",
+                "level": "L0",
+                "support": "等待5秒；最多重读词和问题一次，不先说‘标明信息’。",
+                "spacingReason": "来自最近历史课，作为间隔复习；不更新稳定掌握。",
+                "answerGranularityZh": "逐项接受答案域，不合并为总分。",
+                "independenceRuleZh": "首次说出用途，independent；重读后完成，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRuleZh": "一次回答或45秒到时即停。",
+                "sourceSentenceId": "HIST-REVIEW-D15-LABEL",
+                "fingerprint": "464d5212dd11253b0811269a",
+                "retrievalLevel": "spoken_item"
+              }
+            }
+          ],
+          "words": [
+            "标签"
+          ],
+          "childInstructionZh": "读一读这个词，说说它的意思。",
+          "parentInstructionZh": "只记录词语的首次读音、词义和提示等级。",
+          "answerMode": "spoken",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "stopRuleZh": "一次回答或2分钟到时即停。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "hintLevel",
+              "itemResults"
+            ]
+          },
+          "target": "间隔复现词语：分开观察读音、词义和独立程度。",
+          "uniqueEvidence": "HIST-REVIEW-D15-LABEL",
+          "level": "L1_retrieval",
+          "support": "只报当前词读音或一个短提示；不得把成人解释算作独立。"
+        },
+        {
+          "id": "fill_blanks",
+          "type": "fill_blanks",
+          "title": "选字填空",
+          "taskNumber": 2,
+          "plannedMinutes": 2,
+          "target": "形近字在短句中的辨析。",
+          "uniqueEvidence": "每题唯一正确字与选择记录。",
+          "level": "L1_character_discrimination",
+          "support": "可报当前字音，不读正确选项；完成后停止追加。",
+          "childInstructionZh": "读句子，选出合适的字。",
+          "parentInstructionZh": "先让孩子读题和选项；不读正确选项。",
+          "answerMode": "select",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "stopRuleZh": "两题完成或2分钟到时即停。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "itemResults"
+            ]
+          },
+          "questions": [
+            {
+              "id": "fb1",
+              "number": 1,
+              "prompt": "她把彩笔按颜色分成三____。",
+              "options": [
+                "组",
+                "祖",
+                "阻"
+              ],
+              "answer": "组",
+              "answerPosition": "A",
+              "responseMode": "select",
+              "answerDomain": {
+                "type": "single_character_selection",
+                "acceptedAnswers": [
+                  "组"
+                ]
+              },
+              "evidenceTargetIds": [
+                "cn:fill:组"
+              ],
+              "difficultyLevel": "L0",
+              "supportBoundaryZh": "可重读题目一次；不读正确选项。",
+              "targetKnowledgePointIds": [
+                "goal:cn:fill:character"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-01"
+              ],
+              "spacingReason": "本课短句中的直接辨字。",
+              "retrievalLevel": "character_discrimination",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E2",
+              "fingerprint": "d89f7f58aa23135a9ef8d32f",
+              "questionFingerprint": "d89f7f58aa23135a9ef8d32f",
+              "referenceAnswer": "组"
+            },
+            {
+              "id": "fb2",
+              "number": 2,
+              "prompt": "桌面变得____。",
+              "options": [
+                "整齐",
+                "整气",
+                "整期"
+              ],
+              "answer": "整齐",
+              "answerPosition": "A",
+              "responseMode": "select",
+              "answerDomain": {
+                "type": "single_word_selection",
+                "acceptedAnswers": [
+                  "整齐"
+                ]
+              },
+              "evidenceTargetIds": [
+                "cn:fill:整齐"
+              ],
+              "difficultyLevel": "L1",
+              "supportBoundaryZh": "可重读题目一次；不读正确选项。",
+              "targetKnowledgePointIds": [
+                "goal:cn:fill:word_form"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-01"
+              ],
+              "spacingReason": "本课短句中的词形辨析。",
+              "retrievalLevel": "word_discrimination",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E3",
+              "fingerprint": "d007527a5e923bab397f3ea3",
+              "questionFingerprint": "d007527a5e923bab397f3ea3",
+              "referenceAnswer": "整齐"
+            }
+          ]
+        },
+        {
+          "id": "reading_excerpts",
+          "type": "reading_text",
+          "title": "短文阅读",
+          "taskNumber": 3,
+          "plannedMinutes": 2,
+          "excerpts": [
+            {
+              "id": "e1",
+              "itemId": "read-e1",
+              "text": "小雨打开彩笔盒，发现红、黄、蓝三种彩笔混在一起。",
+              "sourceEvidenceIds": [
+                "HIST-NEW-STIMULUS-R8"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-01",
+                "FB-CN-02",
+                "FB-CN-03",
+                "FB-CN-04",
+                "FB-CN-05"
+              ],
+              "evidenceTargetIds": [
+                "cn:reading:sequence",
+                "cn:word:混在一起"
+              ],
+              "difficultyLevel": "L0",
+              "targetKnowledge": [
+                "混在一起",
+                "颜色"
+              ],
+              "spacingRationale": "首次接触；作为后续顺序口述的起点。",
+              "answerDomain": {
+                "type": "read_aloud",
+                "acceptedAnswers": [
+                  "完整读出句子"
+                ],
+                "rejectIf": [
+                  "只读单个词而未尝试句子"
+                ]
+              },
+              "independenceRule": "首次在不提示词义的情况下读完，independent；只重读后完成，prompted；示范后跟读，modeled；未完成，not_yet。",
+              "stopRule": "读一次或45秒到时即停，不追加解释。"
+            },
+            {
+              "id": "e2",
+              "itemId": "read-e2",
+              "text": "她先把彩笔按颜色分成三组，再把每组放回盒子里。",
+              "sourceEvidenceIds": [
+                "HIST-NEW-STIMULUS-R8"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-01",
+                "FB-CN-02",
+                "FB-CN-03",
+                "FB-CN-04",
+                "FB-CN-05"
+              ],
+              "evidenceTargetIds": [
+                "cn:reading:sequence",
+                "cn:word:分组"
+              ],
+              "difficultyLevel": "L1",
+              "targetKnowledge": [
+                "先、再",
+                "分成三组"
+              ],
+              "spacingRationale": "与 e1 同日相邻呈现，仅记录阅读负荷，不升级掌握。",
+              "answerDomain": {
+                "type": "read_aloud",
+                "acceptedAnswers": [
+                  "完整读出句子"
+                ],
+                "rejectIf": [
+                  "漏掉‘先’或‘再’而无法复现顺序"
+                ]
+              },
+              "independenceRule": "首次读完并保留先后词，independent；重读句子后完成，prompted；示范后完成，modeled；否则 not_yet。",
+              "stopRule": "读一次或60秒到时即停。"
+            },
+            {
+              "id": "e3",
+              "itemId": "read-e3",
+              "text": "最后，盒子盖好了，桌面也变得整齐。",
+              "sourceEvidenceIds": [
+                "HIST-NEW-STIMULUS-R8"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-01",
+                "FB-CN-02",
+                "FB-CN-03",
+                "FB-CN-04",
+                "FB-CN-05"
+              ],
+              "evidenceTargetIds": [
+                "cn:reading:sequence",
+                "cn:word:整齐"
+              ],
+              "difficultyLevel": "L1",
+              "targetKnowledge": [
+                "最后",
+                "整齐"
+              ],
+              "spacingRationale": "为词义题提供真实句中来源；不单独判结果理解。",
+              "answerDomain": {
+                "type": "read_aloud",
+                "acceptedAnswers": [
+                  "完整读出句子"
+                ],
+                "rejectIf": [
+                  "只认读‘整齐’而未尝试句子"
+                ]
+              },
+              "independenceRule": "首次读完，independent；重读后完成，prompted；示范跟读，modeled；否则 not_yet。",
+              "stopRule": "读一次或45秒到时即停。"
+            }
+          ],
+          "paragraphs": [
+            "小雨打开彩笔盒，发现红、黄、蓝三种彩笔混在一起。",
+            "她先把彩笔按颜色分成三组，再把每组放回盒子里。",
+            "最后，盒子盖好了，桌面也变得整齐。"
+          ],
+          "childInstructionZh": "读一读三句话，想一想事情怎样一步一步发生。",
+          "parentInstructionZh": "只记录句子认读和句意保持，不把一次读对升级为掌握。",
+          "answerMode": "spoken",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "stopRuleZh": "读完三句或2分钟到时就停止，不追加全文。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "hintLevel",
+              "unknownCharacters",
+              "itemResults"
+            ]
+          },
+          "target": "短摘录中的独立解码与句意保持。",
+          "uniqueEvidence": "HIST-NEW-STIMULUS-R8",
+          "level": "L1_decoding_to_meaning",
+          "support": "先等待，再报当前字音；连续卡顿触发停题规则。"
+        },
+        {
+          "id": "word_understanding",
+          "type": "word_understanding",
+          "title": "词语理解",
+          "taskNumber": 4,
+          "plannedMinutes": 2,
+          "questions": [
+            {
+              "id": "w1",
+              "number": 1,
+              "prompt": "在‘桌面也变得整齐’里，‘整齐’表示什么？",
+              "answerGuidanceZh": "回答应说明东西有顺序、不乱，或放得整整齐齐。",
+              "itemContract": {
+                "itemId": "w1",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E3"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-01"
+                ],
+                "evidenceTargetIds": [
+                  "cn:word:整齐"
+                ],
+                "targetKnowledge": [
+                  "整齐"
+                ],
+                "spacingRationale": "直接承接 e3 的句中词；不使用未标记加点词。",
+                "difficultyLevel": "L1",
+                "answerDomain": {
+                  "type": "spoken_meaning",
+                  "acceptedAnswers": [
+                    "不乱",
+                    "有顺序",
+                    "放得整整齐齐",
+                    "东西排列有顺序"
+                  ],
+                  "requiredConcepts": [
+                    "有顺序或不乱"
+                  ],
+                  "rejectIf": [
+                    "只重复‘整齐’而未解释"
+                  ]
+                },
+                "independenceRule": "首次说出有顺序/不乱等语义，independent；重读问题后完成，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRule": "一次回答后停止，最多2分钟。",
+                "supportBoundaryZh": "先等待5秒；最多重读问题一次，不说词义。"
+              },
+              "evidenceTargetIds": [
+                "cn:word:整齐-context"
+              ],
+              "difficultyLevel": "L1",
+              "answerDomain": {
+                "type": "spoken_meaning",
+                "acceptedAnswers": [
+                  "不乱",
+                  "有顺序",
+                  "放得整整齐齐",
+                  "东西排列有顺序"
+                ],
+                "requiredConcepts": [
+                  "有顺序或不乱"
+                ],
+                "rejectIf": [
+                  "只重复‘整齐’而未解释"
+                ]
+              },
+              "independenceRule": "首次说出有顺序/不乱等语义，independent；重读问题后完成，prompted；示范后完成，modeled；否则 not_yet。",
+              "stopRule": "一次回答后停止，最多2分钟。",
+              "feedbackEvidenceIds": [
+                "FB-CN-01"
+              ],
+              "sourceEvidenceIds": [
+                "HIST-NEW-STIMULUS-R8-E3"
+              ],
+              "targetKnowledgePointIds": [
+                "goal:cn:word:整齐"
+              ],
+              "spacingReason": "句中词直接解释；下一次课延迟复现。",
+              "retrievalLevel": "direct_retrieval",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E3",
+              "fingerprint": "7c9fd0b77152307b5cd2353a",
+              "questionFingerprint": "7c9fd0b77152307b5cd2353a",
+              "answer": "不乱或有顺序",
+              "referenceAnswer": "桌面也变得整齐",
+              "responseMode": "spoken",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 60,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "oral_answer"
+              },
+              "supportBoundaryZh": "先等待5秒；最多重读问题一次，不说词义。",
+              "answerEvidenceZh": "E3中的‘桌面也变得整齐’；可接受意思是不乱或有顺序。",
+              "answerGranularity": "一句话说出‘有顺序/不乱’中的一个核心意思。"
+            }
+          ],
+          "answerMode": "spoken",
+          "childInstructionZh": "说说句子里的词是什么意思。",
+          "parentInstructionZh": "直接记录词义回答，不使用未标记的加点词说法。",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "stopRuleZh": "一次回答后停止，最多2分钟。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "hintLevel",
+              "answerSupport",
+              "itemResults"
+            ]
+          },
+          "target": "在原句中解释目标词，不依赖成人替答。",
+          "uniqueEvidence": "HIST-NEW-STIMULUS-R8-E3",
+          "level": "L2_contextual_meaning",
+          "support": "不使用未呈现的‘加点词’；最多一个具体对比提示。"
+        },
+        {
+          "id": "four_grid_retell",
+          "type": "four_grid_retell",
+          "title": "延迟整体复述（只看顺序）",
+          "taskNumber": 5,
+          "plannedMinutes": 3,
+          "retellMode": "delayed_whole_story",
+          "childInstructionZh": "看四格提示，用自己的话按顺序讲一遍；这里只记录顺序组织。",
+          "parentInstructionZh": "四格分别记录完成状态；不把具体事实与阅读理解重复计分。",
+          "answerMode": "spoken",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "distinctFromComprehensionZh": "本环节只有一个延迟整体口述构念；不分别计原因、数量或结果事实，阅读证据只在下一环节计分。",
+          "stopRuleZh": "最多90秒；说完一次即停，不逐句纠错。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "hintLevel",
+              "sequenceOrganization",
+              "itemResults"
+            ],
+            "resultOptionsZh": [
+              "independent",
+              "prompted",
+              "modeled",
+              "not_yet"
+            ]
+          },
+          "target": "按动作/原因/结果组织四步复述，只记录顺序组织。",
+          "uniqueEvidence": "HIST-NEW-STIMULUS-R8-SEQUENCE",
+          "level": "L2_sequence_retell",
+          "support": "每格独立等待/重读/关键词提示；提示后记录为 prompted。",
+          "prompts": [
+            {
+              "id": "r1",
+              "prompt": "开始：彩笔一开始怎样？",
+              "answer": "彩笔混在一起",
+              "referenceAnswer": "彩笔混在一起",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "r1",
+                "scoringConstruct": "sequence_organization_only",
+                "contentFactScoring": false,
+                "acceptedAnswers": [
+                  "彩笔混在一起"
+                ],
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-SEQUENCE-START"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-03"
+                ],
+                "evidenceTargetIds": [
+                  "cn:retell:step1"
+                ],
+                "difficultyLevel": "L0",
+                "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。"
+              },
+              "evidenceTargetIds": [
+                "cn:retell:step1"
+              ],
+              "difficultyLevel": "L0",
+              "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。",
+              "targetKnowledgePointIds": [
+                "goal:cn:retell:sequence"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-03"
+              ],
+              "spacingReason": "四格延迟记录，只计顺序组织。",
+              "retrievalLevel": "delayed_sequence",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-SEQUENCE-START",
+              "fingerprint": "625b1f3ec4cf2bb5f8ac1f02",
+              "questionFingerprint": "625b1f3ec4cf2bb5f8ac1f02",
+              "independenceRule": "首次按顺序完成，independent；重读当前格后完成，prompted；示范后完成，modeled；无法完成，not_yet。",
+              "stopRule": "当前格回答一次即停。",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 30,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "retell"
+              }
+            },
+            {
+              "id": "r2",
+              "prompt": "先：小雨先按什么把彩笔分组？",
+              "answer": "按颜色分成三组",
+              "referenceAnswer": "按颜色分成三组",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "r2",
+                "scoringConstruct": "sequence_organization_only",
+                "contentFactScoring": false,
+                "acceptedAnswers": [
+                  "按颜色分成三组"
+                ],
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-SEQUENCE-SORT"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-03"
+                ],
+                "evidenceTargetIds": [
+                  "cn:retell:step2"
+                ],
+                "difficultyLevel": "L1",
+                "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。"
+              },
+              "evidenceTargetIds": [
+                "cn:retell:step2"
+              ],
+              "difficultyLevel": "L1",
+              "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。",
+              "targetKnowledgePointIds": [
+                "goal:cn:retell:sequence"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-03"
+              ],
+              "spacingReason": "四格延迟记录，只计顺序组织。",
+              "retrievalLevel": "delayed_sequence",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-SEQUENCE-SORT",
+              "fingerprint": "e5e268ffb02a3c9365977a98",
+              "questionFingerprint": "e5e268ffb02a3c9365977a98",
+              "independenceRule": "首次按顺序完成，independent；重读当前格后完成，prompted；示范后完成，modeled；无法完成，not_yet。",
+              "stopRule": "当前格回答一次即停。",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 30,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "retell"
+              }
+            },
+            {
+              "id": "r3",
+              "prompt": "再：分组后她做什么？",
+              "answer": "把每组放回盒子里",
+              "referenceAnswer": "把每组放回盒子里",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "r3",
+                "scoringConstruct": "sequence_organization_only",
+                "contentFactScoring": false,
+                "acceptedAnswers": [
+                  "把每组放回盒子里"
+                ],
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-SEQUENCE-RETURN"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-03"
+                ],
+                "evidenceTargetIds": [
+                  "cn:retell:step3"
+                ],
+                "difficultyLevel": "L1",
+                "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。"
+              },
+              "evidenceTargetIds": [
+                "cn:retell:step3"
+              ],
+              "difficultyLevel": "L1",
+              "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。",
+              "targetKnowledgePointIds": [
+                "goal:cn:retell:sequence"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-03"
+              ],
+              "spacingReason": "四格延迟记录，只计顺序组织。",
+              "retrievalLevel": "delayed_sequence",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-SEQUENCE-RETURN",
+              "fingerprint": "e0b37c725d076540d5f8172c",
+              "questionFingerprint": "e0b37c725d076540d5f8172c",
+              "independenceRule": "首次按顺序完成，independent；重读当前格后完成，prompted；示范后完成，modeled；无法完成，not_yet。",
+              "stopRule": "当前格回答一次即停。",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 30,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "retell"
+              }
+            },
+            {
+              "id": "r4",
+              "prompt": "最后：桌面变得怎样？",
+              "answer": "整齐",
+              "referenceAnswer": "整齐",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "r4",
+                "scoringConstruct": "sequence_organization_only",
+                "contentFactScoring": false,
+                "acceptedAnswers": [
+                  "整齐"
+                ],
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-SEQUENCE-RESULT"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-03"
+                ],
+                "evidenceTargetIds": [
+                  "cn:retell:step4"
+                ],
+                "difficultyLevel": "L2",
+                "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。"
+              },
+              "evidenceTargetIds": [
+                "cn:retell:step4"
+              ],
+              "difficultyLevel": "L2",
+              "supportBoundaryZh": "只可提示顺序词或重读当前格，不提供具体答案。",
+              "targetKnowledgePointIds": [
+                "goal:cn:retell:sequence"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-03"
+              ],
+              "spacingReason": "四格延迟记录，只计顺序组织。",
+              "retrievalLevel": "delayed_sequence",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-SEQUENCE-RESULT",
+              "fingerprint": "4b6abf98740b2f335d316519",
+              "questionFingerprint": "4b6abf98740b2f335d316519",
+              "independenceRule": "首次按顺序完成，independent；重读当前格后完成，prompted；示范后完成，modeled；无法完成，not_yet。",
+              "stopRule": "当前格回答一次即停。",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 30,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "retell"
+              }
+            }
+          ]
+        },
+        {
+          "id": "comprehension",
+          "type": "comprehension",
+          "title": "阅读理解",
+          "taskNumber": 6,
+          "plannedMinutes": 3,
+          "questions": [
+            {
+              "id": "c1",
+              "number": 1,
+              "prompt": "小雨为什么先把彩笔分组？",
+              "answer": "因为三种颜色的彩笔混在一起。",
+              "itemContract": {
+                "itemId": "c1",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E1"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-02"
+                ],
+                "evidenceTargetIds": [
+                  "cn:comprehension:single-cause"
+                ],
+                "targetKnowledge": [
+                  "从原文找单一原因"
+                ],
+                "spacingRationale": "唯一原因证据题；不再要求第二个原因。",
+                "difficultyLevel": "L1",
+                "answerDomain": {
+                  "type": "single_cause",
+                  "acceptedAnswers": [
+                    "因为红、黄、蓝三种彩笔混在一起",
+                    "因为彩笔混在一起"
+                  ],
+                  "requiredEvidence": [
+                    "三种颜色混在一起"
+                  ],
+                  "rejectIf": [
+                    "加入原文没有的原因",
+                    "回答两个原因"
+                  ]
+                },
+                "independenceRule": "首次回指混在一起，independent；重读题干后完成，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRule": "一个原因回答后停止，不追问第二个原因。",
+                "supportBoundaryZh": "等待7秒；可完整重读题干一次，不指向第一句。"
+              },
+              "answerEvidenceZh": "第一句的‘红、黄、蓝三种彩笔混在一起’。",
+              "targetKnowledgePointIds": [
+                "goal:cn:reason"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-02"
+              ],
+              "spacingReason": "单一原因证据；下一次间隔复现。",
+              "retrievalLevel": "evidence_retrieval",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E1",
+              "fingerprint": "db15244082f3e0edf7ce67fd",
+              "questionFingerprint": "db15244082f3e0edf7ce67fd",
+              "responseMode": "spoken",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 60,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "oral_answer"
+              },
+              "referenceAnswer": "红、黄、蓝三种彩笔混在一起",
+              "evidenceTargetIds": [
+                "cn:comprehension:single-cause"
+              ],
+              "difficultyLevel": "L1",
+              "supportBoundaryZh": "等待7秒；可重读题干一次，不指向第一句。",
+              "answerGranularity": "一个原因；必须包含‘彩笔混在一起’。",
+              "causalChain": "彩笔混在一起 → 先按颜色分组。",
+              "causeEvidence": "HIST-NEW-STIMULUS-R8-E1"
+            },
+            {
+              "id": "c2",
+              "number": 2,
+              "prompt": "彩笔分成了几组？",
+              "answer": "三组。",
+              "itemContract": {
+                "itemId": "c2",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E2"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-02"
+                ],
+                "evidenceTargetIds": [
+                  "cn:comprehension:quantity"
+                ],
+                "targetKnowledge": [
+                  "提取数量信息"
+                ],
+                "spacingRationale": "数量事实独立计分，不再用于四步复述分数。",
+                "difficultyLevel": "L0",
+                "answerDomain": {
+                  "type": "quantity",
+                  "acceptedAnswers": [
+                    "三组",
+                    "3组"
+                  ],
+                  "requiredEvidence": [
+                    "分成三组"
+                  ],
+                  "rejectIf": [
+                    "其他数量"
+                  ]
+                },
+                "independenceRule": "首次回答三组，independent；重读后完成，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRule": "回答一次后停止。",
+                "supportBoundaryZh": "等待7秒；可重读问题一次，不做手势提示。"
+              },
+              "answerEvidenceZh": "第二句明确写出‘分成三组’。",
+              "targetKnowledgePointIds": [
+                "goal:cn:quantity"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-02"
+              ],
+              "spacingReason": "数量独立计分；不与复述重复。",
+              "retrievalLevel": "detail_retrieval",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E2",
+              "fingerprint": "52783f2e65117da910d99af0",
+              "questionFingerprint": "52783f2e65117da910d99af0",
+              "responseMode": "spoken",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 60,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "oral_answer"
+              },
+              "referenceAnswer": "三组",
+              "evidenceTargetIds": [
+                "cn:comprehension:quantity"
+              ],
+              "difficultyLevel": "L0",
+              "supportBoundaryZh": "等待7秒；可重读问题一次，不做手势提示。",
+              "answerGranularity": "一个数量词：三组。"
+            },
+            {
+              "id": "c3",
+              "number": 3,
+              "prompt": "哪一句说明事情最后整理好了？",
+              "options": [
+                "小雨打开彩笔盒，发现彩笔混在一起。",
+                "她先把彩笔按颜色分成三组。",
+                "最后，盒子盖好了，桌面也变得整齐。"
+              ],
+              "answer": "最后，盒子盖好了，桌面也变得整齐。",
+              "itemContract": {
+                "itemId": "c3",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E3"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-03"
+                ],
+                "evidenceTargetIds": [
+                  "cn:comprehension:result"
+                ],
+                "targetKnowledge": [
+                  "从结果句识别完成状态"
+                ],
+                "spacingRationale": "结果证据只在阅读理解计分；延迟口述只计顺序组织。",
+                "difficultyLevel": "L1",
+                "answerDomain": {
+                  "type": "result_sentence_selection",
+                  "acceptedAnswers": [
+                    "第三个选项"
+                  ],
+                  "requiredEvidence": [
+                    "盒子盖好了",
+                    "桌面整齐"
+                  ],
+                  "rejectIf": [
+                    "选择起始或过程句"
+                  ]
+                },
+                "independenceRule": "首次选出第三个选项，independent；朗读选项后选出，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRule": "确认一次后停止，不要求复述全文。",
+                "supportBoundaryZh": "可完整朗读题干和选项；不得加重结果句。"
+              },
+              "answerEvidenceZh": "第三个选项同时包含完成状态和结果状态。",
+              "targetKnowledgePointIds": [
+                "goal:cn:result"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-03"
+              ],
+              "spacingReason": "结果句独立记录；后续换句复现。",
+              "retrievalLevel": "result_retrieval",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E3",
+              "fingerprint": "0b4f98aac5c96f54d5385607",
+              "questionFingerprint": "0b4f98aac5c96f54d5385607",
+              "responseMode": "select",
+              "answerPosition": "C",
+              "referenceAnswer": "最后，盒子盖好了，桌面也变得整齐",
+              "evidenceTargetIds": [
+                "cn:comprehension:result"
+              ],
+              "difficultyLevel": "L1",
+              "supportBoundaryZh": "可完整朗读题干和选项；不得加重结果句。",
+              "answerGranularity": "选择一个结果句；只记录选项位置，不要求口头复述。"
+            }
+          ],
+          "childInstructionZh": "读句子，回答一个原因、一个数量和一个结果问题。",
+          "parentInstructionZh": "逐题记录证据位置、答案和提示；不要求复述全文。",
+          "answerMode": "mixed",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "distinctFromRetellZh": "本环节只记录原因、数量、结果证据；不要求按顺序重新讲故事。",
+          "stopRuleZh": "每题确认一次后停止，不追加整篇复述。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "hintLevel",
+              "answerSupport",
+              "evidenceLocation",
+              "itemResults"
+            ]
+          },
+          "target": "原因、关键细节、结果各自定位，避免重复复述。",
+          "uniqueEvidence": "HIST-NEW-STIMULUS-R8-COMPREHENSION",
+          "level": "L2_evidence_reading",
+          "support": "只重读当前题；不提供完整答案；口答要点单独记录。"
+        },
+        {
+          "id": "fixed_break",
+          "type": "break",
+          "title": "休息",
+          "afterLearningTaskNumber": 6,
+          "plannedMinutes": 5,
+          "isQuestion": false,
+          "answerMode": "none",
+          "childInstructionZh": "现在休息5分钟。时间到了以后，按‘结束休息’再继续。",
+          "parentInstructionZh": "休息独立于题位；计时和录音暂停，必须手动结束。",
+          "stopRuleZh": "休息不占题位、不进入最困难环节；计时和录音暂停；5分钟到时仍保持暂停，只有手动结束才恢复。",
+          "breakProtocol": {
+            "durationMinutes": 5,
+            "pauseRecording": true,
+            "pauseTimer": true,
+            "autoResumeOnTimeout": false,
+            "resumeAction": "manual_end_break"
+          },
+          "feedbackMapping": [
+            "completion",
+            "actualSeconds"
+          ],
+          "parentOnly": {
+            "recordFields": [
+              "breakStartedAt",
+              "breakEndedAt",
+              "actualSeconds",
+              "manualEnd",
+              "recordingPaused",
+              "timerPaused"
+            ],
+            "pauseBehavior": {
+              "resumeOn": "manual_end"
+            }
+          },
+          "target": "休息是时间控制，不是题目。",
+          "uniqueEvidence": "breakStartedAt/breakEndedAt",
+          "level": "excluded",
+          "support": "结束休息必须手动；计时和录音在休息中暂停。",
+          "taskNumber": null
+        },
+        {
+          "id": "transfer_scenario",
+          "type": "transfer_scenario",
+          "title": "生活迁移",
+          "taskNumber": 7,
+          "plannedMinutes": 2,
+          "prompt": "如果三种颜色的积木混在一起，你会怎样把它们收好？",
+          "answerGuidanceZh": "先按颜色分组，再把每组放到对应的位置。",
+          "itemContract": {
+            "itemId": "t1",
+            "sourceEvidenceIds": [
+              "HIST-NEW-STIMULUS-R8-E2"
+            ],
+            "feedbackEvidenceIds": [
+              "FB-CN-03"
+            ],
+            "evidenceTargetIds": [
+              "cn:transfer:sort-by-color"
+            ],
+            "targetKnowledge": [
+              "把分类整理办法迁移到新物品"
+            ],
+            "spacingRationale": "近迁移：只更换为积木，保留分类→归位结构，不复述原故事。",
+            "difficultyLevel": "L1",
+            "answerDomain": {
+              "type": "near_transfer_spoken",
+              "acceptedAnswers": [
+                "先按颜色分组，再把每组放回盒子",
+                "把同色积木放在一起，再分别收好",
+                "分成几堆，再放到对应位置"
+              ],
+              "requiredElements": [
+                "分类标准",
+                "分组动作",
+                "归位动作"
+              ],
+              "rejectIf": [
+                "只重复彩笔情境",
+                "没有办法步骤"
+              ]
+            },
+            "independenceRule": "第一次在积木情境说出至少两步，independent；重读问题后完成，prompted；示范后完成，modeled；否则 not_yet。",
+            "stopRule": "一次完整回答或2分钟到时停止。",
+            "supportBoundaryZh": "等待7秒，可重读问题一次；不先说按颜色分组。"
+          },
+          "childInstructionZh": "想一个新的情况，说说你的办法。",
+          "parentInstructionZh": "记录分类办法是否迁移到新物品，不计原文复述。",
+          "answerMode": "spoken",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "stopRuleZh": "一次完整回答或2分钟到时停止。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "independence",
+              "hintLevel",
+              "transferDistance",
+              "itemResults"
+            ]
+          },
+          "questions": [
+            {
+              "id": "t1",
+              "number": 1,
+              "prompt": "如果三种颜色的积木混在一起，你会怎样把它们收好？",
+              "answer": "先按颜色分组，再把每组放到对应的位置。",
+              "referenceAnswer": "按颜色分成三组，再把每组放回盒子里",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "t1",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E2"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-03"
+                ],
+                "evidenceTargetIds": [
+                  "cn:transfer:sort-by-color"
+                ],
+                "targetKnowledge": [
+                  "把分类整理办法迁移到新物品"
+                ],
+                "spacingRationale": "近迁移：只更换为积木，保留分类→归位结构，不复述原故事。",
+                "difficultyLevel": "L1",
+                "answerDomain": {
+                  "type": "near_transfer_spoken",
+                  "acceptedAnswers": [
+                    "先按颜色分组，再把每组放回盒子",
+                    "把同色积木放在一起，再分别收好",
+                    "分成几堆，再放到对应位置"
+                  ],
+                  "requiredElements": [
+                    "分类标准",
+                    "分组动作",
+                    "归位动作"
+                  ]
+                },
+                "independenceRule": "第一次在积木情境说出至少两步，independent；重读问题后完成，prompted；示范后完成，modeled；否则 not_yet。",
+                "stopRule": "一次完整回答或2分钟到时停止。",
+                "supportBoundaryZh": "等待7秒，可重读问题一次；不先说按颜色分组。"
+              },
+              "targetKnowledgePointIds": [
+                "goal:cn:transfer"
+              ],
+              "feedbackEvidenceIds": [
+                "FB-CN-03"
+              ],
+              "spacingReason": "更换为积木情境做近迁移；下一次延迟观察。",
+              "retrievalLevel": "near_transfer",
+              "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E2",
+              "fingerprint": "a507ab675aea0422874e38a8",
+              "questionFingerprint": "a507ab675aea0422874e38a8",
+              "recording": {
+                "mode": "optional_response",
+                "maxSeconds": 60,
+                "stopAction": "done_button",
+                "includeInFeedback": true,
+                "category": "oral_answer"
+              },
+              "evidenceTargetIds": [
+                "cn:transfer:sort-by-color"
+              ],
+              "difficultyLevel": "L2",
+              "supportBoundaryZh": "等待7秒，可重读问题一次；不先说按颜色分组。",
+              "answerEvidenceZh": "E2提供的分类→归位方法，转入积木情境。",
+              "answerGranularity": "至少两个动作：分类/分组与归位。"
+            }
+          ],
+          "target": "把策略迁移到新情境，保留先看标记再分类的逻辑。",
+          "uniqueEvidence": "HIST-NEW-STIMULUS-R8-TRANSFER",
+          "level": "L2_transfer",
+          "support": "先等待，再给方向性提示，不给完整答案。"
+        },
+        {
+          "id": "post_check",
+          "type": "post_check",
+          "title": "三词后测",
+          "taskNumber": 8,
+          "plannedMinutes": 2,
+          "items": [
+            {
+              "id": "p1",
+              "number": 1,
+              "prompt": "读一读：分组。",
+              "word": "分组",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "p1",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E2"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-05"
+                ],
+                "evidenceTargetIds": [
+                  "cn:post:分组"
+                ],
+                "targetKnowledge": [
+                  "分组"
+                ],
+                "spacingRationale": "结束后逐词后测；不因一次读对升级稳定掌握。",
+                "difficultyLevel": "L1",
+                "answerDomain": {
+                  "type": "single_word_reading",
+                  "acceptedAnswers": [
+                    "分组"
+                  ],
+                  "rejectIf": [
+                    "漏读或换成其他词"
+                  ]
+                },
+                "independenceRule": "首次正确读出，independent；音节/声调提示后，prompted；示范跟读，modeled；未完成，not_yet。",
+                "stopRule": "该词读一次即停。",
+                "supportBoundaryZh": "等待5秒；最多提供声音提示，不说完整词。"
+              },
+              "answer": "分组",
+              "referenceAnswerZh": "分组",
+              "maxSeconds": 60,
+              "itemAudit": {
+                "target": "分组",
+                "uniqueEvidence": "HIST-NEW-STIMULUS-R8-E2",
+                "level": "L1",
+                "support": "等待5秒；最多提供声音提示，不说完整词。",
+                "spacingReason": "结束后逐词后测；不因一次读对升级稳定掌握。",
+                "answerGranularityZh": "逐项接受答案域，不合并为总分。",
+                "independenceRuleZh": "首次正确读出，independent；音节/声调提示后，prompted；示范跟读，modeled；未完成，not_yet。",
+                "stopRuleZh": "该词读一次即停。",
+                "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E2",
+                "fingerprint": "dc198d85ee2e492f9aaabdd5",
+                "retrievalLevel": "spoken_item"
+              }
+            },
+            {
+              "id": "p2",
+              "number": 2,
+              "prompt": "读一读：整齐。",
+              "word": "整齐",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "p2",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E3"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-05"
+                ],
+                "evidenceTargetIds": [
+                  "cn:post:整齐"
+                ],
+                "targetKnowledge": [
+                  "整齐"
+                ],
+                "spacingRationale": "与 p1 分开记录，防止合并成一个总结果。",
+                "difficultyLevel": "L1",
+                "answerDomain": {
+                  "type": "single_word_reading",
+                  "acceptedAnswers": [
+                    "整齐"
+                  ],
+                  "rejectIf": [
+                    "读成整洁或漏字"
+                  ]
+                },
+                "independenceRule": "首次正确读出，independent；声音提示后，prompted；示范跟读，modeled；未完成，not_yet。",
+                "stopRule": "该词读一次即停。",
+                "supportBoundaryZh": "等待5秒；最多提供声音提示。"
+              },
+              "answer": "整齐",
+              "referenceAnswerZh": "整齐",
+              "maxSeconds": 60,
+              "itemAudit": {
+                "target": "整齐",
+                "uniqueEvidence": "HIST-NEW-STIMULUS-R8-E3",
+                "level": "L1",
+                "support": "等待5秒；最多提供声音提示。",
+                "spacingReason": "与 p1 分开记录，防止合并成一个总结果。",
+                "answerGranularityZh": "逐项接受答案域，不合并为总分。",
+                "independenceRuleZh": "首次正确读出，independent；声音提示后，prompted；示范跟读，modeled；未完成，not_yet。",
+                "stopRuleZh": "该词读一次即停。",
+                "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E3",
+                "fingerprint": "df399a05653db1b1d1e95b09",
+                "retrievalLevel": "spoken_item"
+              }
+            },
+            {
+              "id": "p3",
+              "number": 3,
+              "prompt": "读一读：颜色。",
+              "word": "颜色",
+              "responseMode": "spoken",
+              "itemContract": {
+                "itemId": "p3",
+                "sourceEvidenceIds": [
+                  "HIST-NEW-STIMULUS-R8-E1"
+                ],
+                "feedbackEvidenceIds": [
+                  "FB-CN-05"
+                ],
+                "evidenceTargetIds": [
+                  "cn:post:颜色"
+                ],
+                "targetKnowledge": [
+                  "颜色"
+                ],
+                "spacingRationale": "与 p1/p2 独立记录，保留首次反应和提示等级。",
+                "difficultyLevel": "L0",
+                "answerDomain": {
+                  "type": "single_word_reading",
+                  "acceptedAnswers": [
+                    "颜色"
+                  ],
+                  "rejectIf": [
+                    "漏字或换成其他词"
+                  ]
+                },
+                "independenceRule": "首次正确读出，independent；声音提示后，prompted；示范跟读，modeled；未完成，not_yet。",
+                "stopRule": "该词读一次即停；三词完成后结束后测。",
+                "supportBoundaryZh": "等待5秒；最多提供声音提示。"
+              },
+              "answer": "颜色",
+              "referenceAnswerZh": "颜色",
+              "maxSeconds": 60,
+              "itemAudit": {
+                "target": "颜色",
+                "uniqueEvidence": "HIST-NEW-STIMULUS-R8-E1",
+                "level": "L0",
+                "support": "等待5秒；最多提供声音提示。",
+                "spacingReason": "与 p1/p2 独立记录，保留首次反应和提示等级。",
+                "answerGranularityZh": "逐项接受答案域，不合并为总分。",
+                "independenceRuleZh": "首次正确读出，independent；声音提示后，prompted；示范跟读，modeled；未完成，not_yet。",
+                "stopRuleZh": "该词读一次即停；三词完成后结束后测。",
+                "sourceSentenceId": "HIST-NEW-STIMULUS-R8-E1",
+                "fingerprint": "d7829bacf6e0ed0b61fd2c12",
+                "retrievalLevel": "spoken_item"
+              }
+            }
+          ],
+          "words": [
+            "分组",
+            "整齐",
+            "颜色"
+          ],
+          "childInstructionZh": "最后分别读一读这三个词，三词分开记录。",
+          "parentInstructionZh": "三个词分别记录首次反应、提示和独立度；不合并成一个总题。",
+          "answerMode": "spoken",
+          "sectionResultOptions": [
+            "independent",
+            "prompted",
+            "modeled",
+            "not_yet"
+          ],
+          "stopRuleZh": "每词只记录首次反应；三词完成后结束，不因一次读对就升级稳定掌握。",
+          "parentOnly": {
+            "recordFields": [
+              "completion",
+              "actualSeconds",
+              "firstResponse",
+              "hintLevel",
+              "independence",
+              "itemResults"
+            ]
+          },
+          "target": "逐项记录目标字词首次认读，不把跟读算独立。",
+          "uniqueEvidence": "cn:post:first-response",
+          "level": "L1_recognition_probe",
+          "support": "屏幕不显示拼音；报音后进入下一项。"
+        }
+      ],
+      "lessonEvidencePolicy": "每项都绑定 sourceEvidenceIds、feedbackEvidenceIds、evidenceTargetIds、answerDomain、difficultyLevel、independenceRule、stopRule；无新录音的结果保持 unknown。",
+      "answerKey": {
+        "fill_blanks": {
+          "fb1": "组",
+          "fb2": "整齐"
+        },
+        "four_grid_retell": {
+          "r1": "开始",
+          "r2": "先",
+          "r3": "再",
+          "r4": "最后",
+          "scoring": "sequence_organization_only"
+        },
+        "comprehension": {
+          "c1": {
+            "answer": "红、黄、蓝三种彩笔混在一起",
+            "shape": "single_cause",
+            "evidence": "HIST-NEW-STIMULUS-R8-E1"
+          },
+          "c2": {
+            "answer": "三组",
+            "shape": "quantity",
+            "evidence": "HIST-NEW-STIMULUS-R8-E2"
+          },
+          "c3": {
+            "answerPosition": "C",
+            "optionOrderPolicy": "shuffle_allowed",
+            "shape": "result_sentence_selection",
+            "evidence": "HIST-NEW-STIMULUS-R8-E3"
+          }
+        },
+        "transfer_scenario": {
+          "t1": {
+            "shape": "near_transfer",
+            "requiredElements": [
+              "分类标准",
+              "分组动作",
+              "归位动作"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "english": {
+  },
+  "art": null,
+  "practice": {
+  },
+  "feedbackMapping": {
+    "reading_excerpts": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "读完三句或2分钟到时就停止，不追加全文。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    },
+    "review_words": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "每词回答一次；2分钟到时即停，不追加解释。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    },
+    "word_understanding": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "一次回答后停止，最多2分钟。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    },
+    "four_grid_retell": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "最多90秒；说完一次即停，不逐句纠错。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    },
+    "comprehension": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "每题确认一次后停止，不追加整篇复述。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    },
+    "transfer_scenario": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "一次完整回答或2分钟到时停止。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    },
+    "fixed_break": {
+      "kind": "break_protocol",
+      "notALearningItem": true,
+      "durationMinutes": 5,
+      "pauseTimer": true,
+      "pauseRecording": true,
+      "autoResumeOnTimeout": false,
+      "resumeAction": "manual_end_break"
+    },
+    "post_check": {
+      "correctness": "itemResults.correctness",
+      "independence": "itemResults.independence",
+      "hintLevel": "itemResults.hintLevel",
+      "stopRule": "每词只记录首次反应；三词完成后结束，不因一次读对就升级稳定掌握。",
+      "evidence": "itemContract.sourceEvidenceIds + itemContract.feedbackEvidenceIds + itemContract.evidenceTargetIds"
+    }
+  },
+  "selfReviewNotes": {
+    "candidateOnly": true,
+    "noAudioAttachment": true,
+    "withdrawnLessonNotRebuilt": true,
+    "revision": "revision-8",
+    "resolvedAllenP0": [
+      "补齐 characters、words、review_words、targetWords 与完整中文 sections。",
+      "休息固定在第6个学习任务之后，时长5分钟；计时和录音暂停，手动结束才恢复。",
+      "加入 feedbackInput、feedbackTrace、abilityProfile/profile、goalMap 和逐项反馈绑定。",
+      "四步改为一次延迟整体口述，只计顺序组织；阅读理解独立计原因、数量、结果。",
+      "后测拆成分组、整齐、颜色三个独立 item。",
+      "加入最近七课 historyWindow、内容哈希、构念/题型查重及排除理由。"
+    ],
+    "staticChecks": [
+      "JSON 可解析；schemaVersion=helen-learning-pack/2；contentPolicy=render-only。",
+      "所有学习 item 均存在 sourceEvidenceIds、feedbackEvidenceIds、evidenceTargetIds、answerDomain、difficultyLevel、independenceRule、stopRule。",
+      "休息 isQuestion=false、不占题位，且 afterLearningTaskNumber=6、durationMinutes=5。",
+      "三词后测逐词记录，未合并成总题；无新音频不写入能力结论。",
+      "撤回课包只在历史排除表中出现，未复制其文本、标题、lessonId 或题目。",
+      "未导入、未发布、未联系 Elon/Jony。"
+    ],
+    "pendingGates": [
+      "Allen 内容/答案/负荷复审",
+      "独立语义盲评（如流程要求）",
+      "生产解析和网站零写入运行时验证",
+      "George 明确签发前不得导入或发布"
+    ],
+    "boundary": "Nick Revision 8 候选；只交 Allen，不导入、不发布、不触碰已撤回门闸。"
+  },
+  "feedbackInput": {
+    "snapshotId": "2026-08-05-user-latest-written-feedback-snapshot-01",
+    "runId": "2026-08-05-latest-text-feedback-run-01",
+    "generatedAt": "2026-08-05",
+    "inputType": "user_latest_written_feedback",
+    "path": "/Users/jackie/Documents/Codex/2026-08-02/nick-nic-nick-alan/work/feedback-2026-08-05-text/2026-08-05-latest-text-feedback-run-01/input-snapshot.json",
+    "audioStatus": "no_audio_attachment",
+    "transcriptionAttempts": 0,
+    "completionStatus": "no_new_classroom_evidence",
+    "recordingEvidence": "recording_unavailable",
+    "observedFacts": [
+      {
+        "evidenceId": "FB-CN-01",
+        "fact": "词语题不得称未真实标记的词为加点词；可以直接指向句中词。",
+        "confidence": "high"
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "fact": "没有两个独立文本证据时，原因题只问一个原因。",
+        "confidence": "high"
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "fact": "四步复述与阅读理解不能重复索取同一事实并分别计分。",
+        "confidence": "high"
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "fact": "休息不占题位；需要暂停计时和录音，手动结束后才继续。",
+        "confidence": "high"
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "fact": "学习环节保留独立完成、少量提醒、播放示范后完成、暂时不会四态反馈。",
+        "confidence": "high"
+      }
+    ],
+    "unknowns": [
+      "本轮没有新的课堂录音或逐题网站快照，不能推出 Helen 的新掌握度、独立度、首反应或耐力。",
+      "新短文和目标字词的适切性仍需 Allen 审核。"
+    ],
+    "evidence": [
+      {
+        "evidenceId": "FB-CN-01",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-word-prompt",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-cause-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-construct-separation",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-break-protocol",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-four-state",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "NO-AUDIO-2026-08-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "input_boundary",
+        "activityId": "no-new-classroom-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      }
+    ],
+    "events": [
+      {
+        "evidenceId": "FB-CN-01",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-word-prompt",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-cause-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-construct-separation",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-break-protocol",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-four-state",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "NO-AUDIO-2026-08-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "input_boundary",
+        "activityId": "no-new-classroom-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      }
+    ],
+    "asOf": "2026-08-05"
+  },
+  "feedbackTrace": {
+    "traceId": "feedback-trace:2026-08-05-latest-text-feedback-run-01:candidate-b-r8",
+    "snapshotId": "2026-08-05-user-latest-written-feedback-snapshot-01",
+    "profileVersion": "helen-chinese-profile-2026-08-05-r8",
+    "profileAsOf": "2026-08-05",
+    "feedbackEvidence": [
+      {
+        "evidenceId": "FB-CN-01",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-word-prompt",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-cause-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-construct-separation",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-break-protocol",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-four-state",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "NO-AUDIO-2026-08-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "input_boundary",
+        "activityId": "no-new-classroom-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      }
+    ],
+    "evidenceRecords": [
+      {
+        "evidenceId": "FB-CN-01",
+        "source": "feedback_snapshot",
+        "independence": "unknown",
+        "result": "design_issue",
+        "labels": [
+          "design_issue",
+          "word_prompt"
+        ]
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "source": "feedback_snapshot",
+        "independence": "unknown",
+        "result": "design_issue",
+        "labels": [
+          "design_issue",
+          "answer_evidence"
+        ]
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "source": "feedback_snapshot",
+        "independence": "unknown",
+        "result": "design_issue",
+        "labels": [
+          "design_issue",
+          "duplicate_construct"
+        ]
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "source": "feedback_snapshot",
+        "independence": "unknown",
+        "result": "design_issue",
+        "labels": [
+          "design_issue",
+          "break_protocol"
+        ]
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "source": "feedback_snapshot",
+        "independence": "unknown",
+        "result": "design_constraint",
+        "labels": [
+          "feedback_contract"
+        ]
+      },
+      {
+        "evidenceId": "NO-AUDIO-2026-08-05",
+        "source": "feedback_snapshot",
+        "independence": "unknown",
+        "result": "not_attempted",
+        "labels": [
+          "recording_unavailable",
+          "low_confidence"
+        ]
+      }
+    ],
+    "designDecisions": [
+      {
+        "decisionId": "R8-D01",
+        "sourceEvidenceIds": [
+          "FB-CN-01"
+        ],
+        "action": "词义题直接指向‘整齐’，不使用‘加点词’措辞。"
+      },
+      {
+        "decisionId": "R8-D02",
+        "sourceEvidenceIds": [
+          "FB-CN-02"
+        ],
+        "action": "只保留一个有单句证据的原因题。"
+      },
+      {
+        "decisionId": "R8-D03",
+        "sourceEvidenceIds": [
+          "FB-CN-03"
+        ],
+        "action": "延迟整体复述只记录顺序组织；阅读理解单独记录原因、数量、结果。"
+      },
+      {
+        "decisionId": "R8-D04",
+        "sourceEvidenceIds": [
+          "FB-CN-04"
+        ],
+        "action": "六个学习任务后固定5分钟手动休息。"
+      },
+      {
+        "decisionId": "R8-D05",
+        "sourceEvidenceIds": [
+          "FB-CN-05"
+        ],
+        "action": "每个学习任务写入四态反馈契约。"
+      }
+    ],
+    "itemBindings": "每个动态 item 的 feedbackEvidenceIds、sourceEvidenceIds、evidenceTargetIds 均写在 chinese.lesson.sections[].items/questions/prompts[].itemContract 中。",
+    "goalMap": [
+      {
+        "targetId": "goal:cn:word:整齐",
+        "weight": 0.18,
+        "status": "design_target_pending_observation",
+        "need": "直接解释句中词义",
+        "evidenceIds": [
+          "FB-CN-01"
+        ],
+        "spacingReason": "同日读句后立即理解，下一次课延迟复现。"
+      },
+      {
+        "targetId": "goal:cn:retell:sequence",
+        "weight": 0.18,
+        "status": "design_target_pending_observation",
+        "need": "延迟整体口述的顺序组织",
+        "evidenceIds": [
+          "FB-CN-03"
+        ],
+        "spacingReason": "阅读后延迟一次，不重复计具体事实。"
+      },
+      {
+        "targetId": "goal:cn:reason",
+        "weight": 0.16,
+        "status": "design_target_pending_observation",
+        "need": "从单句证据说出一个原因",
+        "evidenceIds": [
+          "FB-CN-02"
+        ],
+        "spacingReason": "避免多原因无证据，下一次间隔复现。"
+      },
+      {
+        "targetId": "goal:cn:quantity",
+        "weight": 0.14,
+        "status": "design_target_pending_observation",
+        "need": "提取明确数量",
+        "evidenceIds": [
+          "FB-CN-02"
+        ],
+        "spacingReason": "与原因题分开计分，避免构念混淆。"
+      },
+      {
+        "targetId": "goal:cn:result",
+        "weight": 0.16,
+        "status": "design_target_pending_observation",
+        "need": "识别结果句",
+        "evidenceIds": [
+          "FB-CN-03"
+        ],
+        "spacingReason": "与整体口述分离，下一次换情境复现。"
+      },
+      {
+        "targetId": "goal:cn:transfer",
+        "weight": 0.18,
+        "status": "design_target_pending_observation",
+        "need": "把分类整理迁移到积木情境",
+        "evidenceIds": [
+          "FB-CN-03"
+        ],
+        "spacingReason": "同日最后做一次近迁移，后续延迟观察。"
+      },
+      {
+        "targetId": "goal:cn:fill:character",
+        "weight": 0.08,
+        "status": "design_target_pending_observation",
+        "need": "在短句中辨析‘组’的字形",
+        "evidenceIds": [
+          "FB-CN-01"
+        ],
+        "spacingReason": "在阅读前短测字形，后续间隔复现。"
+      },
+      {
+        "targetId": "goal:cn:fill:word_form",
+        "weight": 0.08,
+        "status": "design_target_pending_observation",
+        "need": "在结果句中辨析‘整齐’词形",
+        "evidenceIds": [
+          "FB-CN-01"
+        ],
+        "spacingReason": "与词义题分开记录，后续换句复现。"
+      }
+    ],
+    "abilityProfileDelta": {
+      "from": "profile-preserved-before-r8",
+      "to": "profile-preserved-r8",
+      "targetIds": [
+        "goal:cn:word:整齐",
+        "goal:cn:retell:sequence",
+        "goal:cn:reason",
+        "goal:cn:quantity",
+        "goal:cn:result",
+        "goal:cn:transfer"
+      ],
+      "evidenceIds": [
+        "FB-CN-01",
+        "FB-CN-02",
+        "FB-CN-03",
+        "FB-CN-04",
+        "FB-CN-05",
+        "NO-AUDIO-2026-08-05"
+      ],
+      "reason": "无新课堂证据，只更新设计约束；能力状态保持 unknown。"
+    },
+    "nextStepRationale": {
+      "targetIds": [
+        "goal:cn:word:整齐",
+        "goal:cn:retell:sequence",
+        "goal:cn:reason",
+        "goal:cn:quantity",
+        "goal:cn:result",
+        "goal:cn:transfer"
+      ],
+      "evidenceIds": [
+        "FB-CN-01",
+        "FB-CN-02",
+        "FB-CN-03"
+      ],
+      "reason": "下一课用句中词义、延迟顺序、单一证据阅读和近迁移观察。"
+    },
+    "feedbackEvidenceRefs": [
+      "FB-CN-01",
+      "FB-CN-02",
+      "FB-CN-03",
+      "FB-CN-04",
+      "FB-CN-05",
+      "NO-AUDIO-2026-08-05"
+    ]
+  },
+  "abilityProfile": {
+    "profileId": "helen-chinese-profile-2026-08-05-r8",
+    "version": "helen-chinese-profile-2026-08-05-r8",
+    "profileVersion": "helen-chinese-profile-2026-08-05-r8",
+    "asOfSnapshot": "2026-08-05-user-latest-written-feedback-snapshot-01",
+    "asOf": "2026-08-05",
+    "updatedAt": "2026-08-05",
+    "confidence": "low_no_new_classroom_evidence",
+    "updateStatus": "preserved_no_new_ability_update",
+    "preservedFrom": "/Users/jackie/Documents/Codex/2026-08-02/nick-nic-nick-alan/outputs/2026-08-05-latest-text-feedback-run-01/nick-profile-delta-goal-map.md",
+    "dimensions": {
+      "storyComprehension": {
+        "status": "unchanged",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      },
+      "wordMeaning": {
+        "status": "unchanged; next task directly points to sentence word",
+        "evidence": [
+          "FB-CN-01"
+        ]
+      },
+      "causeEvidence": {
+        "status": "unchanged; one-evidence task only",
+        "evidence": [
+          "FB-CN-02"
+        ]
+      },
+      "sequenceOrganization": {
+        "status": "not_observed_this_run",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      },
+      "independence": {
+        "status": "not_observed_this_run",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      },
+      "transfer": {
+        "status": "not_observed_this_run",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      }
+    },
+    "doNotInfer": [
+      "mastery",
+      "stable_reading",
+      "independent_response",
+      "fatigue",
+      "pronunciation_change"
+    ],
+    "evidence": [
+      {
+        "evidenceId": "FB-CN-01",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-word-prompt",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-cause-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-construct-separation",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-break-protocol",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-four-state",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "NO-AUDIO-2026-08-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "input_boundary",
+        "activityId": "no-new-classroom-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      }
+    ],
+    "delta": [
+      {
+        "from": "profile-preserved-before-r8",
+        "to": "profile-preserved-r8",
+        "evidenceIds": [
+          "NO-AUDIO-2026-08-05"
+        ],
+        "status": "no_ability_update",
+        "reason": "无新课堂证据，只更新课程设计约束。"
+      }
+    ]
+  },
+  "profile": {
+    "profileId": "helen-chinese-profile-2026-08-05-r8",
+    "version": "helen-chinese-profile-2026-08-05-r8",
+    "profileVersion": "helen-chinese-profile-2026-08-05-r8",
+    "asOfSnapshot": "2026-08-05-user-latest-written-feedback-snapshot-01",
+    "asOf": "2026-08-05",
+    "updatedAt": "2026-08-05",
+    "confidence": "low_no_new_classroom_evidence",
+    "updateStatus": "preserved_no_new_ability_update",
+    "preservedFrom": "/Users/jackie/Documents/Codex/2026-08-02/nick-nic-nick-alan/outputs/2026-08-05-latest-text-feedback-run-01/nick-profile-delta-goal-map.md",
+    "dimensions": {
+      "storyComprehension": {
+        "status": "unchanged",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      },
+      "wordMeaning": {
+        "status": "unchanged; next task directly points to sentence word",
+        "evidence": [
+          "FB-CN-01"
+        ]
+      },
+      "causeEvidence": {
+        "status": "unchanged; one-evidence task only",
+        "evidence": [
+          "FB-CN-02"
+        ]
+      },
+      "sequenceOrganization": {
+        "status": "not_observed_this_run",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      },
+      "independence": {
+        "status": "not_observed_this_run",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      },
+      "transfer": {
+        "status": "not_observed_this_run",
+        "evidence": [
+          "NO-AUDIO-2026-08-05"
+        ]
+      }
+    },
+    "doNotInfer": [
+      "mastery",
+      "stable_reading",
+      "independent_response",
+      "fatigue",
+      "pronunciation_change"
+    ],
+    "evidence": [
+      {
+        "evidenceId": "FB-CN-01",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-word-prompt",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-02",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-cause-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-03",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-construct-separation",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-04",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-break-protocol",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "FB-CN-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "parent_feedback",
+        "activityId": "feedback-design-four-state",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      },
+      {
+        "evidenceId": "NO-AUDIO-2026-08-05",
+        "artifactDigest": "4d468b7dcfabaecb0baef028b18bdb989b401ee611f256284467579a3d0ecc6e",
+        "asOf": "2026-08-05",
+        "sourceRole": "input_boundary",
+        "activityId": "no-new-classroom-evidence",
+        "firstResponse": "unknown",
+        "supportUsed": "unknown",
+        "finalState": "unknown"
+      }
+    ],
+    "delta": [
+      {
+        "from": "profile-preserved-before-r8",
+        "to": "profile-preserved-r8",
+        "evidenceIds": [
+          "NO-AUDIO-2026-08-05"
+        ],
+        "status": "no_ability_update",
+        "reason": "无新课堂证据，只更新课程设计约束。"
+      }
+    ]
+  },
+  "goalMap": {
+    "asOfSnapshot": "2026-08-05-user-latest-written-feedback-snapshot-01",
+    "today": {
+      "reviewWords": [
+        "标签",
+        "核对",
+        "相配"
+      ],
+      "newTargetWords": [
+        "混在一起",
+        "分组",
+        "整齐"
+      ],
+      "sequenceConstruct": "延迟整体口述中的顺序组织，不计具体事实正确率",
+      "comprehensionConstructs": [
+        "单一原因",
+        "数量",
+        "结果"
+      ],
+      "transferConstruct": "把按颜色分组近迁移到积木收纳情境",
+      "postTest": [
+        "分组",
+        "整齐",
+        "颜色"
+      ]
+    },
+    "nextEvidenceNeeded": [
+      "每项首次反应和提示等级",
+      "每项独立度与停止原因",
+      "三词后测逐词结果",
+      "至少一次延迟复现或下一次课堂证据"
+    ],
+    "feedbackToProfileRule": "无新录音时只保存设计约束和未知状态；不得用本候选答对与否预填能力画像。"
+  },
+  "historyWindow": {
+    "windowType": "recent-seven-available-chinese-packs",
+    "asOf": "2026-08-05",
+    "sourcePacks": [
+      {
+        "packId": "2026-07-26-helen-day14-chinese-revision-e-final",
+        "title": "贴歪的作品标签",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/day14-chinese-revision-e.json",
+        "contentSha256": "d6cbc34632bfd7428754dd6d29d8528fd6f89dd39030d8e7af9da4795fec6101",
+        "prototype": "reading_labels_order",
+        "lessonId": "2026-07-26-helen-day14-chinese-revision-e-final",
+        "sourceStatus": "available_history",
+        "usedByRevision8": false
+      },
+      {
+        "packId": "2026-07-27-helen-day15-chinese-draft02",
+        "title": "桌边的一小片水",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/day15-2026-07-27/day15-chinese.json",
+        "contentSha256": "503ae5e1c53ab04048d245e47dbfeed8ce3a8e25672f97a3c85a8799352c7221",
+        "prototype": "wipe_cup_cover",
+        "lessonId": "2026-07-27-helen-day15-chinese-draft02",
+        "sourceStatus": "available_history",
+        "usedByRevision8": false
+      },
+      {
+        "packId": "2026-07-29-allen-chinese-repair-book-box-01",
+        "title": "先看清，再放好",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/george-final-pack-revision-4-2026-08-04.json",
+        "contentSha256": "800939df84f74c1c698d0a2d9f482f69dda2b9fb3efee0235225fe844a00eb16",
+        "prototype": "withdrawn_label_cover",
+        "lessonId": "2026-07-29-allen-chinese-repair-book-box-01",
+        "sourceStatus": "withdrawn_excluded",
+        "usedByRevision8": false,
+        "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+      },
+      {
+        "packId": "2026-07-29-allen-chinese-repair-book-box-02",
+        "title": "先看清，再放好",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/george-candidate-pack-2026-07-29-revision-4-02.json",
+        "contentSha256": "b7644dc867b8d0ec8d8d795cffcb574a529b5970ff929e124e82c74e339ffbb7",
+        "prototype": "withdrawn_label_cover",
+        "lessonId": "2026-07-29-allen-chinese-repair-book-box-02",
+        "sourceStatus": "withdrawn_excluded",
+        "usedByRevision8": false,
+        "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+      },
+      {
+        "packId": "2026-07-30-allen-chinese-display-labels-candidate-01",
+        "title": "先核对，再贴好",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/allen-chinese-next-candidate-revision-5.json",
+        "contentSha256": "09d1ac25e486032c9915a55751f4ef55ec9e3e9f1d9073df7e0111fbbf08727d",
+        "prototype": "label_check_matching",
+        "lessonId": "2026-07-30-allen-chinese-display-labels-candidate-01",
+        "sourceStatus": "candidate_excluded",
+        "usedByRevision8": false,
+        "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+      },
+      {
+        "packId": "2026-08-05-allen-chinese-feedback-candidate-r6",
+        "title": "看清字，再连起来",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/allen-chinese-next-candidate-revision-6.json",
+        "contentSha256": "8d7428a0bb9ee141a2521706578e35fbeca69979b20923fdcc1dffeab43f1dad",
+        "prototype": "sentence_repair_cause_transfer",
+        "lessonId": "2026-08-05-allen-chinese-feedback-candidate-r6",
+        "sourceStatus": "blocked_excluded",
+        "usedByRevision8": false,
+        "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+      },
+      {
+        "packId": "2026-08-05-allen-chinese-feedback-candidate-r7",
+        "title": "看清办法，再排好",
+        "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/allen-chinese-next-candidate-revision-7.json",
+        "contentSha256": "fe19f116a870f2ab9b505f478ba101ee070304e92c6c2ac69099f25132acab75",
+        "prototype": "method_order_evidence",
+        "lessonId": "2026-08-05-allen-chinese-feedback-candidate-r7",
+        "sourceStatus": "pending_excluded",
+        "usedByRevision8": false,
+        "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+      }
+    ],
+    "dedupeKeys": [
+      "stimulusText",
+      "lessonTitle",
+      "evidenceTargetIds",
+      "activityPrototype",
+      "answerDomain"
+    ],
+    "currentStimulusSha256": "7198690c0e281c8f1b0da8709910a06242ae351614d509524002202966f5bca3",
+    "currentPrototype": "short_reading_plus_delayed_sequence_plus_single_evidence_comprehension_plus_near_transfer",
+    "overlapDecisions": [
+      {
+        "sourcePackId": "2026-07-29-allen-chinese-repair-book-box-01",
+        "decision": "excluded_withdrawn_same_overlapping_label_cover_logic"
+      },
+      {
+        "sourcePackId": "2026-07-29-allen-chinese-repair-book-box-02",
+        "decision": "excluded_withdrawn_same_overlapping_label_cover_logic"
+      },
+      {
+        "sourcePackId": "2026-07-30-allen-chinese-display-labels-candidate-01",
+        "decision": "not_reused; different stimulus and evidence targets"
+      },
+      {
+        "sourcePackId": "2026-08-05-allen-chinese-feedback-candidate-r6",
+        "decision": "not_reused; blocked candidate and different construct"
+      },
+      {
+        "sourcePackId": "2026-08-05-allen-chinese-feedback-candidate-r7",
+        "decision": "not_reused; pending candidate and different construct"
+      }
+    ],
+    "result": "no_reused_withdrawn_text; title, stimulus, evidence targets and activity prototype are new for this candidate"
+  },
+  "sourcePacks": [
+    {
+      "packId": "2026-07-26-helen-day14-chinese-revision-e-final",
+      "title": "贴歪的作品标签",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/day14-chinese-revision-e.json",
+      "contentSha256": "d6cbc34632bfd7428754dd6d29d8528fd6f89dd39030d8e7af9da4795fec6101",
+      "prototype": "reading_labels_order",
+      "lessonId": "2026-07-26-helen-day14-chinese-revision-e-final",
+      "sourceStatus": "available_history",
+      "usedByRevision8": false
+    },
+    {
+      "packId": "2026-07-27-helen-day15-chinese-draft02",
+      "title": "桌边的一小片水",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/day15-2026-07-27/day15-chinese.json",
+      "contentSha256": "503ae5e1c53ab04048d245e47dbfeed8ce3a8e25672f97a3c85a8799352c7221",
+      "prototype": "wipe_cup_cover",
+      "lessonId": "2026-07-27-helen-day15-chinese-draft02",
+      "sourceStatus": "available_history",
+      "usedByRevision8": false
+    },
+    {
+      "packId": "2026-07-29-allen-chinese-repair-book-box-01",
+      "title": "先看清，再放好",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/george-final-pack-revision-4-2026-08-04.json",
+      "contentSha256": "800939df84f74c1c698d0a2d9f482f69dda2b9fb3efee0235225fe844a00eb16",
+      "prototype": "withdrawn_label_cover",
+      "lessonId": "2026-07-29-allen-chinese-repair-book-box-01",
+      "sourceStatus": "withdrawn_excluded",
+      "usedByRevision8": false,
+      "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+    },
+    {
+      "packId": "2026-07-29-allen-chinese-repair-book-box-02",
+      "title": "先看清，再放好",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/george-candidate-pack-2026-07-29-revision-4-02.json",
+      "contentSha256": "b7644dc867b8d0ec8d8d795cffcb574a529b5970ff929e124e82c74e339ffbb7",
+      "prototype": "withdrawn_label_cover",
+      "lessonId": "2026-07-29-allen-chinese-repair-book-box-02",
+      "sourceStatus": "withdrawn_excluded",
+      "usedByRevision8": false,
+      "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+    },
+    {
+      "packId": "2026-07-30-allen-chinese-display-labels-candidate-01",
+      "title": "先核对，再贴好",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/allen-chinese-next-candidate-revision-5.json",
+      "contentSha256": "09d1ac25e486032c9915a55751f4ef55ec9e3e9f1d9073df7e0111fbbf08727d",
+      "prototype": "label_check_matching",
+      "lessonId": "2026-07-30-allen-chinese-display-labels-candidate-01",
+      "sourceStatus": "candidate_excluded",
+      "usedByRevision8": false,
+      "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+    },
+    {
+      "packId": "2026-08-05-allen-chinese-feedback-candidate-r6",
+      "title": "看清字，再连起来",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/allen-chinese-next-candidate-revision-6.json",
+      "contentSha256": "8d7428a0bb9ee141a2521706578e35fbeca69979b20923fdcc1dffeab43f1dad",
+      "prototype": "sentence_repair_cause_transfer",
+      "lessonId": "2026-08-05-allen-chinese-feedback-candidate-r6",
+      "sourceStatus": "blocked_excluded",
+      "usedByRevision8": false,
+      "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+    },
+    {
+      "packId": "2026-08-05-allen-chinese-feedback-candidate-r7",
+      "title": "看清办法，再排好",
+      "path": "/Users/jackie/Documents/Codex/2026-07-26/allen-daily-course-designer/outputs/chinese-feedback-repair-2026-08-04/allen-chinese-next-candidate-revision-7.json",
+      "contentSha256": "fe19f116a870f2ab9b505f478ba101ee070304e92c6c2ac69099f25132acab75",
+      "prototype": "method_order_evidence",
+      "lessonId": "2026-08-05-allen-chinese-feedback-candidate-r7",
+      "sourceStatus": "pending_excluded",
+      "usedByRevision8": false,
+      "exclusionReason": "已撤回或未批准，不复制文本/题目/构念"
+    }
+  ],
+  "repetitionCheck": {
+    "recentLessonsChecked": 7,
+    "historyWindow": "recent-seven-available-chinese-packs",
+    "repeatedStimulus": false,
+    "repeatedWithdrawnLesson": false,
+    "repeatedPrototype": false,
+    "repeatedPrototypeReason": "本课把阅读→延迟整体顺序口述→证据阅读→迁移拆为不同构念；与历史标签/杯盖/句法候选均不复用。",
+    "changedContextOrTask": "彩笔分组与积木收纳，使用颜色分类和整齐结果；阅读理解与口述分别计分。",
+    "manifestPath": "/Users/jackie/Documents/Codex/2026-08-02/nick-nic-nick-alan/outputs/2026-08-05-latest-text-feedback-run-01/nick-revision-8-manifest.json"
+  },
+  "crossDayFingerprints": [
+    "d89f7f58aa23135a9ef8d32f",
+    "d007527a5e923bab397f3ea3",
+    "7c9fd0b77152307b5cd2353a",
+    "625b1f3ec4cf2bb5f8ac1f02",
+    "e5e268ffb02a3c9365977a98",
+    "e0b37c725d076540d5f8172c",
+    "4b6abf98740b2f335d316519",
+    "db15244082f3e0edf7ce67fd",
+    "52783f2e65117da910d99af0",
+    "0b4f98aac5c96f54d5385607",
+    "a507ab675aea0422874e38a8"
+  ],
+  "semanticReview": {
+    "status": "approved",
+    "revision": "nick-candidate-b-revision-8-2026-08-05",
+    "candidateDigest": "2ee8189ddb4f65b1180916a90f122788e64f73517cee6d2ccf8b36e6a2862c35",
+    "reviewerId": "independent-semantic-r8-r3",
+    "reviewedAt": "2026-08-05T05:20:00+08:00",
+    "questionChecks": [
+      {
+        "questionId": "fb1",
+        "validityConclusion": "E2 的‘分成三组’支持句末‘组’；根级答案与答案域一致。",
+        "ambiguityConclusion": "‘组/祖/阻’在句中只有‘组’通顺，A 唯一；只测字形选择。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "fb2",
+        "validityConclusion": "E3 的‘桌面也变得整齐’支持‘整齐’；根级答案与答案域一致。",
+        "ambiguityConclusion": "‘整齐’是唯一通顺结果词，形近选项不改变构念。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "w1",
+        "validityConclusion": "E3 明示‘桌面也变得整齐’，referenceAnswer 可直接回指原句。",
+        "ambiguityConclusion": "接受‘不乱/有顺序’任一核心意思；支架最多重读一次，不替答。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "r1",
+        "validityConclusion": "E1 起始句含‘彩笔混在一起’，答案与原文一致。",
+        "ambiguityConclusion": "‘开始’限定第一格；只计顺序组织，不重复计原因或结果。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "r2",
+        "validityConclusion": "E2 含‘按颜色分成三组’，答案可直接回指原文。",
+        "ambiguityConclusion": "‘先’限定第二格；支架只允许顺序词，不泄露动作。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "r3",
+        "validityConclusion": "E2 含‘把每组放回盒子里’，答案与原文一致。",
+        "ambiguityConclusion": "‘再’限定第三格；与数量题 c2 分离。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "r4",
+        "validityConclusion": "E3 含‘桌面也变得整齐’，答案为原句核心词。",
+        "ambiguityConclusion": "‘最后’限定结果格；与 c3 选择题分离。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "c1",
+        "validityConclusion": "E1 提供单一原因‘彩笔混在一起’，因果链已明确。",
+        "ambiguityConclusion": "只问一个原因，不要求没有文本证据的两个原因。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "c2",
+        "validityConclusion": "E2 明确‘分成三组’，数量答案唯一。",
+        "ambiguityConclusion": "只记录数量，不要求复述动作链。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "c3",
+        "validityConclusion": "E3 原句作为 C 选项；answerPosition=C 且答案键允许洗牌。",
+        "ambiguityConclusion": "A/B 为起始/过程句；选择题不夹带口答，去掉固定顺序依赖。",
+        "verdict": "PASS"
+      },
+      {
+        "questionId": "t1",
+        "validityConclusion": "E2 提供分类→归位证据，积木只构成近迁移。",
+        "ambiguityConclusion": "接受变体均要求分类标准、分组、归位三要素；不称远迁移。",
+        "verdict": "PASS"
+      }
+    ],
+    "reviewArtifact": "revision-8-independent-semantic-blind-review-r3.md",
+    "boundary": "11/11 动态题通过；不推断新课堂掌握度，不代替 George 发布签发。"
+  },
+  "releaseAudit": {
+    "ready": true,
+    "auditVersion": "chinese-feedback-quality-gates/1",
+    "status": "passed_zero_blocker",
+    "zeroWrite": true,
+    "auditedAt": "2026-08-05T05:25:00+08:00",
+    "auditor": "George",
+    "auditedDigest": "2ee8189ddb4f65b1180916a90f122788e64f73517cee6d2ccf8b36e6a2862c35",
+    "auditTool": "/Users/jackie/Documents/Codex/2026-07-02/wo-ji/outputs/hanzi-memory-app/tools/audit-chinese-pack-release.mjs"
+  },
+  "contentDigest": "2ee8189ddb4f65b1180916a90f122788e64f73517cee6d2ccf8b36e6a2862c35",
+  "georgeReview": {
+    "status": "approved",
+    "decision": "approved",
+    "reviewer": "George",
+    "scope": "正式中文反馈驱动课程发布门闸；不恢复已撤回课包。",
+    "reviewedAt": "2026-08-05T05:25:00+08:00",
+    "approvedDigest": "2ee8189ddb4f65b1180916a90f122788e64f73517cee6d2ccf8b36e6a2862c35",
+    "semanticReviewArtifact": "revision-8-independent-semantic-blind-review-r3.md",
+    "decisionNote": "C-A、反馈证据链、跨题多样性、答案可回指和独立语义复审均通过；仅允许本候选进入零写入导入验收。"
+  }
+}
