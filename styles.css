@@ -3492,6 +3492,56 @@ textarea:focus {
   }
 }
 
+/* Approved Chinese-course rollback: compact self-report pills and the
+   previous quiet break card. Scope both to Chinese so English/art controls
+   keep their own touch and hierarchy rules. */
+#today-chinese .course-result-group .course-result-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#today-chinese .course-result-group .course-result-row .button {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#today-chinese .break-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border-left: 3px solid rgba(60, 128, 111, 0.52);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 6px 18px rgba(36, 49, 59, 0.035);
+}
+
+#today-chinese .break-card .course-card-head {
+  margin-bottom: 0;
+}
+
+#today-chinese .break-card .course-card-head > div > span {
+  width: 30px;
+  height: 30px;
+  color: #245e52;
+  background: rgba(60, 128, 111, 0.12);
+  font-size: 14px;
+}
+
+#today-chinese .break-card .course-card-head h3 {
+  font-size: 18px;
+}
+
+#today-chinese .break-card .course-card-head > div > p {
+  font-size: 13px;
+}
+
 @media (max-width: 620px) {
   .date-switcher:not(.english-lesson-switcher) {
     display: grid;

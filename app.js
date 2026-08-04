@@ -2739,7 +2739,7 @@ let state = loadState();
 initializeHistoricalRecognitionProfile();
 let pendingLearningPackPreview = null;
 let currentReadAloud = { key: "", utterance: null, audio: null, button: null };
-let currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+let currentAdaptiveAudio = { key: "", utterance: null, audio: null, watchdog: null, token: null };
 let activeRecording = null;
 const artImagePreloadCache = new Map();
 const recordingStartPending = new Set();
@@ -10045,7 +10045,10 @@ function selectLearningPackDate(date, push = true) {
 function selectLearningCoursePack(packId, push = true, kind = "chinese") {
   const entry = getLearningCourseSequence(kind).find((item) => item.packId === packId);
   if (!entry) return false;
-  if (kind === "english" && isAdaptiveEnglishPack(entry.pack)) {
+  const isEnglishGeneratedPack = kind === "english" && (
+    isAdaptiveEnglishPack(entry.pack) || isLetterPlanetTaskSystemPack(entry.pack)
+  );
+  if (isEnglishGeneratedPack) {
     state.selectedEnglishDiagnosticPackId = entry.packId;
   } else {
     state.selectedLearningPackId = entry.packId;
@@ -10056,7 +10059,7 @@ function selectLearningCoursePack(packId, push = true, kind = "chinese") {
   // selecting a new daily lesson cannot silently fall back to Story 3.
   if (kind === "english") {
     state.englishPrimaryEntryPending = false;
-    state.englishCourseSource = isAdaptiveEnglishPack(entry.pack) ? "adaptive" : "library";
+    state.englishCourseSource = isEnglishGeneratedPack ? "adaptive" : "library";
   }
   saveState();
   showView(getActiveView(), push, { skipRouteDateSelection: true });
@@ -11989,9 +11992,15 @@ function completeColorCourseStep(courseId, stepId) {
   if (course.generatedFromReference && stepIndex > firstIncompleteColorStepIndex(course, progress)) return false;
   if (course.generatedFromReference) {
     progress.art.paletteSelections ||= {};
-    const requiredIds = Array.isArray(course.steps[stepIndex]?.requiredColorTargetIds)
+    const declaredRequiredIds = Array.isArray(course.steps[stepIndex]?.requiredColorTargetIds)
       ? course.steps[stepIndex].requiredColorTargetIds
       : (course.steps[stepIndex]?.colorTargetIds || []);
+    // A course saved before palette sanitisation may retain a removed target
+    // id.  It must not leave the learner with an impossible selection gate.
+    const validTargetIds = new Set((course.paletteTargets || [])
+      .filter((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code))
+      .map((target) => target.id));
+    const requiredIds = declaredRequiredIds.filter((targetId) => validTargetIds.has(targetId));
     if (requiredIds.some((targetId) => !progress.art.paletteSelections[targetId])) return false;
     if (colorStructureGateReason(course, course.steps[stepIndex])) return false;
   }
@@ -12078,7 +12087,10 @@ function setColorMaterialSearch(value) {
 
 function renderCourseSequenceSwitcher(kind = "chinese") {
   const sequence = getLearningCourseSequence(kind);
-  const pack = getSelectedLearningPack();
+  // English adaptive/task-system packs have their own selection pointer. If
+  // this helper reads the Chinese daily pack, the selector renders with no
+  // current option and prev/next silently resolve from index 0.
+  const pack = kind === "english" ? getSelectedEnglishDiagnosticPack() : getSelectedLearningPack();
   if (!pack || !sequence.length) return "";
   const currentKey = getLearningCourseKey(pack, kind);
   const currentIndex = sequence.findIndex((item) => item.courseKey === currentKey);
@@ -12092,7 +12104,7 @@ function renderCourseSequenceSwitcher(kind = "chinese") {
       <label class="course-pack-select-label">
         <span>课程列表</span>
         <select data-course-pack-select data-course-kind="${kind}" aria-label="课程列表">
-          ${sequence.map((item) => `<option value="${escapeHtml(item.packId)}" ${item.courseKey === currentKey ? "selected" : ""}>${escapeHtml(item.title)}</option>`).join("")}
+          ${sequence.map((item) => `<option value="${escapeHtml(item.packId)}" ${item.courseKey === currentKey ? "selected" : ""}>${escapeHtml(kind === "english" ? getAdaptiveEnglishCourseOptionLabel(item) : item.title)}</option>`).join("")}
         </select>
       </label>
     </div>
@@ -12175,6 +12187,7 @@ function renderEnglishLesson() {
     const title = taskSystem.dailyMission?.titleZh || "字母星球学习任务";
     const currentIndex = Math.max(0, Math.min(Math.max(steps.length - 1, 0), Number(progress.english.currentActivityIndex || 0)));
     $("#englishLessonHeader").innerHTML = `
+      ${renderCourseSequenceSwitcher("english")}
       <div class="course-topline adaptive-english-topline">
         <div><h1>${escapeHtml(title)}</h1><p class="pack-muted">${escapeHtml(taskSystem.dailyMission?.rationale || "按当天实际活动完成学习任务")}</p></div>
         <div class="mode-picker">${["light", "standard"].map((mode) => `<button class="button ${mode === selectedMode ? "primary" : "secondary"} compact-button" data-english-mode="${mode}" type="button">${escapeHtml(englishModeLabel(mode))}</button>`).join("")}</div>
@@ -13009,8 +13022,12 @@ function renderGeneratedColorCourseLesson(course) {
   const actions = stepIndex === 1 && selectedPaper
     ? [`在A4纸上轻轻画出 ${Number(selectedPaper.widthCm).toFixed(1)}×${Number(selectedPaper.heightCm).toFixed(1)} cm边界。`, `左右各留 ${Number(selectedPaper.marginLeftCm ?? selectedPaper.marginHorizontalCm).toFixed(1)} cm，上下各留 ${Number(selectedPaper.marginTopCm ?? selectedPaper.marginVerticalCm).toFixed(1)} cm。`]
     : step.actionsZh || [];
-  const requiredIds = step.requiredColorTargetIds || step.colorTargetIds || [];
-  const requiredTargets = requiredIds.map((targetId) => course.paletteTargets?.find((target) => target.id === targetId) || { id: targetId });
+  const declaredRequiredIds = step.requiredColorTargetIds || step.colorTargetIds || [];
+  const validTargetIds = new Set((course.paletteTargets || [])
+    .filter((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code))
+    .map((target) => target.id));
+  const requiredIds = declaredRequiredIds.filter((targetId) => validTargetIds.has(targetId));
+  const requiredTargets = requiredIds.map((targetId) => course.paletteTargets.find((target) => target.id === targetId));
   // Treat a missing target as incomplete as well.  Previously the render
   // filtered missing targets before calculating `canComplete`, so a malformed
   // or legacy course could show an enabled button that then silently failed
@@ -14543,12 +14560,13 @@ function updateAdaptiveAudioProgress(pack, key, patch = {}, rerender = true) {
 }
 
 function stopAdaptiveAudioPlayback() {
+  if (currentAdaptiveAudio.watchdog) clearTimeout(currentAdaptiveAudio.watchdog);
   if (currentAdaptiveAudio.audio) {
     currentAdaptiveAudio.audio.pause();
     currentAdaptiveAudio.audio.currentTime = 0;
   }
   if (currentAdaptiveAudio.utterance && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
-  currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+  currentAdaptiveAudio = { key: "", utterance: null, audio: null, watchdog: null, token: null };
 }
 
 function playAdaptiveAudio(key) {
@@ -14563,7 +14581,16 @@ function playAdaptiveAudio(key) {
   const playCount = Math.max(1, Number(interaction.playCount || 1));
   const progress = initializeCourseProgress(pack);
   const previousCount = Math.min(playCount, Number(progress.english.steps[key]?.audioPlayCount || 0));
+  const playbackToken = {};
+  let startupWatchdog = null;
+  const isCurrentPlayback = () => currentAdaptiveAudio.token === playbackToken;
+  const clearStartupWatchdog = () => {
+    if (startupWatchdog) clearTimeout(startupWatchdog);
+    startupWatchdog = null;
+  };
   const markStarted = (source) => {
+    if (!isCurrentPlayback()) return;
+    clearStartupWatchdog();
     const nextCount = Math.min(playCount, previousCount + 1);
     updateAdaptiveAudioProgress(pack, key, {
       audioPlayCount: nextCount,
@@ -14574,21 +14601,25 @@ function playAdaptiveAudio(key) {
     });
   };
   const markPlayed = () => {
+    if (!isCurrentPlayback()) return;
+    clearStartupWatchdog();
     updateAdaptiveAudioProgress(pack, key, {
       audioStatus: "played",
       audioCompletedAt: new Date().toISOString(),
       audioError: ""
     });
-    currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+    currentAdaptiveAudio = { key: "", utterance: null, audio: null, watchdog: null, token: null };
   };
   const markFailed = (message) => {
+    if (!isCurrentPlayback()) return false;
+    clearStartupWatchdog();
     updateAdaptiveAudioProgress(pack, key, {
       audioStatus: "failed",
       audioSource: audioUrl ? "pack_audio" : "device_tts",
       audioError: message,
       audioCompletedAt: ""
     });
-    currentAdaptiveAudio = { key: "", utterance: null, audio: null };
+    currentAdaptiveAudio = { key: "", utterance: null, audio: null, watchdog: null, token: null };
     return false;
   };
   if (audioUrl && typeof Audio === "function") {
@@ -14597,11 +14628,12 @@ function playAdaptiveAudio(key) {
     audio.onplay = () => markStarted("pack_audio");
     audio.onended = markPlayed;
     audio.onerror = () => markFailed("课程音频无法播放，请检查网络后重试。");
-    currentAdaptiveAudio = { key, utterance: null, audio };
+    currentAdaptiveAudio = { key, utterance: null, audio, watchdog: null, token: playbackToken };
     audio.play().catch(() => markFailed("课程音频无法播放，请检查网络后重试。"));
     return true;
   }
-  if (speechText && typeof SpeechSynthesisUtterance !== "undefined" && typeof window !== "undefined" && window.speechSynthesis) {
+  const speech = typeof window !== "undefined" ? window.speechSynthesis : null;
+  if (speechText && typeof SpeechSynthesisUtterance !== "undefined" && speech) {
     const utterance = new SpeechSynthesisUtterance(speechText);
     utterance.lang = "en-US";
     utterance.rate = 0.9;
@@ -14609,18 +14641,25 @@ function playAdaptiveAudio(key) {
     utterance.onstart = () => markStarted("device_tts");
     utterance.onend = markPlayed;
     utterance.onerror = () => markFailed("本机朗读没有播放成功，请检查设备音量后重试。");
-    currentAdaptiveAudio = { key, utterance, audio: null };
+    currentAdaptiveAudio = { key, utterance, audio: null, watchdog: null, token: playbackToken };
     updateAdaptiveAudioProgress(pack, key, { audioStatus: "device_tts_pending", audioSource: "device_tts", audioError: "" });
     // Chrome can drop a speech request when cancel() and speak() happen in
     // the same event turn, especially after switching lessons. Resume the
     // native queue and schedule speak on the next turn so the user gesture is
     // preserved while the stale utterance is cleared first.
-    window.speechSynthesis.cancel();
-    if (typeof window.speechSynthesis.resume === "function") window.speechSynthesis.resume();
+    speech.cancel();
+    if (typeof speech.resume === "function") speech.resume();
     setTimeout(() => {
-      if (currentAdaptiveAudio.utterance !== utterance) return;
+      if (!isCurrentPlayback() || currentAdaptiveAudio.utterance !== utterance) return;
       try {
-        window.speechSynthesis.speak(utterance);
+        speech.speak(utterance);
+        // Chrome can leave a queued utterance pending without firing
+        // onstart/onerror. Surface that state instead of pretending the
+        // sentence was heard; the card will expose a retryable error.
+        startupWatchdog = setTimeout(() => {
+          if (isCurrentPlayback()) markFailed("本机朗读没有响应，请检查浏览器声音设置后重试。");
+        }, 8000);
+        currentAdaptiveAudio.watchdog = startupWatchdog;
       } catch {
         markFailed("本机朗读没有播放成功，请检查浏览器声音权限后重试。");
       }
