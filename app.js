@@ -97,12 +97,16 @@ const LETTER_PLANET_REMINDER_OXFORD_A1_V1_SCHEMA = "letter-planet-reminder/oxfor
 // Oxford clean-room v1 is a separate protocol, not a revision of any
 // historical reminder contract. Keep it fail-closed at the public boundary.
 const LETTER_PLANET_REMINDER_OXFORD_A1_CLEAN_ROOM_V1_SCHEMA = "letter-planet-reminder/oxford-a1-clean-room-v1";
-// v5/v6 are design-only reminder protocols. Keep both fail-closed until the
-// independent quality gates are explicitly approved for a public release.
 const LETTER_PLANET_REMINDER_OXFORD_A1_V5_SCHEMA = "letter-planet-reminder/oxford-a1/v5";
 const LETTER_PLANET_REMINDER_OXFORD_A1_V5_STANDARD = "helen-oxford-a1-reminder-v5/1";
 const LETTER_PLANET_REMINDER_OXFORD_A1_V6_SCHEMA = "letter-planet-reminder/oxford-a1/v6";
 const LETTER_PLANET_REMINDER_OXFORD_A1_V6_STANDARD = "helen-oxford-a1-reminder-v6/1";
+// D01–D14 are retained as read-only historical evidence, not as a current
+// diagnostic/course-generation source.  Keep this boundary centralized so a
+// stale route, pack selector, or profile builder cannot promote them again.
+const OXFORD_LEGACY_DIAGNOSTIC_STATUS = "design_only";
+const OXFORD_LEGACY_DIAGNOSTIC_REASON = "pre_a1_a1_rebuild_pending_review";
+const OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE = /^D(?:0[1-9]|1[0-4])$/;
 const LETTER_PLANET_REMINDER_LEVEL_TYPES = new Set(["cue", "strategy", "model"]);
 const LETTER_PLANET_REMINDER_TRIGGERS = new Set(["on_request"]);
 const LETTER_PLANET_TASK_ACTIVITY_TYPES = new Set([
@@ -2958,6 +2962,12 @@ function loadState() {
     loaded.learningPackArchive = migrateLearningPackArchive(loaded);
     if (WITHDRAWN_BUILTIN_PACK_IDS.has(loaded.selectedLearningPackId)) loaded.selectedLearningPackId = "";
     if (WITHDRAWN_BUILTIN_PACK_IDS.has(loaded.latestLearningPackId)) loaded.latestLearningPackId = "";
+    if (isOxfordLegacyDiagnosticPack(loaded.learningPacks?.[loaded.selectedEnglishDiagnosticPackId]?.data || loaded.learningPacks?.[loaded.selectedEnglishDiagnosticPackId])) {
+      // Keep the old record and its courseProgress untouched; only remove the
+      // stale current-course pointer so it cannot seed a new profile/lesson.
+      loaded.selectedEnglishDiagnosticPackId = "";
+      loaded.englishCourseSource = "adaptive_shell";
+    }
     loaded.courseProgress = { ...(loadStandaloneCourseProgress().progress || {}), ...(loaded.courseProgress || {}) };
     normalizeStaleCourseRecordingStates(loaded);
     reconcilePersistedCourseTimers(loaded);
@@ -3317,6 +3327,7 @@ function navigateToView(view) {
 
 function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
   const latest = getLearningCourseSequence("english").at(-1);
+  state.englishPrimaryEntryPending = false;
   if (latest) {
     state.selectedEnglishDiagnosticPackId = latest.packId;
     // Mark the explicit history action as a temporary manual pin so the
@@ -3337,7 +3348,21 @@ function selectLatestAdaptiveEnglishCourseForPrimaryCourse() {
 // day (or an in-progress day), not at the last item in a preloaded D01–D14
 // sequence.  "Latest" remains an explicit action from the history switcher.
 function selectPrimaryAdaptiveEnglishCourseForPrimaryCourse() {
+  state.englishPrimaryEntryPending = true;
+  if (!getLearningCourseSequence("english").length) {
+    // The initial route can render before the bundled D01–D14 sequence has
+    // finished importing. Keep the primary entry on the adaptive shell so an
+    // old Story 3 selection cannot flash as today's course.
+    state.englishCourseSource = ADAPTIVE_ENGLISH_SHELL_SOURCE;
+    state.selectedEnglishLessonId = "";
+    state.learningPackSelectionSource = "auto";
+    saveState();
+    showView("letter-course", true, { skipRouteDateSelection: true });
+    return true;
+  }
   ensureAdaptiveEnglishPrimaryCourse();
+  state.englishPrimaryEntryPending = false;
+  saveState();
   showView("letter-course", true, { skipRouteDateSelection: true });
   return true;
 }
@@ -6684,18 +6709,39 @@ function importBuiltinLearningPackSet(manifest, packSources, options = {}) {
   const entries = normalizeBuiltinManifestEntries(manifest);
   if (!entries.length) throw new Error("manifest 没有可用课包");
   const loadedPacks = [];
+  const blockedPackIds = [];
   for (const entry of entries) {
     const rawPack = getBuiltinPackSource(packSources, entry);
     if (!rawPack) throw new Error(`bundle 缺少课包：${entry.packId || entry.path}`);
     const parsed = parseLearningPackInput(typeof rawPack === "string" ? rawPack : JSON.stringify(rawPack));
     const preview = buildLearningPackPreview(parsed);
     if (!preview.valid) throw new Error(preview.errors?.join("；") || `内置课包校验失败：${entry.packId || entry.path}`);
-    importLearningPack(parsed, preview, { select: false, markLatest: false, publishedAt: entry.publishedAt || "", builtinLatest: true });
-    loadedPacks.push(parsed);
+    try {
+      importLearningPack(parsed, preview, {
+        select: false,
+        markLatest: false,
+        publishedAt: entry.publishedAt || "",
+        builtinLatest: true,
+        allowLegacyOxfordHistory: true
+      });
+      loadedPacks.push(parsed);
+    } catch (error) {
+      // A release-time asset gate must not make historical Chinese/Art packs
+      // disappear. Keep the blocked Oxford/diagnostic entry readable from its
+      // source, but omit it from the formal student course sequence.
+      if (/未验收音频或图片资产/.test(String(error?.message || ""))) {
+        blockedPackIds.push(entry.packId || entry.path);
+        continue;
+      }
+      throw error;
+    }
   }
   hideWithdrawnBuiltinArchiveEntries();
   applyRouteCourseSelection();
-  if (!state.selectedEnglishDiagnosticPackId) ensureAdaptiveEnglishPrimaryCourse();
+  if (state.englishPrimaryEntryPending || !state.selectedEnglishDiagnosticPackId) {
+    ensureAdaptiveEnglishPrimaryCourse();
+    state.englishPrimaryEntryPending = false;
+  }
   if (getActiveView() === "today-english" && !parseRouteHash().course) updateBrowserRoute("letter-course", "replace");
   const latestPackId = manifest.latestPackId || entries.find((entry) => entry.path === manifest.latest)?.packId || loadedPacks[0]?.packId || "";
   if (!latestPackId || !state.learningPacks?.[latestPackId]) throw new Error(`latest 不存在：${latestPackId || "空"}`);
@@ -6719,6 +6765,7 @@ function importBuiltinLearningPackSet(manifest, packSources, options = {}) {
     latestPackId,
     selectedPackId: state.selectedLearningPackId || "",
     loadedPackIds: loadedPacks.map((pack) => pack.packId),
+    blockedPackIds,
     loadedAt: new Date().toISOString()
   };
   if (options.fallbackReason) state.builtinLearningPackLoad.fallbackReason = safePlainText(options.fallbackReason, 220);
@@ -7186,6 +7233,33 @@ function getSelectedEnglishDiagnosticPack() {
   return (firstUnfinished || sequence[0])?.pack || null;
 }
 
+function getOxfordLegacyDiagnosticInfo(pack) {
+  const routeDay = String(pack?.english?.lesson?.diagnostic?.routeDay || pack?.english?.diagnostic?.routeDay || "").trim().toUpperCase();
+  const packId = String(pack?.packId || "");
+  const revision = String(pack?.revision || pack?.english?.revision || "");
+  const isLegacy = OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE.test(routeDay) && (
+    /english-diagnostic-d(?:0[1-9]|1[0-4])$/i.test(packId) ||
+    /english-diagnostic-oxford/i.test(revision) ||
+    pack?.english?.sourceLearningReference?.relationship === "two_week_historical_diagnostic"
+  );
+  return {
+    isLegacy,
+    routeDay,
+    status: isLegacy ? OXFORD_LEGACY_DIAGNOSTIC_STATUS : "",
+    reason: isLegacy ? OXFORD_LEGACY_DIAGNOSTIC_REASON : "",
+    profileEligible: !isLegacy,
+    nextLessonEligible: !isLegacy
+  };
+}
+
+function isOxfordLegacyDiagnosticPack(pack) {
+  return getOxfordLegacyDiagnosticInfo(pack).isLegacy;
+}
+
+function isOxfordDiagnosticEvidenceEligible(pack) {
+  return !isOxfordLegacyDiagnosticPack(pack);
+}
+
 function getActiveEnglishPack() {
   const selectedPack = getSelectedEnglishDiagnosticPack();
   if ((isAdaptiveEnglishPack(selectedPack) || isLetterPlanetTaskSystemPack(selectedPack)) && state.englishCourseSource !== "library") return selectedPack;
@@ -7197,6 +7271,37 @@ function getActiveEnglishPack() {
 
 function isAdaptiveEnglishPack(pack) {
   return pack?.english?.courseArchitectureVersion === ADAPTIVE_ENGLISH_ARCHITECTURE && Boolean(pack.english?.lesson?.activities?.length);
+}
+
+// Oxford/diagnostic packs may carry real media references.  A reference is
+// not an asset acceptance record: until it has a verified artifact we keep
+// the pack readable for audit but never let it enter the student course
+// sequence.  Scope this scan to the English pack families so old Hello School
+// library records (which use unrelated metadata) remain compatible.
+function getOxfordDiagnosticAssetBlockers(pack) {
+  const isOxfordOrDiagnostic = isAdaptiveEnglishPack(pack)
+    || isLetterPlanetTaskSystemPack(pack)
+    || /oxford|diagnostic/i.test(String(pack?.revision || pack?.english?.lesson?.revision || ""));
+  if (!isOxfordOrDiagnostic) return [];
+  const blockers = [];
+  const assetKey = /(audio|image|picture|media|asset)/i;
+  const visit = (value, path, assetContext = false) => {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => visit(item, `${path}[${index}]`, assetContext));
+      return;
+    }
+    const context = assetContext || assetKey.test(path);
+    if (context) {
+      if (value.verified === false) blockers.push(`${path}.verified=false`);
+      if (String(value.mode || "").trim().toLowerCase() === "mobile_handoff") blockers.push(`${path}.mode=mobile_handoff_without_device_evidence`);
+      if (String(value.integrity || "").trim().toLowerCase() === "unverified") blockers.push(`${path}.integrity=unverified`);
+      if (String(value.evidenceStatus || "").trim().toLowerCase() === "pending") blockers.push(`${path}.evidenceStatus=pending`);
+    }
+    Object.entries(value).forEach(([key, item]) => visit(item, `${path}.${key}`, context || assetKey.test(key)));
+  };
+  visit(pack.english || {}, "english");
+  return [...new Set(blockers)];
 }
 
 function getActivePackForCourse(course) {
@@ -7276,6 +7381,7 @@ function selectEnglishLibraryLesson(lessonId) {
   if (!library?.lessons?.some((lesson) => lesson.lessonId === lessonId)) return false;
   state.selectedEnglishLibraryId = library.libraryId;
   state.englishCourseSource = "library";
+  state.englishPrimaryEntryPending = false;
   state.selectedEnglishLessonId = lessonId;
   if (lessonId !== library.currentLessonId) state.lastAutoSelectedEnglishLessonId = "";
   initializeCourseProgress(getActiveEnglishPack());
@@ -8672,7 +8778,12 @@ function validateAdaptiveEnglishLesson(source, english, sharedPlan, loadMode, er
     baselineOrRetest: ["baseline", "retest"].includes(diagnosticSource.baselineOrRetest) ? diagnosticSource.baselineOrRetest : "",
     strengths: diagnosticList(diagnosticSource.strengths),
     reviewQueue: diagnosticList(diagnosticSource.reviewQueue),
-    nextRecommendation: sanitizeAdaptiveText(diagnosticSource.nextRecommendation || "", 260)
+    nextRecommendation: sanitizeAdaptiveText(diagnosticSource.nextRecommendation || "", 260),
+    lifecycle: OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE.test(routeDay) ? OXFORD_LEGACY_DIAGNOSTIC_STATUS : "active",
+    reviewStatus: OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE.test(routeDay) ? "待复审" : "",
+    profileEligible: !OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE.test(routeDay),
+    nextLessonEligible: !OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE.test(routeDay),
+    exclusionReason: OXFORD_LEGACY_DIAGNOSTIC_ROUTE_RE.test(routeDay) ? OXFORD_LEGACY_DIAGNOSTIC_REASON : ""
   };
   const duration = source.durationByMode || english.durationByMode || {};
   const normalized = {
@@ -9213,9 +9324,82 @@ function renderLearningPackError(error) {
   `;
 }
 
+function auditChineseFeedbackImportGate(pack) {
+  const needsGate = Boolean(pack?.feedbackInput || pack?.feedbackTrace || pack?.abilityProfile || pack?.semanticReview || /repair/i.test(String(pack?.revision || "")));
+  if (!needsGate) return [];
+  const blockers = [];
+  const sections = pack?.chinese?.lesson?.sections || [];
+  const items = sections.flatMap((section) => [
+    ...(Array.isArray(section.questions) ? section.questions : []),
+    ...(Array.isArray(section.prompts) ? section.prompts.filter((item) => item && typeof item === "object") : [])
+  ]);
+  const events = [pack?.feedbackInput?.evidence, pack?.feedbackInput?.events, pack?.abilityProfile?.evidence, pack?.feedbackTrace?.feedbackEvidence].flatMap((value) => Array.isArray(value) ? value : []).filter((item) => item && typeof item === "object");
+  const eventIds = new Set(events.map((event) => String(event.evidenceId || event.id || "").trim()).filter(Boolean));
+  const required = ["evidenceId", "artifactDigest", "asOf", "sourceRole", "activityId", "firstResponse", "supportUsed", "finalState"];
+  if (!events.length || events.some((event) => required.some((key) => !String(event?.[key] || "").trim()))) blockers.push("CN-FEEDBACK-EVENT");
+  const deltas = [pack.abilityProfile?.delta, pack.abilityProfile?.abilityDelta, pack.abilityProfile?.statusChanges, pack.feedbackTrace?.abilityProfileDelta].flatMap((value) => Array.isArray(value) ? value : value && typeof value === "object" ? [value] : []).filter(Boolean);
+  if (!deltas.length || deltas.some((delta) => {
+    const refs = delta.evidenceIds || delta.evidenceRefs || delta.sourceEvidenceIds || (delta.evidenceId ? [delta.evidenceId] : []);
+    return !refs.length || refs.some((ref) => !eventIds.has(String(ref || "").trim())) || !String(delta.from || "").trim() || !String(delta.to || "").trim();
+  })) blockers.push("CN-DELTA-DERIVATION");
+  const fingerprints = Array.isArray(pack.crossDayFingerprints) ? pack.crossDayFingerprints.map((item) => String(item || "").trim()).filter(Boolean) : [];
+  const fingerprintValue = (item) => JSON.stringify({ prompt: String(item?.prompt || item?.question || "").trim(), answer: String(item?.answer || item?.referenceAnswer || "").trim(), options: Array.isArray(item?.options) ? item.options.map((option) => String(option || "").trim()) : [], evidence: Array.isArray(item?.evidenceTargetIds) ? item.evidenceTargetIds.map((id) => String(id || "").trim()).sort() : [] });
+  const itemFingerprints = items.map((item) => String(item?.fingerprint || item?.questionFingerprint || item?.promptFingerprint || "").trim());
+  const historyFingerprints = new Set();
+  Object.values(state.learningPacks || {}).map((record) => record?.data || record).filter(Boolean).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))).slice(0, 7).forEach((historyPack) => {
+    (historyPack?.chinese?.lesson?.sections || []).forEach((section) => {
+      [...(section.questions || []), ...(section.prompts || [])].filter((item) => item && typeof item === "object").forEach((item) => {
+        historyFingerprints.add(String(item.fingerprint || item.questionFingerprint || item.promptFingerprint || "").trim() || checksumString(fingerprintValue(item)));
+      });
+      (section.paragraphs || []).forEach((paragraph) => historyFingerprints.add(checksumString(String(paragraph || "").trim())));
+    });
+  });
+  const derivedCurrentFingerprints = items.map((item) => String(item.fingerprint || item.questionFingerprint || item.promptFingerprint || "").trim() || checksumString(fingerprintValue(item)));
+  if (!items.length || itemFingerprints.some((fingerprint) => !fingerprint || !fingerprints.includes(fingerprint)) || new Set(fingerprints).size !== fingerprints.length || new Set(derivedCurrentFingerprints).size !== derivedCurrentFingerprints.length || derivedCurrentFingerprints.some((fingerprint) => historyFingerprints.has(fingerprint))) blockers.push("CN-CROSS-DAY-FINGERPRINT");
+  const targetCounts = new Map();
+  let missingTarget = false;
+  items.forEach((item) => {
+    const targets = item.targetKnowledgePointIds || item.knowledgePointIds || item.targetIds || [];
+    if (!Array.isArray(targets) || !targets.length) missingTarget = true;
+    targets.forEach((target) => { const key = String(target || "").trim(); if (key) targetCounts.set(key, (targetCounts.get(key) || 0) + 1); });
+  });
+  const maxTargetShare = items.length ? Math.max(...targetCounts.values(), 0) / items.length : 1;
+  if (missingTarget || targetCounts.size < 2 || maxTargetShare > 0.8) blockers.push("CN-TARGET-WEIGHT");
+  const review = pack.semanticReview || {};
+  if (review.status !== "approved" || !String(review.revision || "").trim() || !String(review.candidateDigest || "").trim() || review.candidateDigest !== pack.contentDigest || !String(review.reviewerId || "").trim() || !Array.isArray(review.questionChecks) || review.questionChecks.length < items.length || review.questionChecks.some((check) => !String(check?.validityConclusion || "").trim() || !String(check?.ambiguityConclusion || "").trim())) blockers.push("CN-SEMANTIC-BINDING");
+  const withdrawnDigest = String(pack?.withdrawnContentDigest || "").trim();
+  const contentDigest = String(pack?.contentDigest || "").trim();
+  if (withdrawnDigest && contentDigest && withdrawnDigest === contentDigest) blockers.push("CN-TOMBSTONE-DIGEST");
+  if (contentDigest && Object.values(state.learningPacks || {}).some((record) => {
+    const prior = record?.data || record;
+    return prior?.packId && prior.packId !== pack.packId && String(prior.contentDigest || "").trim() === contentDigest;
+  })) blockers.push("CN-TOMBSTONE-DIGEST");
+  if (contentDigest && Object.values(state.learningPacks || {}).some((record) => WITHDRAWN_BUILTIN_PACK_IDS.has((record?.data || record)?.packId) && String((record?.data || record)?.contentDigest || "").trim() === contentDigest)) blockers.push("CN-TOMBSTONE-DIGEST");
+  const status = String(pack?.feedbackInput?.completionStatus || pack?.feedbackInput?.status || "").toLowerCase();
+  if (/incomplete|pending|abandoned|not_completed/.test(status) || (events.length && events.every((event) => ["prompted", "modeled", "not_yet", "supported"].includes(String(event.finalState || "").toLowerCase())))) blockers.push("CN-FEEDBACK-CONTINUITY");
+  // A self-declared releaseAudit is informative only.  The checks above are
+  // the authoritative oracle; this marker prevents old candidates from being
+  // mistaken for audited content without allowing it to bypass a failure.
+  if (pack?.releaseAudit?.auditVersion !== "chinese-feedback-quality-gates/1") blockers.push("CN-IMPORT-AUDIT");
+  return [...new Set(blockers)];
+}
+
 function importLearningPack(pack, preview, options = {}) {
   if (WITHDRAWN_BUILTIN_PACK_IDS.has(pack?.packId)) {
     throw new Error("该学习包已撤回，不能重新导入或激活。");
+  }
+  const legacyOxford = getOxfordLegacyDiagnosticInfo(pack);
+  if (legacyOxford.isLegacy && options.allowLegacyOxfordHistory !== true) {
+    throw new Error("Oxford D01–D14 仅保留只读历史，当前重建待复审（design_only），不能作为新诊断或课程导入。");
+  }
+  const submissionStatus = String(pack?.submissionStatus || "").trim();
+  const workflowStatus = String(pack?.workflowStatus || "").trim();
+  if ((submissionStatus && submissionStatus !== "approved") || (workflowStatus && /pending|draft|review/i.test(workflowStatus))) {
+    throw new Error("该学习包仍在审核中，不能导入或激活。");
+  }
+  const feedbackGateBlockers = auditChineseFeedbackImportGate(pack);
+  if (feedbackGateBlockers.length) {
+    throw new Error(`反馈闭环质量门闸未通过（${feedbackGateBlockers.join("、")}），保持零写入，不能导入或发布。`);
   }
   // Defense in depth: normal UI flow calls parseLearningPackInput first, but
   // this write boundary must remain fail-closed if an internal caller ever
@@ -9259,6 +9443,10 @@ function importLearningPack(pack, preview, options = {}) {
   if (taskSystem && taskSystem.activities?.some((activity) => activity.reminderSystemV2?.schemaVersion !== LETTER_PLANET_REMINDER_V2_SCHEMA)) {
     throw new Error("字母星球新课包必须先完成 reminderSystemV2 重建，旧 v1 提醒禁止导入。");
   }
+  const assetBlockers = getOxfordDiagnosticAssetBlockers(pack);
+  if (assetBlockers.length) {
+    throw new Error(`Oxford/诊断课包含未验收音频或图片资产（${assetBlockers.slice(0, 6).join("、")}），保持零写入，不能进入正式课程。`);
+  }
   const now = new Date().toISOString();
   const shouldSelect = options.select !== false;
   const markLatest = options.markLatest !== false;
@@ -9299,7 +9487,7 @@ function importLearningPack(pack, preview, options = {}) {
   });
   if (markLatest) state.latestLearningPackId = pack.packId;
   if (shouldSelect || !state.selectedLearningPackId) state.selectedLearningPackId = pack.packId;
-  if (isAdaptiveEnglishPack(pack)) state.englishCourseSource = "adaptive";
+  if (isAdaptiveEnglishPack(pack) && !legacyOxford.isLegacy) state.englishCourseSource = "adaptive";
   if (isLetterPlanetTaskSystemPack(pack)) state.englishCourseSource = "task_system";
   state.lastLearningPackRaw = JSON.stringify(pack, null, 2);
   state.latestLearning = focusFromLearningPack(pack);
@@ -9575,7 +9763,13 @@ function getLearningCourseSequence(kind = "chinese") {
 function isPackAvailableForCourse(pack, kind, entry = null) {
   if (entry?.availableSubjects?.length && !entry.availableSubjects.includes(kind)) return false;
   if (kind === "chinese") return Boolean(pack.chinese?.lesson || pack.chinese?.characters?.length || pack.chinese?.words?.length);
-  if (kind === "english") return isAdaptiveEnglishPack(pack) || isLetterPlanetTaskSystemPack(pack);
+  if (kind === "english") {
+    // D01–D14 remain in storage for read-only history, but never enter the
+    // current diagnostic sequence or seed a newly generated lesson/profile.
+    if (isOxfordLegacyDiagnosticPack(pack)) return false;
+    if (getOxfordDiagnosticAssetBlockers(pack).length) return false;
+    return isAdaptiveEnglishPack(pack) || isLetterPlanetTaskSystemPack(pack);
+  }
   if (kind === "art") return Boolean(pack.art);
   return false;
 }
@@ -9675,6 +9869,7 @@ function selectLearningCoursePack(packId, push = true, kind = "chinese") {
   // library and imported adaptive daily packs.  Keep that choice explicit so
   // selecting a new daily lesson cannot silently fall back to Story 3.
   if (kind === "english") {
+    state.englishPrimaryEntryPending = false;
     state.englishCourseSource = isAdaptiveEnglishPack(entry.pack) ? "adaptive" : "library";
   }
   saveState();
@@ -11229,10 +11424,11 @@ function renderColorReferenceUpload() {
               <option value="low" ${settings.reasoningEffort === "low" ? "selected" : ""}>低</option>
               <option value="medium" ${settings.reasoningEffort === "medium" ? "selected" : ""}>中</option>
               <option value="high" ${settings.reasoningEffort === "high" ? "selected" : ""}>高</option>
-              <option value="max" ${settings.reasoningEffort === "max" ? "selected" : ""}>最高（Max）</option>
+              <option value="max" ${settings.reasoningEffort === "max" ? "selected" : ""}>最高</option>
             </select>
           </label>
         </div>
+        <small class="color-reference-setting-note">最高使用服务端支持的 high 推理档位，不切换模型。</small>
         <div class="color-reference-actions">
           <label class="button secondary compact-button">
             换图
@@ -13797,6 +13993,7 @@ function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
   const interaction = activity.interaction || {};
   if (activity.questionRole && !["sentence_listen", "meaning_function", "blind_word", "key_component"].includes(activity.questionRole)) return "";
   const sentence = interaction.targetSentence || "";
+  const audioUrl = safePlainText(interaction.audioUrl || interaction.audio?.url || interaction.audioAssetUrl || "", 400);
   const playCount = Math.max(1, Number(interaction.playCount || 1));
   const played = Math.min(playCount, Number(itemProgress.audioPlayCount || 0));
   const audioStatus = String(itemProgress.audioStatus || "");
@@ -13816,17 +14013,20 @@ function renderAdaptiveSourceCard(activity, key, itemProgress = {}) {
     : activity.questionRole === "blind_word"
       ? "播放两遍"
       : "播放音频";
-  const path = `${interaction.externalTool || "每日英语听力"} → 小学英语 · Hello, School! → Story 3 → Lesson ${interaction.lessonIndex || "—"}`;
+  const sourceLabel = audioUrl ? "课程音频" : "网站本机朗读";
+  const optionalMobileSource = interaction.externalTool
+    ? `移动端可选来源：${interaction.externalTool}；完成后回到本页记录。`
+    : "移动端也可使用你已有的英语音频来源，完成后回到本页记录。";
   const target = interaction.hideEnglish ? "英文暂时隐藏" : sentence;
   return `
-    <aside class="adaptive-source-card" aria-label="每日英语听力来源">
-      <div class="adaptive-source-card-title"><strong>音频来源</strong><span>${escapeHtml(path)}</span></div>
+    <aside class="adaptive-source-card" aria-label="英语朗读来源">
+      <div class="adaptive-source-card-title"><strong>朗读来源</strong><span>${escapeHtml(sourceLabel)}</span></div>
       <div class="adaptive-source-card-line"><strong>目标句</strong><span class="adaptive-source-sentence ${interaction.hideEnglish ? "is-hidden" : ""}">${escapeHtml(target)}</span></div>
       <div class="adaptive-source-card-line"><strong>播放</strong><span>${statusText} · 本题 ${played}/${playCount} 遍${interaction.hideEnglish ? " · 英文暂时隐藏" : ""}</span></div>
       <div class="adaptive-source-card-actions">
         <button class="button secondary compact-button" data-adaptive-audio-play="${escapeHtml(key)}" type="button">${playbackLabel} ${played}/${playCount}</button>
       </div>
-      <p class="adaptive-source-card-note">来源：${escapeHtml(path)}。请在移动端每日英语听力完成前四项；此处仅提供本机朗读或课程音频。</p>
+      <p class="adaptive-source-card-note">桌面端${audioUrl ? "优先播放课程音频，也可使用" : "使用"}浏览器本机英语朗读。${escapeHtml(optionalMobileSource)} 网站不会显示打开外部 App 的按钮。</p>
       ${itemProgress.audioStatus === "failed" && itemProgress.audioError ? `<p class="adaptive-audio-error" role="status">${escapeHtml(itemProgress.audioError)}</p>` : ""}
     </aside>
   `;
@@ -14173,7 +14373,7 @@ function playAdaptiveAudio(key) {
     }, 0);
     return true;
   }
-  return markFailed("当前课程没有可用音频，请在移动端每日英语听力完成前四项。");
+  return markFailed("当前设备没有可用课程音频或本机朗读，请检查浏览器声音设置后重试。");
 }
 
 function revealAdaptiveEnglishHint(key) {
@@ -14747,6 +14947,8 @@ function validateChineseCourseCompleteness(pack, missing) {
 }
 
 function validateEnglishCourseCompleteness(pack, missing) {
+  const assetBlockers = getOxfordDiagnosticAssetBlockers(pack);
+  if (assetBlockers.length) missing.push("english.assets 尚有未验收音频/图片");
   if (isLetterPlanetTaskSystemPack(pack)) {
     const taskSystem = getLetterPlanetTaskSystem(pack);
     const activities = (taskSystem?.activities || []).filter((activity) => activity.activityType !== "exit_reflection");
@@ -16891,6 +17093,7 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       lessonLibrary: adaptive || taskSystemPack ? null : buildEnglishLessonLibraryFeedback(pack)
     };
     if (adaptive) {
+      const diagnosticGate = getOxfordLegacyDiagnosticInfo(pack);
       base.english.adaptive = {
         architectureVersion: ADAPTIVE_ENGLISH_ARCHITECTURE,
         lessonId: pack.english.lesson.lessonId,
@@ -16904,8 +17107,15 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
           baselineOrRetest: "",
           strengths: [],
           reviewQueue: [],
-          nextRecommendation: ""
+          nextRecommendation: "",
+          lifecycle: "active",
+          profileEligible: true,
+          nextLessonEligible: true
         }),
+        lifecycle: diagnosticGate.isLegacy ? OXFORD_LEGACY_DIAGNOSTIC_STATUS : "active",
+        profileEligible: diagnosticGate.profileEligible,
+        nextLessonEligible: diagnosticGate.nextLessonEligible,
+        exclusionReason: diagnosticGate.reason,
         routeDay: pack.english.lesson.diagnostic?.routeDay || "",
         baselineOrRetest: pack.english.lesson.diagnostic?.baselineOrRetest || "",
         strengths: [...(pack.english.lesson.diagnostic?.strengths || [])],
