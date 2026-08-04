@@ -310,6 +310,13 @@ const WITHDRAWN_BUILTIN_PACK_IDS = new Set([
   "2026-07-26-helen-day14-open-books-art01",
   "2026-07-26-helen-day14-revision-d-open-books-art01"
 ]);
+// This is a quarantined external candidate, not a historical record.  It is
+// deliberately kept out of the withdrawn archive so old records remain
+// readable, but it can never cross the runtime import boundary as a renamed
+// copy of the withdrawn Chinese repair pack.
+const QUARANTINED_CHINESE_CANDIDATE_PACK_IDS = new Set([
+  "2026-07-29-allen-chinese-repair-book-box-02"
+]);
 const WITHDRAWN_BUILTIN_PACK_DATES = new Set(["2026-07-26", "2026-07-29"]);
 const COURSE_PROGRESS_STORAGE_KEY = "helen-course-progress-v1";
 const COURSE_TIMER_MODEL_VERSION = 2;
@@ -3128,7 +3135,9 @@ function upsertLearningPackArchiveEntry(archive, entry) {
     title: entry.title || "",
     availableSubjects: entry.availableSubjects || [],
     schemaVersion: entry.schemaVersion || "",
-    publishedAt: entry.publishedAt || ""
+    publishedAt: entry.publishedAt || "",
+    lifecycle: entry.lifecycle || "",
+    visibility: entry.visibility || ""
   };
   const index = archive.entries.findIndex((item) => item.packId === normalized.packId);
   if (index >= 0) archive.entries[index] = { ...archive.entries[index], ...normalized };
@@ -6825,11 +6834,18 @@ function normalizeBuiltinManifestEntries(manifest) {
   const entries = Array.isArray(manifest?.packs) ? manifest.packs : [];
   const latestEntry = entries.find((item) => item.packId === manifest.latestPackId) || (manifest.latest ? { packId: manifest.latestPackId || "", path: manifest.latest } : null);
   const uniqueEntries = [];
-  [latestEntry, ...entries].filter(Boolean).forEach((entry) => {
+  [latestEntry, ...entries].filter(isPublicBuiltinManifestEntry).forEach((entry) => {
     if (!entry.path || uniqueEntries.some((item) => (item.packId && item.packId === entry.packId) || item.path === entry.path)) return;
     uniqueEntries.push(entry);
   });
   return uniqueEntries;
+}
+
+// The manifest is the public catalogue boundary. Historical records may stay
+// in it for auditability, but must never be fetched, imported, or routed as a
+// student course merely because their JSON is still shipped with the app.
+function isPublicBuiltinManifestEntry(entry) {
+  return Boolean(entry?.path) && entry.visibility !== "historical_read_only" && entry.lifecycle !== "returned_design_only";
 }
 
 function applyBuiltinPackSelectionPolicy({ latestPackId, beforeSelectedPackId, beforeLatestPackId, beforeSelectionSource }) {
@@ -9238,6 +9254,10 @@ function sanitizeAnswerMap(answerKey) {
 function buildLearningPackPreview(pack) {
   const normalized = normalizeLearningPackForStorage(pack);
   const checksum = checksumString(JSON.stringify(normalized));
+  // Preview is read-only, but must report exactly the gate that import will
+  // enforce.  Import recomputes this result below; preview data is never a
+  // capability to write.
+  const auditBlockers = auditChineseFeedbackImportGate(normalized);
   const existing = state.learningPacks?.[pack.packId] || null;
   const targets = collectLearningPackTargets(pack);
   const isPackUpdate = Boolean(existing && existing.checksum !== checksum);
@@ -9246,7 +9266,7 @@ function buildLearningPackPreview(pack) {
   const updated = changes.filter((item) => item.action === "update").length;
   const unchanged = changes.filter((item) => item.action === "same").length;
   return {
-    valid: true,
+    valid: auditBlockers.length === 0,
     pack: normalized,
     checksum,
     existing,
@@ -9256,7 +9276,9 @@ function buildLearningPackPreview(pack) {
     added,
     updated,
     unchanged,
-    warnings: pack._warnings || []
+    warnings: pack._warnings || [],
+    errors: auditBlockers.length ? [`反馈闭环质量门闸未通过（${auditBlockers.join("、")}），保持零写入，不能导入或发布。`] : [],
+    auditBlockers
   };
 }
 
@@ -9325,6 +9347,11 @@ function renderLearningPackError(error) {
 }
 
 function auditChineseFeedbackImportGate(pack) {
+  // Withdrawn packs remain readable in the historical archive.  Their formal
+  // import is rejected separately at the write boundary; only the external
+  // Revision 4 candidate is quarantined at preview time as well.
+  if (WITHDRAWN_BUILTIN_PACK_IDS.has(pack?.packId)) return [];
+  if (QUARANTINED_CHINESE_CANDIDATE_PACK_IDS.has(pack?.packId)) return ["CN-WITHDRAWN-ID"];
   const needsGate = Boolean(pack?.feedbackInput || pack?.feedbackTrace || pack?.abilityProfile || pack?.semanticReview || /repair/i.test(String(pack?.revision || "")));
   if (!needsGate) return [];
   const blockers = [];
@@ -9380,7 +9407,7 @@ function auditChineseFeedbackImportGate(pack) {
   // A self-declared releaseAudit is informative only.  The checks above are
   // the authoritative oracle; this marker prevents old candidates from being
   // mistaken for audited content without allowing it to bypass a failure.
-  if (pack?.releaseAudit?.auditVersion !== "chinese-feedback-quality-gates/1") blockers.push("CN-IMPORT-AUDIT");
+  if (pack?.releaseAudit?.ready !== true || pack?.releaseAudit?.auditVersion !== "chinese-feedback-quality-gates/1") blockers.push("CN-IMPORT-AUDIT");
   return [...new Set(blockers)];
 }
 
@@ -9454,6 +9481,37 @@ function importLearningPack(pack, preview, options = {}) {
   state.learningPackArchive ||= { version: 1, entries: [], byDate: {} };
   const existing = state.learningPacks[pack.packId] || null;
   const repeat = Boolean(existing && existing.checksum === preview.checksum);
+  if (legacyOxford.isLegacy) {
+    // Compatibility loading is archival only: retain the exact JSON and any
+    // existing progress, but never merge targets, create progress, or change
+    // the active/latest course pointers.
+    if (!existing) {
+      state.learningPacks[pack.packId] = {
+        packId: pack.packId,
+        schemaVersion: pack.schemaVersion,
+        date: pack.date,
+        checksum: preview.checksum,
+        importedAt: now,
+        updatedAt: now,
+        data: pack,
+        targets: [],
+        importStats: { added: 0, updated: 0, unchanged: 0 },
+        importCount: 1,
+        readOnly: true
+      };
+    }
+    upsertLearningPackArchiveEntry(state.learningPackArchive, {
+      date: pack.date,
+      packId: pack.packId,
+      title: pack.title || "",
+      schemaVersion: pack.schemaVersion,
+      availableSubjects: getPackAvailableSubjects(pack),
+      publishedAt: options.publishedAt || existing?.importedAt || "",
+      lifecycle: OXFORD_LEGACY_DIAGNOSTIC_STATUS,
+      visibility: "historical_read_only"
+    });
+    return { added: 0, updated: 0, unchanged: 0, repeat, packId: pack.packId, readOnly: true };
+  }
   const stats = repeat ? { added: 0, updated: 0, unchanged: preview.changes.length } : {
     added: preview.added,
     updated: preview.updated,
@@ -17092,8 +17150,19 @@ function buildSingleCourseFeedback(pack, progress, course, options = {}) {
       anchorSentence: pack.english?.lesson?.anchorSentence || pack.english?.anchorSentence || "",
       lessonLibrary: adaptive || taskSystemPack ? null : buildEnglishLessonLibraryFeedback(pack)
     };
-    if (adaptive) {
-      const diagnosticGate = getOxfordLegacyDiagnosticInfo(pack);
+    const diagnosticGate = adaptive ? getOxfordLegacyDiagnosticInfo(pack) : null;
+    if (diagnosticGate?.isLegacy) {
+      // Historical attempts are exportable as raw session records only.  They
+      // are intentionally not transformed into an ability profile or next
+      // lesson recommendation.
+      base.english.historicalDiagnostic = {
+        lifecycle: OXFORD_LEGACY_DIAGNOSTIC_STATUS,
+        readOnly: true,
+        profileEligible: false,
+        nextLessonEligible: false,
+        exclusionReason: OXFORD_LEGACY_DIAGNOSTIC_REASON
+      };
+    } else if (adaptive) {
       base.english.adaptive = {
         architectureVersion: ADAPTIVE_ENGLISH_ARCHITECTURE,
         lessonId: pack.english.lesson.lessonId,

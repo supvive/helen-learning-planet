@@ -20,7 +20,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d01",
-        "publishedAt": "2026-08-03T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d01.json"
       },
       {
@@ -32,7 +34,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d02",
-        "publishedAt": "2026-08-04T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d02.json"
       },
       {
@@ -44,7 +48,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d03",
-        "publishedAt": "2026-08-05T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d03.json"
       },
       {
@@ -56,7 +62,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d04",
-        "publishedAt": "2026-08-06T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d04.json"
       },
       {
@@ -68,7 +76,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d05",
-        "publishedAt": "2026-08-07T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d05.json"
       },
       {
@@ -80,7 +90,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d06",
-        "publishedAt": "2026-08-08T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d06.json"
       },
       {
@@ -92,7 +104,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d07",
-        "publishedAt": "2026-08-09T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d07.json"
       },
       {
@@ -104,7 +118,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d08",
-        "publishedAt": "2026-08-10T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d08.json"
       },
       {
@@ -116,7 +132,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d09",
-        "publishedAt": "2026-08-11T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d09.json"
       },
       {
@@ -128,7 +146,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d10",
-        "publishedAt": "2026-08-12T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d10.json"
       },
       {
@@ -140,7 +160,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d11",
-        "publishedAt": "2026-08-13T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d11.json"
       },
       {
@@ -152,7 +174,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d12",
-        "publishedAt": "2026-08-14T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d12.json"
       },
       {
@@ -164,7 +188,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d13",
-        "publishedAt": "2026-08-15T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d13.json"
       },
       {
@@ -176,7 +202,9 @@
         ],
         "schemaVersion": "helen-learning-pack/2",
         "revision": "english-diagnostic-oxford-v2-d14",
-        "publishedAt": "2026-08-16T00:00:00+08:00",
+      "lifecycle": "returned_design_only",
+      "visibility": "historical_read_only",
+      "returnedAt": "2026-08-04T00:00:00+08:00",
         "path": "./english-diagnostic-d14.json"
       },
       {
