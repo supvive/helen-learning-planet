@@ -7860,12 +7860,28 @@ function validateChineseLessonSection(section, index, errors) {
     readAloud: validateReadAloudConfig(section.readAloud),
     recording: validateRecordingConfig(section.recording)
   };
+  // Feedback-driven Chinese candidates carry a small, evaluator-only contract
+  // beside the student-facing fields.  Preserve it through parsing so the
+  // exact same release gate runs on the normalized pack that would be stored;
+  // these fields are never rendered by the student UI.
+  ["target", "uniqueEvidence", "level", "support", "spacingReasonZh", "answerGranularityZh", "difficultyRationaleZh"].forEach((field) => {
+    if (section[field] != null) normalized[field] = safePlainText(section[field], 300);
+  });
+  if (Array.isArray(section.sectionResultOptions)) {
+    normalized.sectionResultOptions = section.sectionResultOptions
+      .map((item) => typeof item === "string" ? safePlainText(item, 40) : {
+        value: safeId(item?.value || item?.id || ""),
+        labelZh: safePlainText(item?.labelZh || item?.label || "", 60)
+      })
+      .filter((item) => typeof item === "string" ? item : item.value);
+  }
+  if (Array.isArray(section.evidenceTargetIds)) normalized.evidenceTargetIds = section.evidenceTargetIds.map((value) => safePlainText(value, 120)).filter(Boolean).slice(0, 16);
   if (section.textTitle) normalized.textTitle = safePlainText(section.textTitle, 80);
   if (section.prompt) normalized.prompt = safePlainText(section.prompt, 220);
   if (Array.isArray(section.paragraphs)) normalized.paragraphs = section.paragraphs.map((item) => safePlainText(item, 600)).filter(Boolean).slice(0, 12);
   if (Array.isArray(section.items)) normalized.items = section.items.map((item) => sanitizeLessonItem(item)).filter(Boolean).slice(0, 30);
   if (Array.isArray(section.questions)) normalized.questions = section.questions.map((item, qIndex) => sanitizeQuestionItem(item, `${id}_${qIndex}`)).filter(Boolean).slice(0, 12);
-  if (Array.isArray(section.prompts)) normalized.prompts = section.prompts.map((item) => safePlainText(item, 80)).filter(Boolean).slice(0, 8);
+  if (Array.isArray(section.prompts)) normalized.prompts = section.prompts.map((item, promptIndex) => sanitizeChinesePromptItem(item, `${id}_prompt_${promptIndex}`)).filter(Boolean).slice(0, 8);
   if (Array.isArray(section.characters)) normalized.characters = section.characters.map((item) => safePlainText(item?.text || item, 8)).filter(isSingleChineseChar).slice(0, 20);
   if (Array.isArray(section.words)) normalized.words = section.words.map((item) => safePlainText(item?.text || item, 16)).filter(isGoodWord).slice(0, 20);
   if (Array.isArray(section.supportRulesZh)) normalized.supportRulesZh = section.supportRulesZh.map((item) => safePlainText(item, 180)).filter(Boolean).slice(0, 8);
@@ -9167,6 +9183,36 @@ function sanitizeLessonItem(item) {
   if (Array.isArray(item.stepsZh)) normalized.stepsZh = item.stepsZh.map((step) => safePlainText(step, 180)).filter(Boolean).slice(0, 8);
   if (item.setupZh) normalized.setupZh = safePlainText(item.setupZh, 180);
   if (item.referenceAnswerZh) normalized.referenceAnswerZh = safePlainText(item.referenceAnswerZh, 260);
+  if (item.itemAudit && typeof item.itemAudit === "object") normalized.itemAudit = sanitizeChineseQualityMetadata(item.itemAudit, { includeTargets: false });
+  return normalized;
+}
+
+function sanitizeChineseIdList(value, limit = 16) {
+  // These IDs are evaluator references, not DOM IDs. Preserve Unicode goal
+  // names and evidence labels instead of applying safeId's ASCII-only slug.
+  return Array.isArray(value) ? value.map((item) => safePlainText(item, 120)).filter(Boolean).slice(0, limit) : [];
+}
+
+function sanitizeChineseQualityMetadata(item, options = {}) {
+  if (!item || typeof item !== "object") return {};
+  const normalized = {};
+  ["target", "uniqueEvidence", "level", "support", "spacingReason", "selectionReason", "feedbackReason", "difficultyRationaleZh", "answerGranularity", "answerGranularityZh", "answerEvidenceZh", "evidenceLocation", "causalChain", "causeEvidence", "expectedAnswerShape", "answerLevel", "independenceRuleZh", "stopRuleZh", "sourceBoundary", "retrievalLevel", "transferLevel", "cognitiveLevel"].forEach((field) => {
+    if (item[field] != null) normalized[field] = safePlainText(item[field], 320);
+  });
+  ["sourceStimulusId", "sourceSentenceId", "sourceMaterialId", "fingerprint", "questionFingerprint", "promptFingerprint"].forEach((field) => {
+    if (item[field] != null) normalized[field] = safePlainText(item[field], 120);
+  });
+  ["sourceMaterialIds", "targetKnowledgePointIds", "knowledgePointIds", "targetIds", "feedbackEvidenceIds", "feedbackEvidenceRefs", "evidenceRefs", "evidenceTargetIds"].forEach((field) => {
+    if (item[field] != null) normalized[field] = sanitizeChineseIdList(item[field]);
+  });
+  if (options.includeTargets === false) {
+    delete normalized.targetKnowledgePointIds;
+    delete normalized.knowledgePointIds;
+    delete normalized.targetIds;
+    delete normalized.feedbackEvidenceIds;
+    delete normalized.feedbackEvidenceRefs;
+    delete normalized.evidenceRefs;
+  }
   return normalized;
 }
 
@@ -9189,8 +9235,18 @@ function sanitizeQuestionItem(item, fallbackId) {
   if (Array.isArray(item.evidenceTargetIds)) normalized.evidenceTargetIds = item.evidenceTargetIds.map((value) => safeId(value)).filter(Boolean).slice(0, 8);
   if (item.difficultyLevel) normalized.difficultyLevel = safePlainText(item.difficultyLevel, 60);
   if (item.supportBoundaryZh) normalized.supportBoundaryZh = safePlainText(item.supportBoundaryZh, 220);
+  Object.assign(normalized, sanitizeChineseQualityMetadata(item));
   if (item.displayCards) normalized.displayCards = sanitizeQuestionDisplayCards(item.displayCards);
   if (item.oralAssessment) normalized.oralAssessment = sanitizeOralAssessment(item.oralAssessment);
+  return normalized;
+}
+
+function sanitizeChinesePromptItem(item, fallbackId) {
+  if (typeof item === "string") return safePlainText(item, 160);
+  if (!item || typeof item !== "object") return null;
+  const normalized = sanitizeQuestionItem({ ...item, prompt: item.prompt || item.text || item.promptZh || "" }, fallbackId);
+  if (!normalized) return null;
+  normalized.text = safePlainText(item.text || item.prompt || item.promptZh || normalized.prompt, 160);
   return normalized;
 }
 
@@ -13729,7 +13785,8 @@ function renderChineseSectionBody(pack, section, itemProgress = {}) {
     return `<div class="four-grid">${section.prompts.map((prompt, index) => {
       const childKey = `chinese:${section.id}:grid:${index}`;
       const done = getCourseProgress()?.chinese?.sections?.[childKey]?.finishedAt;
-      return `<div class="four-grid-item"><strong>${index + 1}</strong><span>${renderAnnotatableChineseText(prompt, section.id, `prompt_${index}`, null, { markedTerms: section.markedTerms })}</span><button class="button secondary compact-button four-grid-action" data-course-complete="${escapeHtml(childKey)}" type="button">${done ? "已确认" : "确认"}</button></div>`;
+      const promptText = typeof prompt === "string" ? prompt : safePlainText(prompt?.prompt || prompt?.text || prompt?.promptZh || "", 180);
+      return `<div class="four-grid-item"><strong>${index + 1}</strong><span>${renderAnnotatableChineseText(promptText, section.id, `prompt_${index}`, null, { markedTerms: section.markedTerms })}</span><button class="button secondary compact-button four-grid-action" data-course-complete="${escapeHtml(childKey)}" type="button">${done ? "已确认" : "确认"}</button></div>`;
     }).join("")}</div>`;
   }
   if (actionItems.length) return renderChineseActionItems(actionItems, section.id, section.markedTerms);
