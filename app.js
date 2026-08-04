@@ -88,12 +88,15 @@ const LETTER_PLANET_REMINDER_SYSTEM_SCHEMA = "letter-planet-reminder-system/1";
 const LETTER_PLANET_REMINDER_V2_SCHEMA = "letter-planet-reminder-system/2";
 const LETTER_PLANET_REMINDER_V2_EVENT_SCHEMA = "letter-planet-reminder-event/1";
 const LETTER_PLANET_REMINDER_V2_STANDARD_ID = "helen-letter-planet-reminder-v2-a1";
-// clean-v1 is a separate design-time protocol. Keep the public parser fail
-// closed until all Oxford/A1 content and device gates are approved.
+// clean-v1 is a historical read-only protocol. Keep its compatibility guard
+// fail-closed; the current from-zero protocol is clean-room-v1 below.
 const LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA = "letter-planet-reminder-system/clean-v1";
-// oxford-a1-v1 is the new clean-room protocol. Keep the public parser fail
-// closed until all 17 quality gates and real device evidence are approved.
+// oxford-a1-v1 is a historical read-only protocol. Keep its compatibility
+// guard fail-closed; the current from-zero protocol is clean-room-v1 below.
 const LETTER_PLANET_REMINDER_OXFORD_A1_V1_SCHEMA = "letter-planet-reminder/oxford-a1-v1";
+// Oxford clean-room v1 is a separate protocol, not a revision of any
+// historical reminder contract. Keep it fail-closed at the public boundary.
+const LETTER_PLANET_REMINDER_OXFORD_A1_CLEAN_ROOM_V1_SCHEMA = "letter-planet-reminder/oxford-a1-clean-room-v1";
 const LETTER_PLANET_REMINDER_LEVEL_TYPES = new Set(["cue", "strategy", "model"]);
 const LETTER_PLANET_REMINDER_TRIGGERS = new Set(["on_request"]);
 const LETTER_PLANET_TASK_ACTIVITY_TYPES = new Set([
@@ -7387,6 +7390,12 @@ function parseLearningPackInput(raw) {
   const jsonText = extractSingleJsonObject(text);
   const parsed = JSON.parse(jsonText);
   if (containsReminderProtocolMarker(parsed, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_CLEAN_ROOM_V1_SCHEMA,
+    standards: ["helen-oxford-a1-clean-room-reminder-v1"]
+  })) {
+    throw new Error("Oxford A1 clean-room v1 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(parsed, {
     schema: LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA,
     standards: ["helen-oxford-a1-reminder-clean-v1"]
   })) {
@@ -9156,6 +9165,29 @@ function renderLearningPackError(error) {
 }
 
 function importLearningPack(pack, preview, options = {}) {
+  // Defense in depth: normal UI flow calls parseLearningPackInput first, but
+  // this write boundary must remain fail-closed if an internal caller ever
+  // hands it a raw candidate directly.  Design-only reminder protocols are
+  // never allowed to reach mergeLearningPackTargets or state writes.
+  if (containsReminderProtocolMarker(pack, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_CLEAN_ROOM_V1_SCHEMA,
+    standards: ["helen-oxford-a1-clean-room-reminder-v1"]
+  })) {
+    throw new Error("Oxford A1 clean-room v1 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(pack, {
+    schema: LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA,
+    standards: ["helen-oxford-a1-reminder-clean-v1"]
+  })) {
+    throw new Error("clean-v1 提醒系统仍在多维质量审核中，当前候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(pack, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_V1_SCHEMA,
+    standards: ["helen-oxford-cefr-a1-reminder-v1"],
+    architecture: "letter-planet-adaptive/oxford-a1-v1"
+  })) {
+    throw new Error("Oxford A1 提醒系统从零重建版仍在 E-01 至 E-17 全维度质量审核中，当前候选包保持零写入，不能导入公开课程。");
+  }
   const taskSystem = getLetterPlanetTaskSystem(pack);
   if (taskSystem && taskSystem.status !== "content_complete_for_dr_george_dispatch") {
     throw new Error("letter-planet-task-system/1 候选包仍在审核中，禁止写入学习包、manifest或公开课程。");
