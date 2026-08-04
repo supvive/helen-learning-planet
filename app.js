@@ -97,6 +97,12 @@ const LETTER_PLANET_REMINDER_OXFORD_A1_V1_SCHEMA = "letter-planet-reminder/oxfor
 // Oxford clean-room v1 is a separate protocol, not a revision of any
 // historical reminder contract. Keep it fail-closed at the public boundary.
 const LETTER_PLANET_REMINDER_OXFORD_A1_CLEAN_ROOM_V1_SCHEMA = "letter-planet-reminder/oxford-a1-clean-room-v1";
+// v5/v6 are design-only reminder protocols. Keep both fail-closed until the
+// independent quality gates are explicitly approved for a public release.
+const LETTER_PLANET_REMINDER_OXFORD_A1_V5_SCHEMA = "letter-planet-reminder/oxford-a1/v5";
+const LETTER_PLANET_REMINDER_OXFORD_A1_V5_STANDARD = "helen-oxford-a1-reminder-v5/1";
+const LETTER_PLANET_REMINDER_OXFORD_A1_V6_SCHEMA = "letter-planet-reminder/oxford-a1/v6";
+const LETTER_PLANET_REMINDER_OXFORD_A1_V6_STANDARD = "helen-oxford-a1-reminder-v6/1";
 const LETTER_PLANET_REMINDER_LEVEL_TYPES = new Set(["cue", "strategy", "model"]);
 const LETTER_PLANET_REMINDER_TRIGGERS = new Set(["on_request"]);
 const LETTER_PLANET_TASK_ACTIVITY_TYPES = new Set([
@@ -7396,6 +7402,18 @@ function parseLearningPackInput(raw) {
     throw new Error("Oxford A1 clean-room v1 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
   }
   if (containsReminderProtocolMarker(parsed, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_V5_SCHEMA,
+    standards: [LETTER_PLANET_REMINDER_OXFORD_A1_V5_STANDARD]
+  })) {
+    throw new Error("Oxford A1 reminder v5 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(parsed, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_V6_SCHEMA,
+    standards: [LETTER_PLANET_REMINDER_OXFORD_A1_V6_STANDARD]
+  })) {
+    throw new Error("Oxford A1 reminder v6 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(parsed, {
     schema: LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA,
     standards: ["helen-oxford-a1-reminder-clean-v1"]
   })) {
@@ -9174,6 +9192,18 @@ function importLearningPack(pack, preview, options = {}) {
     standards: ["helen-oxford-a1-clean-room-reminder-v1"]
   })) {
     throw new Error("Oxford A1 clean-room v1 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(pack, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_V5_SCHEMA,
+    standards: [LETTER_PLANET_REMINDER_OXFORD_A1_V5_STANDARD]
+  })) {
+    throw new Error("Oxford A1 reminder v5 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
+  }
+  if (containsReminderProtocolMarker(pack, {
+    schema: LETTER_PLANET_REMINDER_OXFORD_A1_V6_SCHEMA,
+    standards: [LETTER_PLANET_REMINDER_OXFORD_A1_V6_STANDARD]
+  })) {
+    throw new Error("Oxford A1 reminder v6 仍在全维度质量审核中，候选包保持零写入，不能导入公开课程。");
   }
   if (containsReminderProtocolMarker(pack, {
     schema: LETTER_PLANET_REMINDER_CLEAN_V1_SCHEMA,
