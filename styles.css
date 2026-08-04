@@ -2561,10 +2561,38 @@ textarea:focus {
   gap: 14px;
 }
 
+.color-reference-guide-panel {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(36, 49, 59, 0.11);
+  border-radius: 18px;
+  background: rgba(250, 251, 252, 0.9);
+  box-shadow: 0 6px 18px rgba(36, 49, 59, 0.045);
+}
+
+.color-reference-guide-panel .color-step-actions {
+  margin: 0;
+}
+
+.color-reference-guide-panel .color-reference-palette,
+.color-reference-guide-panel .color-paper-choices,
+.color-reference-guide-panel .color-palette-summary,
+.color-reference-guide-panel .color-dimension-card {
+  border-color: rgba(36, 49, 59, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+}
+
 @media (min-width: 960px) {
   .color-reference-work-layout {
     grid-template-columns: minmax(0, 1fr) minmax(240px, 280px);
     align-items: start;
+  }
+
+  .color-reference-guide-column {
+    position: sticky;
+    top: 16px;
   }
 
   .color-reference-process-column .color-process-board-shell {
@@ -2986,7 +3014,8 @@ textarea:focus {
 
 .color-reference-nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, max-content));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
 }
 
 .color-step-completed-status {
@@ -3424,6 +3453,12 @@ textarea:focus {
   }
 }
 
+@media (max-width: 959px) {
+  .color-reference-guide-column {
+    position: static;
+  }
+}
+
 @media (max-width: 760px) {
   .planet-grid,
   .today-metrics,
@@ -3683,10 +3718,6 @@ textarea:focus {
 
   .color-dimensions-toggle {
     width: 100%;
-  }
-
-  .color-reference-nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .color-reference-nav .button {

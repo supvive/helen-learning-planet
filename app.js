@@ -3325,6 +3325,7 @@ function navigateToView(view) {
   if (normalized === "chinese-course" && selectLatestLearningPackForPrimaryCourse()) return;
   if (normalized === "letter-course" && selectPrimaryAdaptiveEnglishCourseForPrimaryCourse()) return;
   if (normalized === "color-course") {
+    normalizeColorPrimaryEntryState();
     // A stale static catalog selection must never be the primary route. A
     // generated reference course may still be opened directly when one exists.
     const colorState = getColorPlanetState();
@@ -3475,6 +3476,7 @@ function openPlanetHomeCourse(kind, courseId, view) {
   } else if (kind === "art") {
     // Legacy home cards may still carry a daily/static course id. Route them
     // to the reference workspace instead of reviving a withdrawn static card.
+    normalizeColorPrimaryEntryState();
     showView("color-work-choice", true, { skipRouteDateSelection: true });
     return;
   } else if (courseId && WITHDRAWN_BUILTIN_PACK_IDS.has(courseId)) {
@@ -3500,6 +3502,7 @@ function showView(view, updateHash = true, options = {}) {
   // by an older build. Only a locally generated reference course may open the
   // lesson view; otherwise normalize the link to the reference workspace.
   if (visibleRoute === "color-course") {
+    normalizeColorPrimaryEntryState();
     const colorState = getColorPlanetState();
     const generated = getGeneratedColorCourses();
     const activeGenerated = generated.find((course) => course.courseId === colorState.activeCourseId) ||
@@ -7129,6 +7132,13 @@ function getColorPlanetState() {
   return state.colorPlanet;
 }
 
+// The old five-card catalog is still kept as historical data, but it must
+// never decide the primary route.  Older browsers can retain its course id in
+// local storage; keep that history intact and let the route guard ignore it.
+function normalizeColorPrimaryEntryState() {
+  return getColorPlanetState();
+}
+
 function getColorCourses() {
   const generated = getColorPlanetState().generatedCourses || [];
   const catalog = colorPlanetCatalog?.candidateSet?.courses || [];
@@ -7141,6 +7151,22 @@ function getGeneratedColorCourses() {
   // expose it as a selectable or renderable course: its bbox fallback is not
   // a teaching-quality process board.
   return (getColorPlanetState().generatedCourses || []).filter((course) => canRenderGeneratedProcessBoard(course));
+}
+
+function getGeneratedColorStepPaletteTargetIds(course, step) {
+  if (!course?.generatedFromReference || !step) return [];
+  const validIds = new Set((course.paletteTargets || [])
+    .filter((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code))
+    .map((target) => target.id));
+  // Step 1 is the only colour-choice gate.  Older locally stored courses
+  // may have an empty requiredColorTargetIds array even though colorTargetIds
+  // contains the intended palette; recover that shape without reopening
+  // choices on later colour steps.
+  const declared = Array.isArray(step.requiredColorTargetIds) ? step.requiredColorTargetIds : [];
+  const fallback = Number(step.order) === 1 && !declared.length && Array.isArray(step.colorTargetIds)
+    ? step.colorTargetIds
+    : declared;
+  return [...new Set(fallback.filter((targetId) => validIds.has(targetId)))];
 }
 
 function getColorCourseById(courseId) {
@@ -12007,15 +12033,9 @@ function completeColorCourseStep(courseId, stepId) {
   if (course.generatedFromReference && stepIndex > firstIncompleteColorStepIndex(course, progress)) return false;
   if (course.generatedFromReference) {
     progress.art.paletteSelections ||= {};
-    const declaredRequiredIds = Array.isArray(course.steps[stepIndex]?.requiredColorTargetIds)
-      ? course.steps[stepIndex].requiredColorTargetIds
-      : (course.steps[stepIndex]?.colorTargetIds || []);
-    // A course saved before palette sanitisation may retain a removed target
-    // id.  It must not leave the learner with an impossible selection gate.
-    const validTargetIds = new Set((course.paletteTargets || [])
-      .filter((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code))
-      .map((target) => target.id));
-    const requiredIds = declaredRequiredIds.filter((targetId) => validTargetIds.has(targetId));
+    // Keep the action-time gate identical to the rendered choice list,
+    // including legacy step-1 records that stored an empty required array.
+    const requiredIds = getGeneratedColorStepPaletteTargetIds(course, course.steps[stepIndex]);
     if (requiredIds.some((targetId) => !progress.art.paletteSelections[targetId])) return false;
     if (colorStructureGateReason(course, course.steps[stepIndex])) return false;
   }
@@ -12596,7 +12616,7 @@ function renderGeneratedPaletteSummary(course, progress, targetIds = null) {
 }
 
 function renderGeneratedSelectedColors(course, step, progress) {
-  const ids = step.requiredColorTargetIds || step.colorTargetIds || [];
+  const ids = getGeneratedColorStepPaletteTargetIds(course, step);
   if (!ids.length) return "";
   const selections = progress.art.paletteSelections || {};
   const rows = ids.map((id) => {
@@ -13015,7 +13035,7 @@ function renderGeneratedReferenceFigure(course, step, progress = getGeneratedArt
     const url = getColorReferenceImageUrl(course.referenceImageId);
     const ratio = Math.max(0.1, Number(course.sourceImage?.width || 1) / Math.max(1, Number(course.sourceImage?.height || 1)));
     return `
-      <figure class="color-reference-source-card color-reference-source-card-small" style="--reference-ratio:${ratio}">${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(course.titleZh)}参考图" />` : `<div class="color-reference-image-loading">图片正在加载</div>`}<figcaption>原图只作色彩来源</figcaption></figure>
+      <figure class="color-reference-source-card color-reference-source-card-small color-reference-step-one" style="--reference-ratio:${ratio}">${url ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(course.titleZh)}参考图" />` : `<div class="color-reference-image-loading">图片正在加载</div>`}<figcaption>原图只作选色参照；从第 2 步开始在独立白纸过程板上画。</figcaption></figure>
     `;
   }
   const defaultVisible = order <= 6;
@@ -13037,11 +13057,7 @@ function renderGeneratedColorCourseLesson(course) {
   const actions = stepIndex === 1 && selectedPaper
     ? [`在A4纸上轻轻画出 ${Number(selectedPaper.widthCm).toFixed(1)}×${Number(selectedPaper.heightCm).toFixed(1)} cm边界。`, `左右各留 ${Number(selectedPaper.marginLeftCm ?? selectedPaper.marginHorizontalCm).toFixed(1)} cm，上下各留 ${Number(selectedPaper.marginTopCm ?? selectedPaper.marginVerticalCm).toFixed(1)} cm。`]
     : step.actionsZh || [];
-  const declaredRequiredIds = step.requiredColorTargetIds || step.colorTargetIds || [];
-  const validTargetIds = new Set((course.paletteTargets || [])
-    .filter((target) => target?.id && Array.isArray(target.candidates) && target.candidates.some((candidate) => candidate?.code))
-    .map((target) => target.id));
-  const requiredIds = declaredRequiredIds.filter((targetId) => validTargetIds.has(targetId));
+  const requiredIds = getGeneratedColorStepPaletteTargetIds(course, step);
   const requiredTargets = requiredIds.map((targetId) => course.paletteTargets.find((target) => target.id === targetId));
   // Treat a missing target as incomplete as well.  Previously the render
   // filtered missing targets before calculating `canComplete`, so a malformed
@@ -13075,15 +13091,17 @@ function renderGeneratedColorCourseLesson(course) {
           ${renderGeneratedReferenceFigure(course, step, progress)}
         </div>
         <aside class="color-reference-guide-column">
-          <ol class="color-step-actions">${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
-          ${renderGeneratedDimensionCard(course, step, ui)}
-          ${stepIndex === 1 ? renderGeneratedPaperChoices(course, progress) : ""}
-          ${requiredIds.length ? renderGeneratedPaletteChoices(course, progress, requiredIds) : ""}
-          ${requiredIds.length || !paletteDisplayIds.length ? "" : renderGeneratedPaletteSummary(course, progress, paletteDisplayIds)}
-          ${renderGeneratedSelectedColors(course, step, progress)}
-          ${missingText ? `<p class="color-reference-missing" role="status">还需选择：${escapeHtml(missingText)}</p>` : ""}
-          ${structureGateReason ? `<p class="color-reference-missing" role="status">本步暂不能完成：${escapeHtml(structureGateReason)}</p>` : ""}
-          ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
+          <div class="color-reference-guide-panel">
+            <ol class="color-step-actions">${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
+            ${renderGeneratedDimensionCard(course, step, ui)}
+            ${stepIndex === 1 ? renderGeneratedPaperChoices(course, progress) : ""}
+            ${requiredIds.length ? renderGeneratedPaletteChoices(course, progress, requiredIds) : ""}
+            ${requiredIds.length || !paletteDisplayIds.length ? "" : renderGeneratedPaletteSummary(course, progress, paletteDisplayIds)}
+            ${renderGeneratedSelectedColors(course, step, progress)}
+            ${missingText ? `<p class="color-reference-missing" role="status">还需选择：${escapeHtml(missingText)}</p>` : ""}
+            ${structureGateReason ? `<p class="color-reference-missing" role="status">本步暂不能完成：${escapeHtml(structureGateReason)}</p>` : ""}
+            ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
+          </div>
         </aside>
       </div>
       <div class="color-course-nav color-reference-nav">
@@ -13107,7 +13125,7 @@ function renderColorChoiceLesson() {
   // route normalizer gets a chance to send the student to the reference-image
   // workspace.  Only a locally generated reference course may render here.
   const generatedCourses = getGeneratedColorCourses();
-  const colorState = getColorPlanetState();
+  const colorState = normalizeColorPrimaryEntryState();
   const course = generatedCourses.find((item) => item.courseId === colorState.activeCourseId) ||
     generatedCourses.find((item) => item.courseId === colorState.selectedCourseId) ||
     null;
