@@ -9367,6 +9367,9 @@ function auditFeedbackDrivenDesignRuntime(pack, items, eventIds) {
   const profileVersion = String(profile.version || profile.profileVersion || "").trim();
   const traceVersion = String(trace.profileVersion || trace.abilityProfileVersion || "").trim();
   if (!profileVersion || !traceVersion || profileVersion !== traceVersion) blockers.push("CN-PROFILE-VERSION");
+  const profileAsOf = String(profile.asOf || profile.updatedAt || profile.date || "").trim();
+  const traceAsOf = String(trace.profileAsOf || trace.asOf || trace.profileDate || "").trim();
+  if (!profileAsOf || !traceAsOf || profileAsOf !== traceAsOf) blockers.push("CN-PROFILE-UPDATE");
   const rawGoals = trace.goalMap || trace.goals || profile.goalMap || profile.goals;
   const goals = Array.isArray(rawGoals) ? rawGoals.filter((goal) => goal && typeof goal === "object") : [];
   const goalIds = new Set();
@@ -9391,6 +9394,9 @@ function auditFeedbackDrivenDesignRuntime(pack, items, eventIds) {
     if (!source) itemProblem = true;
   });
   if (!items.length || itemProblem) blockers.push("CN-FEEDBACK-DESIGN");
+  const itemTargets = new Set(items.flatMap(({ item }) => item.targetKnowledgePointIds || item.knowledgePointIds || item.targetIds || []).map((target) => String(target || "").trim()).filter(Boolean));
+  const uncoveredGoals = goals.map((goal) => String(goal.targetId || goal.knowledgePointId || goal.goalId || "").trim()).filter(Boolean).filter((id) => !itemTargets.has(id));
+  if (uncoveredGoals.length) blockers.push("CN-GOAL-COVERAGE");
   const sourceCounts = new Map();
   items.forEach(({ item }) => {
     const source = String(item.sourceSentenceId || item.sourceMaterialId || item.sourceStimulusId || (Array.isArray(item.sourceMaterialIds) ? item.sourceMaterialIds[0] : "") || "").trim();
@@ -9401,6 +9407,10 @@ function auditFeedbackDrivenDesignRuntime(pack, items, eventIds) {
   const previousDigest = String(trace.previousLessonDigest || trace.previousPackDigest || pack.previousLessonDigest || "").trim();
   const priorPackDigest = String(pack.previousFeedback?.contentDigest || pack.previousPack?.contentDigest || "").trim();
   if (previousDigest && priorPackDigest && previousDigest !== priorPackDigest) blockers.push("CN-PRIOR-LESSON-LINK");
+  const fingerprints = items.map(({ item }) => String(item.fingerprint || item.questionFingerprint || item.promptFingerprint || "").trim());
+  if (!items.length || fingerprints.length !== items.length || new Set(fingerprints).size !== fingerprints.length) blockers.push("CN-ITEM-UNIQUENESS");
+  const retrievalLevels = new Set(items.map(({ item }) => String(item.retrievalLevel || item.transferLevel || item.cognitiveLevel || "").trim()).filter(Boolean));
+  if (items.length && retrievalLevels.size < 2) blockers.push("CN-COGNITIVE-MIX");
   return [...new Set(blockers)];
 }
 
@@ -9425,7 +9435,9 @@ function auditChineseFeedbackImportGate(pack) {
   const deltas = [pack.abilityProfile?.delta, pack.abilityProfile?.abilityDelta, pack.abilityProfile?.statusChanges, pack.feedbackTrace?.abilityProfileDelta].flatMap((value) => Array.isArray(value) ? value : value && typeof value === "object" ? [value] : []).filter(Boolean);
   if (!deltas.length || deltas.some((delta) => {
     const refs = delta.evidenceIds || delta.evidenceRefs || delta.sourceEvidenceIds || (delta.evidenceId ? [delta.evidenceId] : []);
-    return !refs.length || refs.some((ref) => !eventIds.has(String(ref || "").trim())) || !String(delta.from || "").trim() || !String(delta.to || "").trim();
+    const from = String(delta.from || "").trim();
+    const to = String(delta.to || "").trim();
+    return !refs.length || refs.some((ref) => !eventIds.has(String(ref || "").trim())) || !from || !to || from === to;
   })) blockers.push("CN-DELTA-DERIVATION");
   const fingerprints = Array.isArray(pack.crossDayFingerprints) ? pack.crossDayFingerprints.map((item) => String(item || "").trim()).filter(Boolean) : [];
   const fingerprintValue = (item) => JSON.stringify({ prompt: String(item?.prompt || item?.question || "").trim(), answer: String(item?.answer || item?.referenceAnswer || "").trim(), options: Array.isArray(item?.options) ? item.options.map((option) => String(option || "").trim()) : [], evidence: Array.isArray(item?.evidenceTargetIds) ? item.evidenceTargetIds.map((id) => String(id || "").trim()).sort() : [] });
