@@ -303,6 +303,16 @@ const COLOR_REFERENCE_STEP_TITLES = Object.freeze([
   "选画笔", "定画面", "定位置", "形状骨架", "前后遮挡", "完整草稿", "主动修改",
   "闭合线稿", "主体平涂", "配件与背景", "局部暗部", "干后修补", "讲评"
 ]);
+const COLOR_STRUCTURE_STEP_REQUIREMENTS = Object.freeze({
+  4: Object.freeze({ layer: "skeleton", required: ["axes", "connections", "negativeSpaces"] }),
+  5: Object.freeze({ layer: "occlusion", required: ["occlusionBreaks", "negativeSpaces"] }),
+  6: Object.freeze({ layer: "draft", required: ["connections", "negativeSpaces"] }),
+  7: Object.freeze({ layer: "draft", required: ["modificationMarks", "repairMarks"] }),
+  8: Object.freeze({ layer: "lineart", required: ["closedContours", "occlusionBreaks"] })
+});
+const COLOR_STRUCTURE_REQUIRED_FIELDS = Object.freeze([
+  "target", "observableChange", "whyItMatters", "failureSignal", "returnTo", "evidence"
+]);
 const HELLO_SCHOOL_LIBRARY_ID = "hello-school-story3-complete-32";
 const HELLO_SCHOOL_CURRENT_LESSON_ID = "hello-school-lesson-26";
 const WITHDRAWN_BUILTIN_PACK_IDS = new Set([
@@ -11169,6 +11179,28 @@ function hasProfessionalColorDraftGeometry(analysis = {}) {
     && Number(hierarchy.outer) > Number(hierarchy.structure) && Number(hierarchy.structure) > Number(hierarchy.guide);
 }
 
+function colorStructureCheckToken(geometry, order) {
+  const requirement = COLOR_STRUCTURE_STEP_REQUIREMENTS[Number(order)];
+  if (!requirement || !geometry || typeof geometry !== "object") return "";
+  const layerCount = Array.isArray(geometry[requirement.layer]) ? geometry[requirement.layer].length : 0;
+  const counts = requirement.required.map((key) => Array.isArray(geometry[key]) ? geometry[key].length : 0);
+  if (layerCount < 1 || counts.some((count) => count < 1)) return "";
+  return `color-structure-v1:${Number(order)}:${layerCount}:${counts.join(",")}`;
+}
+
+function colorStructureGateReason(course, step) {
+  const order = Number(step?.order || 0);
+  if (!course?.generatedFromReference || !COLOR_STRUCTURE_STEP_REQUIREMENTS[order]) return "";
+  const missing = COLOR_STRUCTURE_REQUIRED_FIELDS.filter((field) => {
+    const value = step?.[field];
+    return field === "evidence" ? !Array.isArray(value) || value.length === 0 : !String(value || "").trim();
+  });
+  if (missing.length) return `缺少结构教学字段：${missing.join("、")}`;
+  const expectedToken = colorStructureCheckToken(step.stageLayers, order);
+  if (!expectedToken || step.structureCheckToken !== expectedToken) return "结构层证据不完整，需退回视觉复核";
+  return "";
+}
+
 function buildGeneratedColorSteps(analysis) {
   const objects = (analysis.objects || []).slice(0, 4);
   const draftGeometry = buildColorDraftGeometry(analysis);
@@ -11212,6 +11244,13 @@ function buildGeneratedColorSteps(analysis) {
     [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "negative-space", kind: "spacing", labelZh: "主体间负空间保持可见" }],
     [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "edge-spacing", kind: "spacing", labelZh: "外轮廓距画面边缘留白" }]
   ];
+  const structureGuidance = {
+    4: { target: "建立主体大形与中轴", observableChange: "新增体块、长短轴和主体连接，未新增装饰。", whyItMatters: "为比例、遮挡和后续轮廓提供同一坐标基准。", failureSignal: "主体宽高失衡或中轴偏离重心。", returnTo: "reference_step_03" },
+    5: { target: "厘清前后关系与负形", observableChange: "新增遮挡断线和主体间负空间，后景线段被断开。", whyItMatters: "避免把前后对象画成一团互相穿透的轮廓。", failureSignal: "被挡线仍贯穿前景或空隙挤成细缝。", returnTo: "reference_step_04" },
+    6: { target: "从体块推进到完整浅稿", observableChange: "连接体块并补主要轮廓，保留轻结构线和可修改余地。", whyItMatters: "让每条浅稿轮廓都能追溯到前一步结构。", failureSignal: "轮廓突然变形、结构线消失或细节先于大形。", returnTo: "reference_step_05" },
+    7: { target: "完成一次主动比例修改", observableChange: "保留错误线、擦除方向和修正线三层关系。", whyItMatters: "把比例修正变成可复核的学习动作，而不是抹掉错误。", failureSignal: "只剩漂亮新线，无法判断原错误和修改理由。", returnTo: "reference_step_06" },
+    8: { target: "从浅稿筛选闭合轮廓", observableChange: "外轮廓加重，内结构减轻，遮挡处断线且不穿透。", whyItMatters: "完成线面转换，同时保留体积、接触和前后层次。", failureSignal: "闭合线自交、遮挡处穿线或线重没有主次。", returnTo: "reference_step_07" }
+  };
   const definitions = [
     { actions: ["逐组比较实体笔，点选最终使用的色号。", "把已选画笔按使用顺序排好。"], colors: allIds, boardMode: "reference", stageMode: "paper", stageLayer: "paper" },
     { actions: ["在A4纸上轻轻画出推荐边界。", "确认四边留白后再进入下一步。"], boardMode: "frame", stageMode: "paper", dimensions: stepDimensions[0] },
@@ -11227,10 +11266,17 @@ function buildGeneratedColorSteps(analysis) {
     { actions: ["等待颜色完全干燥。", "补白点、断线和越界处，停止反复覆盖。"], processColors: allIds, boardMode: "repair", stageMode: "details" },
     { actions: ["把完成过程板与参考图并排观察。", "说出一处最满意的处理和一处下次要调整的地方。"], processColors: allIds, boardMode: "review", stageMode: "final" }
   ];
-  return COLOR_REFERENCE_STEP_TITLES.map((titleZh, index) => ({
-    id: `reference_step_${String(index + 1).padStart(2, "0")}`,
-    order: index + 1,
-    titleZh,
+  return COLOR_REFERENCE_STEP_TITLES.map((titleZh, index) => {
+    const order = index + 1;
+    const structure = structureGuidance[order];
+    const structureCheckToken = structure ? colorStructureCheckToken(draftGeometry, order) : "";
+    const evidence = structure && analysis.imageHash && structureCheckToken
+      ? [`image_hash:${analysis.imageHash}`, `geometry_token:${structureCheckToken}`]
+      : [];
+    return {
+      id: `reference_step_${String(order).padStart(2, "0")}`,
+      order,
+      titleZh,
     studentVoiceZh: definitions[index].actions[0],
     actionsZh: definitions[index].actions,
     colorTargetIds: definitions[index].colors || [],
@@ -11248,6 +11294,13 @@ function buildGeneratedColorSteps(analysis) {
     referenceVisible: index === 0 || index === 12,
     dimensionAnnotations: definitions[index].dimensions || [],
     overlayLayer: definitions[index].overlay || "",
+    structureCheckToken,
+    target: structure?.target || "",
+    observableChange: structure?.observableChange || "",
+    whyItMatters: structure?.whyItMatters || "",
+    failureSignal: structure?.failureSignal || "",
+    returnTo: structure?.returnTo || "",
+    evidence,
     completionStandardZh: [
       "每个主体的中心、边界和留白已标出。",
       "长短轴方向与主体朝向一致，基本形连接清楚。",
@@ -11256,7 +11309,8 @@ function buildGeneratedColorSteps(analysis) {
       "只修正标出的比例或间距，错误线已擦掉。",
       "外轮廓闭合，遮挡处不穿线。"
     ][index - 2] || (index === 10 ? "暗部和高光控制在少量重点处。" : "")
-  }));
+    };
+  });
 }
 
 function buildGeneratedColorCourse(analysis, draft) {
@@ -11780,7 +11834,10 @@ function getColorCourseUi(courseId) {
 function setColorCourseStep(courseId, index) {
   const course = getColorCourseById(courseId);
   if (!course) return false;
-  getColorCourseUi(courseId).currentStepIndex = Math.max(0, Math.min(course.steps.length - 1, Number(index || 0)));
+  const requestedIndex = Math.max(0, Math.min(course.steps.length - 1, Number(index || 0)));
+  const firstIncomplete = firstIncompleteColorStepIndex(course);
+  if (requestedIndex > firstIncomplete) return false;
+  getColorCourseUi(courseId).currentStepIndex = requestedIndex;
   saveState();
   renderArtLesson();
   return true;
@@ -11815,12 +11872,14 @@ function completeColorCourseStep(courseId, stepId) {
   if (!course || stepIndex < 0) return false;
   const pack = buildColorCoursePack(course);
   const progress = course.generatedFromReference ? getGeneratedArtProgress(course) : initializeCourseProgress(pack);
+  if (course.generatedFromReference && stepIndex > firstIncompleteColorStepIndex(course, progress)) return false;
   if (course.generatedFromReference) {
     progress.art.paletteSelections ||= {};
     const requiredIds = Array.isArray(course.steps[stepIndex]?.requiredColorTargetIds)
       ? course.steps[stepIndex].requiredColorTargetIds
       : (course.steps[stepIndex]?.colorTargetIds || []);
     if (requiredIds.some((targetId) => !progress.art.paletteSelections[targetId])) return false;
+    if (colorStructureGateReason(course, course.steps[stepIndex])) return false;
   }
   const key = `art:${stepId}`;
   progress.art.startedAt ||= new Date().toISOString();
@@ -12833,7 +12892,8 @@ function renderGeneratedColorCourseLesson(course) {
   // or legacy course could show an enabled button that then silently failed
   // in completeColorCourseStep().
   const missingColorTargets = requiredTargets.filter((target) => !target?.id || !progress.art.paletteSelections?.[target.id]);
-  const canComplete = missingColorTargets.length === 0;
+  const structureGateReason = colorStructureGateReason(course, step);
+  const canComplete = missingColorTargets.length === 0 && !structureGateReason;
   const missingText = missingColorTargets.map((target) => target.roleZh || target.targetColorZh || target.id || "本步色组").join("、");
   const paletteDisplayIds = requiredIds.length ? requiredIds : (step.processColorTargetIds?.length ? step.processColorTargetIds : []);
   header.innerHTML = `
@@ -12848,7 +12908,8 @@ function renderGeneratedColorCourseLesson(course) {
       ${course.steps.map((item, index) => {
         const complete = Boolean(progress.art.steps?.[`art:${item.id}`]?.finishedAt);
         const current = index === stepIndex;
-        return `<button class="${current ? "is-current" : ""} ${complete ? "is-complete" : ""}" data-color-step-jump="${index}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${current ? 'aria-current="step"' : ""}><span>${complete ? "✓" : index + 1}</span>${current ? `<strong>${escapeHtml(item.titleZh)}</strong>` : ""}</button>`;
+        const locked = index > firstIncompleteColorStepIndex(course, progress);
+        return `<button class="${current ? "is-current" : ""} ${complete ? "is-complete" : ""}" data-color-step-jump="${index}" data-color-course-id="${escapeHtml(course.courseId)}" type="button" ${current ? 'aria-current="step"' : ""} ${locked ? "disabled" : ""}><span>${complete ? "✓" : index + 1}</span>${current ? `<strong>${escapeHtml(item.titleZh)}</strong>` : ""}</button>`;
       }).join("")}
     </nav>
     <article class="course-card color-reference-step-card">
@@ -12865,6 +12926,7 @@ function renderGeneratedColorCourseLesson(course) {
           ${requiredIds.length || !paletteDisplayIds.length ? "" : renderGeneratedPaletteSummary(course, progress, paletteDisplayIds)}
           ${renderGeneratedSelectedColors(course, step, progress)}
           ${missingText ? `<p class="color-reference-missing" role="status">还需选择：${escapeHtml(missingText)}</p>` : ""}
+          ${structureGateReason ? `<p class="color-reference-missing" role="status">本步暂不能完成：${escapeHtml(structureGateReason)}</p>` : ""}
           ${step.completionStandardZh ? `<p class="color-reference-check">${escapeHtml(step.completionStandardZh)}</p>` : ""}
         </aside>
       </div>
