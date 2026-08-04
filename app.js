@@ -11250,7 +11250,7 @@ function colorStructureGateReason(course, step) {
   return "";
 }
 
-function buildGeneratedColorSteps(analysis) {
+function buildGeneratedColorSteps(analysis, paperPlan = calculateA4PaperPlan(analysis.aspectRatio)) {
   const objects = (analysis.objects || []).slice(0, 4);
   const draftGeometry = buildColorDraftGeometry(analysis);
   const labels = objects.map((item) => item.labelZh).filter(Boolean);
@@ -11271,27 +11271,22 @@ function buildGeneratedColorSteps(analysis) {
   const localIds = mainIds.length ? mainIds : targetIds.filter((id) => !backgroundIds.includes(id) && !outlineIds.includes(id));
   const foregroundAndBackgroundIds = uniqueIds([...localIds, ...backgroundIds]);
   const allIds = uniqueIds(targetIds);
-  const paperPlan = calculateA4PaperPlan(analysis.aspectRatio);
   const paper = paperPlan.variants.find((item) => item.id === "recommended") || paperPlan.variants[0];
   const cm = (value) => Number(value || 0).toFixed(1);
   const boardDimensions = [
     { id: "paper-size", kind: "size", labelZh: `画面 ${cm(paper?.widthCm)} × ${cm(paper?.heightCm)} cm` },
     { id: "paper-margins", kind: "margins", labelZh: `留白 左/右 ${cm(paper?.marginLeftCm ?? paper?.marginHorizontalCm)} cm · 上/下 ${cm(paper?.marginTopCm ?? paper?.marginVerticalCm)} cm` }
   ];
-  const objectBboxes = objects.map((item) => item.bbox).filter((bbox) => Array.isArray(bbox) && bbox.length === 4);
-  const groupHeight = objectBboxes.length ? Math.max(...objectBboxes.map((bbox) => Number(bbox[3]) || 0)) : 0;
-  const keySize = groupHeight > 0 ? `主体组高约 ${cm((groupHeight / 1000) * Number(paper?.heightCm || 16.5))} cm` : "主体组保持在画面中央";
   const stepDimensions = [
     boardDimensions,
     [
+      ...boardDimensions,
       { id: "center-line", kind: "position", labelZh: "中心线" },
-      { id: "top-bottom", kind: "position", labelZh: "最高点 / 最低点" },
-      { id: "water-line", kind: "position", labelZh: "地平线 / 水面线" },
-      ...(draftGeometry.dimensionRelations || []).slice(0, 1).map((item) => ({ id: "group-width", kind: "size", labelZh: item.labelZh || "主体组宽度" }))
+      { id: "top-bottom", kind: "position", labelZh: "最高点 / 最低点" }
     ],
-    [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "long-short-axis", kind: "relation", labelZh: "长轴方向与主体朝向一致" }],
-    [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "negative-space", kind: "spacing", labelZh: "主体间负空间保持可见" }],
-    [{ id: "group-height", kind: "size", labelZh: keySize }, { id: "edge-spacing", kind: "spacing", labelZh: "外轮廓距画面边缘留白" }]
+    [...boardDimensions, { id: "long-short-axis", kind: "relation", labelZh: "长轴方向与主体朝向一致" }],
+    [...boardDimensions, { id: "negative-space", kind: "spacing", labelZh: "主体间负空间保持可见" }],
+    [...boardDimensions, { id: "edge-spacing", kind: "spacing", labelZh: "外轮廓距画面边缘留白" }]
   ];
   const structureGuidance = {
     4: { target: "建立主体大形与中轴", observableChange: "新增体块、长短轴和主体连接，未新增装饰。", whyItMatters: "为比例、遮挡和后续轮廓提供同一坐标基准。", failureSignal: "主体宽高失衡或中轴偏离重心。", returnTo: "reference_step_03" },
@@ -11367,6 +11362,7 @@ function buildGeneratedColorCourse(analysis, draft) {
   const referenceImageId = `reference-${analysis.imageHash.slice(0, 24)}`;
   const draftGeometry = buildColorDraftGeometry(analysis);
   const referenceAnalysis = structuredCloneSafe(analysis);
+  const paperPlan = calculateA4PaperPlan(analysis.aspectRatio);
   referenceAnalysis.draftGeometry = draftGeometry;
   return {
     courseId,
@@ -11376,7 +11372,7 @@ function buildGeneratedColorCourse(analysis, draft) {
     titleZh: safePlainText(analysis.titleZh || "参考图课程", 24),
     choiceCardZh: "参考图课程",
     sourceImage: { width: draft.width, height: draft.height, mimeType: draft.mimeType },
-    paperPlan: calculateA4PaperPlan(analysis.aspectRatio),
+    paperPlan,
     referenceAnalysis,
     // A fixture carrying an explicit professionalEvidence gate must not leak
     // into the student route while it is still FAIL.  Provider responses that
@@ -11391,7 +11387,7 @@ function buildGeneratedColorCourse(analysis, draft) {
       roleZh: target.roleZh || target.targetColorZh || ""
     })).filter((item) => item.code),
     materials: ["pencil", "eraser", "markers", "art_paper", "reference"],
-    steps: buildGeneratedColorSteps(analysis),
+    steps: buildGeneratedColorSteps(analysis, paperPlan),
     createdAt: new Date().toISOString()
   };
 }
@@ -12410,6 +12406,15 @@ function getGeneratedPaperVariant(course, progress) {
   return variants.find((item) => item.id === progress.art.paperPreset) || variants.find((item) => item.id === "recommended") || variants[0] || null;
 }
 
+function getGeneratedPaperDimensionAnnotations(course, progress = getGeneratedArtProgress(course)) {
+  const paper = getGeneratedPaperVariant(course, progress);
+  if (!paper) return [];
+  return [
+    { id: "paper-size", kind: "size", labelZh: `画面 ${Number(paper.widthCm).toFixed(1)} × ${Number(paper.heightCm).toFixed(1)} cm` },
+    { id: "paper-margins", kind: "margins", labelZh: `留白 左/右 ${Number(paper.marginLeftCm ?? paper.marginHorizontalCm).toFixed(1)} cm · 上/下 ${Number(paper.marginTopCm ?? paper.marginVerticalCm).toFixed(1)} cm` }
+  ];
+}
+
 function renderGeneratedPaperChoices(course, progress) {
   const selected = progress.art.paperPreset || "recommended";
   return `
@@ -12876,6 +12881,7 @@ function renderGeneratedProcessBoard(course, step, progress, options = {}) {
 }
 
 function getGeneratedDimensionAnnotations(course, step) {
+  if (Number(step?.order || 0) >= 2 && Number(step?.order || 0) <= 5) return getGeneratedPaperDimensionAnnotations(course);
   if (Array.isArray(step?.dimensionAnnotations) && step.dimensionAnnotations.length) return step.dimensionAnnotations.slice(0, 4);
   if (Number(step?.order || 0) >= 7) return course.steps?.[1]?.dimensionAnnotations?.slice(0, 4) || [];
   return [];
